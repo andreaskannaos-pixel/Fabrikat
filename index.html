@@ -2112,13 +2112,14 @@ function playerAttack(t,frac){
   let own=availStr()*frac;if(o.naval)own=Math.min(own,transportCap());
   if(own<1){toast('No troops available. Recruit units in Military.','bad');return;}
   const s=own+nat.support;nat.support=0;nat.committed+=own;
-  attacks.push({a:0,from:o.from.id,to:t.id,str:s,own,t:0,dur:(o.naval?8:5)*60,naval:o.naval});
+  const troops=Math.round(mpUsed()*own/Math.max(1,armyStr())+nat.support*100);
+  attacks.push({a:0,from:o.from.id,to:t.id,str:s,own,troops,t:0,dur:(o.naval?8:5)*60,naval:o.naval});
   report('war','Your army ('+Math.round(s)+' strength) is attacking '+t.name+(o.naval?' from the sea':'')+'.');
 }
 function aiAttack(i,q,str,from){
   if(!from){const f=q.adj.map(P_).filter(p=>p.owner===i);from=f[0]||P_(ais[i].cap);}
   const naval=!q.adj.includes(from.id);
-  attacks.push({a:i,from:from.id,to:q.id,str,own:str,t:0,dur:(naval?8:6)*60,naval});
+  attacks.push({a:i,from:from.id,to:q.id,str,own:str,troops:Math.round(str*100),t:0,dur:(naval?8:6)*60,naval});
   if(q.owner===0){report('war',NATIONS[i].n+' is attacking '+q.name+' with '+Math.round(str)+' strength!');toast(NATIONS[i].n+' is attacking '+q.name+'!','bad');}
 }
 function resolveAttack(a){
@@ -2328,7 +2329,8 @@ function renderWorld(tm){
     const q=u=>[(1-u)*(1-u)*x0+2*(1-u)*u*mx+u*u*x1,(1-u)*(1-u)*y0+2*(1-u)*u*my+u*u*y1];
     const e=q(.97),b=q(.9),an=Math.atan2(e[1]-b[1],e[0]-b[0]);ctx.fillStyle=col;ctx.save();ctx.translate(x1,y1);ctx.rotate(an);ctx.beginPath();ctx.moveTo(4,0);ctx.lineTo(-10,-7);ctx.lineTo(-10,7);ctx.closePath();ctx.fill();ctx.restore();
     const m=q(pr);ctx.fillStyle='#16150f';ctx.beginPath();ctx.arc(m[0],m[1],6,0,7);ctx.fill();ctx.fillStyle=col;ctx.beginPath();ctx.arc(m[0],m[1],4,0,7);ctx.fill();
-    ctx.font='600 10px "JetBrains Mono",monospace';ctx.fillStyle='#ece6d3';ctx.fillText(Math.round(a.str)+'',m[0],m[1]-12);}
+    const lb=q(.5),txt=(a.troops||Math.round(a.str*100)).toLocaleString('en-US')+' troops';ctx.font='700 12px "JetBrains Mono",monospace';const tw=ctx.measureText(txt).width+12,ly=lb[1]+18;
+    ctx.fillStyle='rgba(16,16,12,.88)';ctx.fillRect(lb[0]-tw/2,ly-9,tw,18);ctx.fillStyle=col;ctx.fillRect(lb[0]-tw/2,ly-9,3,18);ctx.fillStyle='#ece6d3';ctx.fillText(txt,lb[0]+1,ly+1);}
   for(const r of rkts){const f=r.t/r.dur,n=settings.q==='low'?4:12;
     for(let j=n;j>=1;j--){const pf=Math.max(0,f-j*.018),p=rktPos(r,pf);ctx.fillStyle='rgba(220,215,200,'+(.5*(1-j/n))+')';ctx.beginPath();ctx.arc(wsx(p[0]),wsy(p[1]),2+j*.5,0,7);ctx.fill();}
     const p=rktPos(r,f);ctx.fillStyle=r.o===0?'#e3a52a':'#d2553f';ctx.beginPath();ctx.arc(wsx(p[0]),wsy(p[1]),4,0,7);ctx.fill();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(wsx(p[0]),wsy(p[1]),1.8,0,7);ctx.fill();}
