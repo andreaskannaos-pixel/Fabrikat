@@ -285,7 +285,7 @@ kbd{font-family:var(--mono);font-size:11px;background:var(--panel2);border:1px s
   <div class="mhead">
     <div class="row" style="gap:12px"><h2>Company</h2><span id="coMoney" class="hmoney"></span></div>
     <div class="tabs" id="coTabs">
-      <button data-tab="contracts">Contracts</button><button data-tab="goals">Goals</button><button data-tab="upgrades">Upgrades</button><button data-tab="land">Land</button><button data-tab="market">Market</button><button data-tab="blueprints">Blueprints</button>
+      <button data-tab="contracts">Contracts</button><button data-tab="goals">Goals</button><button data-tab="upgrades">Upgrades</button><button data-tab="land">Land</button><button data-tab="market">Market</button><button data-tab="blueprints">Blueprints</button><button data-tab="bank">Bank</button>
       <button data-close="co">Close <kbd>C</kbd></button>
     </div>
   </div>
@@ -417,6 +417,8 @@ const ITEMS={
   control_unit:{n:'Control unit',c:'#4f8fd0',s:'cpu'},computer:{n:'Computer',c:'#6ad0f0',s:'computer'},industrial_robot:{n:'Industrial robot',c:'#e3a52a',s:'robot'},
   quantum_processor:{n:'Quantum processor',c:'#9a6ae0',s:'cpu'},nano_material:{n:'Nano-material',c:'#8ad0c0',s:'cube'},quantum_material:{n:'Quantum material',c:'#b07ae8',s:'cube'},
   energy_crystal:{n:'Energy crystal',c:'#6ae0f0',s:'crystal'},synthetic_matter:{n:'Synthetic matter',c:'#e07ab0',s:'cube'},dark_matter:{n:'Dark matter',c:'#3a2458',s:'orb'},
+  fuel:{n:'Fuel',c:'#d07a2a',s:'barrel'},speed_module:{n:'Speed module',c:'#4f8fd0',s:'chip'},eff_module:{n:'Efficiency module',c:'#79b25a',s:'chip'},prod_module:{n:'Productivity module',c:'#d2553f',s:'chip'},
+  generator:{n:'Steam generator',place:1},solar:{n:'Solar panel',place:1},geo:{n:'Geothermal plant',place:1},accum:{n:'Battery bank',place:1},
   belt:{n:'Conveyor belt',place:1},fast_belt:{n:'Fast belt',place:1},express_belt:{n:'Express belt',place:1},magnetic_belt:{n:'Magnetic belt',place:1},
   inserter:{n:'Inserter',place:1},fast_inserter:{n:'Fast inserter',place:1},splitter:{n:'Splitter',place:1},
   drill:{n:'Mining drill',place:1},furnace:{n:'Stone furnace',place:1},assembler:{n:'Assembler',place:1},chemplant:{n:'Chemical plant',place:1},fabricator:{n:'Fabricator',place:1},
@@ -452,6 +454,14 @@ const RECIPES={
   replacement_parts:{in:{gear:2,bearing:1,lubricant:1},out:1,t:2,cat:'asm',res:'maintenance'},
   maint:{in:{steel:10,circuit:5,motor:2,gear:10},out:1,t:3,cat:'asm',res:'maintenance'},
   depot:{in:{iron_plate:20,gear:10},out:1,t:1,cat:'asm'},
+  generator:{in:{iron_plate:10,gear:5,stone:20},out:1,t:2,cat:'asm'},
+  solar:{in:{steel:5,circuit:5,glass:10},out:1,t:2,cat:'asm',res:'solar'},
+  accum:{in:{iron_plate:10,circuit_board:2,copper_plate:10},out:1,t:2,cat:'asm',res:'accumulators'},
+  geo:{in:{steel:30,pipe:20,concrete:30,motor:4},out:1,t:4,cat:'asm',res:'geothermal'},
+  fuel:{in:{crude_oil:2},out:2,t:2,cat:'chem',res:'oil'},
+  speed_module:{in:{circuit_board:3,steel:2},out:1,t:3,cat:'asm',res:'modules'},
+  eff_module:{in:{circuit_board:3,copper_plate:5},out:1,t:3,cat:'asm',res:'modules'},
+  prod_module:{in:{adv_circuit:3,circuit_board:2},out:1,t:4,cat:'asm',res:'prod_modules'},
   silicon:{in:{sand:2,carbon:1},out:1,t:3,cat:'chem',res:'electronics'},
   circuit_board:{in:{cable:4,silicon:1,plastic:1},out:1,t:2,cat:'asm',res:'electronics'},
   sensor:{in:{circuit_board:1,glass:2,silicon:1},out:1,t:3,cat:'asm',res:'electronics'},
@@ -563,8 +573,8 @@ const PLOTS=[
   ['Deep Mine','mountains',['tungsten','cobalt']],['Marsh','forest',['wood','coal']],['Red Clay Woods','forest',['bauxite','wood']],['Canyon','desert',['copper_ore','nickel_ore','sand']],['Ash Fields','volcanic',['rare_earth','uranium']],
   ['Basalt Shelf','volcanic',['cobalt','platinum']],['Lava Tubes','volcanic',['platinum','titanium_ore']],['Caldera','volcanic',['rare_earth','uranium']],['Sulfur Vents','volcanic',['uranium','rare_earth']],['Magma Core','volcanic',['platinum','rare_earth']],
 ];
-const HOTBAR=['belt','inserter','drill','furnace','assembler','chemplant','fabricator','chest','moneygen','splitter','station','maint','depot','fast_belt','express_belt','magnetic_belt','fast_inserter'];
-const START_INV={drill:6,furnace:4,belt:40,inserter:8,chest:4,iron_plate:20,coal:10,stone:10};
+const HOTBAR=['belt','inserter','drill','furnace','assembler','chemplant','fabricator','chest','moneygen','splitter','station','maint','depot','generator','solar','accum','geo','fast_belt','express_belt','magnetic_belt','fast_inserter'];
+const START_INV={generator:1,drill:6,furnace:4,belt:40,inserter:8,chest:4,iron_plate:20,coal:10,stone:10};
 const WEARS=new Set(['drill','furnace','assembler','chemplant','fabricator']);
 
 // ---------- value & depth ----------
@@ -596,7 +606,7 @@ let machinesN=0,runningN=0,alerts=[],mstat={},logi={};
 let bps=[];
 let ore=new Uint8Array(W*H),amt=new Int32Array(W*H),amt0=new Int32Array(W*H);
 let ents=[],grid=new Array(W*H).fill(null),nextId=1,listsDirty=true;
-let L={belt:[],ins:[],drill:[],furn:[],asm:[],gen:[],st:[],sp:[],mt:[]};
+let L={belt:[],ins:[],drill:[],furn:[],asm:[],gen:[],st:[],sp:[],mt:[],pw:[]};
 const cam={x:W/2*T,y:H/2*T,z:1};
 let toolRec=null,ffx=[],tool=null,tdir=1,mining=null,floats=[],bpIdx=-1,bpRot=0,bpSel=null;
 const chunks=new Array(CW*CH).fill(null);
@@ -630,7 +640,7 @@ const plotRing=p=>Math.max(Math.abs(p%PN-2),Math.abs((p/PN|0)-2));
 function plotPrice(p){const r=plotRing(p);let n=0;for(let i=0;i<PN*PN;i++)if(owned[i]&&plotRing(i)===r)n++;return Math.round([0,400,40000][r]*Math.pow(1.6,n)*(perk('titan')?.8:1));}
 function plotBuyable(p){if(owned[p])return false;const x=p%PN,y=p/PN|0;return [[1,0],[-1,0],[0,1],[0,-1]].some(([a,b])=>{const X=x+a,Y=y+b;return X>=0&&Y>=0&&X<PN&&Y<PN&&owned[Y*PN+X];});}
 const marketPrice=k=>Math.ceil((k==='moneygen'?2500:Math.max(5,VAL[k]*2.5))*(perk('fabrik')?.75:1));
-const footprint=t=>t==='moneygen'||t==='station'||t==='depot'?[2,2]:[1,1];
+const footprint=t=>t==='moneygen'||t==='station'||t==='depot'||t==='generator'||t==='geo'?[2,2]:[1,1];
 const repairCost=e=>Math.max(2,Math.ceil(VAL[e.type]*(1-e.eff)*.8));
 const xpNeed=(x,k)=>Math.ceil(x.need[k]*(perk('aegis')?.7:1));
 function spend(v){money-=v;spendCur+=v;}
@@ -688,6 +698,7 @@ function mineTile(i){amt[i]--;if(amt[i]<=0){amt[i]=0;ore[i]=0;dirtyChunk(i%W,(i/
 function mk(type,x,y,dir){
   const e={type,x,y,dir:dir||0};
   if(WEARS.has(type))e.eff=1;
+  if(type==='drill'||MACHINE_CAT[type]){e.oc=1;e.mods=[];}
   if(isBelt(e))e.items=[];
   else if(isIns(e)){e.hold=null;e.a=0;e.ph=0;}
   else if(isMachine(e)){e.rec=null;e.inv={};e.outN=0;e.prog=0;e.work=false;}
@@ -700,12 +711,16 @@ function mk(type,x,y,dir){
     case 'splitter':e.buf=[];e.rr=0;break;
     case 'maint':e.parts=0;e.cd=0;e.fixed=0;break;
     case 'depot':e.w=2;e.h=2;e.inv={};break;
+    case 'generator':e.w=2;e.h=2;e.coal=0;e.fuel=0;e.energy=0;e.on=false;break;
+    case 'geo':e.w=2;e.h=2;break;
+    case 'accum':e.charge=0;break;
   }
   return e;
 }
 function addEnt(e){e.id=nextId++;const w=e.w||1,h=e.h||1;for(let y=0;y<h;y++)for(let x=0;x<w;x++)grid[(e.y+y)*W+e.x+x]=e;ents.push(e);listsDirty=true;}
 function delEnt(e){const w=e.w||1,h=e.h||1;for(let y=0;y<h;y++)for(let x=0;x<w;x++)grid[(e.y+y)*W+e.x+x]=null;ents.splice(ents.indexOf(e),1);listsDirty=true;}
-function rebuild(){L={belt:[],ins:[],drill:[],furn:[],asm:[],gen:[],st:[],sp:[],mt:[]};for(const e of ents){
+function rebuild(){L={belt:[],ins:[],drill:[],furn:[],asm:[],gen:[],st:[],sp:[],mt:[],pw:[]};for(const e of ents){
+  if(e.type==='generator'||e.type==='solar'||e.type==='geo'||e.type==='accum'){L.pw.push(e);continue;}
   if(isBelt(e))L.belt.push(e);else if(isIns(e))L.ins.push(e);else if(e.type==='drill')L.drill.push(e);else if(e.type==='furnace')L.furn.push(e);
   else if(isMachine(e))L.asm.push(e);else if(e.type==='moneygen')L.gen.push(e);else if(e.type==='station')L.st.push(e);
   else if(e.type==='splitter')L.sp.push(e);else if(e.type==='maint')L.mt.push(e);}
@@ -715,6 +730,7 @@ function accepts(e,t){
   if(!e)return false;
   switch(e.type){
     case 'chest':return total(e.inv)<chestCap();
+    case 'generator':return (t==='coal'||t==='fuel')&&e.coal+e.fuel<20;
     case 'moneygen':return e.q.length<20&&(DEPTH[t]<=GEN[e.mk].depth||!!contractFor(t));
     case 'splitter':return e.buf.length<2;
     case 'station':return !!e.dest&&total(e.inv)<400;
@@ -734,6 +750,7 @@ function give(e,t){
     case 'moneygen':e.q.push(t);return;
     case 'splitter':e.buf.push(t);return;
     case 'maint':e.parts++;return;
+    case 'generator':e[t]++;return;
     case 'furnace':if(t==='coal')e.coal++;else{e.inT=t;e.inN++;}return;
   }
   add(e.inv,t,1);
@@ -754,7 +771,7 @@ function put(e,t){if(isBelt(e))return beltPut(e,t,.5);give(e,t);return true;}
 
 // ---------- economy ----------
 function sell(t,auto,mkLv,gen){
-  const v=VAL[t]*GEN[mkLv].mult*(perk('syntek')&&ELEC.has(t)?1.15:1);
+  const v=priceOf(t)*GEN[mkLv].mult*(perk('syntek')&&ELEC.has(t)?1.15:1);PM[t]=Math.max(.4,(PM[t]||1)-.0025);
   money+=v;stats.life+=v;soldC[t]=(soldC[t]||0)+1;soldVC[t]=(soldVC[t]||0)+v;
   if(auto){stats.auto+=v;revCur+=v;if(VAL[t]>stats.maxAutoVal)stats.maxAutoVal=VAL[t];}
   if(DEPTH[t]===0)stats.raw+=v;
@@ -854,7 +871,7 @@ function updBelt(b){
   b.jam=it.length>0&&it[0].p>=1;
 }
 function updIns(e){
-  const s=(e.type==='fast_inserter'?1/.18:1/.5)*(1+.25*upgLv('inserter'))/60,d=e.dir;
+  const s=(e.type==='fast_inserter'?1/.18:1/.5)*(1+.25*upgLv('inserter'))/60*powSat,d=e.dir;powDem+=drawKW(e,e.ph!==0);
   if(e.ph===0){
     const tgt=at(e.x+DX[d],e.y+DY[d]),src=at(e.x-DX[d],e.y-DY[d]);
     if(!tgt||!src||tgt===src||isIns(src))return;
@@ -864,11 +881,13 @@ function updIns(e){
     if(e.a>=1){const tgt=at(e.x+DX[d],e.y+DY[d]);if(tgt&&canPut(tgt,e.hold)){put(tgt,e.hold);e.hold=null;e.ph=2;}}
   }else{e.a=Math.max(0,e.a-s);if(e.a<=0)e.ph=0;}
 }
-const wear=e=>{e.eff=Math.max(.5,e.eff-WEAR*(1-.2*upgLv('durability')));};
+const wear=e=>{e.eff=Math.max(.5,e.eff-WEAR*(1-.2*upgLv('durability'))*Math.pow(e.oc||1,2)*(regionAt(e.x,e.y)==='arctic'?.5:1)*(evActive('heatwave')?2:1));};
 function updDrill(e){
   const i=e.y*W+e.x;
   if(!ore[i]&&!e.buf){e.st='empty';return;}
-  if(!e.buf){e.st='work';wear(e);e.prog+=drillRate()*e.eff/60;if(e.prog>=1){e.prog=0;e.buf=ORES[ore[i]-1];mineTile(i);produce(e.buf,1);}}
+  if(!e.buf&&e.extra>0&&e.lastOre){e.buf=e.lastOre;e.extra--;produce(e.buf,1);}
+  if(!e.buf){e.st='work';wear(e);powDem+=drawKW(e,true);e.prog+=drillRate()*e.eff*tuneSpeed(e)/60;if(e.prog>=1){e.prog=0;e.buf=e.lastOre=ORES[ore[i]-1];mineTile(i);produce(e.buf,1);const pr=modStats(e).pr;if(pr){e.pb=(e.pb||0)+pr;if(e.pb>=1){e.pb--;e.extra=(e.extra||0)+1;}}}}
+  else powDem+=drawKW(e,false);
   if(e.buf){const tgt=at(e.x+DX[e.dir],e.y+DY[e.dir]);let ok=false;
     if(tgt){if(isBelt(tgt))ok=beltPut(tgt,e.buf,.25);else if(accepts(tgt,e.buf)){give(tgt,e.buf);ok=true;}}
     if(ok)e.buf=null;else e.st='block';}
@@ -902,7 +921,8 @@ function updAsm(e){
     else{for(const k in r.in)if((e.inv[k]||0)<r.in[k]){e.miss=k;break;}
       if(e.miss)e.st='starve';else{for(const k in r.in){add(e.inv,k,-r.in[k]);consume(k,r.in[k]);}e.work=true;e.prog=0;}}
   }
-  if(e.work){e.st='work';wear(e);e.prog+=machSpd()*e.eff/(r.t*60);if(e.prog>=1){e.outN+=r.out;produce(e.rec,r.out);e.work=false;e.prog=0;}}
+  powDem+=drawKW(e,e.work);
+  if(e.work){e.st='work';wear(e);e.prog+=machSpd()*e.eff*tuneSpeed(e)/(r.t*60);if(e.prog>=1){e.outN+=r.out;produce(e.rec,r.out);const pr=modStats(e).pr;if(pr){e.pb=(e.pb||0)+pr;if(e.pb>=1){e.pb--;e.outN+=r.out;produce(e.rec,r.out);}}e.work=false;e.prog=0;}}
 }
 function updGen(e){
   const g=GEN[e.mk];
@@ -925,7 +945,7 @@ function updSplit(e){
 function stationDest(e){if(!e.dest)return null;const d=at(e.dest[0],e.dest[1]);return d&&d.type==='station'&&d!==e?d:null;}
 function updStation(e){
   const d=stationDest(e);if(!d){if(e.dest)e.dest=null;return;}
-  const tr=e.tr;tr.t++;
+  const tr=e.tr;tr.t++;powDem+=drawKW(e,tr.st!=='load');
   if(tr.st==='load'){
     const n=total(e.inv);
     if(n>=TRAIN_CAP||(n>0&&tr.t>300)){
@@ -937,6 +957,7 @@ function updStation(e){
   }else if(tr.t>=tr.dur){tr.st='load';tr.t=0;}
 }
 function updMaint(e){
+  powDem+=drawKW(e,e.parts>0);if(powSat<.5&&Math.random()>powSat)return;
   if(--e.cd>0||e.parts<=0)return;e.cd=90;
   let best=null;
   for(const list of[L.drill,L.furn,L.asm])for(const m of list){if(m.eff>=.9||Math.abs(m.x-e.x)>10||Math.abs(m.y-e.y)>10)continue;if(!best||m.eff<best.eff)best=m;}
@@ -1002,13 +1023,16 @@ function survey(){
   if(chestsFull)A.push({s:'info',t:chestsFull+' chest'+(chestsFull>1?'s':'')+' full',e:chestFirst});
   if(emptyFirst)A.push({s:'info',t:'Drills on used-up ore',e:emptyFirst});
   for(const c of contracts.active)if(c.time<180)A.push({s:'crit',t:'Contract '+c.code+': '+mmss(c.time)+' left',c:1});
+  if(powSat<.95&&powLastDem>0)A.unshift({s:'crit',t:'Power shortage: machines run at '+Math.round(powSat*100)+'% speed. Build steam generators and feed them coal, or add solar panels.',e:L.pw.find(g=>g.type==='generator'&&!g.coal&&!g.fuel)||null});
+  {const flooded=Object.keys(PM).filter(k=>PM[k]<.65&&(soldR[k]||0)>5).sort((a,b)=>PM[a]-PM[b])[0];if(flooded)A.push({s:'info',t:ITEMS[flooded].n+' sells for '+Math.round((1-PM[flooded])*100)+'% less: the market is flooded. Sell something else for a while, or process it further.'});}
+  if(nat.supply!==undefined&&nat.supply<.7&&armyStr()>0)A.push({s:'warn',t:'Army supplies at '+Math.round(nat.supply*100)+'%. Units fight weaker. See Military for what they need.'});
   alerts=A.slice(0,5);
 }
 function perSecond(){
   revBuf[revIdx]=revCur;spendBuf[revIdx]=spendCur;revCur=0;spendCur=0;revIdx=(revIdx+1)%60;
   rpm=revBuf.reduce((a,b)=>a+b,0);epm=spendBuf.reduce((a,b)=>a+b,0);
   if(ticks%3600===0){revHist.push(rpm);if(revHist.length>30)revHist.shift();}
-  rollRates();survey();contractSecond();nationSecond();
+  rollRates();survey();contractSecond();nationSecond();systemsSecond();
   if(rpm>2000&&rpm>(stats.rpmRec||0)*1.15&&ticks-(stats.recT||0)>7200){if(stats.rpmRec)banner('NEW PRODUCTION RECORD',$$(rpm)+' per minute');stats.rpmRec=rpm;stats.recT=ticks;}
   if(view==='factory'&&L.gen.some(g=>g.earned>0))sfx('coin');
   for(const g of L.gen){if(g.earned>0){floats.push({x:g.x+1,y:g.y,s:'+'+$s(g.earned),t:0,c:'#d9b54a'});g.earned=0;}}
@@ -1017,6 +1041,7 @@ function perSecond(){
 function tick(){
   ticks++;
   if(listsDirty)rebuild();
+  powerTick();
   for(const e of L.drill)updDrill(e);
   for(const e of L.furn)updFurn(e);
   for(const e of L.asm)updAsm(e);
@@ -1027,6 +1052,7 @@ function tick(){
   for(const e of L.st)updStation(e);
   for(const e of L.mt)updMaint(e);
   updCraft();handMine();worldTick();
+  powLastDem=powDem;
   if(ticks%60===0)perSecond();
 }
 
@@ -1036,6 +1062,7 @@ function placeOk(type,x,y){
   for(let j=0;j<h;j++)for(let i=0;i<w;i++){const X=x+i,Y=y+j;if(!inb(X,Y)||!ownedAt(X,Y))return 'land';const ex=at(X,Y);
     if(ex&&!(w===1&&isBelt(ex)&&BELT_MUL[type]))return 'busy';}
   if(type==='drill'&&!ore[y*W+x])return 'ore';
+  if(type==='geo'&&regionAt(x,y)!=='volcanic')return 'region';
   return '';
 }
 function tryPlace(x,y,type,dir,quiet){
@@ -1043,6 +1070,7 @@ function tryPlace(x,y,type,dir,quiet){
   if(why==='land'){if(!quiet)toastOnce('You don’t own this land yet. Buy it in Company > Land.');return null;}
   if(why==='busy')return null;
   if(why==='ore'){if(!quiet)toastOnce('Drills go on ore.');return null;}
+  if(why==='region'){if(!quiet)toastOnce('Geothermal plants only work on volcanic land. Buy a Volcanic plot in Company > Land.');return null;}
   const ex=at(x,y);
   if(ex&&isBelt(ex)){
     if(ex.type===type){ex.dir=dir;return ex;}
@@ -1062,6 +1090,8 @@ function refund(e){
   if(e.type==='splitter')for(const t of e.buf)add(inv,t,1);
   if(e.q)for(const t of e.q)add(inv,t,1);
   if(e.type==='maint'&&e.parts)add(inv,'replacement_parts',e.parts);
+  if(e.type==='generator'){if(e.coal)add(inv,'coal',e.coal);if(e.fuel)add(inv,'fuel',e.fuel);}
+  if(e.mods)for(const m of e.mods)add(inv,m,1);
   if(e.type==='station'){for(const k in e.inv)add(inv,k,e.inv[k]);for(const k in e.tr.cargo)add(inv,k,e.tr.cargo[k]);}
   if(e.type==='furnace'){if(e.inN)add(inv,e.inT,e.inN);if(e.coal)add(inv,'coal',e.coal);if(e.outN)add(inv,e.outT,e.outN);if(e.cur)add(inv,e.cur,SMELT[e.cur].n);}
   if(isMachine(e)){for(const k in e.inv)add(inv,k,e.inv[k]);if(e.outN)add(inv,e.rec,e.outN);if(e.work)for(const k in RECIPES[e.rec].in)add(inv,k,RECIPES[e.rec].in[k]);}
@@ -1362,6 +1392,10 @@ function drawEntity(g,e,tm){
     case 'splitter':drawSplitter(g,e);break;
     case 'maint':drawMaint(g,e);break;
     case 'depot':drawDepot(g,e);break;
+    case 'generator':drawGenerator(g,e,tm);break;
+    case 'solar':drawSolar(g,e);break;
+    case 'geo':drawGeo(g,e,tm);break;
+    case 'accum':drawAccum(g,e);break;
   }
 }
 const ICON={},ICONURL={};
@@ -1406,7 +1440,7 @@ function render(tm){
   for(const e of belts)if(e.items)for(const o of e.items){const q=o.p-.5;ctx.drawImage(ICON[o.t],sx((e.x+.5+DX[e.dir]*q)*T)-is/2,sy((e.y+.5+DY[e.dir]*q)*T)-is/2,is,is);}
   for(const e of mids)drawAt(e);
   for(const e of inss)drawAt(e);
-  for(const e of mids){if(!settings.bg||!settings.particles||!(e.type==='furnace'&&e.cur||e.type==='chemplant'&&e.work))continue;
+  for(const e of mids){if(!settings.bg||!settings.particles||!(e.type==='furnace'&&e.cur||e.type==='chemplant'&&e.work||e.type==='generator'&&e.on||e.type==='geo'))continue;
     for(let k=0;k<Math.ceil(3*settings.particles);k++){const p=(tm*.6+k/3+e.x*.13)%1,px=sx((e.x+.78+p*.3)*T),py=sy((e.y+.15-p*.9)*T);
       ctx.fillStyle='rgba(190,185,170,'+(.35*(1-p))+')';ctx.beginPath();ctx.arc(px,py,(3+p*7)*z,0,7);ctx.fill();}}
   for(const s of L.st){const d=stationDest(s);if(!d||s.tr.st==='load')continue;
@@ -1477,6 +1511,10 @@ function drawTop(){
   if(unlockedNav('cities'))h+='<span class="stat"><span class="l">\u{1F465} Pop</span>'+fmt(Math.round(nat.pop))+' / '+fmt(Math.round(nat.cap))+'</span><span class="stat"><span class="l">\u{1F477} Workers</span>'+fmt(Math.round(nat.workers))+'</span>';
   if(unlockedNav('military'))h+='<span class="stat"><span class="l">\u{1FA96} Soldiers</span>'+fmt(Math.round(nat.soldiers))+'</span><span class="stat"><span class="l">\u2694 Army</span>'+Math.round(armyStr())+'</span>';
   if(nat.pop)h+='<span class="stat"><span class="l">\u2699 Industry</span>\u00d7'+indMult().toFixed(2)+'</span>';
+  h+='<span class="stat" title="Power supply and demand"><span class="l">\u26A1 Power</span><span class="'+(powSat<.95?'bad':'')+'">'+(powLastDem/1000).toFixed(2)+' / '+(powSup/1000).toFixed(2)+' MW</span></span>';
+  h+='<span class="stat" title="'+STAGES[stats.stage||0][1]+'"><span class="l">Stage '+((stats.stage||0)+1)+'</span>'+STAGES[stats.stage||0][0]+'</span>';
+  if(stats.debt>1)h+='<span class="stat"><span class="l">Debt</span><span class="bad">'+$s(stats.debt)+'</span></span>';
+  for(const ev of events)h+='<span class="stat" title="'+EVT[ev.id].d+'"><span class="l">Event</span><span class="gold">'+EVT[ev.id].n+' '+mmss(ev.left)+'</span></span>';
   h+=(paused?'<span class="stat paused">PAUSED</span>':'')+'<span class="stat spd">'+[[0,'\u275a\u275a'],[1,'1\u00d7'],[2,'2\u00d7'],[4,'4\u00d7']].map(([v,l])=>'<button data-speed="'+v+'" class="'+((v===0?paused:!paused&&gameSpeed===v)?'on':'')+'" title="'+(v?'Game speed '+v+'\u00d7':'Pause (Space)')+'">'+l+'</button>').join('')+'</span>';
   setHTML($('topbar'),h);
   const openId={cities:'cities',military:'mil',research:'res',company:'co',stats:'stats',inv:'inv',guide:'guide',settings:'settings'};
@@ -1489,7 +1527,7 @@ function drawTop(){
 }
 function drawHUD(){
   drawTop();
-  setHTML($('bankRate'),'Revenue <b>'+$$(rpm)+'/min</b>'+(epm?' &middot; spent '+$s(epm)+'/min':''));
+  setHTML($('bankRate'),'Revenue <b>'+$$(rpm)+'/min</b>'+(epm?' &middot; spent '+$s(epm)+'/min':'')+(machinesN?'<br><button class="small" data-nav="stats" style="margin-top:4px">Factory efficiency '+Math.round(effi.overall*100)+'%</button>':''));
   const m=nextMilestone();
   if(m){const have=Math.min(stats[m.stat],m.goal),f=have/m.goal;
     setHTML($('bankGoal'),'<div class="row"><span class="nm">'+m.n+'</span><span class="ct">'+$s(have)+' / '+$s(m.goal)+'</span></div><div class="bar"><i style="width:'+(f*100).toFixed(1)+'%"></i></div><span class="ct">'+(m.d?'Earn '+$s(m.goal)+' '+m.d:'Earn '+$s(m.goal)+' in total')+(m.reward?' &middot; bonus '+$s(m.reward):'')+'</span>');}
@@ -1580,12 +1618,17 @@ function drawEnt(){
       h+='</span><span class="k">Output</span><span class="mono">'+e.outN+'</span><span class="k">Working</span><div class="pbar"><i style="width:'+(e.prog*100).toFixed(0)+'%"></i></div></div>';
       h+='<p class="empty">'+valueLine(e.rec)+'</p>';
       h+='<div class="row"><button data-act="fill">Fill from inventory</button><button data-act="out" class="primary">Take output</button></div>';}
-    h+=condRow(e)+'<div><h3>Recipe</h3><div class="grid">';
+    h+=condRow(e)+tuneRow(e)+'<div><h3>Recipe</h3><div class="grid">';
     let any=false;for(const r in RECIPES){if(RECIPES[r].cat!==cat||!unlocked(r))continue;any=true;h+='<button class="cell'+(e.rec===r?' on':'')+'" data-act="rec:'+r+'" title="'+ITEMS[r].n+' · '+$$(VAL[r])+'">'+img(r)+'</button>';}
     h+='</div>'+(any?'':'<p class="empty">No recipes researched for this machine yet.</p>')+'</div>';
   }else if(e.type==='drill'){
     const i=e.y*W+e.x;
     h+='<div class="kv"><span class="k">Mining</span><span>'+(ore[i]?ITEMS[ORES[ore[i]-1]].n+' ('+amt[i]+' left)':'Nothing. This patch is used up.')+'</span><span class="k">Output</span><span>'+(e.st==='block'?'Blocked. The spot the chute faces won’t take it.':'Flowing')+'</span><span class="k">Rate</span><span class="mono">'+(drillRate()*e.eff).toFixed(2)+' / s</span></div>'+condRow(e);
+    h+=tuneRow(e);
+  }else if(e.type==='generator'){
+    h+='<div class="kv"><span class="k">Output</span><span>'+(e.on?'Running, up to '+GEN_KW+' kW':'Idle')+'</span><span class="k">Fuel</span><span><span class="ing">'+img('coal')+e.coal+'</span><span class="ing">'+img('fuel')+e.fuel+'</span></span></div><div class="row"><button data-act="gfuel">Add fuel from inventory</button></div><p class="empty">Burns coal (20 s each at full load) or fuel (45 s). It only burns when the grid needs more than your other sources give. Feed it by belt, inserter or drill.</p>';
+  }else if(e.type==='solar'||e.type==='geo'||e.type==='accum'){
+    h+='<p class="empty">'+(e.type==='solar'?'Makes '+Math.round(SOLAR_KW*(regionAt(e.x,e.y)==='desert'?1.8:1))+' kW for free'+(regionAt(e.x,e.y)==='desert'?' (desert bonus)':'. Panels on desert land make 80% more')+'.':e.type==='geo'?'Makes '+GEO_KW+' kW for free, day and night.':'Holds '+Math.round(e.charge)+' of '+ACC_KJ+' kJ. Charges from spare power and covers shortages at up to '+ACC_KW+' kW.')+'</p>';
   }else if(e.type==='station'){
     const d=stationDest(e);
     h+='<div class="kv"><span class="k">Role</span><span>'+(d?'Sends to the station at '+d.x+', '+d.y+' ('+PLOTS[plotOf(d.x,d.y)][0]+')':'Receives. Use inserters to unload it.')+'</span>'+
@@ -1618,6 +1661,10 @@ function entAct(a){
   else if(k==='sell'){const n=inv[v]||0;if(n>0&&DEPTH[v]<=GEN[e.mk].depth){let got=0;for(let j=0;j<n;j++)got+=sell(v,false,e.mk,null);delete inv[v];floats.push({x:e.x+1,y:e.y,s:'+'+$s(got),t:0,c:'#d9b54a'});}}
   else if(k==='gup'){const nx=GEN[e.mk+1];if(nx&&money>=nx.cost){spend(nx.cost);e.mk++;toast(ITEMS.moneygen.n+' upgraded to '+nx.n,'big');}}
   else if(k==='repair'){if(!repair(e))toast('Not enough money to repair it');}
+  else if(k==='oc'){e.oc=+v;}
+  else if(k==='mod'){if(inv[v]>0&&(e.mods||[]).length<2){add(inv,v,-1);e.mods.push(v);}}
+  else if(k==='unmod'){const m=e.mods.splice(+v,1)[0];if(m)add(inv,m,1);}
+  else if(k==='gfuel'){let n=0;for(const f of['fuel','coal']){while(inv[f]>0&&accepts(e,f)){add(inv,f,-1);give(e,f);n++;}}if(!n)toast('You have no coal or fuel');}
   else if(k==='parts'){const n=Math.min(20-e.parts,inv.replacement_parts||0);if(n>0){e.parts+=n;add(inv,'replacement_parts',-n);}else toast('You have no replacement parts');}
   else if(k==='dest'){if(v==='none')e.dest=null;else{const[x,y]=v.split(',').map(Number);e.dest=[x,y];e.tr={st:'load',t:0,cargo:{},n:0,dur:0};}}
   cache.entBody=null;drawEnt();uiDirty=true;
@@ -1689,6 +1736,11 @@ function drawCo(){
     for(const k of Object.keys(ITEMS).filter(k=>ITEMS[k].place)){const ok=unlocked(k);
       h+='<button class="mkcell" data-co="buy:'+k+'"'+(!ok||money<marketPrice(k)?' disabled':'')+'>'+img(k)+'<span>'+ITEMS[k].n+'</span><span class="pp">'+(ok?$$(marketPrice(k)):'Needs research')+'</span></button>';}
     h+='</div>';
+  }else if(coTab==='bank'){
+    const lim=loanLimit();
+    h+='<div class="tiles"><div class="tile"><span class="eyebrow">Debt</span><span class="v '+(stats.debt>1?'bad':'')+'">'+$$(stats.debt||0)+'</span><span class="ct">grows '+(LOAN_RATE*100).toFixed(1)+'% per minute</span></div><div class="tile"><span class="eyebrow">You can borrow</span><span class="v">'+$$(lim)+'</span><span class="ct">half of everything you have earned</span></div></div>';
+    h+='<div class="row">'+[.25,.5,1].map(f=>'<button class="money" data-co="loan:'+f+'"'+(lim<100?' disabled':'')+'>Borrow '+$s(Math.floor(lim*f))+'</button>').join('')+'<button class="danger" data-co="repay"'+(!(stats.debt>0)||money<1?' disabled':'')+'>Repay '+$s(Math.min(money,stats.debt||0))+'</button></div>';
+    h+='<p class="empty">Loans let you build before you can afford it. Interest is added to the debt every second, so pay it back once the new machines are earning.</p>';
   }else if(coTab==='blueprints'){
     h+='<p class="empty">Press <kbd>B</kbd> and drag a box around buildings to save them. Blueprints are kept in this browser across new games. Share one by copying its code.</p><div class="list">';
     if(!bps.length)h+='<p class="empty">No blueprints yet.</p>';
@@ -1715,6 +1767,8 @@ function coAct(a,shift){
   else if(k==='accept'){const c=contracts.offers.find(q=>q.id==v);if(c&&contracts.active.length<3){contracts.offers.splice(contracts.offers.indexOf(c),1);contracts.active.push(c);toast('Accepted '+c.code+': '+contractLine(c)+' '+ITEMS[c.item].n);}}
   else if(k==='deliver'){const c=contracts.active.find(q=>q.id==v);if(c){const n=Math.min(inv[c.item]||0,c.kind==='deliver'?c.qty-c.got:1e9);if(n>0){add(inv,c.item,-n);deliver(c,n);}}}
   else if(k==='abandon'){const c=contracts.active.find(q=>q.id==v);if(c)finishContract(c,false);}
+  else if(k==='loan'){const a=Math.floor(loanLimit()*+v);if(a>0){money+=a;stats.debt=(stats.debt||0)+a;toast('Borrowed '+$$(a));}}
+  else if(k==='repay'){const a=Math.min(money,stats.debt||0);money-=a;stats.debt-=a;if(stats.debt<1)stats.debt=0;toast('Repaid '+$$(a));}
   else if(k==='place'){bpIdx=+v;bpRot=0;tool='bp';show('co',false);}
   else if(k==='export'){bpExport=bpExport===+v?-1:+v;}
   else if(k==='copy'){const t=$('bpx'+v);if(t){const txt=t.value;const fb=()=>{t.select();toast('Press Ctrl+C to copy');};try{navigator.clipboard.writeText(txt).then(()=>toast('Code copied'),fb);}catch(_){fb();}}return;}
@@ -1729,6 +1783,12 @@ function openCo(tab,hl){if(tab)coTab=tab;coHL=hl===undefined?-1:hl;cache.coBody=
 const SCOL={work:'#79b25a',starve:'#e3a52a',block:'#d2553f',idle:'#6b6856'};
 function drawStats(){
   let h='';
+  if(effi.rows.length){h+='<div><h3>Factory efficiency <span class="hint">click a row to jump to the worst spot</span></h3><div class="tile" style="gap:6px"><span class="v '+(effi.overall>=.85?'good':effi.overall>=.6?'gold':'bad')+'">'+Math.round(effi.overall*100)+'%</span>'+
+    effi.rows.map((r,i)=>'<button class="mrow" style="text-align:left;background:none;border:0;padding:3px 0" data-eff="'+i+'"'+(r[2]?'':' disabled')+'><span>'+r[0]+'</span><div class="pbar"><i style="width:'+(r[1]*100).toFixed(0)+'%;background:'+(r[1]>=.85?'var(--green)':r[1]>=.6?'var(--amber)':'var(--red)')+'"></i></div><span class="ct">'+Math.round(r[1]*100)+'%'+(r[2]?' &rarr;':'')+'</span></button>').join('')+
+    '<span class="ct">Idle machines: '+Math.round(effi.idle*100)+'%</span></div></div>';}
+  h+='<div><h3>Power</h3><div class="tiles"><div class="tile"><span class="eyebrow">Demand</span><span class="v">'+(powLastDem/1000).toFixed(2)+' MW</span><span class="ct">machines drawing now</span></div><div class="tile"><span class="eyebrow">Capacity</span><span class="v">'+(powSup/1000).toFixed(2)+' MW</span><span class="ct">'+HQ_POWER+' kW from the HQ grid</span></div><div class="tile"><span class="eyebrow">Satisfaction</span><span class="v '+(powSat<.95?'bad':'good')+'">'+Math.round(powSat*100)+'%</span><span class="ct">machine speed follows this</span></div><div class="tile"><span class="eyebrow">Batteries</span><span class="v">'+(powAccCap?Math.round(powAccE/powAccCap*100)+'%':'none')+'</span><span class="ct">'+Math.round(powAccE)+' kJ stored</span></div></div></div>';
+  {const mk=Object.keys(ITEMS).filter(k=>!ITEMS[k].place&&(PM[k]||evMult(k)!==1)).sort((a,b)=>(PM[a]||1)*evMult(a)-(PM[b]||1)*evMult(b)).slice(0,12);
+   h+='<div><h3>Market prices <span class="hint">selling a lot of one item lowers its price; it recovers over a few minutes</span></h3>'+(mk.length?'<div class="tblwrap"><table class="tbl"><thead><tr><th>Item</th><th>Base</th><th>Now</th><th>Change</th></tr></thead><tbody>'+mk.map(k=>{const m=(PM[k]||1)*evMult(k);return '<tr><td>'+img(k)+ITEMS[k].n+'</td><td>'+$$(VAL[k])+'</td><td>'+$$(priceOf(k))+'</td><td class="'+(m<1?'bad':'good')+'">'+(m>1?'+':'')+Math.round((m-1)*100)+'%</td></tr>';}).join('')+'</tbody></table></div>':'<p class="empty">Every price is at its normal level.</p>')+'</div>';}
   let stock=0;for(const k in inv)stock+=VAL[k]*inv[k];
   for(const e of ents)if(e.type==='chest'||e.type==='station')for(const k in e.inv)stock+=VAL[k]*e.inv[k];
   const best=Object.entries(valR).sort((a,b)=>b[1]-a[1])[0];
@@ -1766,7 +1826,7 @@ function drawStats(){
     '<div class="tile"><span class="eyebrow">Storage</span><span class="v">'+(lg.cap?Math.round(lg.used/lg.cap*100):0)+'%</span><span class="ct">'+(lg.used||0).toLocaleString('en-US')+' in '+(lg.chests||0)+' chests</span></div>'+
     '<div class="tile"><span class="eyebrow">Train routes</span><span class="v">'+(lg.routes||0)+'</span><span class="ct">avg load '+Math.round((lg.avgLoad||0)*100)+'% &middot; '+(lg.plots||0)+' plots linked</span></div>'+
     '<div class="tile"><span class="eyebrow">Splitters</span><span class="v">'+(lg.splitters||0)+'</span><span class="ct">'+(stats.beltMoves||0).toLocaleString('en-US')+' belt hand-offs so far</span></div></div></div>';
-  h+='<p class="empty">Power, pollution and dynamic prices aren’t in the game yet, so they have no stats here.</p>';
+
   setHTML($('statsBody'),h);
 }
 
@@ -1886,6 +1946,7 @@ function navAct(k){
 }
 document.addEventListener('click',ev=>{const b=ev.target.closest('button');if(!b||b.disabled)return;const d=b.dataset;
   if(d.locked){const need={world:2,cities:2,military:4}[d.locked];toast((d.locked==='world'?'The World map':d.locked==='cities'?'Cities':'The Military')+' unlocks when you finish mission '+need+' ('+MISSIONS[need-1].n+'). Or unlock everything now in Settings.');return;}
+  if(d.eff!==undefined){const r=effi.rows[+d.eff];if(r&&r[2]){show('stats',false);if(view!=='factory')setView('factory');jumpTo(r[2]);}return;}
   if(d.nav)return navAct(d.nav);
   if(d.speed!==undefined){const v=+d.speed;if(v===0)paused=!paused;else{paused=false;gameSpeed=v;}uiDirty=true;return;}
   if(d.w)return wAct(d.w);
@@ -1895,7 +1956,7 @@ document.addEventListener('click',ev=>{const b=ev.target.closest('button');if(!b
   if(d.recU){const U=UNITS[d.recU];if(mpFree()<U.mp)toast('Not enough free soldiers. Raise the soldier share in Cities or build more cities.','bad');else if(buyWith(U.cost,U.mat,U.n)){nat.units[d.recU]=(nat.units[d.recU]||0)+1;stats.recruitMP=(stats.recruitMP||0)+U.mp;toast('Recruited '+U.n);}cache.milBody=null;drawMil();return;}
   if(d.ship){const S=SHIPS[d.ship];if(buyWith(S.cost,S.mat,S.n)){nat.ships[d.ship]=(nat.ships[d.ship]||0)+1;toast('Built '+S.n);}cache.milBody=null;drawMil();return;}
   if(d.rk){const R=ROCKETS[d.rk],c=Math.round(R.cost*(research.missile_infra?.8:1));if(buyWith(c,R.mat,R.n)){nat.rockets[d.rk]=(nat.rockets[d.rk]||0)+1;toast('Built '+R.n);}cache.milBody=null;drawMil();return;}
-  if(d.res){const r=RESEARCH.find(x=>x.id===d.res);if(r&&!research[r.id]&&r.req.every(q=>research[q])&&buyWith(r.cost,r.mat||{},r.n)){research[r.id]=1;toast('Researched '+r.n,'big');}cache.resBody=null;drawRes();return;}
+  if(d.res){const r=RESEARCH.find(x=>x.id===d.res);if(r&&!research[r.id]&&r.req.every(q=>research[q])&&buyWith(resCost(r),r.mat||{},r.n)){if(evActive('breakthrough'))events=events.filter(x=>x.id!=='breakthrough');research[r.id]=1;toast('Researched '+r.n,'big');}cache.resBody=null;drawRes();return;}
   if(d.restab){resTab=d.restab;cache.resBody=null;drawRes();return;}
   if(d.guide!==undefined){guideSec=+d.guide;cache.guideBody=null;drawGuide();return;}
   if(d.set)return setAct(d.set);
@@ -1920,12 +1981,12 @@ $('mNewYes').onclick=()=>{newGame();save();show('menu',false);playIntro(()=>show
 function serialize(){
   const mined={};for(let i=0;i<W*H;i++)if(amt[i]!==amt0[i])mined[i]=amt[i];
   const E=ents.map(e=>{const o=Object.assign({},e);delete o.id;delete o.tk;delete o.v;delete o.earned;delete o.jam;delete o.rej;return o;});
-  return {v:4,savedAt:Date.now(),rates:{rpm,tax:nat.tax||0,trade:nat.trade||0,up:nat.upkeep||0},world:worldSave(),seed,won,inv,queue,ticks,cam:{x:cam.x,y:cam.y,z:cam.z},mined,E,money,stats,research,upg,cos,ms,ch,owned:Array.from(owned),xp,rep,contracts,revHist,bps};
+  return {v:4,PM,events,nextEvent,savedAt:Date.now(),rates:{rpm,tax:nat.tax||0,trade:nat.trade||0,up:nat.upkeep||0},world:worldSave(),seed,won,inv,queue,ticks,cam:{x:cam.x,y:cam.y,z:cam.z},mined,E,money,stats,research,upg,cos,ms,ch,owned:Array.from(owned),xp,rep,contracts,revHist,bps};
 }
 function reset(s){
   genMap(s);genWorld(s);initNation();ents=[];grid.fill(null);ffx=[];nextId=1;queue=[];ticks=0;won=false;inv={};tool=null;mining=null;closeEnt();
   money=0;stats={life:0,auto:0,raw:0,maxDepth:0,maxAutoVal:0,beltMoves:0,splitters:0,lastCraft:0,made:{},built:{}};research={};upg={};cos={};ms={};ch={};xp={};rep={};
-  contracts={offers:[],active:[],next:1,done:0,cool:5};revHist=[];prodR={};consR={};soldR={};valR={};alerts=[];logi={};mstat={};
+  contracts={offers:[],active:[],next:1,done:0,cool:5};revHist=[];prodR={};consR={};soldR={};valR={};PM={};events=[];nextEvent=300;powLastDem=0;powSat=1;alerts=[];logi={};mstat={};
   owned=new Uint8Array(PN*PN);owned[12]=1;revBuf.fill(0);spendBuf.fill(0);revCur=0;spendCur=0;rpm=0;epm=0;rebuild();
 }
 function newGame(){
@@ -1940,6 +2001,7 @@ function load(s){
   chunks.fill(null);
   won=!!s.won;inv=s.inv||{};queue=(s.queue||[]).filter(q=>RECIPES[q.r]);ticks=s.ticks|0;
   money=+s.money||0;Object.assign(stats,s.stats||{});research=s.research||{};upg=s.upg||{};cos=s.cos||{};ms=s.ms||{};ch=s.ch||{};xp=s.xp||{};rep=s.rep||{};
+  PM=s.PM||{};events=s.events||[];nextEvent=s.nextEvent||300;
   if(s.contracts)contracts=Object.assign({offers:[],active:[],next:1,done:0,cool:5},s.contracts);revHist=s.revHist||[];
   if(s.owned)owned=Uint8Array.from(s.owned);owned[12]=1;
   if(s.cam){cam.x=s.cam.x;cam.y=s.cam.y;cam.z=s.cam.z;}
@@ -2157,7 +2219,7 @@ const slots=p=>TERR[p.terr].slots+(p.id===world.home?2:0);
 const cityCap=c=>CITY[c.mk].cap*(research.housing?1.2:1)*(research.improved_housing?1.2:1)*(research.metro?1.25:1)*(research.megacity?1.5:1);
 function mobState(){const m=MOB[nat.mob];return research.adv_logistics?{n:m.n,max:m.max,up:1+(m.up-1)/2,ind:1-(1-m.ind)/2}:m;}
 const strMult=()=>(research.training?1.2:1)*(research.adv_weapons?1.25:1);
-function armyStr(){let s=0;for(const k in UNITS)s+=(nat.units[k]||0)*UNITS[k].str;return s*strMult();}
+function armyStr(){let s=0;for(const k in UNITS)s+=(nat.units[k]||0)*UNITS[k].str;return s*strMult()*supplyMult();}
 const availStr=()=>Math.max(0,armyStr()-nat.committed);
 const mpUsed=()=>{let s=0;for(const k in UNITS)s+=(nat.units[k]||0)*UNITS[k].mp;return s;};
 const mpFree=()=>Math.max(0,nat.soldiers-mpUsed());
@@ -2290,9 +2352,9 @@ function worldTick(){
 }
 function rktPos(r,f){const x=r.from[0]+(r.to[0]-r.from[0])*f,y=r.from[1]+(r.to[1]-r.from[1])*f,L=Math.hypot(r.to[0]-r.from[0],r.to[1]-r.from[1]);return[x,y-Math.sin(Math.PI*f)*L*.28];}
 function nationSecond(){
-  let pop=0,cap=0,taxBase=0;const grow=research.infrastructure?2:1;
+  let pop=0,cap=0,taxBase=0;const grow=evActive('drought')?0:research.infrastructure?2:1;
   for(const p of world.provs){if(p.owner!==0)continue;
-    for(const c of p.cities){const cc=cityCap(c);if(ticks-c.b<180)continue;c.pop=Math.min(cc,c.pop+Math.max(15,(cc-c.pop)*.015)*grow);pop+=c.pop;cap+=cc;taxBase+=c.pop*CITY[c.mk].tax;
+    for(const c of p.cities){const cc=cityCap(c);if(ticks-c.b<180)continue;c.pop=Math.min(cc,c.pop+(grow?Math.max(15,(cc-c.pop)*.015)*grow:0));pop+=c.pop;cap+=cc;taxBase+=c.pop*CITY[c.mk].tax;
       if(c.pop>=cc*.995&&c.full!==c.mk){c.full=c.mk;banner('POPULATION CAPACITY REACHED',CITY[c.mk].n+' in '+p.name+' is full');}}
     if(p.id!==world.home){pop+=p.pop*.5;cap+=p.pop*.5;taxBase+=p.pop*.25;}}
   const M=mobState();nat.share=Math.min(nat.share,M.max);
@@ -2303,7 +2365,7 @@ function nationSecond(){
   up*=M.up*(research.mil_logistics?.75:1)/60;nat.upkeep=up*60;
   if(up>0){if(money>=up)spend(up);else{armyLoss(armyStr()*.005);if(ticks%1800===0){report('war','Unpaid troops are deserting. Earn more or reduce your army.');toast('Not enough money for upkeep. Troops are deserting.','bad');}}}
   let raid=false;for(let i=1;i<ais.length;i++){const A=ais[i];if(A&&A.war&&A.naval>navalStr())raid=true;}
-  let tr=0;for(let i=1;i<ais.length;i++){const A=ais[i];if(A&&A.trade&&!A.war&&!A.dead)tr+=(400+.02*rpm)*(research.cargo?1.3:1)/60;}
+  let tr=0;for(let i=1;i<ais.length;i++){const A=ais[i];if(A&&A.trade&&!A.war&&!A.dead&&!evActive('strike'))tr+=(400+.02*rpm)*(research.cargo?1.3:1)/60;}
   if(raid)tr*=.5;money+=tr;stats.life+=tr;nat.trade=tr*60;nat.raided=raid&&tr>0;
   if(ticks%600===0)importTick();
   if(ticks%300===0)aiTick();
@@ -2594,6 +2656,7 @@ function drawMil(){
   const M=mobState();let h='<div class="tiles">'+
     '<div class="tile"><span class="eyebrow">Army strength</span><span class="v">'+Math.round(armyStr())+'</span><span class="ct">'+Math.round(availStr())+' ready &middot; '+Math.round(nat.committed)+' fighting</span></div>'+
     '<div class="tile"><span class="eyebrow">Manpower</span><span class="v">'+fmt(Math.round(mpFree()))+'</span><span class="ct">'+fmt(Math.round(mpUsed()))+' serving of '+fmt(Math.round(nat.soldiers))+'</span></div>'+
+    '<div class="tile"><span class="eyebrow">Supply</span><span class="v '+((nat.supply??1)<.7?'bad':'good')+'">'+Math.round((nat.supply??1)*100)+'%</span><span class="ct">'+(Object.keys(supplyNeeds()).length?'per min: '+Object.entries(supplyNeeds()).map(([k,n])=>(Math.round(n*10)/10)+' '+ITEMS[k].n.toLowerCase()).join(', '):'no units yet')+'</span></div>'+
     '<div class="tile"><span class="eyebrow">Upkeep</span><span class="v bad">'+$s(nat.upkeep)+'/min</span><span class="ct">paid every second</span></div>'+
     (unlockedNav('naval')?'<div class="tile"><span class="eyebrow">Navy</span><span class="v">'+Math.round(navalStr())+'</span><span class="ct">transports carry '+Math.round(transportCap())+'</span></div>':'')+'</div>';
   h+='<div><h3>Mobilization</h3><div class="seg">'+MOB.map((m,i)=>'<button data-mob="'+i+'" class="'+(nat.mob===i?'on':'')+'">'+m.n+'</button>').join('')+'</div><p class="empty" style="margin-top:6px">'+MOB[nat.mob].d+(research.adv_logistics?' Advanced logistics halves the penalties.':'')+'</p></div>';
@@ -2620,8 +2683,8 @@ function drawRes(){
     for(const r of L){const done=!!research[r.id],reqOk=r.req.every(q=>research[q]),mat=r.mat||{};
       const un=Object.keys(RECIPES).filter(k=>RECIPES[k].res===r.id).concat(Object.keys(SMELT).filter(k=>SMELT[k].res===r.id).map(k=>SMELT[k].o));
       h+='<div class="item'+(done?' done':'')+'"><span class="t">'+r.n+'</span><span class="d">'+r.d+(reqOk||done?'':' Needs '+r.req.filter(q=>!research[q]).map(q=>(RESEARCH.find(x=>x.id===q)||{n:q}).n).join(' and ')+'.')+'</span>'+
-        (un.length?'<span class="icons">'+un.map(img).join('')+'</span>':'')+(done?'':'<span class="icons">'+costHTML(r.cost,mat)+'</span>')+
-        '<div class="a">'+(done?'<span class="badge ok">Researched</span>':'<button class="money" data-res="'+r.id+'"'+(!reqOk||!canPay(r.cost,mat)?' disabled':'')+'>Research</button>')+'</div></div>';}
+        (un.length?'<span class="icons">'+un.map(img).join('')+'</span>':'')+(done?'':'<span class="icons">'+costHTML(resCost(r),mat)+'</span>')+
+        '<div class="a">'+(done?'<span class="badge ok">Researched</span>':'<button class="money" data-res="'+r.id+'"'+(!reqOk||!canPay(resCost(r),mat)?' disabled':'')+'>Research</button>')+'</div></div>';}
     h+='</div></div>';}
   if(resTab==='industry'){const xs=EXPERIMENTS.filter(x=>research[x.after]);
     h+='<div><h3>Experimental <span class="hint">paid in materials from your inventory</span></h3><div class="list">';
@@ -2646,6 +2709,7 @@ const GUIDE=[
   ['Diplomacy','Every nation has relations from -100 to +100 with you. Gifts and trade raise them. Allies join your wars and can send troops. Nations with bad relations and an aggressive streak may declare war.'],
   ['Trade','Build a port in a coastal province, then open a trade route with a nation at peace with you. Routes pay every minute. Enemy warships can raid your routes unless your own navy is stronger.'],
   ['Naval','Transport ships carry troops to coastal provinces across the sea. Escorts protect trade. Warships raid enemy shipping and capture its cargo.'],
+  ['Power','Your HQ supplies 750 kW for free. Drills, assemblers, chemical plants, fabricators and inserters draw power; furnaces burn coal instead. Past 750 kW, build steam generators and feed them coal or fuel, or add solar panels (stronger on desert land) and geothermal plants (volcanic land only). Battery banks cover short shortages. When demand beats supply, every machine slows down. Overclocking a machine and speed modules raise its power draw.'],
   ['Defenses','Protect your towns in the province panel on the World map. Walls go from a wooden palisade to stone to concrete, and each level multiplies defense against ground attacks. Watchtowers spot attackers early. Bunkers add defenders who don\u2019t come out of your army. Tank traps and minefields add more. Forts stack on top of all of it.'],
   ['Strategic weapons','Rockets weaken a province before an attack. Launch them from an enemy province panel on the World map. SAM sites protect everything inside their circle. A rocket that enters the circle may be intercepted.'],
 ];
@@ -2675,7 +2739,7 @@ function sfx(k,pitch){
 
 // ---------- settings ----------
 const SET_KEY='fabrikat-settings';
-let settings={q:'med',fps:60,particles:.6,vfx:.7,anim:'high',detail:'high',bg:1,sound:1,vol:.5,diff:'normal'};
+let settings={q:'med',fps:60,particles:.6,vfx:.7,anim:'high',detail:'high',bg:1,sound:1,vol:.5,diff:'normal',events:1};
 const QPRESET={low:{particles:0,vfx:.3,anim:'low',detail:'low',bg:0},med:{particles:.6,vfx:.7,anim:'high',detail:'high',bg:1},high:{particles:1,vfx:1,anim:'high',detail:'high',bg:1}};
 function loadSettings(){try{const s=JSON.parse(localStorage.getItem(SET_KEY)||'null');if(s)Object.assign(settings,s);}catch(_){}}
 function saveSettings(){try{localStorage.setItem(SET_KEY,JSON.stringify(settings));}catch(_){}}
@@ -2691,7 +2755,7 @@ function drawSettings(){
     '<label class="k" for="setVfx">Effects density</label><input type="range" id="setVfx" min="0" max="100" step="10" value="'+Math.round(settings.vfx*100)+'"></div>'+
     '<div class="row" style="margin-top:10px"><button class="primary" data-set="perf:1">Performance mode</button><span class="ct">Best settings for older Chromebooks: low quality, 30 FPS, no particles.</span></div></div>'+
     '<div><h3>Sound</h3><div class="kv"><span class="k">Sound effects</span>'+seg('sound',[[0,'Off'],[1,'On']])+'<label class="k" for="setVol">Volume</label><input type="range" id="setVol" min="0" max="100" step="5" value="'+Math.round(settings.vol*100)+'"></div></div>'+
-    '<div><h3>Computer nations</h3><div class="kv"><span class="k">Difficulty</span>'+seg('diff',[['easy','Easy'],['normal','Normal'],['hard','Hard']])+'</div><p class="empty" style="margin-top:6px">Easy nations grow slower and rarely start wars. Hard nations build armies fast and attack often.</p></div>'+
+    '<div><h3>Computer nations</h3><div class="kv"><span class="k">Difficulty</span>'+seg('diff',[['easy','Easy'],['normal','Normal'],['hard','Hard']])+'<span class="k">World events</span>'+seg('events',[[0,'Off'],[1,'On']])+'</div><p class="empty" style="margin-top:6px">Easy nations grow slower and rarely start wars. Hard nations build armies fast and attack often.</p></div>'+
     '<div><h3>Campaign</h3><div class="row"><button data-set="skip:1"'+(unlockAll?' disabled':'')+'>'+(unlockAll?'Everything is unlocked':'Skip the tutorial and unlock every menu')+'</button></div></div>';
   setHTML($('settingsBody'),h);
 }
@@ -2700,7 +2764,7 @@ function setAct(a){
   if(k==='q'){settings.q=v;Object.assign(settings,QPRESET[v]);}
   else if(k==='perf'){settings.q='low';Object.assign(settings,QPRESET.low);settings.fps=30;toast('Performance mode on');}
   else if(k==='skip'){unlockAll=true;research.city1=1;research.infantry=1;toast('Every menu is unlocked. Missions stay available for rewards.');}
-  else if(k==='fps'||k==='bg'||k==='sound')settings[k]=+v;
+  else if(k==='fps'||k==='bg'||k==='sound'||k==='events')settings[k]=+v;
   else settings[k]=v;
   saveSettings();cache.settingsBody=null;drawSettings();uiDirty=true;
 }
@@ -2711,6 +2775,154 @@ function worldLoad(w){
   if(!w||!w.provs||w.provs.length!==world.provs.length)return false;
   w.provs.forEach((a,i)=>{const p=world.provs[i];[p.owner,p.gar,p.fort,p.sam]=a;p.port=!!a[4];p.cities=a[5]||[];p.dw=a[6]||{};});
   ais=w.ais||ais;Object.assign(nat,w.nat||{});nat.committed=0;news=w.news||[];missionIdx=w.missionIdx|0;unlockAll=!!w.unlockAll;wDirty=true;return true;
+}
+
+// ---------- power, modules, market, events, supply, efficiency, stages, loans ----------
+RESEARCH.push(
+  {id:'solar',tab:'industry',tier:2,n:'Solar Power',cost:8000,mat:{glass:100},req:['steel'],d:'Solar panels: 60 kW each, 108 kW on desert land.'},
+  {id:'accumulators',tab:'industry',tier:3,n:'Battery Banks',cost:20000,mat:{copper_plate:200},req:['electronics'],d:'Store spare power and release it during shortages.'},
+  {id:'geothermal',tab:'industry',tier:3,n:'Geothermal Power',cost:50000,mat:{steel:200},req:['metals'],d:'Geothermal plants: 1.2 MW each, only on volcanic land.'},
+  {id:'modules',tab:'industry',tier:3,n:'Machine Modules',cost:40000,mat:{circuit_board:50},req:['electronics'],d:'Speed and efficiency modules for drills and machines.'},
+  {id:'prod_modules',tab:'industry',tier:4,n:'Productivity Modules',cost:200000,mat:{adv_circuit:50},req:['modules','fabrication'],d:'Machines sometimes make a free extra batch.'},
+);
+const POW={drill:90,assembler:150,chemplant:210,fabricator:400,inserter:13,fast_inserter:30,maint:100,station:200};
+const HQ_POWER=750,GEN_KW=900,SOLAR_KW=60,GEO_KW=1200,ACC_KJ=5000,ACC_KW=300;
+const MODS={speed_module:{n:'Speed',sp:1.25,pw:.4,pr:0},eff_module:{n:'Efficiency',sp:1,pw:-.35,pr:0},prod_module:{n:'Productivity',sp:.9,pw:.4,pr:.1}};
+let powSat=1,powDem=0,powLastDem=0,powSup=HQ_POWER,powGen=0,powAccE=0,powAccCap=0,powSatAvg=1;
+const tunable=e=>!!e&&(e.type==='drill'||isMachine(e));
+function modStats(e){let sp=1,pw=1,pr=0;for(const m of e.mods||[]){const M=MODS[m];if(!M)continue;sp*=M.sp;pw+=M.pw;pr+=M.pr;}return{sp,pw:Math.max(.2,pw),pr};}
+const regionAt=(x,y)=>PLOTS[plotOf(x,y)][1];
+function tuneSpeed(e){return (e.oc||1)*(e.mods?modStats(e).sp:1)*powSat*(e.type==='drill'&&regionAt(e.x,e.y)==='mountains'?1.25:1);}
+function drawKW(e,working){const b=POW[e.type]||0;if(!b)return 0;return working?b*Math.pow(e.oc||1,1.6)*(e.mods?modStats(e).pw:1):b*.1;}
+function powerTick(){
+  const dem=powLastDem;let base=HQ_POWER,genCap=0;const gens=[],accs=[];
+  for(const e of L.pw){
+    if(e.type==='solar')base+=SOLAR_KW*(regionAt(e.x,e.y)==='desert'?1.8:1);
+    else if(e.type==='geo')base+=GEO_KW;
+    else if(e.type==='generator'){if(e.energy>0||e.coal>0||e.fuel>0){genCap+=GEN_KW;gens.push(e);}else e.on=false;}
+    else if(e.type==='accum')accs.push(e);
+  }
+  const fromGen=Math.min(Math.max(0,dem-base),genCap),burn=evActive('energy')?1.5:1;
+  for(const g of gens){g.on=fromGen>0;if(!g.on)continue;
+    if(g.energy<=0){if(g.fuel>0){g.fuel--;g.energy+=45000;consume('fuel',1);}else if(g.coal>0){g.coal--;g.energy+=18000;consume('coal',1);}}
+    g.energy-=fromGen/gens.length/60*burn;}
+  let supply=base+fromGen,def=dem-supply;
+  if(def>0){for(const a of accs){const d=Math.min(ACC_KW,def,a.charge*60);a.charge-=d/60;supply+=d;def-=d;if(def<=0)break;}}
+  else{let sur=-def;for(const a of accs){const c=Math.min(ACC_KW,sur,(ACC_KJ-a.charge)*60);a.charge+=c/60;sur-=c;if(sur<=0)break;}}
+  powSat=dem>0?Math.min(1,supply/dem):1;powSup=base+genCap;powGen=genCap;powDem=0;
+  let ce=0;for(const a of accs)ce+=a.charge;powAccE=ce;powAccCap=accs.length*ACC_KJ;
+}
+function drawGenerator(g,e,tm){
+  g.fillStyle='#141513';g.fillRect(1,1,62,62);g.fillStyle='#55605f';g.fillRect(3,3,58,58);
+  g.fillStyle='#3a4241';g.fillRect(8,14,30,36);g.fillStyle='#6f7b7a';g.fillRect(10,16,26,4);g.fillRect(10,44,26,4);
+  g.save();g.translate(47,32);g.rotate(e.on&&settings.anim!=='low'?tm*9:0);g.fillStyle='#22282a';circ(g,0,0,11);g.fill();g.strokeStyle='#cfc8ae';g.lineWidth=2.5;g.beginPath();
+  for(let k=0;k<4;k++){const a=k*Math.PI/2;g.moveTo(0,0);g.lineTo(Math.cos(a)*9,Math.sin(a)*9);}g.stroke();g.restore();
+  g.fillStyle='#2a2522';g.fillRect(44,4,8,10);
+  const f=(e.coal||0)+(e.fuel||0);g.fillStyle='#22221c';g.fillRect(8,54,48,5);g.fillStyle=e.on?'#e3a52a':'#6b6856';g.fillRect(8,54,48*Math.min(1,f/20),5);
+  if(e.on){g.fillStyle='rgba(255,180,60,.8)';g.fillRect(14,28,18,8);}
+}
+function drawSolar(g,e){g.fillStyle='#10141a';g.fillRect(1,1,30,30);g.fillStyle='#1f3a66';g.fillRect(3,3,26,26);g.strokeStyle='#6d8fc4';g.lineWidth=1;g.beginPath();
+  for(let k=1;k<3;k++){g.moveTo(3+k*26/3,3);g.lineTo(3+k*26/3,29);g.moveTo(3,3+k*26/3);g.lineTo(29,3+k*26/3);}g.stroke();g.fillStyle='rgba(255,255,255,.18)';g.fillRect(4,4,10,3);}
+function drawGeo(g,e,tm){g.fillStyle='#1a0f0c';g.fillRect(1,1,62,62);g.fillStyle='#5a3a30';g.fillRect(3,3,58,58);
+  const f=.7+.3*Math.sin(tm*4+e.x);g.fillStyle='#16110c';circ(g,32,32,16);g.fill();g.fillStyle='rgba(255,'+(110+f*60|0)+',40,'+(e.ghost?.6:.9)+')';circ(g,32,32,11);g.fill();
+  g.fillStyle='#8a8674';g.fillRect(6,28,12,6);g.fillRect(46,28,12,6);g.fillRect(29,6,6,10);g.fillRect(29,48,6,10);}
+function drawAccum(g,e){g.fillStyle='#141513';g.fillRect(3,2,26,28);for(const x of[6,17]){g.fillStyle='#4a5560';g.fillRect(x,5,9,22);g.fillStyle='#79b25a';const f=e.ghost?.6:(e.charge||0)/ACC_KJ;g.fillRect(x+1,5+22*(1-f),7,22*f);}
+  g.fillStyle='#d9b54a';g.fillRect(9,3,3,2);g.fillRect(20,3,3,2);}
+function tuneRow(e){
+  if(!tunable(e))return '';
+  const ms=modStats(e),kw=Math.round(drawKW(e,true));let h='<div class="item"><span class="t">Clock speed</span><span class="d">Faster clocks use much more power and wear the machine quicker.</span><div class="seg">'+
+    [1,1.5,2].map(v=>'<button class="small'+((e.oc||1)===v?' on':'')+'" data-act="oc:'+v+'">'+Math.round(v*100)+'%</button>').join('')+'</div></div>';
+  h+='<div class="item"><span class="t">Modules</span><span class="d">Speed &times;'+(ms.sp*(e.oc||1)).toFixed(2)+' &middot; power '+kw+' kW'+(ms.pr?' &middot; '+Math.round(ms.pr*100)+'% chance of a free extra batch':'')+'</span><div class="row">';
+  for(let i=0;i<2;i++){const m=(e.mods||[])[i];
+    if(m)h+='<button class="small" data-act="unmod:'+i+'" title="Remove">'+img(m).replace('<img','<img style="width:16px;height:16px;vertical-align:-3px"')+' '+MODS[m].n+' &times;</button>';
+    else{const opts=Object.keys(MODS).filter(k=>unlocked(k));h+=opts.length?opts.map(k=>'<button class="small" data-act="mod:'+k+'"'+(inv[k]?'':' disabled')+' title="Insert a '+ITEMS[k].n.toLowerCase()+'">+ '+MODS[k].n+'</button>').join(''):'<span class="ct">Research Machine Modules to add modules.</span>';break;}}
+  return h+'</div></div>';
+}
+
+// ---------- market ----------
+let PM={};
+function priceOf(t){return VAL[t]*(PM[t]||1)*evMult(t);}
+function marketSecond(){for(const k in PM){PM[k]+=(1-PM[k])*.01;if(Math.abs(1-PM[k])<.002)delete PM[k];}}
+const pctTxt=t=>{const m=(PM[t]||1)*evMult(t);return Math.abs(m-1)<.02?'':' ('+(m>1?'+':'')+Math.round((m-1)*100)+'%)';};
+
+// ---------- events ----------
+const EVT={
+  construction:{n:'Construction Boom',d:'Steel, concrete, bricks, cement and glass sell for 60% more.',items:['steel','concrete','brick','cement','glass'],mult:1.6,dur:300},
+  tech:{n:'Technology Boom',d:'Electronics sell for 60% more.',items:[...ELEC],mult:1.6,dur:300},
+  energy:{n:'Energy Crisis',d:'Coal, fuel and batteries sell for 80% more. Steam generators burn fuel 50% faster.',items:['coal','fuel','battery'],mult:1.8,dur:240},
+  copper:{n:'Copper Shortage',d:'Copper ore, plates and wire sell for 50% more.',items:['copper_ore','copper_plate','cable'],mult:1.5,dur:300},
+  glut:{n:'Iron Glut',d:'Iron ore and plates sell for 40% less.',items:['iron_ore','iron_plate'],mult:.6,dur:240},
+  strike:{n:'Dock Strike',d:'Trade routes pay nothing until the strike ends.',dur:180,cond:()=>ais.some(a=>a&&a.trade)},
+  breakthrough:{n:'Scientific Breakthrough',d:'Your next research costs 25% less money.',dur:600},
+  drought:{n:'Drought',d:'Cities stop growing.',dur:240,cond:()=>cityCount()>0},
+  heatwave:{n:'Heatwave',d:'Machines wear twice as fast.',dur:180},
+  windfall:{n:'Investor Windfall',d:'Investors hand you two minutes of revenue.',dur:20,once:()=>{const g=Math.max(500,Math.round(rpm*2));money+=g;stats.life+=g;return $$(g);}},
+};
+let events=[],nextEvent=300;
+const evActive=id=>events.some(e=>e.id===id);
+function evMult(t){let m=1;for(const e of events){const E=EVT[e.id];if(E&&E.items&&E.items.includes(t))m*=E.mult;}return m;}
+function eventSecond(){
+  for(const e of events)e.left--;events=events.filter(e=>e.left>0);
+  if(!settings.events||ticks<4*3600)return;
+  if(--nextEvent>0)return;nextEvent=240+Math.floor(Math.random()*180);
+  const ids=Object.keys(EVT).filter(k=>!evActive(k)&&(!EVT[k].cond||EVT[k].cond()));if(!ids.length)return;
+  const id=ids[Math.floor(Math.random()*ids.length)],E=EVT[id];events.push({id,left:E.dur});
+  const extra=E.once?E.once():'';banner(E.n.toUpperCase(),E.d+(extra?' '+extra+'.':''));report('world','Event: '+E.n+'. '+E.d);
+}
+const resCost=r=>Math.round(r.cost*(evActive('breakthrough')?.75:1));
+
+// ---------- military supply ----------
+const SUPPLY={inf:{iron_plate:1},mech:{steel:.5,fuel:1},art:{steel:1,chemicals:.5},armor:{steel:1,fuel:2},air:{aluminium:.5,fuel:3},sf:{sensor:.1,fuel:.5}};
+function supplyNeeds(){const n={};for(const k in nat.units){const c=nat.units[k]||0;if(c<=0)continue;for(const it in SUPPLY[k])n[it]=(n[it]||0)+SUPPLY[k][it]*c;}return n;}
+function supplyMinute(){
+  const need=supplyNeeds();if(!Object.keys(need).length){nat.supply=1;return;}
+  let want=0,got=0;
+  for(const it in need){const q=Math.ceil(need[it]);let have=Math.min(q,stock(it));pay(0,{[it]:have});
+    if(it==='fuel'&&have<q){const c=Math.min((q-have)*2,stock('coal'));pay(0,{coal:c});have+=c/2;}
+    want+=q*VAL[it];got+=have*VAL[it];consume(it,have);}
+  nat.supply=want?got/want:1;
+  if(nat.supply<.7)report('war','Army supplies are short ('+Math.round(nat.supply*100)+'%). Your troops fight at '+Math.round((.5+.5*nat.supply)*100)+'% strength.');
+}
+const supplyMult=()=>.5+.5*(nat.supply===undefined?1:nat.supply);
+
+// ---------- efficiency ----------
+let effi={overall:1,rows:[]};
+function efficiency(){
+  const M=mstat,rows=[],pick=(types,bad)=>ents.find(e=>types.includes(e.type)&&bad(e));
+  const r=(n,types)=>{let w=0,t=0;for(const k of types){const m=M[k];if(m){w+=m.work;t+=m.n;}}return t?w/t:null;};
+  const mine=r('m',['drill']),sm=r('s',['furnace']),as=r('a',['assembler','chemplant','fabricator']);
+  const tot=Object.values(M).reduce((a,m)=>a+m.n,0),idle=Object.values(M).reduce((a,m)=>a+m.idle,0);
+  if(mine!==null)rows.push(['Mining',mine,pick(['drill'],e=>e.st!=='work')]);
+  if(sm!==null)rows.push(['Smelting',sm,pick(['furnace'],e=>e.st!=='work')]);
+  if(as!==null)rows.push(['Assembly',as,pick(['assembler','chemplant','fabricator'],e=>e.st!=='work')]);
+  if(L.belt.length)rows.push(['Logistics',1-(logi.jams||0)/L.belt.length,L.belt.find(b=>b.jam)]);
+  rows.push(['Power',powSatAvg,L.pw.find(e=>e.type==='generator'&&!e.coal&&!e.fuel&&e.energy<=0)]);
+  const overall=rows.reduce((a,x)=>a+x[1],0)/rows.length;
+  effi={overall,rows,idle:tot?idle/tot:0};
+}
+
+// ---------- stages ----------
+const STAGES=[
+  ['Workshop','Iron, copper, coal and your first machines.',()=>true],
+  ['Industry','Steel, chemicals, engines and automation.',()=>research.steel&&research.oil],
+  ['Electronics','Circuits, processors and computers.',()=>research.electronics&&research.fabrication],
+  ['Megafactory','Robotics and advanced materials.',()=>research.computing&&research.materials],
+  ['Global Industry','Cities, armies and trade across the world.',()=>cityCount()>=3&&world.provs.filter(p=>p.owner===0).length>=5],
+  ['Rocket Age','Rockets and quantum engineering.',()=>research.rockets&&research.quantum],
+  ['Exotic Industry','Dark matter and beyond.',()=>(stats.made.dark_matter||0)>0],
+];
+function stageNow(){let s=0;for(let i=1;i<STAGES.length;i++){if(STAGES[i][2]())s=i;else break;}return s;}
+function stageSecond(){const s=stageNow();if(s>(stats.stage||0)){stats.stage=s;banner('STAGE '+(s+1)+': '+STAGES[s][0].toUpperCase(),STAGES[s][1]);report('world','Your nation entered stage '+(s+1)+': '+STAGES[s][0]+'.');}}
+
+// ---------- loans ----------
+const LOAN_RATE=.005;
+const loanLimit=()=>Math.max(0,Math.max(5000,Math.round(stats.life*.5))-(stats.debt||0));
+function loanSecond(){if(stats.debt>0)stats.debt+=stats.debt*LOAN_RATE/60;}
+
+function systemsSecond(){
+  powSatAvg=powSatAvg*.9+powSat*.1;
+  marketSecond();eventSecond();efficiency();stageSecond();loanSecond();
+  if(ticks%3600===0)supplyMinute();
 }
 
 // ---------- introduction ----------

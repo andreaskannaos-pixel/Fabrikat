@@ -56,6 +56,19 @@ Everything runs on money. The **Money Generator** turns items into cash, and eac
 - Furnaces need coal. Assemblers craft the recipe you set.
 - Furnaces and machines touching a Money Generator sell their output into it directly (Mk. II or better for plates).
 
+## Factory decisions
+
+- **Power grid:** the HQ supplies 750 kW. Drills, assemblers, chemical plants, fabricators, inserters, maintenance bays and train stations draw power; when demand beats supply, everything slows down. Add steam generators (coal or fuel), solar panels (+80% on desert land), geothermal plants (volcanic land only) and battery banks.
+- **Overclocking:** run a drill or machine at 150% or 200%, paying much more power and faster wear.
+- **Modules:** two slots per drill or machine for speed, efficiency and productivity modules. Productivity sometimes makes a free extra batch.
+- **Regional bonuses:** mountains mine 25% faster, the arctic halves machine wear, deserts boost solar, and volcanic land allows geothermal power.
+- **Dynamic prices:** selling a lot of one item floods the market and lowers its price, which recovers over a few minutes.
+- **World events:** booms, shortages, an energy crisis, dock strikes, droughts, heatwaves, breakthroughs and windfalls, every few minutes (can be turned off in Settings).
+- **Military supply:** units use factory goods every minute (iron plates, steel, fuel, chemicals, aluminium, sensors). Short supply weakens the whole army.
+- **Factory efficiency score:** Mining, Smelting, Assembly, Logistics and Power percentages in Stats. Click a row to jump to the worst spot.
+- **Stages:** Workshop → Industry → Electronics → Megafactory → Global Industry → Rocket Age → Exotic Industry.
+- **Loans:** borrow up to half of your lifetime earnings in Company → Bank. Interest is 0.5% per minute.
+
 ## Nation layer
 
 Your factory pays for cities, cities grow people, and people become workers or soldiers. Soldiers take territory, and territory sends new resources back to the factory.
