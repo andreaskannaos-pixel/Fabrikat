@@ -28,6 +28,7 @@ Progress saves in the browser automatically.
 | `WASD` / arrows | Move camera |
 | Scroll, `+` `-` | Zoom |
 | `H` | Help |
+| `Space` | Pause (speed 1×/2×/4× in the top bar) |
 
 ## Economy
 
@@ -70,3 +71,13 @@ Your factory pays for cities, cities grow people, and people become workers or s
 - **Guide (`G`), Settings** (quality presets, FPS limit, particle and effect density, animation and map detail, performance mode) and a News feed.
 
 It's single-player: every other nation is computer-controlled, and there is no online chat.
+
+## Quality of life
+
+- **Pause and speed:** `Space` pauses; the top bar switches between 1×, 2× and 4×.
+- **Offline earnings:** when you come back, your nation earns half its usual income for the time you were away, up to 8 hours.
+- **Save codes:** Menu → Export save code gives a text code you can paste into Import on another computer (for example to move between school and home).
+- **Sound effects:** synthesized in the browser, with an on/off switch and volume in Settings.
+- **Difficulty:** Easy, Normal or Hard computer nations, in Settings.
+- **Smart copy:** `Q` on a machine copies its recipe too, so new copies start with the same recipe.
+- **Touchscreens:** two-finger drag to pan and pinch to zoom, on both the factory and the World map.

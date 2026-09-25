@@ -188,6 +188,10 @@ h1,h2,h3{margin:0;text-wrap:balance}
 #nav button.on{border-color:var(--amber);color:var(--amber)}
 #nav .sep{width:1px;background:var(--line);margin:3px 6px}
 #nav .new{box-shadow:0 0 0 2px var(--amber)}
+.stat.spd{gap:2px;padding:2px 6px}
+.stat.spd button{padding:2px 7px;font-size:12px;font-family:var(--mono)}
+.stat.spd button.on{background:var(--amber);color:var(--amber-ink);border-color:var(--amber)}
+.stat.paused{color:var(--amber);letter-spacing:.1em}
 #wpanel{right:16px;top:64px;width:min(360px,calc(100% - 32px));bottom:64px;max-height:none;z-index:4}
 #banner{position:fixed;left:50%;top:26%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;z-index:9;opacity:0;width:min(720px,calc(100% - 32px))}
 #banner .b1{font-size:clamp(26px,5vw,46px);font-weight:700;letter-spacing:.06em;color:var(--amber);text-shadow:0 3px 0 #000,0 0 28px rgba(227,165,42,.45);text-wrap:balance}
@@ -199,6 +203,7 @@ h1,h2,h3{margin:0;text-wrap:balance}
 .obj.ok{color:var(--green)}
 .obj b{font-family:var(--mono);width:12px;flex:none}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:3px;overflow:hidden;flex-wrap:wrap}
+.kv .seg{justify-self:start}
 .seg button{border:0;border-radius:0;border-right:1px solid var(--line)}
 .seg button:last-child{border-right:0}
 .seg button.on{background:var(--amber);color:var(--amber-ink)}
@@ -318,6 +323,7 @@ kbd{font-family:var(--mono);font-size:11px;background:var(--panel2);border:1px s
       <span><kbd>E</kbd> <kbd>C</kbd> <kbd>P</kbd></span><span>Inventory &middot; Company (contracts, land, market, blueprints) &middot; Statistics</span>
       <span><kbd>M</kbd> <kbd>T</kbd> <kbd>G</kbd></span><span>World map &middot; Research &middot; Guide</span>
       <span><kbd>W A S D</kbd></span><span>Move the camera. Scroll to zoom.</span>
+      <span><kbd>Space</kbd></span><span>Pause. Change game speed (1&times;, 2&times;, 4&times;) in the top bar.</span>
       <span><kbd>Esc</kbd></span><span>Put the building away, close panels</span>
     </div>
     <div class="flow">
@@ -335,7 +341,9 @@ kbd{font-family:var(--mono);font-size:11px;background:var(--panel2);border:1px s
     <div class="hazard"></div>
     <h2>Menu</h2>
     <p class="sub" id="menuStats"></p>
-    <div class="row" id="menuMain"><button class="primary" data-close="menu">Resume</button><button id="mSave">Save now</button><button id="mNew">New game</button></div>
+    <div class="row" id="menuMain"><button class="primary" data-close="menu">Resume</button><button id="mSave">Save now</button><button id="mNew">New game</button><button id="mExport">Export save code</button><button id="mImport">Import save code</button></div>
+    <div id="menuIO" hidden style="margin-top:12px"><p class="sub" id="ioMsg" style="margin:0 0 6px"></p><textarea id="ioText" rows="4" aria-label="Save code"></textarea>
+      <div class="row" style="margin-top:6px"><button id="ioCopy">Copy code</button><button id="ioLoad" class="danger">Load this save (replaces your current game)</button><button id="ioClose">Done</button></div></div>
     <div class="row" id="menuConfirm" hidden><span>Erase this factory and start a new map? Blueprints are kept.</span><button class="danger" id="mNewYes">Erase and restart</button><button id="mNewNo">Keep playing</button></div>
   </div>
 </div>
@@ -562,7 +570,7 @@ let ore=new Uint8Array(W*H),amt=new Int32Array(W*H),amt0=new Int32Array(W*H);
 let ents=[],grid=new Array(W*H).fill(null),nextId=1,listsDirty=true;
 let L={belt:[],ins:[],drill:[],furn:[],asm:[],gen:[],st:[],sp:[],mt:[]};
 const cam={x:W/2*T,y:H/2*T,z:1};
-let ffx=[],tool=null,tdir=1,mining=null,floats=[],bpIdx=-1,bpRot=0,bpSel=null;
+let toolRec=null,ffx=[],tool=null,tdir=1,mining=null,floats=[],bpIdx=-1,bpRot=0,bpSel=null;
 const chunks=new Array(CW*CH).fill(null);
 
 const inb=(x,y)=>x>=0&&y>=0&&x<W&&y<H;
@@ -964,6 +972,7 @@ function perSecond(){
   if(ticks%3600===0){revHist.push(rpm);if(revHist.length>30)revHist.shift();}
   rollRates();survey();contractSecond();nationSecond();
   if(rpm>2000&&rpm>(stats.rpmRec||0)*1.15&&ticks-(stats.recT||0)>7200){if(stats.rpmRec)banner('NEW PRODUCTION RECORD',$$(rpm)+' per minute');stats.rpmRec=rpm;stats.recT=ticks;}
+  if(view==='factory'&&L.gen.some(g=>g.earned>0))sfx('coin');
   for(const g of L.gen){if(g.earned>0){floats.push({x:g.x+1,y:g.y,s:'+'+$s(g.earned),t:0,c:'#d9b54a'});g.earned=0;}}
   checkGoals();
 }
@@ -1003,7 +1012,7 @@ function tryPlace(x,y,type,dir,quiet){
     add(inv,type,-1);add(inv,ex.type,1);ex.type=type;ex.dir=dir;listsDirty=true;return ex;
   }
   if(!inv[type]){if(!quiet)toastOnce('You have no '+ITEMS[type].n+' left. Craft it (E) or buy it (C > Market).');return null;}
-  add(inv,type,-1);const e=mk(type,x,y,dir);addEnt(e);stats.built[type]=(stats.built[type]||0)+1;if(settings.vfx>0)ffx.push({x,y,w:e.w||1,h:e.h||1,t:0});
+  add(inv,type,-1);const e=mk(type,x,y,dir);addEnt(e);stats.built[type]=(stats.built[type]||0)+1;if(!quiet)sfx('place');if(toolRec&&isMachine(e)&&RECIPES[toolRec]&&RECIPES[toolRec].cat===MACHINE_CAT[type]&&unlocked(toolRec))e.rec=toolRec;if(settings.vfx>0)ffx.push({x,y,w:e.w||1,h:e.h||1,t:0});
   if(type==='splitter')stats.splitters=1;
   return e;
 }
@@ -1021,7 +1030,7 @@ function refund(e){
   if(e.type==='chest'||e.type==='depot')for(const k in e.inv)add(inv,k,e.inv[k]);
 }
 function removeAt(x,y){const e=at(x,y);if(!e)return;if(e.hq){toastOnce('The headquarters Money Generator stays put.');return;}
-  refund(e);delEnt(e);if(entOpen===e)closeEnt();}
+  refund(e);delEnt(e);sfx('remove');if(entOpen===e)closeEnt();}
 function repair(e){
   if(!e||e.eff===undefined||e.eff>=.995)return false;
   if(inv.replacement_parts>0){add(inv,'replacement_parts',-1);e.eff=1;return true;}
@@ -1391,7 +1400,7 @@ function render(tm){
         if(bad){const[w,h]=footprint(e.t);ctx.fillStyle='rgba(210,85,63,.35)';ctx.fillRect(sx(g.x*T),sy(g.y*T),w*T*z,h*T*z);}}
       ctx.strokeStyle='#4f8fd0';ctx.lineWidth=2;ctx.strokeRect(sx(hx*T),sy(hy*T),R.w*T*z,R.h*T*z);
     }else if(tool&&tool!=='remove'&&tool!=='bpsel'){
-      const g=mk(tool,hx,hy,tdir);g.ghost=1;const[fw,fh]=footprint(tool);
+      const g=mk(tool,hx,hy,tdir);g.ghost=1;if(toolRec&&isMachine(g))g.rec=toolRec;const[fw,fh]=footprint(tool);
       const ok=!placeOk(tool,hx,hy)&&inv[tool]>0;
       drawAt(g,.6);
       if(!ok){ctx.fillStyle='rgba(210,85,63,.35)';ctx.fillRect(sx(hx*T),sy(hy*T),fw*T*z,fh*T*z);}
@@ -1415,7 +1424,7 @@ function setHTML(el,html){const a=document.activeElement;if(a&&(a.tagName==='INP
 const img=t=>'<img src="'+ICONURL[t]+'" alt="'+ITEMS[t].n+'">';
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function show(id,on){$(id).hidden=!on;}
-function toast(msg,kind){const d=document.createElement('div');d.className='toast'+(kind?' '+kind:'');d.textContent=msg;$('toasts').appendChild(d);
+function toast(msg,kind){if(kind==='bad')sfx('alert');const d=document.createElement('div');d.className='toast'+(kind?' '+kind:'');d.textContent=msg;$('toasts').appendChild(d);
   setTimeout(()=>{d.style.opacity='0';setTimeout(()=>d.remove(),400);},kind==='big'?5000:3000);
   while($('toasts').children.length>4)$('toasts').firstChild.remove();}
 let lastToast='',lastToastT=0;
@@ -1430,6 +1439,7 @@ function drawTop(){
   if(unlockedNav('cities'))h+='<span class="stat"><span class="l">\u{1F465} Pop</span>'+fmt(Math.round(nat.pop))+' / '+fmt(Math.round(nat.cap))+'</span><span class="stat"><span class="l">\u{1F477} Workers</span>'+fmt(Math.round(nat.workers))+'</span>';
   if(unlockedNav('military'))h+='<span class="stat"><span class="l">\u{1FA96} Soldiers</span>'+fmt(Math.round(nat.soldiers))+'</span><span class="stat"><span class="l">\u2694 Army</span>'+Math.round(armyStr())+'</span>';
   if(nat.pop)h+='<span class="stat"><span class="l">\u2699 Industry</span>\u00d7'+indMult().toFixed(2)+'</span>';
+  h+=(paused?'<span class="stat paused">PAUSED</span>':'')+'<span class="stat spd">'+[[0,'\u275a\u275a'],[1,'1\u00d7'],[2,'2\u00d7'],[4,'4\u00d7']].map(([v,l])=>'<button data-speed="'+v+'" class="'+((v===0?paused:!paused&&gameSpeed===v)?'on':'')+'" title="'+(v?'Game speed '+v+'\u00d7':'Pause (Space)')+'">'+l+'</button>').join('')+'</span>';
   setHTML($('topbar'),h);
   const openId={cities:'cities',military:'mil',research:'res',company:'co',stats:'stats',inv:'inv',guide:'guide',settings:'settings'};
   setHTML($('nav'),NAV.map(n=>{if(n==='|')return '<span class="sep"></span>';const[k,l,key]=n;if((k==='world'||k==='cities'||k==='military')&&!unlockedNav(k))return '';
@@ -1467,7 +1477,7 @@ function status(){
   if(tool==='remove')s='<b>Remove mode</b> &middot; click buildings to pick them up<br>';
   else if(tool==='bpsel')s='<b>Blueprint</b> &middot; drag a box around buildings to save them<br>';
   else if(tool==='bp'&&bps[bpIdx])s='<b>'+esc(bps[bpIdx].name)+'</b> &middot; R rotates &middot; click to place, shift+click buys missing buildings<br>';
-  else if(tool&&ITEMS[tool])s='<b>'+ITEMS[tool].n+'</b> &middot; facing '+['up','right','down','left'][tdir]+' &middot; R rotates<br>';
+  else if(tool&&ITEMS[tool])s='<b>'+ITEMS[tool].n+'</b>'+(toolRec?' making '+ITEMS[toolRec].n:'')+' &middot; facing '+['up','right','down','left'][tdir]+' &middot; R rotates<br>';
   s+=REGIONS[PLOTS[p][1]].n+' &middot; '+PLOTS[p][0]+'<br>';
   if(!owned[p])s+=(plotBuyable(p)?'For sale: <span class="v">'+$$(plotPrice(p))+'</span> &middot; click to buy':'Not for sale yet. Buy a neighbouring plot first.')+'<br>';
   if(e){s+='<b>'+(e.hq?'HQ Money Generator':ITEMS[e.type].n)+'</b>';
@@ -1576,7 +1586,7 @@ function entAct(a){
 }
 function selectTool(t){
   if(t!=='remove'&&!unlocked(t)){toastOnce(ITEMS[t].n+' needs research first. Open Company (C).');return;}
-  tool=tool===t?null:t;mining=null;uiDirty=true;
+  tool=tool===t?null:t;toolRec=null;mining=null;uiDirty=true;
 }
 
 // ---------- company ----------
@@ -1726,8 +1736,11 @@ function drawStats(){
 function updMouse(ev){const r=cv.getBoundingClientRect();mouse.x=ev.clientX-r.left;mouse.y=ev.clientY-r.top;
   mouse.tx=Math.floor(((mouse.x-SW/2)/cam.z+cam.x)/T);mouse.ty=Math.floor(((mouse.y-SH/2)/cam.z+cam.y)/T);}
 cv.addEventListener('contextmenu',ev=>ev.preventDefault());
+const touches=new Map();let gest=null;
+function gestInfo(){const a=[...touches.values()],cx=(a[0].x+a[1].x)/2,cy=(a[0].y+a[1].y)/2;return{cx,cy,d:Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y)||1};}
 cv.addEventListener('pointerdown',ev=>{
   try{cv.setPointerCapture(ev.pointerId);}catch(_){}
+  if(ev.pointerType==='touch'){touches.set(ev.pointerId,{x:ev.clientX,y:ev.clientY});if(touches.size===2){gest=gestInfo();mouse.down=-1;mining=null;wdrag=null;bpSel=null;return;}if(touches.size>2)return;}
   updMouse(ev);
   if(view==='world'){if(ev.button===0)wdrag={x:ev.clientX,y:ev.clientY,cx:wcam.x,cy:wcam.y,moved:false};return;}const x=mouse.tx,y=mouse.ty;
   if(ev.button===2&&(tool==='bp'||tool==='bpsel')){tool=null;bpSel=null;uiDirty=true;return;}
@@ -1743,6 +1756,11 @@ cv.addEventListener('pointerdown',ev=>{
     else if(inb(x,y)&&ore[y*W+x])mining={x,y,p:0};}
 });
 cv.addEventListener('pointermove',ev=>{
+  if(ev.pointerType==='touch'&&touches.has(ev.pointerId)){touches.set(ev.pointerId,{x:ev.clientX,y:ev.clientY});
+    if(gest&&touches.size===2){const g=gestInfo(),f=g.d/gest.d,dx=g.cx-gest.cx,dy=g.cy-gest.cy;
+      if(view==='world'){const k=wScale();wcam.x-=dx/k;wcam.y-=dy/k;wcam.z=Math.max(1,Math.min(6,wcam.z*f));}
+      else{cam.x-=dx/cam.z;cam.y-=dy/cam.z;zoomAt(f,g.cx,g.cy);}
+      gest=g;return;}}
   updMouse(ev);
   if(view==='world'){whov=provAt(mouse.x,mouse.y);if(wdrag){const dx=ev.clientX-wdrag.x,dy=ev.clientY-wdrag.y;if(Math.abs(dx)+Math.abs(dy)>5)wdrag.moved=true;if(wdrag.moved){const k=wScale();wcam.x=wdrag.cx-dx/k;wcam.y=wdrag.cy-dy/k;}}return;}const x=mouse.tx,y=mouse.ty;
   if(tool==='bpsel'&&bpSel&&mouse.down===0){bpSel.x1=Math.max(0,Math.min(W-1,x));bpSel.y1=Math.max(0,Math.min(H-1,y));return;}
@@ -1759,7 +1777,8 @@ cv.addEventListener('pointermove',ev=>{
     uiDirty=true;
   }else if(mouse.down===0&&mining&&(mining.x!==x||mining.y!==y)){mining=inb(x,y)&&ore[y*W+x]&&!at(x,y)&&ownedAt(x,y)?{x,y,p:0}:null;}
 });
-const up=()=>{
+const up=ev=>{
+  if(ev&&ev.pointerType==='touch'){const was=touches.size;touches.delete(ev.pointerId);if(was>=2||gest){if(touches.size<2)gest=null;mouse.down=-1;wdrag=null;return;}}
   if(view==='world'){if(wdrag&&!wdrag.moved){wsel=provAt(mouse.x,mouse.y);wtab='prov';wWarArm=-1;cache.wBody=null;drawWPanel();}wdrag=null;return;}
   if(tool==='bpsel'&&bpSel&&mouse.down===0){const s=bpSel;bpSel=null;tool=null;captureBp(Math.min(s.x0,s.x1),Math.min(s.y0,s.y1),Math.max(s.x0,s.x1),Math.max(s.y0,s.y1));uiDirty=true;}
   mouse.down=-1;mining=null;mouse.placed=null;};
@@ -1776,6 +1795,7 @@ addEventListener('keydown',ev=>{
   if(ev.target&&(ev.target.tagName==='INPUT'||ev.target.tagName==='TEXTAREA'))return;
   const k=ev.key.toLowerCase();
   if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))ev.preventDefault();
+  if(k===' '&&!anyOpen()){paused=!paused;toast(paused?'Paused. Press Space to continue.':'Running');uiDirty=true;return;}
   if(k==='escape'){if(anyOpen()){show('help',false);show('menu',false);show('win',false);}else if(['res','cities','mil','guide','settings'].some(id=>!$(id).hidden)){for(const id of['res','cities','mil','guide','settings'])show(id,false);uiDirty=true;}else if(!$('co').hidden)show('co',false);else if(!$('stats').hidden)show('stats',false);else if(!$('inv').hidden)show('inv',false);else if(entOpen)closeEnt();else{tool=null;bpSel=null;uiDirty=true;}return;}
   if(anyOpen()){if(k==='h'||k==='?')show('help',false);return;}
   keys[k]=true;
@@ -1784,7 +1804,7 @@ addEventListener('keydown',ev=>{
   if(k>='1'&&k<='9')selectTool(HOTBAR[+k-1]);
   else if(k==='0'||k==='x')selectTool('remove');
   else if(k==='r'){if(tool==='bp')bpRot=(bpRot+(ev.shiftKey?3:1))%4;else if(tool&&ITEMS[tool])tdir=(tdir+(ev.shiftKey?3:1))%4;else if(!tool){const e=at(mouse.tx,mouse.ty);if(e&&(isBelt(e)||isIns(e)||e.type==='drill'||e.type==='splitter'))e.dir=(e.dir+(ev.shiftKey?3:1))%4;}}
-  else if(k==='q'){const e=at(mouse.tx,mouse.ty);if(e&&ITEMS[e.type]&&!e.hq){tool=e.type;tdir=e.dir;}else tool=null;uiDirty=true;}
+  else if(k==='q'){const e=at(mouse.tx,mouse.ty);if(e&&ITEMS[e.type]&&!e.hq){tool=e.type;tdir=e.dir;toolRec=e.rec||null;if(toolRec)toast('Copied '+ITEMS[e.type].n+' making '+ITEMS[toolRec].n);}else{tool=null;toolRec=null;}uiDirty=true;}
   else if(k==='e')toggleInv();
   else if(k==='c')toggleCo();
   else if(k==='t')navAct('research');
@@ -1797,7 +1817,7 @@ addEventListener('keydown',ev=>{
   else if(k==='-'||k==='_')zoomAt(1/1.2,SW/2,SH/2);
 });
 addEventListener('keyup',ev=>{keys[ev.key.toLowerCase()]=false;});
-addEventListener('blur',()=>{for(const k in keys)keys[k]=false;up();});
+addEventListener('blur',()=>{for(const k in keys)keys[k]=false;touches.clear();gest=null;up();});
 document.addEventListener('click',ev=>{
   const b=ev.target.closest('button');if(!b||b.disabled)return;
   if(b.dataset.close){const id=b.dataset.close;if(id==='entp')closeEnt();else show(id,false);return;}
@@ -1827,6 +1847,7 @@ function navAct(k){
 }
 document.addEventListener('click',ev=>{const b=ev.target.closest('button');if(!b||b.disabled)return;const d=b.dataset;
   if(d.nav)return navAct(d.nav);
+  if(d.speed!==undefined){const v=+d.speed;if(v===0)paused=!paused;else{paused=false;gameSpeed=v;}uiDirty=true;return;}
   if(d.w)return wAct(d.w);
   if(d.wtab){wtab=d.wtab;cache.wBody=null;drawWPanel();return;}
   if(d.newstab){newsTab=d.newstab;cache.wBody=null;drawWPanel();return;}
@@ -1846,9 +1867,10 @@ document.addEventListener('input',ev=>{const t=ev.target;
   else if(t.id==='atkRange'){wAtk=+t.value;}
   else if(t.id==='setPart'){settings.particles=+t.value/100;saveSettings();}
   else if(t.id==='setVfx'){settings.vfx=+t.value/100;saveSettings();}
+  else if(t.id==='setVol'){settings.vol=+t.value/100;saveSettings();sfx('coin');}
 });
 document.addEventListener('change',ev=>{if(ev.target.id==='atkRange'||ev.target.id==='shareRange'){cache.wBody=null;cache.citiesBody=null;ev.target.blur();}});
-function openMenu(){$('menuStats').textContent='Played '+playTime()+' · '+(ents.length-1)+' buildings · '+$$(stats.life)+' earned · '+contracts.done+' contracts';show('menuConfirm',false);show('menuMain',true);show('menu',true);}
+function openMenu(){$('menuStats').textContent='Played '+playTime()+' · '+(ents.length-1)+' buildings · '+$$(stats.life)+' earned · '+contracts.done+' contracts';show('menuConfirm',false);show('menuIO',false);show('menuMain',true);show('menu',true);}
 $('mSave').onclick=()=>{save();toast('Game saved');show('menu',false);};
 $('mNew').onclick=()=>{show('menuMain',false);show('menuConfirm',true);};
 $('mNewNo').onclick=()=>{show('menuConfirm',false);show('menuMain',true);};
@@ -1858,7 +1880,7 @@ $('mNewYes').onclick=()=>{newGame();save();show('menu',false);show('help',true);
 function serialize(){
   const mined={};for(let i=0;i<W*H;i++)if(amt[i]!==amt0[i])mined[i]=amt[i];
   const E=ents.map(e=>{const o=Object.assign({},e);delete o.id;delete o.tk;delete o.v;delete o.earned;delete o.jam;delete o.rej;return o;});
-  return {v:4,world:worldSave(),seed,won,inv,queue,ticks,cam:{x:cam.x,y:cam.y,z:cam.z},mined,E,money,stats,research,upg,cos,ms,ch,owned:Array.from(owned),xp,rep,contracts,revHist,bps};
+  return {v:4,savedAt:Date.now(),rates:{rpm,tax:nat.tax||0,trade:nat.trade||0,up:nat.upkeep||0},world:worldSave(),seed,won,inv,queue,ticks,cam:{x:cam.x,y:cam.y,z:cam.z},mined,E,money,stats,research,upg,cos,ms,ch,owned:Array.from(owned),xp,rep,contracts,revHist,bps};
 }
 function reset(s){
   genMap(s);genWorld(s);initNation();ents=[];grid.fill(null);ffx=[];nextId=1;queue=[];ticks=0;won=false;inv={};tool=null;mining=null;closeEnt();
@@ -1889,6 +1911,29 @@ function load(s){
   if(s.world)worldLoad(s.world);
   rebuild();uiDirty=true;
 }
+function offlineGain(s){
+  if(!s.savedAt||!s.rates)return;const sec=Math.min(8*3600,(Date.now()-s.savedAt)/1000);if(sec<120)return;
+  const r=s.rates,perMin=Math.max(0,(r.rpm+r.tax+r.trade)*.5-r.up),got=Math.round(perMin*sec/60);if(got<=0)return;
+  money+=got;stats.life+=got;const h=sec/3600|0,m=(sec/60|0)%60;
+  setTimeout(()=>{banner('WELCOME BACK','While you were away ('+(h?h+'h ':'')+m+'m) your nation earned '+$$(got));toast('Offline earnings run at half speed and stop after 8 hours.');},900);
+}
+async function encSave(){
+  const json=JSON.stringify(serialize());
+  if(window.CompressionStream){const st=new Blob([json]).stream().pipeThrough(new CompressionStream('gzip'));const u=new Uint8Array(await new Response(st).arrayBuffer());let b='';for(let i=0;i<u.length;i+=8192)b+=String.fromCharCode.apply(null,u.subarray(i,i+8192));return 'FBS1:'+btoa(b);}
+  return 'FBS0:'+btoa(unescape(encodeURIComponent(json)));
+}
+async function decSave(code){
+  code=code.trim().replace(/\s+/g,'');
+  if(code.startsWith('FBS1:')){const b=atob(code.slice(5)),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);const st=new Blob([u]).stream().pipeThrough(new DecompressionStream('gzip'));return JSON.parse(await new Response(st).text());}
+  if(code.startsWith('FBS0:'))return JSON.parse(decodeURIComponent(escape(atob(code.slice(5)))));
+  throw new Error('bad');
+}
+$('mExport').onclick=async()=>{show('menuIO',true);$('ioText').value='Preparing\u2026';$('ioLoad').hidden=true;$('ioCopy').hidden=false;
+  try{const c=await encSave();$('ioText').value=c;$('ioMsg').textContent='Copy this code and paste it into Import on another computer. It holds your whole factory and nation ('+Math.round(c.length/1024)+' KB of text).';}catch(_){$('ioMsg').textContent='Could not create a save code in this browser.';}};
+$('mImport').onclick=()=>{show('menuIO',true);$('ioText').value='';$('ioText').placeholder='Paste a code that starts with FBS';$('ioLoad').hidden=false;$('ioCopy').hidden=true;$('ioMsg').textContent='Paste a save code, then load it. Your current game will be replaced.';$('ioText').focus();};
+$('ioCopy').onclick=()=>{const t=$('ioText'),fb=()=>{t.select();toast('Press Ctrl+C to copy');};try{navigator.clipboard.writeText(t.value).then(()=>toast('Save code copied'),fb);}catch(_){fb();}};
+$('ioClose').onclick=()=>show('menuIO',false);
+$('ioLoad').onclick=async()=>{try{const s=await decSave($('ioText').value);if(!s||!(s.v>=3))throw 0;load(s);save();show('menuIO',false);show('menu',false);setView('factory');toast('Save loaded','big');}catch(_){$('ioMsg').textContent='That code isn\u2019t a valid Fabrikat save. Check that you copied all of it.';}};
 function save(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(serialize()));}catch(_){}saveBps();}
 
 // ---------- research tree (5 tabs) ----------
@@ -2097,7 +2142,7 @@ function buyWith(cost,mat,what){if(!canPay(cost,mat)){toast(missingTxt(cost,mat)
 
 // ---------- news ----------
 function report(cat,text){news.unshift({t:ticks,cat,text});if(news.length>80)news.pop();}
-function banner(big,small){if(settings.vfx<=0&&!big)return;const b=$('banner');b.querySelector('.b1').textContent=big;b.querySelector('.b2').textContent=small||'';b.classList.remove('show');void b.offsetWidth;b.classList.add('show');}
+function banner(big,small){sfx('fanfare');if(settings.vfx<=0&&!big)return;const b=$('banner');b.querySelector('.b1').textContent=big;b.querySelector('.b2').textContent=small||'';b.classList.remove('show');void b.offsetWidth;b.classList.add('show');}
 
 // ---------- combat ----------
 function provDef(p,attacker){
@@ -2169,7 +2214,7 @@ function declareWar(i,by){
     for(let j=1;j<ais.length;j++){const B=ais[j];if(!B||j===i||B.dead)continue;if(B.ally&&B.rel>=70){B.jointWar=i;report('dip',NATIONS[j].n+' joins your war against '+NATIONS[i].n+'.');}else B.rel-=5;}}
   else{report('dip',NATIONS[i].n+' has declared war on Fabrikat!');banner('WAR DECLARED',NATIONS[i].n+' is at war with you');}
 }
-function fxAdd(kind,x,y,o){if(settings.vfx<=0&&kind!=='capture')return;wfx.push({kind,x,y,o,t:0,dur:kind==='build'?180:90});}
+function fxAdd(kind,x,y,o){if(kind==='boom')sfx('boom');if(settings.vfx<=0&&kind!=='capture')return;wfx.push({kind,x,y,o,t:0,dur:kind==='build'?180:90});}
 
 // ---------- rockets ----------
 function samBlock(owner,x,y,evade){
@@ -2178,7 +2223,7 @@ function samBlock(owner,x,y,evade){
   for(const p of world.provs)if(p.owner===owner&&p.sam&&Math.hypot(p.cx-x,p.cy-y)<=R)miss*=1-(SAM[p.sam].p+(owner===0&&research.iads?.15:0));
   return (1-miss)*(1-(evade||0));
 }
-function launch(o,type,t){
+function launch(o,type,t){sfx('launch');
   const from=o===0?P_(world.home):P_(ais[o].cap),R=ROCKETS[type],pb=samBlock(t.owner,t.cx,t.cy,R.evade);
   rkts.push({o,type,tid:t.id,from:[from.cx,from.cy],to:[t.cx,t.cy],t:0,dur:200,icpt:pb>0?{at:.62+Math.random()*.15,ok:Math.random()<pb}:null});
   if(o===0)report('war',R.n+' launched at '+t.name+'.');else{report('war',NATIONS[o].n+' launched a rocket at '+t.name+'!');toast('Incoming rocket from '+NATIONS[o].n+'!','bad');}
@@ -2238,21 +2283,22 @@ function aiTick(){
   const P=world.provs,tmin=ticks/3600;
   for(let i=1;i<ais.length;i++){
     const A=ais[i];if(!A||A.dead)continue;const own=P.filter(p=>p.owner===i);if(!own.length){A.dead=1;continue;}
-    A.str=Math.min(own.length*70,A.str+own.length*.35);A.money+=own.length*150;
+    const DF={easy:[.6,.4,.7],normal:[1,1,1],hard:[1.45,1.7,1.3]}[settings.diff]||[1,1,1];
+    A.str=Math.min(own.length*70*(DF[0]>1?1.3:1),A.str+own.length*.35*DF[0]);A.money+=own.length*150;
     if(tmin>20)A.naval=Math.min(own.length*15,A.naval+.08*own.length);
     if(tmin>40&&!P_(A.cap).sam&&P_(A.cap).owner===i)P_(A.cap).sam=1;
     if(tmin>12&&Math.random()<.08){const q=own[Math.floor(Math.random()*own.length)],w=dwOf(q);const lim=q.id===A.cap?(tmin>45?3:2):(tmin>35?2:1);if((w.wall||0)<lim){w.wall=(w.wall||0)+1;wDirty=true;}else if(tmin>25&&(w.bunker||0)<2)w.bunker=(w.bunker||0)+1;}
     for(const p of own)p.gar=12+A.str*.1;
     const base=A.ally?60:A.war?-60:(A.trade?25:0)-A.agg*20;A.rel+=(base-A.rel)*.03;
     if(A.war)A.warT+=5;
-    if(!A.war&&!A.ally&&A.rel<-30&&tmin>15&&Math.random()<A.agg*.04)declareWar(i,'ai');
+    if(!A.war&&!A.ally&&A.rel<-30&&tmin>15&&Math.random()<A.agg*.04*DF[1])declareWar(i,'ai');
     if(A.war&&!A.scripted&&!A.peaceOpen&&A.warT>600&&A.str<armyStr()*1.3&&Math.random()<.06){A.peaceOpen=true;report('dip',NATIONS[i].n+' is ready to discuss peace. Offer peace to end the war.');}
     const border=[];for(const p of own)for(const j of p.adj)border.push([p,P[j]]);
-    if(tmin>8&&Math.random()<.1*(.5+A.agg)){
+    if(tmin>8&&Math.random()<.1*(.5+A.agg)*DF[2]){
       const c=border.filter(([,q])=>q.owner===-1&&!attacks.some(a=>a.to===q.id)).sort((a,b)=>a[1].gar-b[1].gar)[0];
       if(c){const need=provDef(c[1],i)*1.3;if(A.str*.4>need)aiAttack(i,c[1],Math.max(need,A.str*.3),c[0]);}
     }
-    if(A.war&&!A.scripted&&Math.random()<.22){
+    if(A.war&&!A.scripted&&Math.random()<.22*DF[1]){
       const c=border.filter(([,q])=>q.owner===0&&!attacks.some(a=>a.to===q.id)).sort((a,b)=>provDef(a[1],i)-provDef(b[1],i))[0];
       if(c){const d=provDef(c[1],i);if(A.str*.5>d*.9)aiAttack(i,c[1],A.str*.5,c[0]);}
       if(research.rockets&&tmin>25&&Math.random()<.05)aiRocket(i);
@@ -2563,9 +2609,30 @@ const GUIDE=[
 ];
 function drawGuide(){setHTML($('guideBody'),'<div class="guide"><nav>'+GUIDE.map((g,i)=>'<button class="small'+(i===guideSec?' on':'')+'" data-guide="'+i+'">'+g[0]+'</button>').join('')+'</nav><article><h3>'+GUIDE[guideSec][0]+'</h3><p>'+GUIDE[guideSec][1]+'</p></article></div>');}
 
+// ---------- sound ----------
+let actx=null;const sfxT={};
+function sfx(k){
+  if(!settings.sound||!settings.vol)return;const now=performance.now();if(sfxT[k]&&now-sfxT[k]<({coin:400,place:45,remove:45,boom:150,alert:700,fanfare:500}[k]||80))return;sfxT[k]=now;
+  try{actx=actx||new(window.AudioContext||window.webkitAudioContext)();if(actx.state==='suspended')actx.resume();}catch(_){return;}
+  const t=actx.currentTime,V=settings.vol*.3;
+  const tone=(f,d,type,at,f2)=>{const o=actx.createOscillator(),g=actx.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,t+at);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+at+d);
+    g.gain.setValueAtTime(.0001,t+at);g.gain.exponentialRampToValueAtTime(V,t+at+.01);g.gain.exponentialRampToValueAtTime(.0001,t+at+d);o.connect(g);g.connect(actx.destination);o.start(t+at);o.stop(t+at+d+.03);};
+  const noise=(d,freq,f2)=>{const n=actx.sampleRate*d|0,b=actx.createBuffer(1,n,actx.sampleRate),c=b.getChannelData(0);for(let i=0;i<n;i++)c[i]=(Math.random()*2-1)*Math.pow(1-i/n,2);
+    const src=actx.createBufferSource(),f=actx.createBiquadFilter(),g=actx.createGain();src.buffer=b;f.type='lowpass';f.frequency.setValueAtTime(freq,t);if(f2)f.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.value=V*1.6;src.connect(f);f.connect(g);g.connect(actx.destination);src.start(t);};
+  switch(k){
+    case 'place':tone(340,.06,'square',0,190);break;
+    case 'remove':tone(210,.08,'square',0,90);break;
+    case 'coin':tone(988,.06,'sine',0);tone(1319,.12,'sine',.055);break;
+    case 'boom':noise(.7,700,120);tone(90,.45,'sine',0,35);break;
+    case 'launch':noise(.9,400,2400);break;
+    case 'fanfare':tone(523,.13,'triangle',0);tone(659,.13,'triangle',.11);tone(784,.3,'triangle',.22);break;
+    case 'alert':tone(660,.12,'square',0);tone(440,.2,'square',.14);break;
+  }
+}
+
 // ---------- settings ----------
 const SET_KEY='fabrikat-settings';
-let settings={q:'med',fps:60,particles:.6,vfx:.7,anim:'high',detail:'high',bg:1};
+let settings={q:'med',fps:60,particles:.6,vfx:.7,anim:'high',detail:'high',bg:1,sound:1,vol:.5,diff:'normal'};
 const QPRESET={low:{particles:0,vfx:.3,anim:'low',detail:'low',bg:0},med:{particles:.6,vfx:.7,anim:'high',detail:'high',bg:1},high:{particles:1,vfx:1,anim:'high',detail:'high',bg:1}};
 function loadSettings(){try{const s=JSON.parse(localStorage.getItem(SET_KEY)||'null');if(s)Object.assign(settings,s);}catch(_){}}
 function saveSettings(){try{localStorage.setItem(SET_KEY,JSON.stringify(settings));}catch(_){}}
@@ -2580,6 +2647,8 @@ function drawSettings(){
     '<label class="k" for="setPart">Particle density</label><input type="range" id="setPart" min="0" max="100" step="10" value="'+Math.round(settings.particles*100)+'">'+
     '<label class="k" for="setVfx">Effects density</label><input type="range" id="setVfx" min="0" max="100" step="10" value="'+Math.round(settings.vfx*100)+'"></div>'+
     '<div class="row" style="margin-top:10px"><button class="primary" data-set="perf:1">Performance mode</button><span class="ct">Best settings for older Chromebooks: low quality, 30 FPS, no particles.</span></div></div>'+
+    '<div><h3>Sound</h3><div class="kv"><span class="k">Sound effects</span>'+seg('sound',[[0,'Off'],[1,'On']])+'<label class="k" for="setVol">Volume</label><input type="range" id="setVol" min="0" max="100" step="5" value="'+Math.round(settings.vol*100)+'"></div></div>'+
+    '<div><h3>Computer nations</h3><div class="kv"><span class="k">Difficulty</span>'+seg('diff',[['easy','Easy'],['normal','Normal'],['hard','Hard']])+'</div><p class="empty" style="margin-top:6px">Easy nations grow slower and rarely start wars. Hard nations build armies fast and attack often.</p></div>'+
     '<div><h3>Campaign</h3><div class="row"><button data-set="skip:1"'+(unlockAll?' disabled':'')+'>'+(unlockAll?'Everything is unlocked':'Skip the tutorial and unlock every menu')+'</button></div></div>';
   setHTML($('settingsBody'),h);
 }
@@ -2588,7 +2657,7 @@ function setAct(a){
   if(k==='q'){settings.q=v;Object.assign(settings,QPRESET[v]);}
   else if(k==='perf'){settings.q='low';Object.assign(settings,QPRESET.low);settings.fps=30;toast('Performance mode on');}
   else if(k==='skip'){unlockAll=true;research.city1=1;research.infantry=1;toast('Every menu is unlocked. Missions stay available for rewards.');}
-  else if(k==='fps'||k==='bg')settings[k]=+v;
+  else if(k==='fps'||k==='bg'||k==='sound')settings[k]=+v;
   else settings[k]=v;
   saveSettings();cache.settingsBody=null;drawSettings();uiDirty=true;
 }
@@ -2602,7 +2671,7 @@ function worldLoad(w){
 }
 
 // ---------- loop ----------
-let last=0,acc=0,frame=0;
+let last=0,acc=0,frame=0,gameSpeed=1,paused=false;
 function loop(now){
   if(settings.fps&&now-last<1000/settings.fps-2){requestAnimationFrame(loop);return;}
   const dt=Math.min(.1,(now-last)/1000||0);last=now;
@@ -2612,7 +2681,7 @@ function loop(now){
   if(keys.w||keys.arrowup)cam.y-=pan;if(keys.s||keys.arrowdown)cam.y+=pan;
   if(keys.a||keys.arrowleft)cam.x-=pan;if(keys.d||keys.arrowright)cam.x+=pan;
   cam.x=Math.max(0,Math.min(W*T,cam.x));cam.y=Math.max(0,Math.min(H*T,cam.y));}
-  acc+=dt;let n=0;while(acc>=1/60&&n<6){tick();acc-=1/60;n++;}if(n>=6)acc=0;
+  if(paused)acc=0;else{acc+=dt*gameSpeed;let n=0;const cap=6*gameSpeed;while(acc>=1/60&&n<cap){tick();acc-=1/60;n++;}if(n>=cap)acc=0;}
   for(const f of floats)f.t++;floats=floats.filter(f=>f.t<70);for(const f of ffx)f.t++;ffx=ffx.filter(f=>f.t<24);
   if(view==='world')renderWorld(ticks/60);else render(ticks/60);
   frame++;
@@ -2627,7 +2696,7 @@ function start(data){
   let s=data&&data.v>=3?data:null;
   if(!s){try{const raw=localStorage.getItem(SAVE_KEY);if(raw)s=JSON.parse(raw);}catch(_){s=null;}}
   let fresh=!s;
-  if(s){try{load(s);}catch(_){fresh=true;}}
+  if(s){try{load(s);offlineGain(s);}catch(_){fresh=true;}}
   if(fresh){newGame();show('help',true);}
   drawHUD();
   addEventListener('resize',resize);
