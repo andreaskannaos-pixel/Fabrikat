@@ -64,6 +64,7 @@ Your factory pays for cities, cities grow people, and people become workers or s
 - **Population:** one slider splits people between workers (taxes, plus up to +100% factory speed) and soldiers. Peacetime, Mobilized and War Economy set how far you can push it and what it costs.
 - **Military:** infantry, mechanized, artillery, armor, air wings and special forces. Attack any neighbouring province, or land from a port with transport ships. Forts and terrain strengthen defense.
 - **Diplomacy:** relations from -100 to +100; alliances, peace, war, gifts, trade routes, requests for allied troops and shipping raids.
+- **Town defenses:** walls (wooden palisade, stone, concrete), watchtowers (early warning), up to 3 bunkers, tank traps and minefields, built per province on the World map. They stack with forts and terrain, and computer nations fortify their own towns over time.
 - **Strategic:** five rocket types and SAM sites with visible coverage circles and interception.
 - **Research:** five tabs (Industry, Civilization, Military, Strategic, Naval). Advanced research costs materials as well as money.
 - **Guide (`G`), Settings** (quality presets, FPS limit, particle and effect density, animation and map detail, performance mode) and a News feed.
