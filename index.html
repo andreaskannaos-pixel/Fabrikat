@@ -7,7 +7,7 @@
 :root{
   color-scheme: dark;
   --void:#15150f; --panel:#1f201a; --panel2:#2b2c24; --line:#4b4a3b;
-  --text:#ece6d3; --dim:#a19c86; --amber:#e3a52a; --amber-ink:#241a04; --red:#d2553f; --green:#79b25a; --gold:#d9b54a;
+  --text:#ece6d3; --dim:#a19c86; --amber:#e3a52a; --amber-ink:#241a04; --red:#d2553f; --green:#79b25a; --gold:#d9b54a; --idle:#6b6856;
   --ui:"Chakra Petch","Segoe UI",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
 }
 html,body{height:100%;margin:0;background:var(--void);color:var(--text);overflow:hidden;font-family:var(--ui);font-size:14px}
@@ -18,57 +18,74 @@ html,body{height:100%;margin:0;background:var(--void);color:var(--text);overflow
 button{font-family:var(--ui);font-size:13px;font-weight:600;color:var(--text);background:var(--panel2);border:1px solid var(--line);border-radius:3px;padding:6px 10px;cursor:pointer;letter-spacing:.02em}
 button:hover{border-color:var(--dim)}
 button:disabled{opacity:.4;cursor:default;border-color:var(--line)}
-button:focus-visible{outline:2px solid var(--amber);outline-offset:1px}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--amber);outline-offset:1px}
 button.primary{background:var(--amber);color:var(--amber-ink);border-color:var(--amber)}
 button.money{background:var(--green);color:#0f1a0a;border-color:var(--green)}
 button.danger{background:var(--red);border-color:var(--red);color:#1a0906}
+button.small{padding:3px 7px;font-size:12px}
+input,textarea{font-family:var(--mono);font-size:12px;color:var(--text);background:#11110d;border:1px solid var(--line);border-radius:3px;padding:5px 7px;box-sizing:border-box}
+textarea{width:100%;resize:vertical;min-height:54px}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:3px;box-shadow:0 6px 24px rgba(0,0,0,.45)}
 .eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--dim);font-weight:600}
 .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
 h1,h2,h3{margin:0;text-wrap:balance}
 
-#bank{position:absolute;left:16px;top:16px;width:270px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+#bank{position:absolute;left:16px;top:16px;width:280px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;max-height:calc(100% - 200px);overflow:auto;box-sizing:border-box}
 #bankMoney{font-family:var(--mono);font-size:26px;font-weight:600;color:var(--gold);font-variant-numeric:tabular-nums;letter-spacing:-.01em;line-height:1.1}
 #bankRate{font-family:var(--mono);font-size:12px;color:var(--dim)}
 #bankRate b{color:var(--green);font-weight:600}
 .goalline{display:flex;flex-direction:column;gap:4px;border-top:1px solid var(--line);padding-top:8px}
-.goalline .row{justify-content:space-between}
+.goalline .row{justify-content:space-between;flex-wrap:nowrap}
 .goalline .nm{font-weight:600}
-.goalline .ct{font-family:var(--mono);font-size:11px;color:var(--dim)}
+.ct{font-family:var(--mono);font-size:11px;color:var(--dim)}
 .bar{height:4px;background:#11110d;border-radius:2px;overflow:hidden}
 .bar i{display:block;height:100%;background:var(--gold)}
 .bar.done i{background:var(--green)}
+.cmini{display:grid;grid-template-columns:20px 1fr auto;gap:2px 8px;align-items:center}
+.cmini img{width:20px;height:20px;grid-row:span 2}
+.cmini .bar{grid-column:2 / 4}
+.cmini.late .ct{color:var(--red)}
+.btnrow{display:flex;gap:6px}
+.btnrow button{flex:1}
 
-#topbtns{position:absolute;right:16px;top:16px;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+#topbtns{position:absolute;right:16px;top:16px;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;max-width:calc(100% - 330px)}
 #queue{position:absolute;right:16px;top:60px;display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;max-width:320px}
 .qi{position:relative;width:40px;height:40px;background:var(--panel);border:1px solid var(--line);border-radius:3px;display:grid;place-items:center}
 .qi img{width:28px;height:28px}
 .qi i{position:absolute;left:0;bottom:0;height:3px;background:var(--amber)}
+#alerts{position:absolute;right:16px;bottom:92px;display:flex;flex-direction:column;gap:4px;align-items:flex-end;max-width:min(330px,calc(100% - 32px))}
+.alert{display:flex;gap:8px;align-items:center;text-align:left;background:rgba(31,32,26,.94);font-weight:500;font-size:12.5px;line-height:1.35;padding:6px 9px;border-left:3px solid var(--amber)}
+.alert.crit{border-left-color:var(--red)}
+.alert.info{border-left-color:var(--dim)}
+.alert .sev{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.08em;color:var(--amber)}
+.alert.crit .sev{color:var(--red)}
+.alert.info .sev{color:var(--dim)}
 
 #hotbar{position:absolute;left:0;right:0;margin-inline:auto;width:fit-content;bottom:16px;display:flex;gap:4px;padding:6px;flex-wrap:wrap;justify-content:center;max-width:calc(100% - 32px);box-sizing:border-box}
-.slot{position:relative;width:50px;height:50px;padding:0;display:grid;place-items:center;background:var(--panel2)}
-.slot img{width:34px;height:34px}
+.slot{position:relative;width:48px;height:48px;padding:0;display:grid;place-items:center;background:var(--panel2)}
+.slot img{width:32px;height:32px}
 .slot .k{position:absolute;left:4px;top:2px;font-family:var(--mono);font-size:10px;color:var(--dim)}
 .slot .n{position:absolute;right:4px;bottom:2px;font-family:var(--mono);font-size:11px;font-weight:600}
 .slot.sel{border-color:var(--amber);box-shadow:inset 0 0 0 1px var(--amber)}
 .slot.off{opacity:.35}
 .slot .x{font-size:22px;color:var(--red);font-weight:700}
 
-#status{position:absolute;left:16px;bottom:92px;max-width:min(330px,calc(100% - 32px));font-family:var(--mono);font-size:12px;color:var(--dim);background:rgba(21,21,15,.8);padding:6px 9px;border-radius:3px;line-height:1.5}
+#status{position:absolute;left:16px;bottom:92px;max-width:min(330px,calc(100% - 32px));font-family:var(--mono);font-size:12px;color:var(--dim);background:rgba(21,21,15,.82);padding:6px 9px;border-radius:3px;line-height:1.5}
 #status:empty{display:none}
 #status b{color:var(--text);font-weight:600}
 #status .v{color:var(--gold)}
 #toasts{position:absolute;left:50%;top:16px;transform:translateX(-50%);display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none;width:min(460px,calc(100% - 32px))}
 .toast{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--amber);padding:8px 12px;border-radius:3px;font-weight:600;transition:opacity .4s}
 .toast.big{border-left-color:var(--gold);font-size:15px}
+.toast.bad{border-left-color:var(--red)}
 
 .modal{position:fixed;z-index:5;display:flex;flex-direction:column;max-height:calc(100% - 32px);box-sizing:border-box}
-#inv,#co{left:50%;top:50%;transform:translate(-50%,-50%);width:min(780px,calc(100% - 32px))}
-#co{height:min(620px,calc(100% - 32px))}
-#entp{right:16px;top:108px;width:min(360px,calc(100% - 32px));max-height:calc(100% - 200px)}
+#inv,#co,#stats{left:50%;top:50%;transform:translate(-50%,-50%);width:min(820px,calc(100% - 32px))}
+#co,#stats{height:min(640px,calc(100% - 32px))}
+#entp{right:16px;top:108px;width:min(360px,calc(100% - 32px));max-height:calc(100% - 220px)}
 .mhead{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
 .mhead h2{font-size:18px;font-weight:700}
-.mbody{padding:12px 14px;overflow:auto;display:grid;gap:14px;align-content:start}
+.mbody{padding:12px 14px;overflow:auto;display:grid;gap:16px;align-content:start}
 #inv .mbody{grid-template-columns:1fr 1fr}
 @media (max-width:640px){#inv .mbody{grid-template-columns:1fr}}
 .mbody h3{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--dim);margin-bottom:8px;font-weight:600}
@@ -86,6 +103,8 @@ h1,h2,h3{margin:0;text-wrap:balance}
 .ing img{width:18px;height:18px}
 .ing.miss{color:var(--red)}
 .gold{color:var(--gold)}
+.good{color:var(--green)}
+.bad{color:var(--red)}
 .row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .kv{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;align-items:center;font-size:13px}
 .kv .k{color:var(--dim)}
@@ -95,23 +114,26 @@ h1,h2,h3{margin:0;text-wrap:balance}
 
 .tabs{display:flex;gap:4px;flex-wrap:wrap}
 .tabs button.on{border-color:var(--amber);color:var(--amber)}
-#coMoney{font-family:var(--mono);font-size:16px;color:var(--gold);font-weight:600}
+.hmoney{font-family:var(--mono);font-size:16px;color:var(--gold);font-weight:600}
 .list{display:flex;flex-direction:column;gap:6px}
 .item{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;background:var(--panel2);border:1px solid var(--line);border-radius:3px;padding:9px 11px}
 .item .t{font-weight:700;font-size:14px}
 .item .d{grid-column:1;color:var(--dim);font-size:12.5px;line-height:1.4}
-.item .a{grid-column:2;grid-row:1 / span 3;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
-.item .icons{display:flex;gap:3px;flex-wrap:wrap}
+.item .a{grid-column:2;grid-row:1 / span 4;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.item .icons{display:flex;gap:3px;flex-wrap:wrap;align-items:center}
 .item .icons img{width:22px;height:22px}
 .item.done{border-color:#3d5a33}
-.badge{font-family:var(--mono);font-size:11px;padding:2px 6px;border-radius:3px;background:#11110d;color:var(--dim)}
+.item.hot{border-color:var(--amber)}
+.badge{font-family:var(--mono);font-size:11px;padding:2px 6px;border-radius:3px;background:#11110d;color:var(--dim);white-space:nowrap}
 .badge.ok{background:#2a3d23;color:#b8e3a2}
+.badge.warn{background:#3d2f12;color:#f0c870}
 .pips{display:flex;gap:3px}
 .pips i{width:10px;height:5px;background:#11110d;border-radius:1px}
 .pips i.on{background:var(--amber)}
 .land{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
 .plot{aspect-ratio:1;max-width:100%;padding:5px;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;text-align:left;font-size:11px;line-height:1.2;overflow:hidden}
 .plot .pn{font-weight:700}
+.plot .rg{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em}
 .plot .icons{display:flex;gap:2px;flex-wrap:wrap}
 .plot .icons img{width:16px;height:16px}
 .plot .pp{font-family:var(--mono);font-size:10.5px;color:var(--gold)}
@@ -122,11 +144,42 @@ h1,h2,h3{margin:0;text-wrap:balance}
 .mkcell{display:grid;grid-template-columns:32px 1fr;gap:2px 8px;align-items:center;text-align:left;padding:7px}
 .mkcell img{width:32px;height:32px;grid-row:span 2}
 .mkcell .pp{font-family:var(--mono);font-size:11px;color:var(--gold)}
+.fac{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:6px}
+.fac > div{background:var(--panel2);border:1px solid var(--line);border-radius:3px;padding:8px 10px;display:flex;flex-direction:column;gap:3px}
+.fac b{font-size:13px}
+.fac span{font-size:12px;color:var(--dim)}
+.fac span.good{color:var(--green)}
+.bp{display:grid;grid-template-columns:96px 1fr auto;gap:10px;align-items:center;background:var(--panel2);border:1px solid var(--line);border-radius:3px;padding:8px}
+.bp img{width:96px;height:72px;object-fit:contain;background:#1b1b15;border-radius:2px}
+.bp input{width:100%}
+.bp .a{display:flex;flex-direction:column;gap:4px}
+@media (max-width:520px){.bp{grid-template-columns:1fr}}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
+.tile{background:var(--panel2);border:1px solid var(--line);border-radius:3px;padding:9px 11px;display:flex;flex-direction:column;gap:2px}
+.tile .v{font-family:var(--mono);font-size:18px;font-weight:600;font-variant-numeric:tabular-nums}
+.tile.wide{grid-column:span 2}
+@media (max-width:520px){.tile.wide{grid-column:span 1}}
+.spark svg{display:block;width:100%;height:64px}
+.spark .tip{font-family:var(--mono);font-size:11px;color:var(--dim);min-height:15px}
+.tblwrap{overflow-x:auto}
+.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.tbl th{text-align:right;font-weight:600;color:var(--dim);font-size:11px;text-transform:uppercase;letter-spacing:.08em;padding:4px 8px;border-bottom:1px solid var(--line)}
+.tbl th:first-child,.tbl td:first-child{text-align:left}
+.tbl td{padding:4px 8px;text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;border-bottom:1px solid #2a2a22;white-space:nowrap}
+.tbl td:first-child{font-family:var(--ui)}
+.tbl td img{width:18px;height:18px;vertical-align:middle;margin-right:6px}
+.sbar{display:flex;gap:2px;height:8px;border-radius:2px;overflow:hidden;background:#11110d}
+.sbar i{display:block;height:100%}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--dim)}
+.legend span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;background:var(--c);vertical-align:-1px}
+.mrow{display:grid;grid-template-columns:150px 1fr 90px;gap:10px;align-items:center;font-size:13px}
+@media (max-width:560px){.mrow{grid-template-columns:1fr}}
 
 .overlay{position:fixed;inset:0;z-index:10;background:rgba(12,12,9,.72);display:grid;place-items:center;padding-inline:16px}
-.card{width:min(640px,100%);max-height:calc(100% - 32px);overflow:auto;padding:20px 22px;box-sizing:border-box}
+.card{width:min(660px,100%);max-height:calc(100% - 32px);overflow:auto;padding:20px 22px;box-sizing:border-box}
 .card h2{font-size:28px;font-weight:700;letter-spacing:.01em}
-.card p{line-height:1.55;max-width:64ch}
+.card p{line-height:1.55;max-width:66ch}
 .card .sub{color:var(--dim);margin-top:4px}
 .keys{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:14px 0;font-size:13px;align-items:baseline}
 kbd{font-family:var(--mono);font-size:11px;background:var(--panel2);border:1px solid var(--line);border-bottom-width:2px;border-radius:3px;padding:1px 5px;white-space:nowrap}
@@ -140,14 +193,17 @@ kbd{font-family:var(--mono);font-size:11px;background:var(--panel2);border:1px s
   <section id="bank" class="panel">
     <div><span class="eyebrow">Bank</span><div id="bankMoney">$0</div><div id="bankRate"></div></div>
     <div class="goalline" id="bankGoal"></div>
-    <button id="bCo" class="primary">Company <kbd>C</kbd></button>
+    <div class="goalline" id="bankContracts"></div>
+    <div class="btnrow"><button id="bCo" class="primary">Company <kbd>C</kbd></button><button id="bStats">Stats <kbd>P</kbd></button></div>
   </section>
   <div id="topbtns">
     <button id="bInv">Inventory <kbd>E</kbd></button>
+    <button id="bBp">Blueprint <kbd>B</kbd></button>
     <button id="bHelp">Help <kbd>H</kbd></button>
     <button id="bMenu">Menu</button>
   </div>
   <div id="queue"></div>
+  <div id="alerts"></div>
   <nav id="hotbar" class="panel"></nav>
   <div id="status"></div>
   <div id="toasts"></div>
@@ -163,13 +219,18 @@ kbd{font-family:var(--mono);font-size:11px;background:var(--panel2);border:1px s
 
 <div id="co" class="panel modal" hidden>
   <div class="mhead">
-    <div class="row" style="gap:12px"><h2>Company</h2><span id="coMoney"></span></div>
+    <div class="row" style="gap:12px"><h2>Company</h2><span id="coMoney" class="hmoney"></span></div>
     <div class="tabs" id="coTabs">
-      <button data-tab="goals">Goals</button><button data-tab="research">Research</button><button data-tab="upgrades">Upgrades</button><button data-tab="land">Land</button><button data-tab="market">Market</button>
+      <button data-tab="contracts">Contracts</button><button data-tab="goals">Goals</button><button data-tab="research">Research</button><button data-tab="upgrades">Upgrades</button><button data-tab="land">Land</button><button data-tab="market">Market</button><button data-tab="blueprints">Blueprints</button>
       <button data-close="co">Close <kbd>C</kbd></button>
     </div>
   </div>
   <div class="mbody" id="coBody"></div>
+</div>
+
+<div id="stats" class="panel modal" hidden>
+  <div class="mhead"><div class="row" style="gap:12px"><h2>Factory statistics</h2><span class="ct">rates are per minute, averaged over about 30 seconds</span></div><button data-close="stats">Close <kbd>P</kbd></button></div>
+  <div class="mbody" id="statsBody"></div>
 </div>
 
 <div id="entp" class="panel modal" hidden>
@@ -181,24 +242,24 @@ kbd{font-family:var(--mono);font-size:11px;background:var(--panel2);border:1px s
   <div class="card panel">
     <div class="hazard"></div>
     <h2>Fabrikat</h2>
-    <p class="sub">Mine it, process it, sell it. The Money Generator turns items into cash, and anything that took more work to make sells for more. Spend the money on research, land, upgrades and machines.</p>
+    <p class="sub">Mine it, process it, sell it or ship it on contract. The Money Generator turns items into cash, and anything that took more work to make is worth more. Spend the money on research, land, upgrades and machines.</p>
     <div class="keys">
       <span><kbd>1</kbd>&ndash;<kbd>9</kbd></span><span>Pick a building from the hotbar, then click to place it</span>
       <span><kbd>Drag</kbd></span><span>Lay belts in a line. They turn corners for you.</span>
       <span><kbd>R</kbd></span><span>Rotate what you're holding, or the building under the cursor</span>
       <span><kbd>X</kbd> / right-click</span><span>Remove a building. On a Chromebook, right-click is a two-finger click or Alt+click.</span>
       <span><kbd>Q</kbd></span><span>Copy the building under the cursor</span>
+      <span><kbd>B</kbd></span><span>Blueprint: drag a box around buildings to save them, then place copies from Company &gt; Blueprints</span>
       <span><kbd>Click</kbd> ore</span><span>Mine by hand (hold the button down)</span>
-      <span><kbd>E</kbd> / <kbd>C</kbd></span><span>Inventory and hand crafting / Company: research, upgrades, land, market, goals</span>
+      <span><kbd>E</kbd> <kbd>C</kbd> <kbd>P</kbd></span><span>Inventory &middot; Company (contracts, research, land, market) &middot; Statistics</span>
       <span><kbd>W A S D</kbd></span><span>Move the camera. Scroll to zoom.</span>
       <span><kbd>Esc</kbd></span><span>Put the building away, close panels</span>
     </div>
     <div class="flow">
-      <b>Selling.</b> Feed items into the <b>Money Generator</b> by belt, inserter or drill. Mk.&nbsp;I only takes raw ore. Upgrade it to sell processed items, components and beyond.
-      Every sale is a choice: sell iron plates now, or turn them into steel, then motors, which are worth far more.<br>
-      <b>Moving items.</b> Drills drop ore into whatever their chute faces. Belts feed any building they point at. Inserters move items from the building behind them into the one in front.
-      Furnaces burn coal. Assemblers, Chemical Plants and Fabricators make whatever recipe you set.<br>
-      <b>Land.</b> You start with one plot. Buy neighbouring plots to reach oil, bauxite, titanium and the rare zones at the edge of the map.
+      <b>Selling.</b> Feed items into a <b>Money Generator</b> by belt, inserter or drill. Mk.&nbsp;I only takes raw ore; upgrade it to sell more advanced goods.
+      Items an active <b>contract</b> needs go to the contract instead of being sold, and any generator will take them.<br>
+      <b>Moving items.</b> Drills drop ore into whatever their chute faces. Belts feed any building they point at. Inserters move items from the building behind them into the one in front. Splitters share items between three outputs. Train stations ship cargo across the map.<br>
+      <b>Upkeep.</b> Machines wear down as they work and slow down. Repair them by hand, or build a Maintenance Bay and feed it replacement parts.
     </div>
     <p class="row" style="margin-top:16px;margin-bottom:0"><button class="primary" data-close="help">Start building</button><span class="eyebrow">Progress saves in this browser</span></p>
   </div>
@@ -210,7 +271,7 @@ kbd{font-family:var(--mono);font-size:11px;background:var(--panel2);border:1px s
     <h2>Menu</h2>
     <p class="sub" id="menuStats"></p>
     <div class="row" id="menuMain"><button class="primary" data-close="menu">Resume</button><button id="mSave">Save now</button><button id="mNew">New game</button></div>
-    <div class="row" id="menuConfirm" hidden><span>Erase this factory and start a new map?</span><button class="danger" id="mNewYes">Erase and restart</button><button id="mNewNo">Keep playing</button></div>
+    <div class="row" id="menuConfirm" hidden><span>Erase this factory and start a new map? Blueprints are kept.</span><button class="danger" id="mNewYes">Erase and restart</button><button id="mNewNo">Keep playing</button></div>
   </div>
 </div>
 
@@ -219,7 +280,7 @@ kbd{font-family:var(--mono);font-size:11px;background:var(--panel2);border:1px s
     <div class="hazard"></div>
     <h2>Industrial Empire</h2>
     <p class="sub" id="winStats"></p>
-    <p>A billion dollars earned. Your factory keeps running, and the challenges are still open.</p>
+    <p>A billion dollars earned. Your factory keeps running, and the contracts and challenges are still open.</p>
     <p class="row"><button class="primary" data-close="win">Keep building</button></p>
   </div>
 </div>
@@ -229,35 +290,36 @@ kbd{font-family:var(--mono);font-size:11px;background:var(--panel2);border:1px s
 'use strict';
 const W=160,H=160,T=32,PX=16,CS=16,CW=W/CS,CH=H/CS,PS=32,PN=5;
 const DX=[0,1,0,-1],DY=[-1,0,1,0];
-const GAP=0.25, BELT_SPEED=1.875, DRILL_RATE=0.5, CHEST_CAP=800;
-const SAVE_KEY='fabrikat-save-v2';
-const MU=1.5, TV=1, FUEL=0.4;
+const GAP=0.25,BELT_SPEED=1.875,DRILL_RATE=0.5,CHEST_CAP=800,TRAIN_CAP=50,TRAIN_SPEED=12;
+const SAVE_KEY='fabrikat-save-v3',BP_KEY='fabrikat-blueprints';
+const MU=1.5,TV=1,FUEL=0.4,WEAR=0.01/(120*60);
 
 // ---------- data ----------
-const RAW={iron_ore:1,copper_ore:1,stone:0.5,coal:2,sand:0.5,limestone:1,crude_oil:3,bauxite:3,nickel_ore:4,titanium_ore:8,lithium:20,uranium:30,cobalt:25,tungsten:30,platinum:60,rare_earth:40};
+const RAW={iron_ore:1,copper_ore:1,stone:0.5,coal:2,sand:0.5,limestone:1,wood:1,crude_oil:3,bauxite:3,nickel_ore:4,titanium_ore:8,lithium:20,uranium:30,cobalt:25,tungsten:30,platinum:60,rare_earth:40};
 const ORES=Object.keys(RAW);
-const ORECOL={iron_ore:[112,132,152],copper_ore:[204,110,58],stone:[176,160,122],coal:[44,43,41],sand:[222,198,138],limestone:[214,212,192],crude_oil:[30,24,38],bauxite:[178,84,62],
+const ORECOL={iron_ore:[112,132,152],copper_ore:[204,110,58],stone:[176,160,122],coal:[44,43,41],sand:[222,198,138],limestone:[214,212,192],wood:[46,92,40],crude_oil:[30,24,38],bauxite:[178,84,62],
   nickel_ore:[138,160,122],titanium_ore:[184,194,218],lithium:[236,226,240],uranium:[112,222,76],cobalt:[58,92,206],tungsten:[92,88,100],platinum:[226,226,214],rare_earth:[182,92,196]};
 const ITEMS={
   iron_ore:{n:'Iron ore',s:'ore'},copper_ore:{n:'Copper ore',s:'ore'},stone:{n:'Stone',s:'ore'},coal:{n:'Coal',s:'ore'},sand:{n:'Sand',s:'powder',c:'#dec68a'},
-  limestone:{n:'Limestone',s:'ore'},crude_oil:{n:'Crude oil',s:'oil',c:'#2a2033'},bauxite:{n:'Bauxite',s:'ore'},nickel_ore:{n:'Nickel ore',s:'ore'},titanium_ore:{n:'Titanium ore',s:'ore'},
+  limestone:{n:'Limestone',s:'ore'},wood:{n:'Wood',s:'log',c:'#8a5a32'},crude_oil:{n:'Crude oil',s:'oil',c:'#2a2033'},bauxite:{n:'Bauxite',s:'ore'},nickel_ore:{n:'Nickel ore',s:'ore'},titanium_ore:{n:'Titanium ore',s:'ore'},
   lithium:{n:'Lithium',s:'ore'},uranium:{n:'Uranium',s:'ore'},cobalt:{n:'Cobalt',s:'ore'},tungsten:{n:'Tungsten',s:'ore'},platinum:{n:'Platinum',s:'ore'},rare_earth:{n:'Rare earth',s:'ore'},
   iron_plate:{n:'Iron plate',c:'#c3ccd4',s:'plate'},copper_plate:{n:'Copper plate',c:'#e2894a',s:'plate'},brick:{n:'Brick',c:'#a8583c',s:'brick'},glass:{n:'Glass',c:'#9fd4e0',s:'glass'},
   cement:{n:'Cement',c:'#bdb8a8',s:'powder'},steel:{n:'Steel',c:'#8fa0ad',s:'bar'},alumina:{n:'Alumina',c:'#ece4dc',s:'powder'},aluminium:{n:'Aluminium',c:'#d4dade',s:'bar'},
   nickel:{n:'Nickel',c:'#a9b89a',s:'bar'},titanium:{n:'Titanium',c:'#b8c4e4',s:'bar'},
-  carbon:{n:'Carbon',c:'#34322f',s:'powder'},polymer:{n:'Polymer',c:'#b58ad8',s:'barrel'},chemicals:{n:'Chemicals',c:'#e0d25a',s:'barrel'},plastic:{n:'Plastic',c:'#ecebe2',s:'sheet'},
-  rubber:{n:'Rubber',c:'#2e2c2a',s:'pellet'},silicon:{n:'Silicon',c:'#7384a8',s:'wafer'},battery:{n:'Battery',c:'#4fb0a0',s:'battery'},graphene:{n:'Graphene',c:'#8a96a4',s:'hex'},
+  carbon:{n:'Carbon',c:'#34322f',s:'powder'},polymer:{n:'Polymer',c:'#b58ad8',s:'barrel'},chemicals:{n:'Chemicals',c:'#e0d25a',s:'barrel'},lubricant:{n:'Lubricant',c:'#c98a2a',s:'barrel'},
+  plastic:{n:'Plastic',c:'#ecebe2',s:'sheet'},rubber:{n:'Rubber',c:'#2e2c2a',s:'pellet'},silicon:{n:'Silicon',c:'#7384a8',s:'wafer'},battery:{n:'Battery',c:'#4fb0a0',s:'battery'},graphene:{n:'Graphene',c:'#8a96a4',s:'hex'},
   carbon_fiber:{n:'Carbon fiber',c:'#2a2c30',s:'fiber'},superconductor:{n:'Superconductor',c:'#6ad0f0',s:'coil'},
   gear:{n:'Iron gear',c:'#aab4bc',s:'gear'},cable:{n:'Copper wire',c:'#e2894a',s:'cable'},circuit:{n:'Circuit',c:'#4f9a45',s:'chip'},screw:{n:'Screws',c:'#b9c3cc',s:'screw'},
   pipe:{n:'Pipe',c:'#8fa0ad',s:'pipe'},concrete:{n:'Concrete',c:'#a19e94',s:'block'},bearing:{n:'Bearing',c:'#9aa6b0',s:'ring'},motor:{n:'Motor',c:'#6d7f8c',s:'motor'},
-  pump:{n:'Pump',c:'#4f8fd0',s:'pump'},circuit_board:{n:'Circuit board',c:'#3f6fb0',s:'chip'},sensor:{n:'Sensor',c:'#5d6870',s:'sensor'},
+  pump:{n:'Pump',c:'#4f8fd0',s:'pump'},replacement_parts:{n:'Replacement parts',c:'#8b5a2b',s:'parts'},circuit_board:{n:'Circuit board',c:'#3f6fb0',s:'chip'},sensor:{n:'Sensor',c:'#5d6870',s:'sensor'},
   adv_circuit:{n:'Advanced circuit',c:'#c04a3c',s:'chip'},processor:{n:'Processor',c:'#d9b54a',s:'cpu'},electric_motor:{n:'Electric motor',c:'#d9b54a',s:'motor'},
   control_unit:{n:'Control unit',c:'#4f8fd0',s:'cpu'},computer:{n:'Computer',c:'#6ad0f0',s:'computer'},industrial_robot:{n:'Industrial robot',c:'#e3a52a',s:'robot'},
   quantum_processor:{n:'Quantum processor',c:'#9a6ae0',s:'cpu'},nano_material:{n:'Nano-material',c:'#8ad0c0',s:'cube'},quantum_material:{n:'Quantum material',c:'#b07ae8',s:'cube'},
   energy_crystal:{n:'Energy crystal',c:'#6ae0f0',s:'crystal'},synthetic_matter:{n:'Synthetic matter',c:'#e07ab0',s:'cube'},dark_matter:{n:'Dark matter',c:'#3a2458',s:'orb'},
-  belt:{n:'Conveyor belt',place:1},fast_belt:{n:'Fast belt',place:1},express_belt:{n:'Express belt',place:1},inserter:{n:'Inserter',place:1},fast_inserter:{n:'Fast inserter',place:1},
+  belt:{n:'Conveyor belt',place:1},fast_belt:{n:'Fast belt',place:1},express_belt:{n:'Express belt',place:1},magnetic_belt:{n:'Magnetic belt',place:1},
+  inserter:{n:'Inserter',place:1},fast_inserter:{n:'Fast inserter',place:1},splitter:{n:'Splitter',place:1},
   drill:{n:'Mining drill',place:1},furnace:{n:'Stone furnace',place:1},assembler:{n:'Assembler',place:1},chemplant:{n:'Chemical plant',place:1},fabricator:{n:'Fabricator',place:1},
-  chest:{n:'Chest',place:1},moneygen:{n:'Money Generator',place:1},
+  chest:{n:'Chest',place:1},moneygen:{n:'Money Generator',place:1},station:{n:'Train station',place:1},maint:{n:'Maintenance bay',place:1},
 };
 const RECIPES={
   gear:{in:{iron_plate:2},out:1,t:.5,cat:'asm'},
@@ -273,6 +335,7 @@ const RECIPES={
   pipe:{in:{steel:1},out:2,t:.5,cat:'asm',res:'steel'},
   fast_belt:{in:{belt:1,gear:3},out:1,t:.5,cat:'asm',res:'logistics'},
   fast_inserter:{in:{inserter:1,circuit:2,iron_plate:2},out:1,t:.5,cat:'asm',res:'logistics'},
+  splitter:{in:{circuit:3,belt:2,gear:2},out:1,t:1,cat:'asm',res:'logistics'},
   chemplant:{in:{steel:5,pipe:5,circuit:5,brick:10},out:1,t:2,cat:'asm',res:'oil'},
   polymer:{in:{crude_oil:2},out:1,t:2,cat:'chem',res:'oil'},
   plastic:{in:{polymer:2,coal:1},out:2,t:3,cat:'chem',res:'oil'},
@@ -283,6 +346,10 @@ const RECIPES={
   bearing:{in:{steel:1,rubber:1},out:2,t:1,cat:'asm',res:'machinery'},
   motor:{in:{cable:4,steel:1,bearing:2},out:1,t:2,cat:'asm',res:'machinery'},
   pump:{in:{steel:2,rubber:2,motor:1},out:1,t:2,cat:'asm',res:'machinery'},
+  station:{in:{steel:20,concrete:20,circuit:10,gear:10},out:1,t:3,cat:'asm',res:'railways'},
+  lubricant:{in:{crude_oil:1},out:2,t:2,cat:'chem',res:'maintenance'},
+  replacement_parts:{in:{gear:2,bearing:1,lubricant:1},out:1,t:2,cat:'asm',res:'maintenance'},
+  maint:{in:{steel:10,circuit:5,motor:2,gear:10},out:1,t:3,cat:'asm',res:'maintenance'},
   silicon:{in:{sand:2,carbon:1},out:1,t:3,cat:'chem',res:'electronics'},
   circuit_board:{in:{cable:4,silicon:1,plastic:1},out:1,t:2,cat:'asm',res:'electronics'},
   sensor:{in:{circuit_board:1,glass:2,silicon:1},out:1,t:3,cat:'asm',res:'electronics'},
@@ -304,20 +371,22 @@ const RECIPES={
   energy_crystal:{in:{uranium:4,battery:4,superconductor:1},out:1,t:15,cat:'fab',res:'experimental'},
   synthetic_matter:{in:{nano_material:2,quantum_material:1,titanium:4},out:1,t:20,cat:'fab',res:'experimental'},
   dark_matter:{in:{synthetic_matter:2,energy_crystal:2,quantum_processor:1},out:1,t:30,cat:'fab',res:'experimental'},
+  magnetic_belt:{in:{express_belt:1,rare_earth:2,cable:4},out:1,t:1,cat:'asm',res:'x_mag'},
 };
 const SMELT={
-  iron_ore:{o:'iron_plate',n:1,t:2},copper_ore:{o:'copper_plate',n:1,t:2},stone:{o:'brick',n:2,t:2},sand:{o:'glass',n:2,t:3},limestone:{o:'cement',n:1,t:2},
+  iron_ore:{o:'iron_plate',n:1,t:2},copper_ore:{o:'copper_plate',n:1,t:2},stone:{o:'brick',n:2,t:2},sand:{o:'glass',n:2,t:3},limestone:{o:'cement',n:1,t:2},wood:{o:'carbon',n:2,t:3},
   iron_plate:{o:'steel',n:5,t:6,res:'steel'},bauxite:{o:'alumina',n:2,t:3,res:'metals'},alumina:{o:'aluminium',n:2,t:4,res:'metals'},
   nickel_ore:{o:'nickel',n:1,t:3,res:'metals'},titanium_ore:{o:'titanium',n:3,t:8,res:'metals'},
 };
-const CATS={asm:'Assembler',chem:'Chemical plant',fab:'Fabricator',smelt:'Stone furnace'};
 const MACHINE_CAT={assembler:'asm',chemplant:'chem',fabricator:'fab'};
 const RESEARCH=[
   {id:'automation',n:'Automation',cost:150,req:[],d:'Assemblers craft recipes for you.'},
   {id:'steel',n:'Steel Processing',cost:800,req:['automation'],d:'Furnaces turn 5 iron plates into steel.'},
-  {id:'logistics',n:'Logistics',cost:2000,req:['automation'],d:'Faster belts and inserters.'},
+  {id:'logistics',n:'Logistics',cost:2000,req:['automation'],d:'Faster belts, faster inserters and splitters.'},
   {id:'oil',n:'Oil Processing',cost:5000,req:['steel'],d:'Chemical plants turn crude oil into polymer, plastic, rubber and chemicals.'},
+  {id:'maintenance',n:'Maintenance',cost:12000,req:['oil'],d:'Lubricant, replacement parts and the Maintenance Bay, which repairs machines near it.'},
   {id:'machinery',n:'Machinery',cost:15000,req:['oil'],d:'Bearings, motors, pumps and screws.'},
+  {id:'railways',n:'Railways',cost:25000,req:['logistics','steel'],d:'Train stations that ship cargo between any two points on your land.'},
   {id:'electronics',n:'Electronics',cost:30000,req:['oil'],d:'Silicon, circuit boards and sensors.'},
   {id:'metals',n:'Light Metals',cost:60000,req:['machinery'],d:'Smelt bauxite, nickel and titanium. Express belts.'},
   {id:'fabrication',n:'Fabrication',cost:150000,req:['electronics','machinery'],d:'Fabricators build advanced circuits and processors.'},
@@ -326,6 +395,11 @@ const RESEARCH=[
   {id:'materials',n:'Advanced Materials',cost:2e6,req:['fabrication'],d:'Graphene, carbon fiber and superconductors.'},
   {id:'quantum',n:'Quantum Engineering',cost:5e6,req:['computing','materials'],d:'Quantum processors and nano-materials.'},
   {id:'experimental',n:'Experimental Physics',cost:15e6,req:['quantum','energy'],d:'Quantum material, energy crystals, synthetic matter and dark matter.'},
+];
+const EXPERIMENTS=[
+  {id:'x_mag',n:'Magnetic Acceleration',after:'fabrication',need:{copper_plate:1000,rare_earth:150,adv_circuit:50},d:'Unlocks the Magnetic belt, five times faster than a basic belt.'},
+  {id:'x_over',n:'Machine Overclocking',after:'computing',need:{electric_motor:100,processor:50,lubricant:200},d:'Every machine runs 50% faster.'},
+  {id:'x_core',n:'Deep Core Drilling',after:'computing',need:{tungsten:200,industrial_robot:10,steel:500},d:'Drills mine twice as fast.'},
 ];
 const GEN=[null,
   {n:'Mk. I',depth:0,rate:2,mult:1,cost:0,takes:'raw materials'},
@@ -341,12 +415,22 @@ const UPGRADES={
   belt:{n:'Belt speed',base:1000,mul:4,max:4,d:'+25% speed for every belt'},
   hand:{n:'Hand crafting',base:150,mul:3,max:5,d:'+50% hand crafting speed per level'},
   chest:{n:'Chest capacity',base:300,mul:3,max:5,d:'+800 items per chest per level'},
+  durability:{n:'Durability',base:2000,mul:4,max:4,d:'Machines wear 20% slower per level'},
 };
 const COSMETICS={
   gold:{n:'Gold trim',cost:25000,d:'Gold plating on every Money Generator.'},
   teal:{n:'Teal belts',cost:5000,d:'Teal markings on basic conveyor belts.'},
   lights:{n:'Work lights',cost:50000,d:'Machines glow while they work.'},
 };
+const FACTIONS={
+  fabrik:{n:'Fabrik Industries',code:'FI',focus:'Machines',pool:['gear','screw','pipe','bearing','motor','pump','electric_motor','industrial_robot','belt','inserter','drill','assembler','replacement_parts'],perk:'Market buildings cost 25% less'},
+  nordex:{n:'Nordex Energy',code:'NX',focus:'Energy',pool:['coal','wood','carbon','copper_plate','cable','lubricant','battery','superconductor','energy_crystal','uranium'],perk:'Furnaces get twice as many smelts from each coal'},
+  titan:{n:'Titan Construction',code:'TC',focus:'Steel and concrete',pool:['stone','brick','cement','concrete','iron_plate','steel','glass','pipe','aluminium','titanium'],perk:'Land costs 20% less'},
+  syntek:{n:'Syntek',code:'SY',focus:'Electronics',pool:['cable','circuit','silicon','circuit_board','sensor','adv_circuit','processor','control_unit','computer'],perk:'Electronics sell for 15% more'},
+  aegis:{n:'Aegis Aerospace',code:'AA',focus:'Advanced technology',pool:['aluminium','titanium','plastic','carbon_fiber','graphene','industrial_robot','quantum_processor','nano_material','synthetic_matter','dark_matter'],perk:'Experimental research needs 30% fewer items'},
+};
+const REP_LV=[0,2,5,10,18];
+const ELEC=new Set(['circuit','circuit_board','adv_circuit','processor','sensor','computer','control_unit','quantum_processor']);
 const MILESTONES=[
   {id:'paycheck',n:'First Paycheck',goal:100,stat:'life',reward:50},
   {id:'small',n:'Small Business',goal:1e4,stat:'life',reward:1000},
@@ -363,21 +447,27 @@ const CHALLENGES=[
   {id:'chain',n:'Value Chain',d:'Sell an item that took 8 or more processing stages.'},
   {id:'vertical',n:'Vertical Integration',d:'Sell an item worth $1,000 or more that arrived by belt or inserter.'},
   {id:'tycoon',n:'The Industrialist',d:'Have $10,000,000 in the bank while 10 different recipes run in machines.'},
+  {id:'contractor',n:'Reliable Supplier',d:'Complete 25 contracts.'},
+  {id:'spaghetti',n:'The Spaghetti Monster',d:'Move 100,000 items between belts without ever building a splitter.'},
+  {id:'minimal',n:'Minimalist',d:'Produce 1,000 items/min with fewer than 50 machines.'},
+  {id:'nomanual',n:'No Manual Labor',d:'Play for 5 hours without hand crafting anything.'},
+  {id:'map',n:'The Entire Map',d:'Run train routes that reach 10 different land plots.'},
 ];
+const REGIONS={home:{n:'Home',tint:[1,1,1]},forest:{n:'Forest',tint:[.76,1.1,.66]},desert:{n:'Desert',tint:[1.45,1.24,.9]},mountains:{n:'Mountains',tint:[.8,.8,.87]},volcanic:{n:'Volcanic',tint:[.72,.5,.44]},arctic:{n:'Arctic',tint:[1.85,1.92,2.05]}};
 const PLOTS=[
-  ['Salt Flats','salt',['lithium','lithium','stone']],['North Ridge','high',['titanium_ore','iron_ore']],['Titanium Highlands','high',['titanium_ore','nickel_ore']],['Dunes','sand',['sand','limestone']],['Radioactive Zone','rad',['uranium','uranium']],
-  ['Salt Marsh','salt',['lithium','sand']],['Copper Hills','',['copper_ore','sand']],['Quarry','sand',['sand','limestone','stone']],['Oil Seep','oil',['crude_oil','limestone']],['Fallout Edge','rad',['uranium','coal']],
-  ['Deep Mine','deep',['cobalt','tungsten']],['Iron Valley','',['iron_ore','nickel_ore']],['Home','',[]],['Oil Field','oil',['crude_oil','coal']],['Tar Pits','oil',['crude_oil','crude_oil','bauxite']],
-  ['Tungsten Shaft','deep',['tungsten','cobalt']],['Coal Basin','',['iron_ore','coal']],['Red Clay','',['bauxite','stone']],['Mixed Ore','',['copper_ore','bauxite','nickel_ore']],['Rare Earth Basin','basin',['rare_earth','platinum']],
-  ['Abyss','deep',['cobalt','tungsten']],['Platinum Crags','high',['platinum','titanium_ore']],['Southern Highlands','high',['titanium_ore','iron_ore']],['Crystal Basin','basin',['rare_earth','copper_ore']],['Monazite Field','basin',['rare_earth','platinum']],
+  ['Glacier','arctic',['lithium','lithium']],['Frozen Ridge','arctic',['titanium_ore','lithium']],['Ice Shelf','arctic',['titanium_ore','nickel_ore']],['Tundra','arctic',['lithium','stone']],['Polar Mine','arctic',['cobalt','titanium_ore']],
+  ['High Pass','mountains',['tungsten','coal']],['Pine Woods','forest',['wood','copper_ore']],['Oak Valley','forest',['wood','limestone','stone']],['Dry Wash','desert',['sand','crude_oil']],['Dune Sea','desert',['sand','sand','bauxite']],
+  ['Iron Mountains','mountains',['iron_ore','coal','tungsten']],['Foothills','mountains',['iron_ore','nickel_ore','stone']],['Home','home',[]],['Oil Flats','desert',['crude_oil','limestone']],['Mesa','desert',['bauxite','crude_oil']],
+  ['Deep Mine','mountains',['tungsten','cobalt']],['Marsh','forest',['wood','coal']],['Red Clay Woods','forest',['bauxite','wood']],['Canyon','desert',['copper_ore','nickel_ore','sand']],['Ash Fields','volcanic',['rare_earth','uranium']],
+  ['Basalt Shelf','volcanic',['cobalt','platinum']],['Lava Tubes','volcanic',['platinum','titanium_ore']],['Caldera','volcanic',['rare_earth','uranium']],['Sulfur Vents','volcanic',['uranium','rare_earth']],['Magma Core','volcanic',['platinum','rare_earth']],
 ];
-const BIOME={'':[1,1,1],salt:[1.75,1.72,1.66],high:[.92,.97,1.1],sand:[1.35,1.2,.95],rad:[.78,1.1,.66],oil:[.7,.68,.66],deep:[.55,.55,.6],basin:[1.02,.82,1.04]};
-const HOTBAR=['belt','inserter','drill','furnace','assembler','chemplant','fabricator','chest','moneygen','fast_belt','express_belt','fast_inserter'];
+const HOTBAR=['belt','inserter','drill','furnace','assembler','chemplant','fabricator','chest','moneygen','splitter','station','maint','fast_belt','express_belt','magnetic_belt','fast_inserter'];
 const START_INV={drill:6,furnace:4,belt:40,inserter:8,chest:4,iron_plate:20,coal:10,stone:10};
+const WEARS=new Set(['drill','furnace','assembler','chemplant','fabricator']);
 
 // ---------- value & depth ----------
 const VAL={},DEPTH={},SMELT_BY_OUT={};
-for(const k in SMELT)SMELT_BY_OUT[SMELT[k].o]=k;
+for(const k in SMELT)if(!(SMELT[k].o in SMELT_BY_OUT))SMELT_BY_OUT[SMELT[k].o]=k;
 for(const k in RAW){VAL[k]=RAW[k];DEPTH[k]=0;}
 VAL.moneygen=1000;DEPTH.moneygen=3;
 function val(k){
@@ -396,40 +486,54 @@ function vnoise(x,y,s){const xi=Math.floor(x),yi=Math.floor(y),xf=x-xi,yf=y-yi,u
 
 // ---------- state ----------
 let seed=1,inv={},queue=[],ticks=0,won=false;
-let money=0,stats={},research={},upg={},cos={},ms={},ch={},owned=new Uint8Array(PN*PN);
-let revBuf=new Array(60).fill(0),revIdx=0,revCur=0,rpm=0,machinesN=0,runningN=0;
+let money=0,stats={},research={},upg={},cos={},ms={},ch={},owned=new Uint8Array(PN*PN),xp={},rep={};
+let contracts={offers:[],active:[],next:1,done:0,cool:0};
+let revBuf=new Array(60).fill(0),revIdx=0,revCur=0,rpm=0,spendBuf=new Array(60).fill(0),spendCur=0,epm=0,revHist=[];
+let prodC={},consC={},soldC={},soldVC={},prodR={},consR={},soldR={},valR={};
+let machinesN=0,runningN=0,alerts=[],mstat={},logi={};
+let bps=[];
 let ore=new Uint8Array(W*H),amt=new Int32Array(W*H),amt0=new Int32Array(W*H);
 let ents=[],grid=new Array(W*H).fill(null),nextId=1,listsDirty=true;
-let L={belt:[],ins:[],drill:[],furn:[],asm:[],gen:[]};
+let L={belt:[],ins:[],drill:[],furn:[],asm:[],gen:[],st:[],sp:[],mt:[]};
 const cam={x:W/2*T,y:H/2*T,z:1};
-let tool=null,tdir=1,mining=null,floats=[];
+let tool=null,tdir=1,mining=null,floats=[],bpIdx=-1,bpRot=0,bpSel=null;
 const chunks=new Array(CW*CH).fill(null);
 
 const inb=(x,y)=>x>=0&&y>=0&&x<W&&y<H;
 const at=(x,y)=>inb(x,y)?grid[y*W+x]:null;
 const plotOf=(x,y)=>((y/PS)|0)*PN+((x/PS)|0);
 const ownedAt=(x,y)=>inb(x,y)&&owned[plotOf(x,y)]===1;
-const isBelt=e=>!!e&&(e.type==='belt'||e.type==='fast_belt'||e.type==='express_belt');
-const BELT_MUL={belt:1,fast_belt:2,express_belt:3};
+const BELT_MUL={belt:1,fast_belt:2,express_belt:3,magnetic_belt:5};
+const isBelt=e=>!!e&&!!BELT_MUL[e.type];
 const isIns=e=>!!e&&(e.type==='inserter'||e.type==='fast_inserter');
-const isMachine=e=>!!e&&(e.type==='assembler'||e.type==='chemplant'||e.type==='fabricator');
-const unlocked=k=>{const r=RECIPES[k];if(k==='moneygen')return true;if(!r)return false;return !r.res||!!research[r.res];};
+const isMachine=e=>!!e&&!!MACHINE_CAT[e.type];
+const unlocked=k=>{if(k==='moneygen')return true;const r=RECIPES[k];if(!r)return false;return !r.res||!!research[r.res];};
 const smeltOk=k=>{const s=SMELT[k];return !!s&&(!s.res||!!research[s.res]);};
 const add=(o,k,n)=>{o[k]=(o[k]||0)+n;if(o[k]<=0)delete o[k]};
 const total=o=>{let s=0;for(const k in o)s+=o[k];return s};
-const fmt=n=>n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e4?(n/1000|0)+'k':''+n;
+const fmt=n=>n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e4?(n/1000|0)+'k':''+Math.floor(n);
+const fr=n=>n>=100?Math.round(n).toLocaleString('en-US'):n>=10?n.toFixed(1):n.toFixed(2);
 function $$(v){if(v<10)return '$'+v.toFixed(2);if(v<1e12)return '$'+Math.floor(v).toLocaleString('en-US');return '$'+(v/1e12).toFixed(2)+'T';}
 function $s(v){if(v<1000)return $$(v);if(v<1e6)return '$'+(v/1e3).toFixed(v<1e4?1:0)+'k';if(v<1e9)return '$'+(v/1e6).toFixed(v<1e7?2:1)+'M';return '$'+(v/1e9).toFixed(2)+'B';}
+const mmss=s=>{s=Math.max(0,s|0);return (s/60|0)+':'+String(s%60).padStart(2,'0');};
 const upgLv=k=>upg[k]|0;
-const drillRate=()=>DRILL_RATE*(1+.3*upgLv('drill'));
-const machSpd=()=>1+.25*upgLv('machine');
+const repLv=f=>{let l=0;for(let i=0;i<REP_LV.length;i++)if((rep[f]||0)>=REP_LV[i])l=i;return l;};
+const perk=f=>repLv(f)>=2;
+const drillRate=()=>DRILL_RATE*(1+.3*upgLv('drill'))*(research.x_core?2:1);
+const machSpd=()=>(1+.25*upgLv('machine'))*(research.x_over?1.5:1);
 const beltSpd=t=>BELT_SPEED*BELT_MUL[t]*(1+.25*upgLv('belt'));
 const chestCap=()=>CHEST_CAP*(1+upgLv('chest'));
 const upgCost=k=>Math.round(UPGRADES[k].base*Math.pow(UPGRADES[k].mul,upgLv(k)));
 const plotRing=p=>Math.max(Math.abs(p%PN-2),Math.abs((p/PN|0)-2));
-function plotPrice(p){const r=plotRing(p);let n=0;for(let i=0;i<PN*PN;i++)if(owned[i]&&plotRing(i)===r)n++;return Math.round([0,400,40000][r]*Math.pow(1.6,n));}
+function plotPrice(p){const r=plotRing(p);let n=0;for(let i=0;i<PN*PN;i++)if(owned[i]&&plotRing(i)===r)n++;return Math.round([0,400,40000][r]*Math.pow(1.6,n)*(perk('titan')?.8:1));}
 function plotBuyable(p){if(owned[p])return false;const x=p%PN,y=p/PN|0;return [[1,0],[-1,0],[0,1],[0,-1]].some(([a,b])=>{const X=x+a,Y=y+b;return X>=0&&Y>=0&&X<PN&&Y<PN&&owned[Y*PN+X];});}
-const marketPrice=k=>k==='moneygen'?2500:Math.max(5,Math.ceil(VAL[k]*2.5));
+const marketPrice=k=>Math.ceil((k==='moneygen'?2500:Math.max(5,VAL[k]*2.5))*(perk('fabrik')?.75:1));
+const footprint=t=>t==='moneygen'||t==='station'?[2,2]:[1,1];
+const repairCost=e=>Math.max(2,Math.ceil(VAL[e.type]*(1-e.eff)*.8));
+const xpNeed=(x,k)=>Math.ceil(x.need[k]*(perk('aegis')?.7:1));
+function spend(v){money-=v;spendCur+=v;}
+const produce=(t,n)=>{prodC[t]=(prodC[t]||0)+n;};
+const consume=(t,n)=>{consC[t]=(consC[t]||0)+n;};
 
 // ---------- map ----------
 function genMap(s){
@@ -445,9 +549,8 @@ function genMap(s){
   let k=0;
   put('iron_ore',cx-9,cy-8,4.6,700,k++);put('copper_ore',cx+9,cy-8,4.2,700,k++);put('coal',cx-9,cy+9,4,700,k++);put('stone',cx+9,cy+9,3.6,600,k++);
   PLOTS.forEach(([,,list],p)=>{
-    if(!list.length)return;
     const px=(p%PN)*PS,py=(p/PN|0)*PS,ring=plotRing(p);
-    list.forEach((o,j)=>{const X=px+7+r()*(PS-14),Y=py+7+r()*(PS-14);put(o,X,Y,3.5+r()*2.5+ring*.5,500+ring*500,k++);});
+    list.forEach(o=>{const X=px+7+r()*(PS-14),Y=py+7+r()*(PS-14);put(o,X,Y,3.5+r()*2.5+ring*.5,500+ring*500,k++);});
   });
   amt0.set(amt);chunks.fill(null);
 }
@@ -456,7 +559,7 @@ function chunk(ci,cj){
   c=document.createElement('canvas');c.width=c.height=CS*PX;
   const g=c.getContext('2d'),img=g.createImageData(CS*PX,CS*PX),d=img.data,SZ=CS*PX;
   for(let ty=0;ty<CS;ty++)for(let tx=0;tx<CS;tx++){
-    const X=ci*CS+tx,Y=cj*CS+ty,o=ore[Y*W+X],tint=BIOME[PLOTS[plotOf(X,Y)][1]];
+    const X=ci*CS+tx,Y=cj*CS+ty,o=ore[Y*W+X],tint=REGIONS[PLOTS[plotOf(X,Y)][1]].tint;
     let rocks=null;
     if(o){rocks=[];for(let k=0;k<5;k++)rocks.push([2+hash(X,Y,k*3+1)*12,2+hash(X,Y,k*3+2)*12,2.2+hash(X,Y,k*3+3)*2.6]);}
     const col=o?ORECOL[ORES[o-1]]:null;
@@ -482,29 +585,37 @@ function mineTile(i){amt[i]--;if(amt[i]<=0){amt[i]=0;ore[i]=0;dirtyChunk(i%W,(i/
 // ---------- entities ----------
 function mk(type,x,y,dir){
   const e={type,x,y,dir:dir||0};
+  if(WEARS.has(type))e.eff=1;
   if(isBelt(e))e.items=[];
   else if(isIns(e)){e.hold=null;e.a=0;e.ph=0;}
   else if(isMachine(e)){e.rec=null;e.inv={};e.outN=0;e.prog=0;e.work=false;}
   else switch(type){
-    case 'drill':e.prog=0;e.buf=null;e.on=false;break;
+    case 'drill':e.prog=0;e.buf=null;break;
     case 'furnace':e.inT=null;e.inN=0;e.coal=0;e.fuel=0;e.outT=null;e.outN=0;e.prog=0;e.cur=null;break;
     case 'chest':e.inv={};break;
     case 'moneygen':e.w=2;e.h=2;e.mk=1;e.q=[];e.prog=0;e.earned=0;break;
+    case 'station':e.w=2;e.h=2;e.inv={};e.dest=null;e.tr={st:'load',t:0,cargo:{},n:0,dur:0};e.trips=0;e.moved=0;break;
+    case 'splitter':e.buf=[];e.rr=0;break;
+    case 'maint':e.parts=0;e.cd=0;e.fixed=0;break;
   }
   return e;
 }
 function addEnt(e){e.id=nextId++;const w=e.w||1,h=e.h||1;for(let y=0;y<h;y++)for(let x=0;x<w;x++)grid[(e.y+y)*W+e.x+x]=e;ents.push(e);listsDirty=true;}
 function delEnt(e){const w=e.w||1,h=e.h||1;for(let y=0;y<h;y++)for(let x=0;x<w;x++)grid[(e.y+y)*W+e.x+x]=null;ents.splice(ents.indexOf(e),1);listsDirty=true;}
-function rebuild(){L={belt:[],ins:[],drill:[],furn:[],asm:[],gen:[]};for(const e of ents){
+function rebuild(){L={belt:[],ins:[],drill:[],furn:[],asm:[],gen:[],st:[],sp:[],mt:[]};for(const e of ents){
   if(isBelt(e))L.belt.push(e);else if(isIns(e))L.ins.push(e);else if(e.type==='drill')L.drill.push(e);else if(e.type==='furnace')L.furn.push(e);
-  else if(isMachine(e))L.asm.push(e);else if(e.type==='moneygen')L.gen.push(e);}
+  else if(isMachine(e))L.asm.push(e);else if(e.type==='moneygen')L.gen.push(e);else if(e.type==='station')L.st.push(e);
+  else if(e.type==='splitter')L.sp.push(e);else if(e.type==='maint')L.mt.push(e);}
   listsDirty=false;}
 
 function accepts(e,t){
   if(!e)return false;
   switch(e.type){
     case 'chest':return total(e.inv)<chestCap();
-    case 'moneygen':return DEPTH[t]<=GEN[e.mk].depth&&e.q.length<20;
+    case 'moneygen':return e.q.length<20&&(DEPTH[t]<=GEN[e.mk].depth||!!contractFor(t));
+    case 'splitter':return e.buf.length<2;
+    case 'station':return !!e.dest&&total(e.inv)<400;
+    case 'maint':return t==='replacement_parts'&&e.parts<20;
     case 'furnace':{
       if(t==='coal')return e.coal<10;
       if(!smeltOk(t))return false;const s=SMELT[t];
@@ -516,27 +627,32 @@ function accepts(e,t){
   return false;
 }
 function give(e,t){
-  if(e.type==='moneygen'){e.q.push(t);return;}
-  if(e.type==='furnace'){if(t==='coal')e.coal++;else{e.inT=t;e.inN++;}return;}
+  switch(e.type){
+    case 'moneygen':e.q.push(t);return;
+    case 'splitter':e.buf.push(t);return;
+    case 'maint':e.parts++;return;
+    case 'furnace':if(t==='coal')e.coal++;else{e.inT=t;e.inN++;}return;
+  }
   add(e.inv,t,1);
 }
 function take(e,pred){
   if(!e)return null;
   if(isBelt(e)){const it=e.items;for(let i=0;i<it.length;i++)if(pred(it[i].t)){const t=it[i].t;it.splice(i,1);return t;}return null;}
-  if(e.type==='chest'){for(const k in e.inv)if(pred(k)){add(e.inv,k,-1);return k;}return null;}
+  if(e.type==='chest'||e.type==='station'&&!e.dest){for(const k in e.inv)if(pred(k)){add(e.inv,k,-1);return k;}return null;}
   if(e.type==='furnace'){if(e.outN>0&&pred(e.outT)){const t=e.outT;if(--e.outN===0)e.outT=null;return t;}return null;}
   if(isMachine(e)){if(e.outN>0&&pred(e.rec)){e.outN--;return e.rec;}return null;}
   return null;
 }
 function beltRoom(b,p){const it=b.items;if(it.length>=4)return false;for(const o of it)if(Math.abs(o.p-p)<GAP)return false;return true;}
 function beltPut(b,t,p){if(!beltRoom(b,p))return false;const it=b.items;let i=0;while(i<it.length&&it[i].p>p)i++;it.splice(i,0,{t,p});return true;}
+function beltPush(n,t){const nt=n.items,tail=nt[nt.length-1];if(nt.length<4&&(!tail||tail.p>=GAP)){nt.push({t,p:0});return true;}return false;}
 const canPut=(e,t)=>isBelt(e)?beltRoom(e,.5):accepts(e,t);
 function put(e,t){if(isBelt(e))return beltPut(e,t,.5);give(e,t);return true;}
 
 // ---------- economy ----------
 function sell(t,auto,mkLv,gen){
-  const v=VAL[t]*GEN[mkLv].mult;
-  money+=v;stats.life+=v;
+  const v=VAL[t]*GEN[mkLv].mult*(perk('syntek')&&ELEC.has(t)?1.15:1);
+  money+=v;stats.life+=v;soldC[t]=(soldC[t]||0)+1;soldVC[t]=(soldVC[t]||0)+v;
   if(auto){stats.auto+=v;revCur+=v;if(VAL[t]>stats.maxAutoVal)stats.maxAutoVal=VAL[t];}
   if(DEPTH[t]===0)stats.raw+=v;
   if(DEPTH[t]>stats.maxDepth)stats.maxDepth=DEPTH[t];
@@ -547,15 +663,74 @@ function checkGoals(){
   for(const m of MILESTONES){
     if(ms[m.id])continue;
     if(stats[m.stat]>=m.goal){ms[m.id]=1;money+=m.reward;
-      toast('Milestone: '+m.n+(m.reward?'. Bonus '+$$(m.reward):''),true);
+      toast('Milestone: '+m.n+(m.reward?'. Bonus '+$$(m.reward):''),'big');
       if(m.id==='empire'&&!won){won=true;$('winStats').textContent='Earned '+$$(stats.life)+' in '+playTime()+'.';show('win',true);}
       uiDirty=true;}
     break;
   }
-  const tests={million:()=>money>=1e6,high:()=>rpm>=5e4&&machinesN<100,raw:()=>stats.raw>=1e6,chain:()=>stats.maxDepth>=8,vertical:()=>stats.maxAutoVal>=1000,tycoon:()=>money>=1e7&&runningN>=10};
-  for(const c of CHALLENGES)if(!ch[c.id]&&tests[c.id]()){ch[c.id]=1;toast('Challenge complete: '+c.n,true);uiDirty=true;}
+  const totalProd=Object.values(prodR).reduce((a,b)=>a+b,0);
+  const tests={million:()=>money>=1e6,high:()=>rpm>=5e4&&machinesN<100,raw:()=>stats.raw>=1e6,chain:()=>stats.maxDepth>=8,vertical:()=>stats.maxAutoVal>=1000,
+    tycoon:()=>money>=1e7&&runningN>=10,contractor:()=>contracts.done>=25,spaghetti:()=>!stats.splitters&&stats.beltMoves>=1e5,minimal:()=>totalProd>=1000&&machinesN<50,
+    nomanual:()=>ticks-stats.lastCraft>=5*3600*60,map:()=>(logi.plots||0)>=10};
+  for(const c of CHALLENGES)if(!ch[c.id]&&tests[c.id]()){ch[c.id]=1;toast('Challenge complete: '+c.n,'big');uiDirty=true;}
 }
-function nextMilestone(){return MILESTONES.find(m=>!ms[m.id]);}
+const nextMilestone=()=>MILESTONES.find(m=>!ms[m.id]);
+
+// ---------- contracts ----------
+function contractFor(t){return contracts.active.find(c=>c.item===t&&(c.kind==='supply'||c.got<c.qty));}
+function producible(){
+  const S=new Set(['iron_ore','copper_ore','coal','stone']);
+  for(let p=0;p<PN*PN;p++)if(owned[p])for(const o of PLOTS[p][2])S.add(o);
+  let more=true;while(more){more=false;
+    for(const k in SMELT)if(smeltOk(k)&&S.has(k)&&!S.has(SMELT[k].o)){S.add(SMELT[k].o);more=true;}
+    for(const r in RECIPES)if(!S.has(r)&&unlocked(r)&&Object.keys(RECIPES[r].in).every(i=>S.has(i))){S.add(r);more=true;}}
+  return S;
+}
+const nice=n=>n<20?Math.max(1,Math.round(n)):n<100?Math.round(n/5)*5:n<1000?Math.round(n/25)*25:Math.round(n/250)*250;
+const niceMoney=v=>{const p=Math.pow(10,Math.max(0,Math.floor(Math.log10(Math.max(v,1)))-1));return Math.round(v/p)*p;};
+function genContract(){
+  const S=producible(),fs=Object.keys(FACTIONS);
+  for(let tries=0;tries<12;tries++){
+    const f=fs[Math.random()*fs.length|0];
+    const pool=FACTIONS[f].pool.filter(k=>S.has(k)).sort((a,b)=>VAL[a]-VAL[b]);if(!pool.length)continue;
+    const item=pool[Math.min(pool.length-1,Math.floor(Math.pow(Math.random(),.6)*pool.length))];
+    if(contracts.offers.concat(contracts.active).some(c=>c.item===item))continue;
+    const scale=Math.max(60,rpm),bonus=1+.1*repLv(f),c={id:contracts.next++,f,item,got:0};
+    if(rpm>=1000&&Math.random()<.35){
+      c.kind='supply';c.mins=[10,15,20][Math.random()*3|0];c.rate=nice(Math.max(3,scale*.25/VAL[item]));
+      c.qty=c.rate*c.mins;c.time=(c.mins+10)*60;c.streak=0;c.minGot=0;c.sec=0;
+      c.reward=niceMoney(c.qty*VAL[item]*2.4*bonus);
+    }else{
+      c.kind='deliver';c.qty=nice(Math.min(5000,Math.max(5,scale*(4+Math.random()*8)/VAL[item])));
+      c.time=Math.min(60,Math.max(10,Math.ceil(c.qty*VAL[item]/scale*2.5)+5))*60;
+      c.reward=niceMoney(c.qty*VAL[item]*(1.7+Math.random()*.5)*bonus);
+    }
+    c.rep=c.reward>=scale*15?2:1;c.exp=600;c.code=FACTIONS[f].code+'-'+(100+c.id);
+    return c;
+  }
+  return null;
+}
+function deliver(c,n){
+  c.got+=n;if(c.kind==='supply')c.minGot+=n;
+  if(c.kind==='deliver'&&c.got>=c.qty)finishContract(c,true);
+}
+function finishContract(c,ok){
+  const i=contracts.active.indexOf(c);if(i<0)return;contracts.active.splice(i,1);
+  if(ok){money+=c.reward;stats.life+=c.reward;rep[c.f]=(rep[c.f]||0)+c.rep;contracts.done++;
+    toast('Contract '+c.code+' complete: +'+$$(c.reward)+' from '+FACTIONS[c.f].n,'big');
+    if(perk(c.f)&&!stats['perk_'+c.f]){stats['perk_'+c.f]=1;toast(FACTIONS[c.f].n+' perk unlocked: '+FACTIONS[c.f].perk,'big');}}
+  else{rep[c.f]=Math.max(0,(rep[c.f]||0)-1);toast('Contract '+c.code+' failed. '+FACTIONS[c.f].n+' reputation dropped.','bad');}
+  uiDirty=true;
+}
+function contractSecond(){
+  for(const c of contracts.offers.slice()){c.exp--;if(c.exp<=0)contracts.offers.splice(contracts.offers.indexOf(c),1);}
+  if(contracts.offers.length<3&&--contracts.cool<=0){const c=genContract();if(c){contracts.offers.push(c);if(contracts.offers.length===1&&!contracts.active.length)toast('New contract offer from '+FACTIONS[c.f].n+'. Open Company > Contracts.');}contracts.cool=30;}
+  for(const c of contracts.active.slice()){
+    c.time--;
+    if(c.kind==='supply'){c.sec++;if(c.sec>=60){c.sec=0;c.streak=c.minGot>=c.rate?c.streak+1:0;c.minGot=0;if(c.streak>=c.mins){finishContract(c,true);continue;}}}
+    if(c.time<=0)finishContract(c,false);
+  }
+}
 
 // ---------- simulation ----------
 function updBelt(b){
@@ -566,11 +741,14 @@ function updBelt(b){
   b.v=false;b.tk=ticks;
   const sp=beltSpd(b.type)/60,it=b.items;
   for(let i=0;i<it.length;i++){const lim=i===0?1:it[i-1].p-GAP;const np=Math.min(it[i].p+sp,lim);if(np>it[i].p)it[i].p=np;}
+  b.rej=null;
   if(it.length&&it[0].p>=1&&n){
     const t=it[0].t;
-    if(isBelt(n)){const nt=n.items,tail=nt[nt.length-1];if(nt.length<4&&(!tail||tail.p>=GAP)){nt.push({t,p:0});it.shift();}}
+    if(isBelt(n)){if(beltPush(n,t)){it.shift();stats.beltMoves++;}}
     else if(accepts(n,t)){give(n,t);it.shift();}
+    else if(n.type==='moneygen'&&n.q.length<20)b.rej=t;
   }
+  b.jam=it.length>0&&it[0].p>=1;
 }
 function updIns(e){
   const s=(e.type==='fast_inserter'?1/.18:1/.5)*(1+.25*upgLv('inserter'))/60,d=e.dir;
@@ -583,35 +761,75 @@ function updIns(e){
     if(e.a>=1){const tgt=at(e.x+DX[d],e.y+DY[d]);if(tgt&&canPut(tgt,e.hold)){put(tgt,e.hold);e.hold=null;e.ph=2;}}
   }else{e.a=Math.max(0,e.a-s);if(e.a<=0)e.ph=0;}
 }
+const wear=e=>{e.eff=Math.max(.5,e.eff-WEAR*(1-.2*upgLv('durability')));};
 function updDrill(e){
-  const i=e.y*W+e.x;e.on=false;
-  if(!e.buf&&ore[i]){e.on=true;e.prog+=drillRate()/60;if(e.prog>=1){e.prog=0;e.buf=ORES[ore[i]-1];mineTile(i);}}
-  if(e.buf){const tgt=at(e.x+DX[e.dir],e.y+DY[e.dir]);
-    if(tgt){if(isBelt(tgt)){if(beltPut(tgt,e.buf,.25))e.buf=null;}else if(accepts(tgt,e.buf)){give(tgt,e.buf);e.buf=null;}}}
+  const i=e.y*W+e.x;
+  if(!ore[i]&&!e.buf){e.st='empty';return;}
+  if(!e.buf){e.st='work';wear(e);e.prog+=drillRate()*e.eff/60;if(e.prog>=1){e.prog=0;e.buf=ORES[ore[i]-1];mineTile(i);produce(e.buf,1);}}
+  if(e.buf){const tgt=at(e.x+DX[e.dir],e.y+DY[e.dir]);let ok=false;
+    if(tgt){if(isBelt(tgt))ok=beltPut(tgt,e.buf,.25);else if(accepts(tgt,e.buf)){give(tgt,e.buf);ok=true;}}
+    if(ok)e.buf=null;else e.st='block';}
 }
 function updFurn(e){
   if(!e.cur){
     const s=e.inT&&SMELT[e.inT];
-    if(s&&e.inN>=s.n&&(e.outN===0||e.outT===s.o)&&e.outN<50){
-      if(e.fuel<=0&&e.coal>0){e.coal--;e.fuel+=5;}
-      if(e.fuel>0){e.fuel--;e.inN-=s.n;e.cur=e.inT;e.prog=0;if(e.inN===0)e.inT=null;}
+    if(!s||e.inN<s.n)e.st='starve';
+    else if(e.outN>=50||(e.outN>0&&e.outT!==s.o))e.st='block';
+    else{
+      if(e.fuel<=0&&e.coal>0){e.coal--;e.fuel+=perk('nordex')?10:5;consume('coal',1);}
+      if(e.fuel>0){e.fuel--;e.inN-=s.n;consume(e.inT,s.n);e.cur=e.inT;e.prog=0;if(e.inN===0)e.inT=null;}
+      else e.st='nofuel';
     }
   }
-  if(e.cur){const s=SMELT[e.cur];e.prog+=machSpd()/(s.t*60);if(e.prog>=1){e.outT=s.o;e.outN++;e.cur=null;e.prog=0;}}
+  if(e.cur){e.st='work';wear(e);const s=SMELT[e.cur];e.prog+=machSpd()*e.eff/(s.t*60);if(e.prog>=1){e.outT=s.o;e.outN++;produce(s.o,1);e.cur=null;e.prog=0;}}
 }
 function updAsm(e){
-  if(!e.rec)return;const r=RECIPES[e.rec];
+  if(!e.rec){e.st='idle';return;}const r=RECIPES[e.rec];
   if(!e.work){
-    if(e.outN<Math.max(10,r.out*4)&&Object.entries(r.in).every(([k,a])=>(e.inv[k]||0)>=a)){
-      for(const k in r.in)add(e.inv,k,-r.in[k]);e.work=true;e.prog=0;}
+    e.miss=null;
+    if(e.outN>=Math.max(10,r.out*4))e.st='block';
+    else{for(const k in r.in)if((e.inv[k]||0)<r.in[k]){e.miss=k;break;}
+      if(e.miss)e.st='starve';else{for(const k in r.in){add(e.inv,k,-r.in[k]);consume(k,r.in[k]);}e.work=true;e.prog=0;}}
   }
-  if(e.work){e.prog+=machSpd()/(r.t*60);if(e.prog>=1){e.outN+=r.out;e.work=false;e.prog=0;}}
+  if(e.work){e.st='work';wear(e);e.prog+=machSpd()*e.eff/(r.t*60);if(e.prog>=1){e.outN+=r.out;produce(e.rec,r.out);e.work=false;e.prog=0;}}
 }
 function updGen(e){
   const g=GEN[e.mk];
   e.prog=Math.min(e.prog+g.rate/60,Math.max(1,g.rate/10));
-  while(e.prog>=1&&e.q.length){e.prog-=1;sell(e.q.shift(),true,e.mk,e);}
+  while(e.prog>=1&&e.q.length){e.prog-=1;const t=e.q.shift(),c=contractFor(t);
+    if(c){deliver(c,1);soldC[t]=(soldC[t]||0)+1;}else if(DEPTH[t]<=g.depth)sell(t,true,e.mk,e);else add(inv,t,1);}
   if(!e.q.length)e.prog=Math.min(e.prog,1);
+}
+function updSplit(e){
+  if(!e.buf.length)return;
+  const outs=[e.dir,(e.dir+1)%4,(e.dir+3)%4],t=e.buf[0];
+  for(let k=0;k<3;k++){
+    const d=outs[(e.rr+k)%3],tgt=at(e.x+DX[d],e.y+DY[d]);if(!tgt)continue;
+    let ok=false;
+    if(isBelt(tgt)){if(tgt.dir!==(d+2)%4)ok=beltPush(tgt,t);}
+    else if(tgt.type!=='splitter'&&accepts(tgt,t)){give(tgt,t);ok=true;}
+    if(ok){e.buf.shift();e.rr=(e.rr+k+1)%3;return;}
+  }
+}
+function stationDest(e){if(!e.dest)return null;const d=at(e.dest[0],e.dest[1]);return d&&d.type==='station'&&d!==e?d:null;}
+function updStation(e){
+  const d=stationDest(e);if(!d){if(e.dest)e.dest=null;return;}
+  const tr=e.tr;tr.t++;
+  if(tr.st==='load'){
+    const n=total(e.inv);
+    if(n>=TRAIN_CAP||(n>0&&tr.t>300)){
+      let k=0;for(const t in e.inv){const m=Math.min(e.inv[t],TRAIN_CAP-k);add(tr.cargo,t,m);add(e.inv,t,-m);k+=m;if(k>=TRAIN_CAP)break;}
+      tr.n=k;tr.st='go';tr.t=0;tr.dur=Math.max(60,Math.hypot(d.x-e.x,d.y-e.y)/TRAIN_SPEED*60);
+    }
+  }else if(tr.st==='go'){
+    if(tr.t>=tr.dur&&total(d.inv)+tr.n<=2000){for(const t in tr.cargo)add(d.inv,t,tr.cargo[t]);e.trips++;e.moved+=tr.n;tr.cargo={};tr.n=0;tr.st='back';tr.t=0;}
+  }else if(tr.t>=tr.dur){tr.st='load';tr.t=0;}
+}
+function updMaint(e){
+  if(--e.cd>0||e.parts<=0)return;e.cd=90;
+  let best=null;
+  for(const list of[L.drill,L.furn,L.asm])for(const m of list){if(m.eff>=.9||Math.abs(m.x-e.x)>10||Math.abs(m.y-e.y)>10)continue;if(!best||m.eff<best.eff)best=m;}
+  if(best){best.eff=1;e.parts--;e.fixed++;consume('replacement_parts',1);floats.push({x:best.x+.5,y:best.y,s:'repaired',t:0,c:'#79b25a'});}
 }
 function updCraft(){
   const q=queue[0];if(!q)return;const R=RECIPES[q.r];
@@ -620,23 +838,64 @@ function updCraft(){
     else{queue.shift();toast('Not enough materials for '+ITEMS[q.r].n);return;}
   }
   q.p+=(1+.5*upgLv('hand'))/(R.t*60);
-  if(q.p>=1){add(inv,q.r,R.out);queue.shift();}
+  if(q.p>=1){add(inv,q.r,R.out);produce(q.r,R.out);stats.lastCraft=ticks;queue.shift();}
 }
 function handMine(){
   if(!mining)return;const i=mining.y*W+mining.x;
   if(!ore[i]||at(mining.x,mining.y)){mining=null;return;}
   mining.p+=1/30;
-  if(mining.p>=1){mining.p=0;const t=ORES[ore[i]-1];add(inv,t,1);mineTile(i);floats.push({x:mining.x+.5,y:mining.y,s:'+1 '+ITEMS[t].n,t:0,c:'#ece6d3'});}
+  if(mining.p>=1){mining.p=0;const t=ORES[ore[i]-1];add(inv,t,1);produce(t,1);mineTile(i);floats.push({x:mining.x+.5,y:mining.y,s:'+1 '+ITEMS[t].n,t:0,c:'#ece6d3'});}
 }
-function perSecond(){
-  revBuf[revIdx]=revCur;revCur=0;revIdx=(revIdx+1)%60;rpm=revBuf.reduce((a,b)=>a+b,0);
-  machinesN=0;const run=new Set();
+
+// ---------- statistics & problems ----------
+const EMA=Math.exp(-1/30);
+function rollRates(){
+  for(const[c,r]of[[prodC,prodR],[consC,consR],[soldC,soldR],[soldVC,valR]]){
+    for(const k in r){r[k]*=EMA;if(r[k]<.01)delete r[k];}
+    for(const k in c){r[k]=(r[k]||0)+c[k]*60*(1-EMA);delete c[k];}
+  }
+}
+function survey(){
+  const M={};machinesN=0;const run=new Set(),miss={};let worn=0,wornFirst=null,blockFirst=null,fuelFirst=null,emptyFirst=null,nofuel=0;
   for(const e of ents){
-    if(e.type==='drill'||e.type==='furnace'||isMachine(e))machinesN++;
+    if(!WEARS.has(e.type))continue;
+    machinesN++;const m=M[e.type]||(M[e.type]={n:0,work:0,starve:0,block:0,idle:0,eff:0});
+    m.n++;m.eff+=e.eff;
+    const st=e.st==='work'?'work':e.st==='block'?'block':e.st==='idle'||e.st==='empty'?'idle':'starve';m[st]++;
+    if(e.st==='block'&&!blockFirst)blockFirst=e;
+    if(e.st==='nofuel'){nofuel++;if(!fuelFirst)fuelFirst=e;}
+    if(e.st==='empty'&&!emptyFirst)emptyFirst=e;
+    if(e.eff<.8){worn++;if(!wornFirst||e.eff<wornFirst.eff)wornFirst=e;}
+    if(e.miss&&e.st==='starve'){(miss[e.miss]||(miss[e.miss]={n:0,e}));miss[e.miss].n++;}
     if(isMachine(e)&&e.work)run.add(e.rec);
     if(e.type==='furnace'&&e.cur)run.add('smelt:'+e.cur);
   }
-  runningN=run.size;
+  runningN=run.size;mstat=M;
+  let items=0,jams=0,jamFirst=null,rej=null,chestsFull=0,chestFirst=null,cap=0,used=0,chests=0;
+  for(const b of L.belt){items+=b.items.length;if(b.jam){jams++;if(!jamFirst)jamFirst=b;}if(b.rej&&!rej)rej=b;}
+  for(const e of ents)if(e.type==='chest'){chests++;cap+=chestCap();const u=total(e.inv);used+=u;if(u>=chestCap()){chestsFull++;if(!chestFirst)chestFirst=e;}}
+  const plots=new Set();let routes=0,moved=0,trips=0;
+  for(const s of L.st){const d=stationDest(s);if(!d)continue;routes++;plots.add(plotOf(s.x,s.y));plots.add(plotOf(d.x,d.y));moved+=s.moved;trips+=s.trips;}
+  logi={belts:L.belt.length,items,jams,util:L.belt.length?items/(L.belt.length*4):0,chests,cap,used,chestsFull,routes,plots:plots.size,avgLoad:trips?moved/trips/TRAIN_CAP:0,splitters:L.sp.length};
+  const A=[];
+  if(nofuel)A.push({s:'crit',t:nofuel+' furnace'+(nofuel>1?'s':'')+' out of coal',e:fuelFirst});
+  if(rej)A.push({s:'crit',t:'A Money Generator can’t take '+ITEMS[rej.rej].n+'. Upgrade it or send that item elsewhere.',e:rej});
+  const short=Object.entries(miss).sort((a,b)=>b[1].n-a[1].n)[0];
+  if(short){const[k,v]=short;A.push({s:'warn',t:ITEMS[k].n+' shortage: '+v.n+' machine'+(v.n>1?'s':'')+' waiting. Making '+fr(prodR[k]||0)+'/min, using '+fr(consR[k]||0)+'/min.',e:v.e});}
+  const blocked=Object.values(M).reduce((a,m)=>a+m.block,0);
+  if(blocked)A.push({s:'warn',t:blocked+' machine'+(blocked>1?'s':'')+' stopped: output full',e:blockFirst});
+  if(jams>=6&&jams>L.belt.length*.2)A.push({s:'warn',t:'Belt congestion: '+jams+' belts backed up',e:jamFirst});
+  if(worn)A.push({s:'warn',t:worn+' machine'+(worn>1?'s':'')+' below 80% condition. Repair to restore speed.',e:wornFirst});
+  if(chestsFull)A.push({s:'info',t:chestsFull+' chest'+(chestsFull>1?'s':'')+' full',e:chestFirst});
+  if(emptyFirst)A.push({s:'info',t:'Drills on used-up ore',e:emptyFirst});
+  for(const c of contracts.active)if(c.time<180)A.push({s:'crit',t:'Contract '+c.code+': '+mmss(c.time)+' left',c:1});
+  alerts=A.slice(0,5);
+}
+function perSecond(){
+  revBuf[revIdx]=revCur;spendBuf[revIdx]=spendCur;revCur=0;spendCur=0;revIdx=(revIdx+1)%60;
+  rpm=revBuf.reduce((a,b)=>a+b,0);epm=spendBuf.reduce((a,b)=>a+b,0);
+  if(ticks%3600===0){revHist.push(rpm);if(revHist.length>30)revHist.shift();}
+  rollRates();survey();contractSecond();
   for(const g of L.gen){if(g.earned>0){floats.push({x:g.x+1,y:g.y,s:'+'+$s(g.earned),t:0,c:'#d9b54a'});g.earned=0;}}
   checkGoals();
 }
@@ -647,14 +906,16 @@ function tick(){
   for(const e of L.furn)updFurn(e);
   for(const e of L.asm)updAsm(e);
   for(const e of L.ins)updIns(e);
+  for(const e of L.sp)updSplit(e);
   for(const e of L.belt)updBelt(e);
   for(const e of L.gen)updGen(e);
+  for(const e of L.st)updStation(e);
+  for(const e of L.mt)updMaint(e);
   updCraft();handMine();
   if(ticks%60===0)perSecond();
 }
 
 // ---------- building ----------
-function footprint(type){return type==='moneygen'?[2,2]:[1,1];}
 function placeOk(type,x,y){
   const[w,h]=footprint(type);
   for(let j=0;j<h;j++)for(let i=0;i<w;i++){const X=x+i,Y=y+j;if(!inb(X,Y)||!ownedAt(X,Y))return 'land';const ex=at(X,Y);
@@ -662,32 +923,93 @@ function placeOk(type,x,y){
   if(type==='drill'&&!ore[y*W+x])return 'ore';
   return '';
 }
-function tryPlace(x,y,type,dir){
+function tryPlace(x,y,type,dir,quiet){
   const why=placeOk(type,x,y);
-  if(why==='land'){toastOnce('You don’t own this land yet. Buy it in Company > Land.');return null;}
+  if(why==='land'){if(!quiet)toastOnce('You don’t own this land yet. Buy it in Company > Land.');return null;}
   if(why==='busy')return null;
-  if(why==='ore'){toastOnce('Drills go on ore.');return null;}
+  if(why==='ore'){if(!quiet)toastOnce('Drills go on ore.');return null;}
   const ex=at(x,y);
   if(ex&&isBelt(ex)){
     if(ex.type===type){ex.dir=dir;return ex;}
     if(!inv[type])return null;
     add(inv,type,-1);add(inv,ex.type,1);ex.type=type;ex.dir=dir;listsDirty=true;return ex;
   }
-  if(!inv[type]){toastOnce('You have no '+ITEMS[type].n+' left. Craft it (E) or buy it (C > Market).');return null;}
-  add(inv,type,-1);const e=mk(type,x,y,dir);addEnt(e);return e;
+  if(!inv[type]){if(!quiet)toastOnce('You have no '+ITEMS[type].n+' left. Craft it (E) or buy it (C > Market).');return null;}
+  add(inv,type,-1);const e=mk(type,x,y,dir);addEnt(e);
+  if(type==='splitter')stats.splitters=1;
+  return e;
 }
 function refund(e){
   add(inv,e.type,1);
   if(e.items)for(const o of e.items)add(inv,o.t,1);
   if(e.hold)add(inv,e.hold,1);
-  if(e.buf)add(inv,e.buf,1);
+  if(e.type==='drill'&&e.buf)add(inv,e.buf,1);
+  if(e.type==='splitter')for(const t of e.buf)add(inv,t,1);
   if(e.q)for(const t of e.q)add(inv,t,1);
+  if(e.type==='maint'&&e.parts)add(inv,'replacement_parts',e.parts);
+  if(e.type==='station'){for(const k in e.inv)add(inv,k,e.inv[k]);for(const k in e.tr.cargo)add(inv,k,e.tr.cargo[k]);}
   if(e.type==='furnace'){if(e.inN)add(inv,e.inT,e.inN);if(e.coal)add(inv,'coal',e.coal);if(e.outN)add(inv,e.outT,e.outN);if(e.cur)add(inv,e.cur,SMELT[e.cur].n);}
   if(isMachine(e)){for(const k in e.inv)add(inv,k,e.inv[k]);if(e.outN)add(inv,e.rec,e.outN);if(e.work)for(const k in RECIPES[e.rec].in)add(inv,k,RECIPES[e.rec].in[k]);}
   if(e.type==='chest')for(const k in e.inv)add(inv,k,e.inv[k]);
 }
 function removeAt(x,y){const e=at(x,y);if(!e)return;if(e.hq){toastOnce('The headquarters Money Generator stays put.');return;}
   refund(e);delEnt(e);if(entOpen===e)closeEnt();}
+function repair(e){
+  if(!e||e.eff===undefined||e.eff>=.995)return false;
+  if(inv.replacement_parts>0){add(inv,'replacement_parts',-1);e.eff=1;return true;}
+  const c=repairCost(e);if(money<c)return false;spend(c);e.eff=1;return true;
+}
+
+// ---------- blueprints ----------
+function saveBps(){try{localStorage.setItem(BP_KEY,JSON.stringify(bps));}catch(_){}}
+const validBp=b=>!!b&&Array.isArray(b.E)&&b.E.length>0&&b.E.every(e=>ITEMS[e.t]&&ITEMS[e.t].place);
+function loadBps(){try{const r=localStorage.getItem(BP_KEY);if(r){const a=JSON.parse(r);if(Array.isArray(a))bps=a.filter(validBp);}}catch(_){}}
+function captureBp(x0,y0,x1,y1){
+  const E=[],seen=new Set();let mx=1e9,my=1e9,Mx=-1,My=-1;
+  for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){const e=at(x,y);if(!e||seen.has(e)||e.hq)continue;seen.add(e);
+    const[w,h]=footprint(e.type);if(e.x<x0||e.y<y0||e.x+w-1>x1||e.y+h-1>y1)continue;
+    const o={t:e.type,x:e.x,y:e.y,dir:e.dir|0};if(e.rec)o.rec=e.rec;E.push(o);
+    mx=Math.min(mx,e.x);my=Math.min(my,e.y);Mx=Math.max(Mx,e.x+w-1);My=Math.max(My,e.y+h-1);}
+  if(!E.length){toast('No buildings inside that box');return;}
+  for(const e of E){e.x-=mx;e.y-=my;}
+  const bp={name:'Blueprint '+(bps.length+1),w:Mx-mx+1,h:My-my+1,E};
+  bps.push(bp);saveBps();bpPrev.length=0;
+  toast('Saved '+bp.name+' with '+E.length+' buildings','big');
+  openCo('blueprints');
+}
+function rotBp(bp,r){
+  let E=bp.E.map(e=>Object.assign({},e)),w=bp.w,h=bp.h;
+  for(let k=0;k<r;k++){const hh=h;E=E.map(e=>{const s=footprint(e.t)[0];return Object.assign(e,{x:hh-e.y-s,y:e.x,dir:(e.dir+1)%4});});[w,h]=[h,w];}
+  return {E,w,h};
+}
+function bpNeeds(bp){const n={};for(const e of bp.E)n[e.t]=(n[e.t]||0)+1;return n;}
+function placeBp(bp,x,y,r,buy){
+  const R=rotBp(bp,r);
+  for(const e of R.E){const why=placeOk(e.t,x+e.x,y+e.y);
+    if(why==='land'){toast('Part of the blueprint is on land you don’t own');return false;}
+    if(why==='busy'){toast('Something is in the way');return false;}
+    if(why==='ore'){toast('A drill in this blueprint needs ore under it');return false;}}
+  const need=bpNeeds(bp),missing={};let cost=0;
+  for(const k in need){const m=need[k]-(inv[k]||0);if(m>0){if(!unlocked(k)){toast(ITEMS[k].n+' needs research first');return false;}missing[k]=m;cost+=m*marketPrice(k);}}
+  if(cost>0){
+    if(!buy){toast('Missing '+Object.entries(missing).map(([k,m])=>m+' '+ITEMS[k].n).join(', ')+'. Shift+click to buy them for '+$$(cost)+'.');return false;}
+    if(money<cost){toast('Buying the missing buildings costs '+$$(cost)+'. Not enough money.');return false;}
+    spend(cost);for(const k in missing)add(inv,k,missing[k]);
+  }
+  for(const e of R.E){const p=tryPlace(x+e.x,y+e.y,e.t,e.dir,true);if(p&&e.rec&&isMachine(p)&&unlocked(e.rec)&&RECIPES[e.rec].cat===MACHINE_CAT[p.type])p.rec=e.rec;}
+  return true;
+}
+const bpCode=bp=>'FBK1:'+btoa(unescape(encodeURIComponent(JSON.stringify(bp))));
+function bpDecode(s){try{s=s.trim();if(!s.startsWith('FBK1:'))return null;const b=JSON.parse(decodeURIComponent(escape(atob(s.slice(5)))));
+  if(!validBp(b))return null;b.E=b.E.map(e=>{const o={t:e.t,x:e.x|0,y:e.y|0,dir:((e.dir|0)%4+4)%4};if(RECIPES[e.rec])o.rec=e.rec;return o;});
+  b.name=String(b.name||'Imported').slice(0,40);b.w=Math.max(1,b.w|0);b.h=Math.max(1,b.h|0);return b;}catch(_){return null;}}
+const bpPrev=[];
+function bpImg(i){
+  if(bpPrev[i])return bpPrev[i];const bp=bps[i],s=Math.max(3,Math.min(12,Math.floor(Math.min(96/bp.w,72/bp.h))));
+  const c=document.createElement('canvas');c.width=bp.w*s;c.height=bp.h*s;const g=c.getContext('2d');g.fillStyle='#2b2a22';g.fillRect(0,0,c.width,c.height);
+  for(const e of bp.E){const m=mk(e.t,0,0,e.dir);m.ghost=1;if(e.rec)m.rec=e.rec;g.save();g.translate(e.x*s,e.y*s);g.scale(s/32,s/32);drawEntity(g,m,0);g.restore();}
+  return bpPrev[i]=c.toDataURL();
+}
 
 // ---------- hand crafting ----------
 const handOk=r=>RECIPES[r]&&RECIPES[r].cat==='asm'&&unlocked(r);
@@ -728,6 +1050,7 @@ function drawItemShape(g,t){
       for(const[x,y,r]of R){g.fillStyle=O;circ(g,x,y,r+1.5);g.fill();}
       for(const[x,y,r]of R){g.fillStyle=c;circ(g,x,y,r);g.fill();g.fillStyle=shade(c,t==='coal'||t==='tungsten'?1.3:1.4);circ(g,x-r*.35,y-r*.35,r*.38);g.fill();}
       if(t==='uranium'){g.fillStyle='rgba(160,255,120,.35)';circ(g,16,17,14);g.fill();}break;}
+    case 'log':for(const[y,x]of[[18,4],[9,8]]){g.beginPath();g.rect(x,y,20,8);outlineFill(g,c);circ(g,x+20,y+4,4);outlineFill(g,'#d9b17a');g.strokeStyle='#8a5a32';g.lineWidth=1;circ(g,x+20,y+4,1.8);g.stroke();}break;
     case 'oil':g.beginPath();g.moveTo(16,3);g.quadraticCurveTo(27,16,26,20);g.arc(16,20,10,0,Math.PI);g.quadraticCurveTo(5,16,16,3);outlineFill(g,c);
       g.fillStyle='rgba(255,255,255,.35)';circ(g,12,20,2.5);g.fill();break;
     case 'powder':g.beginPath();g.moveTo(3,27);g.quadraticCurveTo(16,1,29,27);g.closePath();outlineFill(g,c);
@@ -771,11 +1094,13 @@ function drawItemShape(g,t){
       g.fillStyle='#b9c3cc';g.fillRect(23,15,7,4);g.fillStyle=O;g.fillRect(9,5,8,4);g.fillStyle='#e2894a';g.fillRect(10,6,6,2);break;
     case 'pump':circ(g,14,18,10);outlineFill(g,c);g.beginPath();g.rect(20,5,8,8);outlineFill(g,shade(c,.8));g.fillStyle='#2b2d30';circ(g,14,18,4.5);g.fill();
       g.fillStyle=shade(c,1.4);circ(g,11,14,2.2);g.fill();break;
+    case 'parts':g.beginPath();g.rect(4,13,24,15);outlineFill(g,c);g.fillStyle=shade(c,.7);g.fillRect(4,18,24,2);
+      g.save();g.translate(16,10);g.fillStyle='#aab4bc';for(let k=0;k<6;k++){g.save();g.rotate(k*Math.PI/3);g.fillRect(-1.6,-8,3.2,4);g.restore();}circ(g,0,0,5.5);g.fill();g.fillStyle=O;circ(g,0,0,2);g.fill();g.restore();break;
     case 'sensor':g.beginPath();g.rect(5,7,22,18);outlineFill(g,c);g.fillStyle='#1b2a33';circ(g,16,16,6.5);g.fill();g.fillStyle='#6ad0f0';circ(g,16,16,3.8);g.fill();
       g.fillStyle='#fff';circ(g,14.5,14.5,1.2);g.fill();g.fillStyle='#79b25a';g.fillRect(7,9,3,2);break;
     case 'block':poly(g,[[16,4],[28,10],[16,16],[4,10]]);outlineFill(g,shade(c,1.25));poly(g,[[4,10],[16,16],[16,29],[4,23]]);outlineFill(g,shade(c,.8));
       poly(g,[[16,16],[28,10],[28,23],[16,29]]);outlineFill(g,c);break;
-    case 'cube':      poly(g,[[16,3],[28,9.5],[16,16],[4,9.5]]);outlineFill(g,shade(c,1.35));poly(g,[[4,9.5],[16,16],[16,29],[4,22.5]]);outlineFill(g,shade(c,.75));
+    case 'cube':poly(g,[[16,3],[28,9.5],[16,16],[4,9.5]]);outlineFill(g,shade(c,1.35));poly(g,[[4,9.5],[16,16],[16,29],[4,22.5]]);outlineFill(g,shade(c,.75));
       poly(g,[[16,16],[28,9.5],[28,22.5],[16,29]]);outlineFill(g,c);g.strokeStyle='rgba(255,255,255,.5)';g.lineWidth=1;g.beginPath();g.moveTo(9,12);g.lineTo(9,20);g.stroke();break;
     case 'crystal':poly(g,[[16,2],[25,12],[16,30],[7,12]]);outlineFill(g,c);g.fillStyle=shade(c,1.45);poly(g,[[16,2],[16,30],[7,12]]);g.fill();
       g.fillStyle='rgba(255,255,255,.7)';poly(g,[[16,5],[12,12],[16,12]]);g.fill();break;
@@ -787,15 +1112,24 @@ function drawItemShape(g,t){
       g.strokeStyle=c;g.lineWidth=3.6;g.stroke();g.fillStyle=O;for(const[x,y]of[[12,23],[10,13],[22,7]]){circ(g,x,y,2.6);g.fill();}g.fillStyle='#cfc8ae';g.fillRect(24,13,5,3);break;
   }
 }
+const BELT_COL={fast_belt:'#d2553f',express_belt:'#4fb0d0',magnetic_belt:'#b07ae8'};
 function drawBelt(g,e,tm){
   g.save();rot(g,e.dir);
   g.fillStyle='#2a2922';g.fillRect(0,0,32,32);
-  g.fillStyle='#5b5747';g.fillRect(2,0,3,32);g.fillRect(27,0,3,32);
+  g.fillStyle=e.type==='magnetic_belt'?'#5a4a78':'#5b5747';g.fillRect(2,0,3,32);g.fillRect(27,0,3,32);
   const off=(tm*beltSpd(e.type)*32)%16;
-  g.strokeStyle=e.type==='fast_belt'?'#d2553f':e.type==='express_belt'?'#4fb0d0':cos.teal?'#3fc2b0':'#e3a52a';
+  g.strokeStyle=BELT_COL[e.type]||(cos.teal?'#3fc2b0':'#e3a52a');
   g.lineWidth=2.5;g.lineCap='round';g.lineJoin='round';g.beginPath();
   for(let k=0;k<3;k++){const y=k*16-off+4;if(y<2||y>25)continue;g.moveTo(10,y+5);g.lineTo(16,y);g.lineTo(22,y+5);}
   g.stroke();g.restore();
+}
+function drawSplitter(g,e){
+  g.save();rot(g,e.dir);
+  g.fillStyle='#2a2922';g.fillRect(0,0,32,32);g.fillStyle='#5b5747';g.fillRect(2,0,3,32);g.fillRect(27,0,3,32);
+  g.fillStyle='#3b3a30';g.fillRect(8,8,16,16);g.strokeStyle=O;g.lineWidth=1.5;g.strokeRect(8,8,16,16);
+  g.fillStyle='#e3a52a';poly(g,[[16,1],[11,7],[21,7]]);g.fill();poly(g,[[1,16],[7,11],[7,21]]);g.fill();poly(g,[[31,16],[25,11],[25,21]]);g.fill();
+  g.restore();
+  if(e.buf&&e.buf[0])g.drawImage(ICON[e.buf[0]],10,10,12,12);
 }
 function drawIns(g,e){
   const fast=e.type==='fast_inserter';
@@ -808,17 +1142,19 @@ function drawIns(g,e){
   g.fillStyle=O;circ(g,16,16,3);g.fill();
   if(e.hold)g.drawImage(ICON[e.hold],ex-6,ey-6,12,12);
 }
+function wearMark(g,e){if(e.ghost||!e.eff||e.eff>=.8)return;g.fillStyle=e.eff<.65?'#d2553f':'#e3a52a';poly(g,[[3,29],[8,20],[13,29]]);g.fill();g.fillStyle=O;g.fillRect(7.3,23,1.4,3.5);g.fillRect(7.3,27.2,1.4,1.2);}
 function drawDrill(g,e,tm){
   g.save();rot(g,e.dir);
   g.fillStyle='#23251a';g.fillRect(2,3,28,27);g.fillStyle='#636d36';g.fillRect(4,6,24,22);
   g.fillStyle='#4e5629';g.fillRect(4,24,24,4);
   g.fillStyle='#23251a';g.fillRect(10,0,12,6);g.fillStyle='#e3a52a';g.fillRect(12,1,8,2.5);
   g.restore();
-  g.save();g.translate(16,17);g.rotate(e.on?tm*5:0);
+  g.save();g.translate(16,17);g.rotate(e.st==='work'?tm*5:0);
   g.fillStyle='#2b2d20';circ(g,0,0,8);g.fill();
   g.strokeStyle='#cfc8ae';g.lineWidth=2.5;g.lineCap='round';g.beginPath();
   for(let k=0;k<3;k++){const a=k*Math.PI*2/3;g.moveTo(0,0);g.lineTo(Math.cos(a)*6.5,Math.sin(a)*6.5);}g.stroke();g.restore();
-  if(!e.ghost&&!e.on&&!e.buf){g.fillStyle='#d2553f';circ(g,26,26,2.5);g.fill();}
+  if(!e.ghost&&e.st==='empty'){g.fillStyle='#d2553f';circ(g,26,26,2.5);g.fill();}
+  wearMark(g,e);
 }
 function glow(g,x,y,r,col){if(!cos.lights)return;const gr=g.createRadialGradient(x,y,1,x,y,r);gr.addColorStop(0,col);gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(x-r,y-r,r*2,r*2);}
 function drawFurn(g,e,tm){
@@ -826,16 +1162,20 @@ function drawFurn(g,e,tm){
   g.strokeStyle='#5e4d3b';g.lineWidth=1;g.beginPath();
   for(const y of[9.5,15.5,21.5]){g.moveTo(4,y);g.lineTo(28,y);}
   for(const[x,y0]of[[10,4],[20,4],[15,10],[25,10],[10,16],[20,16],[15,22],[25,22]]){g.moveTo(x+.5,y0);g.lineTo(x+.5,y0+5.5);}g.stroke();
+  g.fillStyle='#2a221a';g.fillRect(22,3,6,6);
   g.fillStyle='#16110c';g.fillRect(9,17,14,10);
   if(e.cur){const f=.7+.3*Math.sin(tm*13+e.x*3)*Math.sin(tm*7.7);g.fillStyle='rgba(255,'+(120+f*80|0)+',40,'+(0.65+f*.3)+')';g.fillRect(10,19,12,8);glow(g,16,23,20,'rgba(255,150,40,.35)');}
+  if(!e.ghost&&e.st==='nofuel'){g.fillStyle='#d2553f';circ(g,26,26,2.5);g.fill();}
+  wearMark(g,e);
 }
 function drawAsm(g,e){
   g.fillStyle='#22272a';g.fillRect(1,1,30,30);g.fillStyle='#5d6870';g.fillRect(2.5,2.5,27,27);
   g.fillStyle='#313a3f';g.fillRect(7,7,18,18);
   if(e.rec)g.drawImage(ICON[e.rec],8,8,16,16);
   else{g.strokeStyle='#76828a';g.lineWidth=1.5;circ(g,16,16,5);g.stroke();}
-  g.fillStyle=e.work?'#79b25a':'#1b1f22';g.fillRect(25,4,3.5,3.5);
+  g.fillStyle=e.work?'#79b25a':e.st==='block'?'#d2553f':'#1b1f22';g.fillRect(25,4,3.5,3.5);
   if(e.work){g.fillStyle='#e3a52a';g.fillRect(7,26,18*e.prog,2);glow(g,16,16,22,'rgba(121,178,90,.25)');}
+  wearMark(g,e);
 }
 function drawChem(g,e,tm){
   g.fillStyle='#17201f';g.fillRect(1,1,30,30);g.fillStyle='#3f6b68';g.fillRect(2.5,2.5,27,27);
@@ -844,6 +1184,7 @@ function drawChem(g,e,tm){
   if(e.rec)g.drawImage(ICON[e.rec],12,19.5,9,9);
   if(e.work){const b=(tm*1.5+e.x*.37)%1;g.fillStyle='rgba(225,255,250,.85)';circ(g,11,15-b*7,1.3);g.fill();circ(g,21,15-((b+.5)%1)*7,1.3);g.fill();
     g.fillStyle='#e3a52a';g.fillRect(5,28,22*e.prog,1.5);glow(g,16,14,22,'rgba(111,166,160,.35)');}
+  wearMark(g,e);
 }
 function drawFab(g,e,tm){
   g.fillStyle='#14121a';g.fillRect(1,1,30,30);g.fillStyle='#3b3550';g.fillRect(2.5,2.5,27,27);
@@ -852,11 +1193,17 @@ function drawFab(g,e,tm){
   if(e.rec)g.drawImage(ICON[e.rec],9,9,14,14);
   g.fillStyle='#6b6384';for(const[x,y]of[[4,4],[26,4],[4,26],[26,26]])g.fillRect(x,y,2,2);
   if(e.work){g.fillStyle='#9a6ae0';g.fillRect(7,27.5,18*e.prog,1.5);glow(g,16,16,24,'rgba(154,106,224,.35)');}
+  wearMark(g,e);
 }
 function drawChest(g){
   g.fillStyle='#3a2512';g.fillRect(4,5,24,23);g.fillStyle='#8b5a2b';g.fillRect(5.5,6.5,21,20);
   g.fillStyle='#6b4420';g.fillRect(5.5,13,21,2);g.fillRect(5.5,20,21,2);
   g.fillStyle='#c9a640';g.fillRect(14,12,4,5);
+}
+function drawMaint(g,e){
+  g.fillStyle='#172226';g.fillRect(2,2,28,28);g.fillStyle='#3d5a66';g.fillRect(3.5,3.5,25,25);
+  g.save();g.translate(16,15);g.rotate(-Math.PI/4);g.fillStyle='#e3a52a';g.fillRect(-2.2,-2,4.4,13);circ(g,0,-6,6);g.fill();g.fillStyle='#3d5a66';g.fillRect(-2,-13,4,7);g.restore();
+  const n=e.parts||0;for(let i=0;i<5;i++){g.fillStyle=i<Math.ceil(n/4)?'#79b25a':'#22333a';g.fillRect(6+i*4.4,26,3.2,2);}
 }
 function drawGen(g,e,tm){
   const trim=cos.gold?'#d9b54a':'#4f7a45';
@@ -870,6 +1217,16 @@ function drawGen(g,e,tm){
   g.fillStyle='#7a5f1a';g.font='700 15px "Chakra Petch",sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText('$',0,1);g.restore();
   const mk=e.mk||1;for(let i=0;i<5;i++){g.fillStyle=i<mk?'#79b25a':'#2c4432';g.fillRect(19+i*5.6,45,4,3);}
 }
+function drawStation(g,e){
+  g.fillStyle='#161612';g.fillRect(1,1,62,62);g.fillStyle='#4a4838';g.fillRect(3,3,58,58);
+  g.fillStyle='#3a3930';g.fillRect(3,22,58,20);
+  g.fillStyle='#5b4a33';for(let x=6;x<60;x+=7)g.fillRect(x,24,3,16);
+  g.fillStyle='#9a9682';g.fillRect(3,27,58,2);g.fillRect(3,35,58,2);
+  const out=!!e.dest;g.fillStyle=out?'#e3a52a':'#79b25a';g.fillRect(6,6,20,11);
+  g.fillStyle='#16150f';g.font='700 9px "JetBrains Mono",monospace';g.textAlign='center';g.textBaseline='middle';g.fillText(e.ghost?'STN':out?'OUT':'IN',16,11.5);
+  const n=e.inv?total(e.inv):0;g.fillStyle='#22221c';g.fillRect(30,8,28,6);g.fillStyle='#d9b54a';g.fillRect(30,8,28*Math.min(1,n/(out?TRAIN_CAP:400)),6);
+  g.fillStyle='#2b2d20';g.fillRect(6,46,52,12);g.fillStyle='#6d7f8c';for(let x=9;x<56;x+=8)g.fillRect(x,48,5,8);
+}
 function drawEntity(g,e,tm){
   if(isBelt(e))return drawBelt(g,e,tm);
   if(isIns(e))return drawIns(g,e);
@@ -881,13 +1238,16 @@ function drawEntity(g,e,tm){
     case 'fabricator':drawFab(g,e,tm);break;
     case 'chest':drawChest(g);break;
     case 'moneygen':drawGen(g,e,tm);break;
+    case 'station':drawStation(g,e);break;
+    case 'splitter':drawSplitter(g,e);break;
+    case 'maint':drawMaint(g,e);break;
   }
 }
 const ICON={},ICONURL={};
 function makeIcons(){
-  for(const t in ITEMS){const c=document.createElement('canvas');c.width=c.height=64;const g=c.getContext('2d');
-    if(ITEMS[t].place){const e=mk(t,0,0,0);e.ghost=1;if('a' in e)e.a=.5;g.scale(e.w?1:2,e.w?1:2);drawEntity(g,e,.2);}else{g.scale(2,2);drawItemShape(g,t);}
-    ICON[t]=c;ICONURL[t]=c.toDataURL();}
+  for(const t in ITEMS){if(!ITEMS[t].place){const c=document.createElement('canvas');c.width=c.height=64;const g=c.getContext('2d');g.scale(2,2);drawItemShape(g,t);ICON[t]=c;}}
+  for(const t in ITEMS){if(ITEMS[t].place){const c=document.createElement('canvas');c.width=c.height=64;const g=c.getContext('2d');const e=mk(t,0,0,0);e.ghost=1;if('a' in e)e.a=.5;g.scale(e.w?1:2,e.w?1:2);drawEntity(g,e,.2);ICON[t]=c;}}
+  for(const t in ICON)ICONURL[t]=ICON[t].toDataURL();
 }
 
 // ---------- render ----------
@@ -911,39 +1271,61 @@ function render(tm){
   if(tool&&z>=.6){ctx.strokeStyle='rgba(236,230,211,.07)';ctx.lineWidth=1;ctx.beginPath();
     for(let x=x0;x<=x1+1;x++){const p=Math.round(sx(x*T))+.5;ctx.moveTo(p,sy(y0*T));ctx.lineTo(p,sy((y1+1)*T));}
     for(let y=y0;y<=y1+1;y++){const p=Math.round(sy(y*T))+.5;ctx.moveTo(sx(x0*T),p);ctx.lineTo(sx((x1+1)*T),p);}ctx.stroke();}
+  for(const s of L.st){const d=stationDest(s);if(!d)continue;
+    const ax=sx((s.x+1)*T),ay=sy((s.y+1)*T),bx=sx((d.x+1)*T),by=sy((d.y+1)*T),len=Math.hypot(bx-ax,by-ay)||1,nx=-(by-ay)/len,ny=(bx-ax)/len;
+    ctx.strokeStyle='rgba(58,57,48,.9)';ctx.lineWidth=12*z;ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(bx,by);ctx.stroke();
+    ctx.strokeStyle='#8a8674';ctx.lineWidth=Math.max(1,1.6*z);ctx.beginPath();
+    for(const o of[-3.5,3.5]){ctx.moveTo(ax+nx*o*z,ay+ny*o*z);ctx.lineTo(bx+nx*o*z,by+ny*o*z);}ctx.stroke();}
   const belts=[],mids=[],inss=[];const seen=new Set();
   for(let y=Math.max(0,y0-2);y<=y1;y++)for(let x=Math.max(0,x0-2);x<=x1;x++){const e=grid[y*W+x];if(!e||seen.has(e))continue;seen.add(e);
-    if(isBelt(e))belts.push(e);else if(isIns(e))inss.push(e);else mids.push(e);}
+    if(isBelt(e)||e.type==='splitter')belts.push(e);else if(isIns(e))inss.push(e);else mids.push(e);}
   const drawAt=(e,alpha)=>{ctx.save();ctx.translate(sx(e.x*T),sy(e.y*T));ctx.scale(z,z);if(alpha)ctx.globalAlpha=alpha;drawEntity(ctx,e,tm);ctx.restore();};
   for(const e of belts)drawAt(e);
   const is=14*z;
-  for(const e of belts)for(const o of e.items){const q=o.p-.5;ctx.drawImage(ICON[o.t],sx((e.x+.5+DX[e.dir]*q)*T)-is/2,sy((e.y+.5+DY[e.dir]*q)*T)-is/2,is,is);}
+  for(const e of belts)if(e.items)for(const o of e.items){const q=o.p-.5;ctx.drawImage(ICON[o.t],sx((e.x+.5+DX[e.dir]*q)*T)-is/2,sy((e.y+.5+DY[e.dir]*q)*T)-is/2,is,is);}
   for(const e of mids)drawAt(e);
   for(const e of inss)drawAt(e);
-  // land
+  for(const e of mids){if(!(e.type==='furnace'&&e.cur||e.type==='chemplant'&&e.work))continue;
+    for(let k=0;k<3;k++){const p=(tm*.6+k/3+e.x*.13)%1,px=sx((e.x+.78+p*.3)*T),py=sy((e.y+.15-p*.9)*T);
+      ctx.fillStyle='rgba(190,185,170,'+(.35*(1-p))+')';ctx.beginPath();ctx.arc(px,py,(3+p*7)*z,0,7);ctx.fill();}}
+  for(const s of L.st){const d=stationDest(s);if(!d||s.tr.st==='load')continue;
+    const f=Math.min(1,s.tr.t/s.tr.dur),back=s.tr.st==='back',A=[(s.x+1)*T,(s.y+1)*T],B=[(d.x+1)*T,(d.y+1)*T];
+    const p0=back?B:A,p1=back?A:B,x=p0[0]+(p1[0]-p0[0])*f,y=p0[1]+(p1[1]-p0[1])*f,ang=Math.atan2(p1[1]-p0[1],p1[0]-p0[0]);
+    ctx.save();ctx.translate(sx(x),sy(y));ctx.rotate(ang);ctx.scale(z,z);
+    ctx.fillStyle=O;ctx.fillRect(-24,-8,48,16);ctx.fillStyle='#5d6870';ctx.fillRect(-23,-7,24,14);ctx.fillStyle='#e3a52a';ctx.fillRect(3,-7,20,14);ctx.fillStyle='#16150f';ctx.fillRect(15,-4,5,8);
+    if(s.tr.n){const k=Object.keys(s.tr.cargo)[0];if(k)ctx.drawImage(ICON[k],-18,-6,12,12);}
+    ctx.restore();}
   const px0=(x0/PS)|0,px1=(x1/PS)|0,py0=(y0/PS)|0,py1=(y1/PS)|0;
   ctx.textAlign='center';ctx.textBaseline='middle';
   for(let py=py0;py<=py1;py++)for(let px=px0;px<=px1;px++){
     const p=py*PN+px;if(owned[p])continue;
-    const a=sx(px*PS*T),b=sy(py*PS*T),s=PS*T*z;
+    const a=sx(px*PS*T),b=sy(py*PS*T),s=PS*T*z,k=Math.max(.7,z);
     ctx.fillStyle='rgba(10,10,7,.58)';ctx.fillRect(a,b,s,s);
+    ctx.fillStyle='rgba(161,156,134,.8)';ctx.font='600 '+Math.max(10,12*z)+'px "Chakra Petch",sans-serif';ctx.fillText(REGIONS[PLOTS[p][1]].n.toUpperCase(),a+s/2,b+s/2-30*k);
     if(plotBuyable(p)){
       ctx.strokeStyle='rgba(227,165,42,.55)';ctx.setLineDash([10,8]);ctx.lineWidth=2;ctx.strokeRect(a+3,b+3,s-6,s-6);ctx.setLineDash([]);
-      ctx.fillStyle='rgba(236,230,211,.9)';ctx.font='700 '+Math.max(12,18*z)+'px "Chakra Petch",sans-serif';ctx.fillText(PLOTS[p][0],a+s/2,b+s/2-12*Math.max(.7,z));
-      ctx.fillStyle='#d9b54a';ctx.font='600 '+Math.max(11,14*z)+'px "JetBrains Mono",monospace';ctx.fillText('Buy '+$s(plotPrice(p)),a+s/2,b+s/2+10*Math.max(.7,z));
+      ctx.fillStyle='rgba(236,230,211,.92)';ctx.font='700 '+Math.max(12,18*z)+'px "Chakra Petch",sans-serif';ctx.fillText(PLOTS[p][0],a+s/2,b+s/2-8*k);
+      ctx.fillStyle='#d9b54a';ctx.font='600 '+Math.max(11,14*z)+'px "JetBrains Mono",monospace';ctx.fillText('Buy '+$s(plotPrice(p)),a+s/2,b+s/2+14*k);
     }else{ctx.fillStyle='rgba(161,156,134,.6)';ctx.font='600 '+Math.max(11,15*z)+'px "Chakra Petch",sans-serif';ctx.fillText(PLOTS[p][0],a+s/2,b+s/2);}
   }
-  // hover + ghost
   const hx=mouse.tx,hy=mouse.ty;
+  if(tool==='bpsel'&&bpSel){const a=Math.min(bpSel.x0,bpSel.x1),b=Math.min(bpSel.y0,bpSel.y1),c=Math.max(bpSel.x0,bpSel.x1),d=Math.max(bpSel.y0,bpSel.y1);
+    ctx.fillStyle='rgba(79,143,208,.15)';ctx.fillRect(sx(a*T),sy(b*T),(c-a+1)*T*z,(d-b+1)*T*z);ctx.strokeStyle='#4f8fd0';ctx.setLineDash([6,4]);ctx.lineWidth=2;ctx.strokeRect(sx(a*T),sy(b*T),(c-a+1)*T*z,(d-b+1)*T*z);ctx.setLineDash([]);}
   if(inb(hx,hy)){
-    if(tool&&tool!=='remove'){
+    if(tool==='bp'&&bps[bpIdx]){const R=rotBp(bps[bpIdx],bpRot);
+      for(const e of R.E){const g=mk(e.t,hx+e.x,hy+e.y,e.dir);g.ghost=1;if(e.rec)g.rec=e.rec;drawAt(g,.55);const bad=placeOk(e.t,g.x,g.y);
+        if(bad){const[w,h]=footprint(e.t);ctx.fillStyle='rgba(210,85,63,.35)';ctx.fillRect(sx(g.x*T),sy(g.y*T),w*T*z,h*T*z);}}
+      ctx.strokeStyle='#4f8fd0';ctx.lineWidth=2;ctx.strokeRect(sx(hx*T),sy(hy*T),R.w*T*z,R.h*T*z);
+    }else if(tool&&tool!=='remove'&&tool!=='bpsel'){
       const g=mk(tool,hx,hy,tdir);g.ghost=1;const[fw,fh]=footprint(tool);
       const ok=!placeOk(tool,hx,hy)&&inv[tool]>0;
       drawAt(g,.6);
       if(!ok){ctx.fillStyle='rgba(210,85,63,.35)';ctx.fillRect(sx(hx*T),sy(hy*T),fw*T*z,fh*T*z);}
+      if(tool==='maint'){ctx.strokeStyle='rgba(121,178,90,.6)';ctx.setLineDash([6,6]);ctx.strokeRect(sx((hx-10)*T),sy((hy-10)*T),21*T*z,21*T*z);ctx.setLineDash([]);}
     }
     const he=at(hx,hy);let bx=hx,by=hy,bw=1,bh=1;if(he){bx=he.x;by=he.y;bw=he.w||1;bh=he.h||1;}
-    ctx.strokeStyle=tool==='remove'?'#d2553f':'rgba(236,230,211,.8)';ctx.lineWidth=2;ctx.strokeRect(sx(bx*T)+1,sy(by*T)+1,bw*T*z-2,bh*T*z-2);
+    if(tool!=='bp'){ctx.strokeStyle=tool==='remove'?'#d2553f':tool==='bpsel'?'#4f8fd0':'rgba(236,230,211,.8)';ctx.lineWidth=2;ctx.strokeRect(sx(bx*T)+1,sy(by*T)+1,bw*T*z-2,bh*T*z-2);}
+    if(he&&he.type==='maint'&&!tool){ctx.strokeStyle='rgba(121,178,90,.6)';ctx.setLineDash([6,6]);ctx.strokeRect(sx((he.x-10)*T),sy((he.y-10)*T),21*T*z,21*T*z);ctx.setLineDash([]);}
     if(mining){ctx.fillStyle='#11110d';ctx.fillRect(sx(mining.x*T)+3,sy(mining.y*T)+T*z-7,T*z-6,4);ctx.fillStyle='#e3a52a';ctx.fillRect(sx(mining.x*T)+3,sy(mining.y*T)+T*z-7,(T*z-6)*mining.p,4);}
   }
   ctx.font='600 12px "Chakra Petch", sans-serif';ctx.textAlign='center';ctx.textBaseline='alphabetic';
@@ -952,45 +1334,57 @@ function render(tm){
 }
 
 // ---------- UI ----------
-let uiDirty=true,entOpen=null,coTab='goals',coHL=-1;
+let uiDirty=true,entOpen=null,coTab='contracts',coHL=-1,bpExport=-1,bpDel=-1;
 const cache={};
 function setHTML(el,html){if(cache[el.id]!==html){cache[el.id]=html;el.innerHTML=html;}}
 const img=t=>'<img src="'+ICONURL[t]+'" alt="'+ITEMS[t].n+'">';
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function show(id,on){$(id).hidden=!on;}
-function toast(msg,big){const d=document.createElement('div');d.className='toast'+(big?' big':'');d.textContent=msg;$('toasts').appendChild(d);
-  setTimeout(()=>{d.style.opacity='0';setTimeout(()=>d.remove(),400);},big?5000:2600);
+function toast(msg,kind){const d=document.createElement('div');d.className='toast'+(kind?' '+kind:'');d.textContent=msg;$('toasts').appendChild(d);
+  setTimeout(()=>{d.style.opacity='0';setTimeout(()=>d.remove(),400);},kind==='big'?5000:3000);
   while($('toasts').children.length>4)$('toasts').firstChild.remove();}
 let lastToast='',lastToastT=0;
 function toastOnce(m){if(m===lastToast&&performance.now()-lastToastT<2500)return;lastToast=m;lastToastT=performance.now();toast(m);}
 function playTime(){const s=ticks/60|0,h=s/3600|0,m=(s/60|0)%60;return (h?h+'h ':'')+m+'m';}
-const where=k=>RECIPES[k]?CATS[RECIPES[k].cat]:SMELT_BY_OUT[k]?CATS.smelt:ORES.includes(k)?'Mining drill':'Market';
+function jumpTo(e){if(!e)return;cam.x=(e.x+(e.w||1)/2)*T;cam.y=(e.y+(e.h||1)/2)*T;if(!isBelt(e))openEnt(e);}
 
+const contractLine=c=>c.kind==='supply'?'Supply '+c.rate+'/min for '+c.mins+' min':'Deliver '+c.qty.toLocaleString('en-US');
 function drawHUD(){
   $('bankMoney').textContent=$$(money);
-  setHTML($('bankRate'),'Revenue <b>'+$$(rpm)+'/min</b>');
+  setHTML($('bankRate'),'Revenue <b>'+$$(rpm)+'/min</b>'+(epm?' &middot; spent '+$s(epm)+'/min':''));
   const m=nextMilestone();
   if(m){const have=Math.min(stats[m.stat],m.goal),f=have/m.goal;
     setHTML($('bankGoal'),'<div class="row"><span class="nm">'+m.n+'</span><span class="ct">'+$s(have)+' / '+$s(m.goal)+'</span></div><div class="bar"><i style="width:'+(f*100).toFixed(1)+'%"></i></div><span class="ct">'+(m.d?'Earn '+$s(m.goal)+' '+m.d:'Earn '+$s(m.goal)+' in total')+(m.reward?' &middot; bonus '+$s(m.reward):'')+'</span>');}
   else setHTML($('bankGoal'),'<span class="ct">Every milestone done. Try the challenges in Company &gt; Goals.</span>');
-  let hb='';HOTBAR.forEach((t,i)=>{const n=inv[t]||0,lock=!unlocked(t);
+  let cs='';
+  if(contracts.active.length){cs='<span class="eyebrow">Contracts</span>';for(const c of contracts.active){const f=c.kind==='supply'?c.streak/c.mins:c.got/c.qty;
+    cs+='<div class="cmini'+(c.time<180?' late':'')+'">'+img(c.item)+'<span class="ct">'+(c.kind==='supply'?c.minGot+'/'+c.rate+' this min &middot; '+c.streak+'/'+c.mins+' min':fmt(c.got)+' / '+fmt(c.qty))+'</span><span class="ct">'+mmss(c.time)+'</span><div class="bar"><i style="width:'+(f*100).toFixed(1)+'%"></i></div></div>';}}
+  else if(contracts.offers.length)cs='<span class="ct">'+contracts.offers.length+' contract offer'+(contracts.offers.length>1?'s':'')+' waiting in Company &gt; Contracts</span>';
+  setHTML($('bankContracts'),cs);$('bankContracts').hidden=!cs;
+  let hb='';HOTBAR.forEach((t,i)=>{const n=inv[t]||0,lock=!unlocked(t);if(lock&&!n&&i>=9)return;
     hb+='<button class="slot'+(tool===t?' sel':'')+(lock||!n?' off':'')+'" data-slot="'+t+'" title="'+ITEMS[t].n+(lock?' (needs research)':'')+'">'+(i<9?'<span class="k">'+(i+1)+'</span>':'')+img(t)+'<span class="n">'+(n?fmt(n):'')+'</span></button>';});
   hb+='<button class="slot'+(tool==='remove'?' sel':'')+'" data-slot="remove" title="Remove buildings"><span class="k">X</span><span class="x">&times;</span></button>';
   setHTML($('hotbar'),hb);
   let q='';queue.slice(0,8).forEach((it,i)=>{q+='<div class="qi" title="'+ITEMS[it.r].n+'">'+img(it.r)+(i===0?'<i style="width:'+(it.p*100).toFixed(0)+'%"></i>':'')+'</div>';});
   if(queue.length>8)q+='<div class="qi mono">+'+(queue.length-8)+'</div>';
   setHTML($('queue'),q);
+  setHTML($('alerts'),alerts.map((a,i)=>'<button class="alert '+a.s+'" data-alert="'+i+'"><span class="sev">'+(a.s==='crit'?'ALERT':a.s==='warn'?'ISSUE':'NOTE')+'</span><span>'+esc(a.t)+'</span></button>').join(''));
 }
 function status(){
   const x=mouse.tx,y=mouse.ty;if(!inb(x,y)){setHTML($('status'),'');return;}
   const e=at(x,y),i=y*W+x,p=plotOf(x,y);let s='';
   if(tool==='remove')s='<b>Remove mode</b> &middot; click buildings to pick them up<br>';
-  else if(tool)s='<b>'+ITEMS[tool].n+'</b> &middot; facing '+['up','right','down','left'][tdir]+' &middot; R rotates<br>';
-  if(!owned[p])s+='<b>'+PLOTS[p][0]+'</b> &middot; '+(plotBuyable(p)?'for sale, <span class="v">'+$$(plotPrice(p))+'</span> &middot; click to buy':'not for sale yet, buy a neighbouring plot first')+'<br>';
+  else if(tool==='bpsel')s='<b>Blueprint</b> &middot; drag a box around buildings to save them<br>';
+  else if(tool==='bp'&&bps[bpIdx])s='<b>'+esc(bps[bpIdx].name)+'</b> &middot; R rotates &middot; click to place, shift+click buys missing buildings<br>';
+  else if(tool&&ITEMS[tool])s='<b>'+ITEMS[tool].n+'</b> &middot; facing '+['up','right','down','left'][tdir]+' &middot; R rotates<br>';
+  s+=REGIONS[PLOTS[p][1]].n+' &middot; '+PLOTS[p][0]+'<br>';
+  if(!owned[p])s+=(plotBuyable(p)?'For sale: <span class="v">'+$$(plotPrice(p))+'</span> &middot; click to buy':'Not for sale yet. Buy a neighbouring plot first.')+'<br>';
   if(e){s+='<b>'+(e.hq?'HQ Money Generator':ITEMS[e.type].n)+'</b>';
     if(e.type==='moneygen')s+=' &middot; '+GEN[e.mk].n+', takes '+GEN[e.mk].takes;
     if(e.type==='drill')s+=' &middot; '+(ore[i]?ITEMS[ORES[ore[i]-1]].n+', '+amt[i]+' left':'no ore left');
-    if(e.type==='furnace')s+=' &middot; '+(e.cur?'smelting':e.coal||e.fuel?'waiting for ore':'needs coal');
-    if(isMachine(e))s+=' &middot; '+(e.rec?ITEMS[e.rec].n:'no recipe, click to set one');
+    if(e.type==='furnace')s+=' &middot; '+(e.cur?'smelting':e.st==='nofuel'?'needs coal':e.st==='block'?'output full':'waiting for ore');
+    if(isMachine(e))s+=' &middot; '+(e.rec?ITEMS[e.rec].n+(e.st==='starve'&&e.miss?', needs '+ITEMS[e.miss].n:e.st==='block'?', output full':''):'no recipe, click to set one');
+    if(e.eff!==undefined)s+=' &middot; condition '+Math.round(e.eff*100)+'%';
     s+=' &middot; click to open';}
   else if(ore[i]){const t=ORES[ore[i]-1];s+='<b>'+ITEMS[t].n+'</b> &middot; '+amt[i]+' left &middot; sells <span class="v">'+$$(VAL[t])+'</span>'+(tool||!owned[p]?'':' &middot; hold click to mine');}
   setHTML($('status'),s);
@@ -1007,23 +1401,29 @@ function valueLine(r){
 }
 function recInfo(r){
   const R=RECIPES[r];if(!R){$('recInfo').innerHTML='';return;}
-  if(!unlocked(r)){$('recInfo').innerHTML='<b>'+ITEMS[r].n+'</b><br>Needs research: '+RESEARCH.find(x=>x.id===R.res).n+'.';return;}
+  if(!unlocked(r)){const rs=RESEARCH.find(x=>x.id===R.res);$('recInfo').innerHTML='<b>'+ITEMS[r].n+'</b><br>Needs research: '+(rs?rs.n:'an experimental technology')+'.';return;}
   let h='<b>'+ITEMS[r].n+'</b>'+(R.out>1?' &times;'+R.out:'')+' &middot; '+R.t+'s<br>';
   for(const k in R.in)h+='<span class="ing'+((inv[k]||0)<R.in[k]?' miss':'')+'">'+img(k)+R.in[k]+' '+ITEMS[k].n+'</span>';
   h+='<br>'+valueLine(r)+'<br>'+(canCraft(r)?'Ready. Missing parts are crafted first.':'Not enough materials.');
   $('recInfo').innerHTML=h;
 }
 function cellList(o,act){const ks=Object.keys(o).filter(k=>o[k]>0);return ks.length?'<div class="grid">'+ks.map(k=>'<button class="cell" data-act="'+act+':'+k+'" title="'+ITEMS[k].n+'">'+img(k)+'<span class="n">'+fmt(o[k])+'</span></button>').join('')+'</div>':'<p class="empty">Empty</p>';}
+function condRow(e){
+  if(e.eff===undefined)return '';
+  const pct=Math.round(e.eff*100),has=inv.replacement_parts>0;
+  return '<div class="item"><span class="t">Condition '+pct+'%</span><span class="d">Machines wear as they work, down to 50%. Speed scales with condition.</span><div class="bar"><i style="width:'+pct+'%;background:'+(e.eff<.65?'var(--red)':e.eff<.8?'var(--amber)':'var(--green)')+'"></i></div>'+
+    '<div class="a">'+(e.eff>=.995?'<span class="badge ok">Good</span>':'<button class="money" data-act="repair"'+(!has&&money<repairCost(e)?' disabled':'')+'>'+(has?'Use 1 part':'Repair '+$$(repairCost(e)))+'</button>')+'</div></div>';
+}
 function drawEnt(){
   const e=entOpen;if(!e)return;let h='';
   $('entTitle').textContent=e.hq?'HQ Money Generator':ITEMS[e.type].n;
   if(e.type==='moneygen'){
     const g=GEN[e.mk],nx=GEN[e.mk+1];
-    h+='<div class="kv"><span class="k">Model</span><b>'+g.n+'</b><span class="k">Takes</span><span>'+g.takes+'</span><span class="k">Speed</span><span class="mono">'+g.rate+' items/s</span><span class="k">Payout</span><span class="mono">'+Math.round(g.mult*100)+'% of value</span><span class="k">Queue</span><span class="mono">'+e.q.length+' / 20</span></div>';
+    h+='<div class="kv"><span class="k">Model</span><b>'+g.n+'</b><span class="k">Takes</span><span>'+g.takes+', plus anything an active contract needs</span><span class="k">Speed</span><span class="mono">'+g.rate+' items/s</span><span class="k">Payout</span><span class="mono">'+Math.round(g.mult*100)+'% of value</span><span class="k">Queue</span><span class="mono">'+e.q.length+' / 20</span></div>';
     if(nx)h+='<div class="item"><span class="t">Upgrade to '+nx.n+'</span><span class="d">Takes '+nx.takes+'. '+nx.rate+' items/s, '+Math.round(nx.mult*100)+'% payout.</span><div class="a"><button class="money" data-act="gup"'+(money<nx.cost?' disabled':'')+'>'+$$(nx.cost)+'</button></div></div>';
     const sellable=Object.keys(inv).filter(k=>inv[k]>0&&DEPTH[k]<=g.depth&&!ITEMS[k].place);
     h+='<div><h3>Sell by hand <span class="hint">click to sell the whole stack</span></h3>'+(sellable.length?'<div class="grid">'+sellable.map(k=>'<button class="cell" data-act="sell:'+k+'" title="'+ITEMS[k].n+': '+inv[k]+' × '+$$(VAL[k]*g.mult)+'">'+img(k)+'<span class="n">'+fmt(inv[k])+'</span></button>').join('')+'</div>':'<p class="empty">Nothing in your inventory this model can take.</p>')+'</div>';
-    h+='<p class="empty">Hand sales count toward your bank, but not toward Automated Income. Belts, inserters and drills that point into any tile of the generator feed it.'+(e.hq?'':' Removing it gives back the building, not its upgrades.')+'</p>';
+    h+='<p class="empty">Hand sales count toward your bank, but not toward revenue or Automated Income.'+(e.hq?'':' Removing it gives back the building, not its upgrades.')+'</p>';
   }else if(e.type==='chest'){
     h+='<div class="row"><span class="mono">'+total(e.inv)+' / '+chestCap()+'</span><button data-act="takeall">Take all</button></div><div>'+cellList(e.inv,'take')+'</div>';
   }else if(e.type==='furnace'){
@@ -1031,8 +1431,8 @@ function drawEnt(){
       '<span class="k">Fuel</span><span><span class="ing">'+img('coal')+e.coal+' coal</span> + '+e.fuel+' smelts left</span>'+
       '<span class="k">Output</span><span>'+(e.outN?'<span class="ing">'+img(e.outT)+e.outN+' '+ITEMS[e.outT].n+'</span>':'empty')+'</span>'+
       '<span class="k">Working</span><div class="pbar"><i style="width:'+(e.prog*100).toFixed(0)+'%"></i></div></div>';
-    h+='<div class="row"><button data-act="coal">Add coal</button><button data-act="ore">Add ore</button><button data-act="out" class="primary">Take output</button></div>';
-    h+='<div><h3>Smelts</h3>'+Object.keys(SMELT).filter(smeltOk).map(k=>'<span class="ing">'+img(k)+SMELT[k].n+' &rarr; '+img(SMELT[k].o)+'</span>').join('')+'</div><p class="empty">One coal lasts 5 smelts.</p>';
+    h+=condRow(e)+'<div class="row"><button data-act="coal">Add coal</button><button data-act="ore">Add ore</button><button data-act="out" class="primary">Take output</button></div>';
+    h+='<div><h3>Smelts</h3>'+Object.keys(SMELT).filter(smeltOk).map(k=>'<span class="ing">'+SMELT[k].n+img(k)+'&rarr;'+img(SMELT[k].o)+'</span>').join('')+'</div><p class="empty">One coal lasts '+(perk('nordex')?10:5)+' smelts.</p>';
   }else if(isMachine(e)){
     const cat=MACHINE_CAT[e.type];
     if(e.rec){const R=RECIPES[e.rec];
@@ -1041,20 +1441,33 @@ function drawEnt(){
       h+='</span><span class="k">Output</span><span class="mono">'+e.outN+'</span><span class="k">Working</span><div class="pbar"><i style="width:'+(e.prog*100).toFixed(0)+'%"></i></div></div>';
       h+='<p class="empty">'+valueLine(e.rec)+'</p>';
       h+='<div class="row"><button data-act="fill">Fill from inventory</button><button data-act="out" class="primary">Take output</button></div>';}
-    h+='<div><h3>Recipe</h3><div class="grid">';
+    h+=condRow(e)+'<div><h3>Recipe</h3><div class="grid">';
     let any=false;for(const r in RECIPES){if(RECIPES[r].cat!==cat||!unlocked(r))continue;any=true;h+='<button class="cell'+(e.rec===r?' on':'')+'" data-act="rec:'+r+'" title="'+ITEMS[r].n+' · '+$$(VAL[r])+'">'+img(r)+'</button>';}
     h+='</div>'+(any?'':'<p class="empty">No recipes researched for this machine yet.</p>')+'</div>';
   }else if(e.type==='drill'){
     const i=e.y*W+e.x;
-    h+='<div class="kv"><span class="k">Mining</span><span>'+(ore[i]?ITEMS[ORES[ore[i]-1]].n+' ('+amt[i]+' left)':'Nothing. This patch is used up.')+'</span><span class="k">Output</span><span>'+(e.buf?'Blocked. The spot the chute faces won’t take it.':'Flowing')+'</span><span class="k">Rate</span><span class="mono">'+drillRate().toFixed(2)+' / s</span></div>';
-  }else if(isBelt(e)){h+='<p class="empty">Carries up to 4 items. Moves '+beltSpd(e.type).toFixed(2)+' tiles per second.</p><div>'+cellList(e.items.reduce((o,x)=>(o[x.t]=(o[x.t]||0)+1,o),{}),'none')+'</div>';}
+    h+='<div class="kv"><span class="k">Mining</span><span>'+(ore[i]?ITEMS[ORES[ore[i]-1]].n+' ('+amt[i]+' left)':'Nothing. This patch is used up.')+'</span><span class="k">Output</span><span>'+(e.st==='block'?'Blocked. The spot the chute faces won’t take it.':'Flowing')+'</span><span class="k">Rate</span><span class="mono">'+(drillRate()*e.eff).toFixed(2)+' / s</span></div>'+condRow(e);
+  }else if(e.type==='station'){
+    const d=stationDest(e);
+    h+='<div class="kv"><span class="k">Role</span><span>'+(d?'Sends to the station at '+d.x+', '+d.y+' ('+PLOTS[plotOf(d.x,d.y)][0]+')':'Receives. Use inserters to unload it.')+'</span>'+
+      '<span class="k">Stored</span><span class="mono">'+total(e.inv)+'</span>'+(d?'<span class="k">Train</span><span>'+({load:'Loading',go:'On its way',back:'Returning'})[e.tr.st]+(e.tr.n?' with '+e.tr.n+' items':'')+'</span><span class="k">Trips</span><span class="mono">'+e.trips+' &middot; avg load '+(e.trips?Math.round(e.moved/e.trips/TRAIN_CAP*100):0)+'%</span>':'')+'</div>';
+    h+='<div><h3>Stored</h3>'+cellList(e.inv,d?'none':'take')+'</div>';
+    const others=L.st.filter(s=>s!==e);
+    h+='<div><h3>Send to</h3><div class="list"><button data-act="dest:none"'+(!d?' disabled':'')+'>Receive only</button>'+
+      others.map(s=>'<button data-act="dest:'+s.x+','+s.y+'"'+(d===s?' disabled':'')+'>'+PLOTS[plotOf(s.x,s.y)][0]+' ('+s.x+', '+s.y+') &middot; '+Math.round(Math.hypot(s.x-e.x,s.y-e.y))+' tiles</button>').join('')+'</div>'+(others.length?'':'<p class="empty">Build a second station to set up a route.</p>')+'</div>';
+    h+='<p class="empty">A sending station takes items from belts and inserters. Its train carries up to '+TRAIN_CAP+' items and leaves when full, or 5 seconds after the first item arrives.</p>';
+  }else if(e.type==='maint'){
+    h+='<div class="kv"><span class="k">Parts</span><span class="mono">'+e.parts+' / 20</span><span class="k">Repairs</span><span class="mono">'+e.fixed+'</span><span class="k">Range</span><span>10 tiles in every direction</span></div>'+
+      '<div class="row"><button data-act="parts">Add parts from inventory</button></div><p class="empty">Uses one replacement part to restore any drill, furnace or machine in range that drops below 90% condition. Feed it with an inserter or belt to keep it running.</p>';
+  }else if(e.type==='splitter'){h+='<p class="empty">Takes items from belts that point into it and shares them between the belts or buildings in front, left and right.</p>';}
+  else if(isBelt(e)){h+='<p class="empty">Carries up to 4 items. Moves '+beltSpd(e.type).toFixed(2)+' tiles per second.</p><div>'+cellList(e.items.reduce((o,x)=>(o[x.t]=(o[x.t]||0)+1,o),{}),'none')+'</div>';}
   else if(isIns(e)){h+='<p class="empty">Takes items from the tile behind it and drops them in front, where the arrow points. It only picks up what the target can use.</p>';}
   setHTML($('entBody'),h);
 }
 function openEnt(e){entOpen=e;cache.entBody=null;show('entp',true);drawEnt();}
 function closeEnt(){entOpen=null;show('entp',false);}
 function entAct(a){
-  const e=entOpen;if(!e)return;const[k,v]=a.split(':');
+  const e=entOpen;if(!e)return;const i=a.indexOf(':'),k=i<0?a:a.slice(0,i),v=i<0?'':a.slice(i+1);
   if(k==='take'){const store=e.inv;if(store[v]){add(inv,v,store[v]);delete store[v];}}
   else if(k==='takeall'){for(const q in e.inv)add(inv,q,e.inv[q]);e.inv={};}
   else if(k==='coal'){const n=Math.min(10-e.coal,inv.coal||0);if(n>0){e.coal+=n;add(inv,'coal',-n);}else toast('You have no coal');}
@@ -1063,9 +1476,11 @@ function entAct(a){
   else if(k==='fill'){const R=RECIPES[e.rec];let any=false;for(const q in R.in){const want=R.in[q]*5-(e.inv[q]||0),n=Math.min(want,inv[q]||0);if(n>0){add(inv,q,-n);add(e.inv,q,n);any=true;}}if(!any)toast('You have none of the ingredients');}
   else if(k==='rec'){if(e.rec===v)return;for(const q in e.inv)add(inv,q,e.inv[q]);if(e.outN)add(inv,e.rec,e.outN);if(e.work)for(const q in RECIPES[e.rec].in)add(inv,q,RECIPES[e.rec].in[q]);
     e.inv={};e.outN=0;e.work=false;e.prog=0;e.rec=v;}
-  else if(k==='sell'){const n=inv[v]||0;if(n>0&&DEPTH[v]<=GEN[e.mk].depth){let got=0;for(let i=0;i<n;i++)got+=sell(v,false,e.mk,null);
-      delete inv[v];floats.push({x:e.x+1,y:e.y,s:'+'+$s(got),t:0,c:'#d9b54a'});}}
-  else if(k==='gup'){const nx=GEN[e.mk+1];if(nx&&money>=nx.cost){money-=nx.cost;e.mk++;toast(ITEMS.moneygen.n+' upgraded to '+nx.n,true);}}
+  else if(k==='sell'){const n=inv[v]||0;if(n>0&&DEPTH[v]<=GEN[e.mk].depth){let got=0;for(let j=0;j<n;j++)got+=sell(v,false,e.mk,null);delete inv[v];floats.push({x:e.x+1,y:e.y,s:'+'+$s(got),t:0,c:'#d9b54a'});}}
+  else if(k==='gup'){const nx=GEN[e.mk+1];if(nx&&money>=nx.cost){spend(nx.cost);e.mk++;toast(ITEMS.moneygen.n+' upgraded to '+nx.n,'big');}}
+  else if(k==='repair'){if(!repair(e))toast('Not enough money to repair it');}
+  else if(k==='parts'){const n=Math.min(20-e.parts,inv.replacement_parts||0);if(n>0){e.parts+=n;add(inv,'replacement_parts',-n);}else toast('You have no replacement parts');}
+  else if(k==='dest'){if(v==='none')e.dest=null;else{const[x,y]=v.split(',').map(Number);e.dest=[x,y];e.tr={st:'load',t:0,cargo:{},n:0,dur:0};}}
   cache.entBody=null;drawEnt();uiDirty=true;
 }
 function selectTool(t){
@@ -1074,17 +1489,33 @@ function selectTool(t){
 }
 
 // ---------- company ----------
+function contractCard(c,offer){
+  const F=FACTIONS[c.f],f=c.kind==='supply'?c.streak/c.mins:c.got/c.qty;
+  let d=contractLine(c)+' '+ITEMS[c.item].n+(offer?' within '+Math.round(c.time/60)+' min':'')+'. Worth '+$$(VAL[c.item]*c.qty)+' at market.';
+  if(!offer)d+=c.kind==='supply'?' This minute: '+c.minGot+' / '+c.rate+'. '+c.streak+' of '+c.mins+' minutes kept up.':' Delivered '+c.got.toLocaleString('en-US')+' of '+c.qty.toLocaleString('en-US')+'.';
+  let a='<span class="badge ok">'+$$(c.reward)+'</span><span class="badge">+'+c.rep+' rep</span>';
+  if(offer)a+='<button class="primary small" data-co="accept:'+c.id+'"'+(contracts.active.length>=3?' disabled':'')+'>Accept</button><span class="ct">offer ends '+mmss(c.exp)+'</span>';
+  else a+='<span class="badge'+(c.time<180?' warn':'')+'">'+mmss(c.time)+' left</span><button class="small" data-co="deliver:'+c.id+'"'+(inv[c.item]?'':' disabled')+'>Deliver from inventory</button><button class="small" data-co="abandon:'+c.id+'">Abandon</button>';
+  return '<div class="item'+(offer?'':' hot')+'"><span class="t">'+c.code+' &middot; '+F.n+'</span><span class="icons">'+img(c.item)+'<span class="d">'+d+'</span></span>'+(offer?'':'<div class="bar"><i style="width:'+(f*100).toFixed(1)+'%"></i></div>')+'<div class="a">'+a+'</div></div>';
+}
 function drawCo(){
   $('coMoney').textContent=$$(money);
   for(const b of $('coTabs').querySelectorAll('[data-tab]'))b.classList.toggle('on',b.dataset.tab===coTab);
   let h='';
-  if(coTab==='goals'){
+  if(coTab==='contracts'){
+    h+='<div><h3>Active <span class="hint">'+contracts.active.length+' of 3 &middot; items go to the contract when any Money Generator receives them</span></h3><div class="list">'+(contracts.active.length?contracts.active.map(c=>contractCard(c,false)).join(''):'<p class="empty">No active contracts. Accept an offer below.</p>')+'</div></div>';
+    h+='<div><h3>Offers <span class="hint">new offers arrive about every 30 seconds</span></h3><div class="list">'+(contracts.offers.length?contracts.offers.map(c=>contractCard(c,true)).join(''):'<p class="empty">No offers right now.</p>')+'</div></div>';
+    h+='<div><h3>Companies <span class="hint">reputation raises contract pay by 10% per level; level 2 unlocks a perk</span></h3><div class="fac">';
+    for(const f in FACTIONS){const F=FACTIONS[f],lv=repLv(f),nx=REP_LV[lv+1];
+      h+='<div><b>'+F.n+'</b><span>'+F.focus+' &middot; level '+lv+(nx?' ('+(rep[f]||0)+'/'+nx+' rep)':' (max)')+'</span><span class="'+(lv>=2?'good':'')+'">Perk: '+F.perk+(lv>=2?'':' (level 2)')+'</span></div>';}
+    h+='</div></div><p class="empty">Contracts completed: '+contracts.done+'. A missed deadline costs 1 reputation, never money.</p>';
+  }else if(coTab==='goals'){
     h+='<div><h3>Money milestones</h3><div class="list">';
     for(const m of MILESTONES){const have=Math.min(stats[m.stat],m.goal),done=!!ms[m.id];
       h+='<div class="item'+(done?' done':'')+'"><span class="t">'+m.n+'</span><span class="d">Earn '+$$(m.goal)+(m.d?' '+m.d:' in total')+(m.reward?'. Bonus '+$$(m.reward)+'.':'.')+'</span><div class="bar'+(done?' done':'')+'"><i style="width:'+(have/m.goal*100).toFixed(1)+'%"></i></div><div class="a"><span class="badge'+(done?' ok':'')+'">'+(done?'Done':$s(have))+'</span></div></div>';}
     h+='</div></div><div><h3>Challenges</h3><div class="list">';
     for(const c of CHALLENGES){const done=!!ch[c.id];h+='<div class="item'+(done?' done':'')+'"><span class="t">'+c.n+'</span><span class="d">'+c.d+'</span><div class="a"><span class="badge'+(done?' ok':'')+'">'+(done?'Done':'Open')+'</span></div></div>';}
-    h+='</div></div><div><h3>Books</h3><div class="kv"><span class="k">Lifetime earnings</span><span class="mono">'+$$(stats.life)+'</span><span class="k">Automated</span><span class="mono">'+$$(stats.auto)+'</span><span class="k">From raw materials</span><span class="mono">'+$$(stats.raw)+'</span><span class="k">Revenue</span><span class="mono">'+$$(rpm)+'/min</span><span class="k">Machines</span><span class="mono">'+machinesN+' ('+runningN+' recipes running)</span></div></div>';
+    h+='</div></div>';
   }else if(coTab==='research'){
     h+='<div class="list">';
     for(const r of RESEARCH){const done=!!research[r.id],reqOk=r.req.every(q=>research[q]);
@@ -1092,6 +1523,14 @@ function drawCo(){
       h+='<div class="item'+(done?' done':'')+'"><span class="t">'+r.n+'</span><span class="d">'+r.d+(reqOk||done?'':' Needs '+r.req.filter(q=>!research[q]).map(q=>RESEARCH.find(x=>x.id===q).n).join(' and ')+'.')+'</span><span class="icons">'+un.map(img).join('')+'</span>'+
         '<div class="a">'+(done?'<span class="badge ok">Researched</span>':'<button class="money" data-co="res:'+r.id+'"'+(!reqOk||money<r.cost?' disabled':'')+'>'+$$(r.cost)+'</button>')+'</div></div>';}
     h+='</div>';
+    const xs=EXPERIMENTS.filter(x=>research[x.after]);
+    h+='<div><h3>Experimental <span class="hint">paid in materials, not money</span></h3><div class="list">';
+    if(!xs.length)h+='<p class="empty">Signals of unknown technology appear after Fabrication.</p>';
+    for(const x of xs){const done=!!research[x.id],got=xp[x.id]||{};
+      h+='<div class="item'+(done?' done':' hot')+'"><span class="t">'+(done?x.n:'Unknown technology')+'</span><span class="d">'+(done?x.d:'Contribute the materials below to find out what it does.')+'</span><span class="icons">'+
+        Object.keys(x.need).map(k=>'<span class="ing'+((got[k]||0)<xpNeed(x,k)?'':' good')+'">'+img(k)+(got[k]||0)+'/'+xpNeed(x,k)+'</span>').join('')+'</span>'+
+        '<div class="a">'+(done?'<span class="badge ok">Discovered</span>':'<button class="primary" data-co="xp:'+x.id+'">Contribute</button>')+'</div></div>';}
+    h+='</div></div>';
   }else if(coTab==='upgrades'){
     h+='<div><h3>Factory upgrades</h3><div class="list">';
     for(const k in UPGRADES){const u=UPGRADES[k],lv=upgLv(k),max=lv>=u.max;
@@ -1102,28 +1541,95 @@ function drawCo(){
       h+='<div class="item"><span class="t">'+c.n+'</span><span class="d">'+c.d+'</span><div class="a">'+(o?'<button data-co="cos:'+k+'">'+(cos[k]?'On':'Off')+'</button>':'<button class="money" data-co="cos:'+k+'"'+(money<c.cost?' disabled':'')+'>'+$$(c.cost)+'</button>')+'</div></div>';}
     h+='</div></div><p class="empty">Money Generator upgrades are on each generator. Click one to open it.</p>';
   }else if(coTab==='land'){
-    h+='<p class="empty">Each plot is 32 &times; 32 tiles. You can only buy plots next to land you own. Prices rise with each plot you buy in the same ring.</p><div class="land">';
+    h+='<p class="empty">Each plot is 32 &times; 32 tiles. Forests have wood, deserts sand and oil, mountains iron and tungsten, volcanic land rare earth and platinum, and the arctic lithium and titanium. You can only buy plots next to land you own.</p><div class="land">';
     for(let p=0;p<PN*PN;p++){const o=owned[p],b=plotBuyable(p),ores=[...new Set(PLOTS[p][2])];
-      h+='<button class="plot'+(o?' own':b?'':' fog')+(p===coHL?' hl':'')+'" data-co="land:'+p+'"'+(o||!b?' disabled':'')+' title="'+PLOTS[p][0]+'"><span class="pn">'+PLOTS[p][0]+'</span><span class="icons">'+(p===12?img('iron_ore')+img('copper_ore')+img('coal')+img('stone'):ores.map(img).join(''))+'</span><span class="pp">'+(o?'Owned':b?$s(plotPrice(p)):'')+'</span></button>';}
+      h+='<button class="plot'+(o?' own':b?'':' fog')+(p===coHL?' hl':'')+'" data-co="land:'+p+'"'+(o||!b?' disabled':'')+' title="'+PLOTS[p][0]+'"><span><span class="rg">'+REGIONS[PLOTS[p][1]].n+'</span><br><span class="pn">'+PLOTS[p][0]+'</span></span><span class="icons">'+(p===12?img('iron_ore')+img('copper_ore')+img('coal')+img('stone'):ores.map(img).join(''))+'</span><span class="pp">'+(o?'Owned':b?$s(plotPrice(p)):'')+'</span></button>';}
     h+='</div>';
   }else if(coTab==='market'){
-    h+='<p class="empty">Buy buildings with cash instead of crafting them. Click buys 1, shift+click buys 10.</p><div class="mk">';
+    h+='<p class="empty">Buy buildings with cash instead of crafting them. Click buys 1, shift+click buys 10.'+(perk('fabrik')?' Fabrik Industries discount applied.':'')+'</p><div class="mk">';
     for(const k of Object.keys(ITEMS).filter(k=>ITEMS[k].place)){const ok=unlocked(k);
       h+='<button class="mkcell" data-co="buy:'+k+'"'+(!ok||money<marketPrice(k)?' disabled':'')+'>'+img(k)+'<span>'+ITEMS[k].n+'</span><span class="pp">'+(ok?$$(marketPrice(k)):'Needs research')+'</span></button>';}
     h+='</div>';
+  }else if(coTab==='blueprints'){
+    h+='<p class="empty">Press <kbd>B</kbd> and drag a box around buildings to save them. Blueprints are kept in this browser across new games. Share one by copying its code.</p><div class="list">';
+    if(!bps.length)h+='<p class="empty">No blueprints yet.</p>';
+    bps.forEach((bp,i)=>{const need=bpNeeds(bp);let cost=0;for(const k in need)cost+=need[k]*marketPrice(k);
+      h+='<div class="bp"><img src="'+bpImg(i)+'" alt="Preview of '+esc(bp.name)+'"><div class="list"><input id="bpn'+i+'" data-bpname="'+i+'" value="'+esc(bp.name)+'" maxlength="40" aria-label="Blueprint name">'+
+        '<span class="icons">'+Object.keys(need).map(k=>'<span class="ing">'+img(k)+need[k]+'</span>').join('')+'</span><span class="ct">'+bp.w+' &times; '+bp.h+' tiles &middot; '+$$(cost)+' at market</span>'+
+        (bpExport===i?'<textarea id="bpx'+i+'" readonly>'+bpCode(bp)+'</textarea><button class="small" data-co="copy:'+i+'">Copy code</button>':'')+'</div>'+
+        '<div class="a"><button class="primary small" data-co="place:'+i+'">Place</button><button class="small" data-co="export:'+i+'">'+(bpExport===i?'Hide code':'Share code')+'</button>'+
+        (bpDel===i?'<button class="danger small" data-co="delyes:'+i+'">Confirm delete</button>':'<button class="small" data-co="del:'+i+'">Delete</button>')+'</div></div>';});
+    h+='</div><div><h3>Import a blueprint</h3><textarea id="bpImport" placeholder="Paste a code that starts with FBK1:"></textarea><div class="row" style="margin-top:6px"><button data-co="import">Import</button></div></div>';
   }
   setHTML($('coBody'),h);
 }
 function coAct(a,shift){
-  const[k,v]=a.split(':');
-  if(k==='res'){const r=RESEARCH.find(x=>x.id===v);if(!research[v]&&r.req.every(q=>research[q])&&money>=r.cost){money-=r.cost;research[v]=1;toast('Researched '+r.n,true);}}
-  else if(k==='upg'){const u=UPGRADES[v];if(upgLv(v)<u.max&&money>=upgCost(v)){money-=upgCost(v);upg[v]=upgLv(v)+1;toast(u.n+' is now level '+upg[v]);}}
-  else if(k==='cos'){if(cos[v]!==undefined)cos[v]=!cos[v];else if(money>=COSMETICS[v].cost){money-=COSMETICS[v].cost;cos[v]=true;toast('Bought '+COSMETICS[v].n);}}
-  else if(k==='land'){const p=+v;if(plotBuyable(p)&&money>=plotPrice(p)){money-=plotPrice(p);owned[p]=1;toast('Bought '+PLOTS[p][0],true);}else if(plotBuyable(p))toast('Not enough money for '+PLOTS[p][0]);}
-  else if(k==='buy'){const n=shift?10:1,cost=marketPrice(v)*n;if(money>=cost){money-=cost;add(inv,v,n);toast('Bought '+n+' '+ITEMS[v].n);}else toast('Not enough money');}
+  const i=a.indexOf(':'),k=i<0?a:a.slice(0,i),v=i<0?'':a.slice(i+1);
+  if(k==='res'){const r=RESEARCH.find(x=>x.id===v);if(!research[v]&&r.req.every(q=>research[q])&&money>=r.cost){spend(r.cost);research[v]=1;toast('Researched '+r.n,'big');}}
+  else if(k==='xp'){const x=EXPERIMENTS.find(q=>q.id===v),got=xp[v]||(xp[v]={});let gave=0;
+    for(const q in x.need){const m=Math.min(xpNeed(x,q)-(got[q]||0),inv[q]||0);if(m>0){add(inv,q,-m);got[q]=(got[q]||0)+m;gave+=m;}}
+    if(Object.keys(x.need).every(q=>(got[q]||0)>=xpNeed(x,q))){research[v]=1;toast('Discovery: '+x.n+'. '+x.d,'big');}else toast(gave?'Contributed '+gave+' items':'You have none of the materials it needs');}
+  else if(k==='upg'){const u=UPGRADES[v];if(upgLv(v)<u.max&&money>=upgCost(v)){spend(upgCost(v));upg[v]=upgLv(v)+1;toast(u.n+' is now level '+upg[v]);}}
+  else if(k==='cos'){if(cos[v]!==undefined)cos[v]=!cos[v];else if(money>=COSMETICS[v].cost){spend(COSMETICS[v].cost);cos[v]=true;toast('Bought '+COSMETICS[v].n);}}
+  else if(k==='land'){const p=+v;if(plotBuyable(p)&&money>=plotPrice(p)){spend(plotPrice(p));owned[p]=1;toast('Bought '+PLOTS[p][0],'big');}else if(plotBuyable(p))toast('Not enough money for '+PLOTS[p][0]);}
+  else if(k==='buy'){const n=shift?10:1,cost=marketPrice(v)*n;if(money>=cost){spend(cost);add(inv,v,n);toast('Bought '+n+' '+ITEMS[v].n);}else toast('Not enough money');}
+  else if(k==='accept'){const c=contracts.offers.find(q=>q.id==v);if(c&&contracts.active.length<3){contracts.offers.splice(contracts.offers.indexOf(c),1);contracts.active.push(c);toast('Accepted '+c.code+': '+contractLine(c)+' '+ITEMS[c.item].n);}}
+  else if(k==='deliver'){const c=contracts.active.find(q=>q.id==v);if(c){const n=Math.min(inv[c.item]||0,c.kind==='deliver'?c.qty-c.got:1e9);if(n>0){add(inv,c.item,-n);deliver(c,n);}}}
+  else if(k==='abandon'){const c=contracts.active.find(q=>q.id==v);if(c)finishContract(c,false);}
+  else if(k==='place'){bpIdx=+v;bpRot=0;tool='bp';show('co',false);}
+  else if(k==='export'){bpExport=bpExport===+v?-1:+v;}
+  else if(k==='copy'){const t=$('bpx'+v);if(t){const txt=t.value;const fb=()=>{t.select();toast('Press Ctrl+C to copy');};try{navigator.clipboard.writeText(txt).then(()=>toast('Code copied'),fb);}catch(_){fb();}}return;}
+  else if(k==='del'){bpDel=+v;}
+  else if(k==='delyes'){bps.splice(+v,1);bpDel=-1;bpExport=-1;bpPrev.length=0;saveBps();toast('Blueprint deleted');}
+  else if(k==='import'){const b=bpDecode($('bpImport').value);if(b){bps.push(b);bpPrev.length=0;saveBps();toast('Imported '+b.name,'big');}else toast('That code isn’t a valid Fabrikat blueprint','bad');}
   cache.coBody=null;drawCo();uiDirty=true;
 }
 function openCo(tab,hl){if(tab)coTab=tab;coHL=hl===undefined?-1:hl;cache.coBody=null;show('co',true);drawCo();}
+
+// ---------- statistics view ----------
+const SCOL={work:'#79b25a',starve:'#e3a52a',block:'#d2553f',idle:'#6b6856'};
+function drawStats(){
+  let h='';
+  let stock=0;for(const k in inv)stock+=VAL[k]*inv[k];
+  for(const e of ents)if(e.type==='chest'||e.type==='station')for(const k in e.inv)stock+=VAL[k]*e.inv[k];
+  const best=Object.entries(valR).sort((a,b)=>b[1]-a[1])[0];
+  const hist=revHist.concat([rpm]),mx=Math.max(1,...hist),n=hist.length;
+  const pts=hist.map((v,i)=>[(n>1?i/(n-1):1)*300,58-v/mx*52]);
+  const line=pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
+  h+='<div class="tiles">'+
+    '<div class="tile wide"><span class="eyebrow">Revenue per minute</span><span class="v good">'+$$(rpm)+'</span><div class="spark" id="spark" data-hist="'+hist.map(v=>Math.round(v)).join(',')+'">'+
+      '<svg viewBox="0 0 300 64" preserveAspectRatio="none" role="img" aria-label="Revenue per minute over the last '+n+' minutes"><line x1="0" y1="58.5" x2="300" y2="58.5" stroke="#4b4a3b" stroke-width="1" vector-effect="non-scaling-stroke"/>'+
+      (n>1?'<polygon points="0,58 '+line+' 300,58" fill="rgba(121,178,90,.16)"/><polyline points="'+line+'" fill="none" stroke="#79b25a" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>':'')+
+      '</svg><div class="tip" id="sparkTip">'+(n>1?'Last '+n+' minutes. Hover for values.':'The chart adds one point per minute of play.')+'</div></div></div>'+
+    '<div class="tile"><span class="eyebrow">Spending per minute</span><span class="v">'+$$(epm)+'</span><span class="ct">research, land, upgrades, market</span></div>'+
+    '<div class="tile"><span class="eyebrow">Profit per minute</span><span class="v '+(rpm-epm>=0?'good':'bad')+'">'+(rpm-epm<0?'-':'')+$$(Math.abs(rpm-epm))+'</span><span class="ct">revenue minus spending</span></div>'+
+    '<div class="tile"><span class="eyebrow">Stock value</span><span class="v gold">'+$s(stock)+'</span><span class="ct">inventory, chests and stations</span></div>'+
+    '<div class="tile"><span class="eyebrow">Top earner</span><span class="v" style="font-size:15px">'+(best?ITEMS[best[0]].n:'None yet')+'</span><span class="ct">'+(best?$$(best[1])+'/min':'sell something first')+'</span></div>'+
+    '<div class="tile"><span class="eyebrow">Earned in total</span><span class="v">'+$s(stats.life)+'</span><span class="ct">'+$s(stats.auto)+' automated</span></div></div>';
+  const keys=[...new Set(Object.keys(prodR).concat(Object.keys(consR),Object.keys(soldR)))].filter(k=>(prodR[k]||0)+(consR[k]||0)+(soldR[k]||0)>=.05);
+  keys.sort((a,b)=>(prodR[b]||0)*VAL[b]-(prodR[a]||0)*VAL[a]);
+  h+='<div><h3>Production</h3>'+(keys.length?'<div class="tblwrap"><table class="tbl"><thead><tr><th>Item</th><th>Made</th><th>Used</th><th>Sold</th><th>Net</th><th>Value made</th></tr></thead><tbody>'+
+    keys.slice(0,24).map(k=>{const p=prodR[k]||0,c=consR[k]||0,s=soldR[k]||0,net=p-c-s;
+      return '<tr><td>'+img(k)+ITEMS[k].n+'</td><td>'+fr(p)+'</td><td>'+fr(c)+'</td><td>'+fr(s)+'</td><td class="'+(net<-.5?'bad':net>.5?'good':'')+'">'+(net>0?'+':'')+fr(net)+'</td><td>'+$s(p*VAL[k])+'</td></tr>';}).join('')+
+    '</tbody></table></div><p class="empty" style="margin-top:6px">Per minute. A negative net means you use or sell more than you make, so stock is running down.</p>':'<p class="empty">Nothing produced in the last minute.</p>')+'</div>';
+  const names={drill:'Mining drills',furnace:'Furnaces',assembler:'Assemblers',chemplant:'Chemical plants',fabricator:'Fabricators'};
+  h+='<div><h3>Machines <span class="hint">'+machinesN+' in total</span></h3><div class="legend" style="margin-bottom:8px"><span style="--c:'+SCOL.work+'">working</span><span style="--c:'+SCOL.starve+'">waiting for input or fuel</span><span style="--c:'+SCOL.block+'">output full</span><span style="--c:'+SCOL.idle+'">idle or no ore</span></div><div class="list">';
+  let repairAll=0,worn=0;for(const e of ents)if(e.eff!==undefined&&e.eff<.995){repairAll+=repairCost(e);worn++;}
+  for(const t in names){const m=mstat[t];if(!m)continue;
+    h+='<div class="mrow"><span>'+names[t]+' <span class="ct">&times;'+m.n+'</span></span><div><div class="sbar">'+['work','starve','block','idle'].filter(s=>m[s]).map(s=>'<i style="width:'+(m[s]/m.n*100)+'%;background:'+SCOL[s]+'"></i>').join('')+'</div>'+
+      '<span class="ct">'+m.work+' working &middot; '+m.starve+' waiting &middot; '+m.block+' full &middot; '+m.idle+' idle</span></div><span class="ct">condition '+Math.round(m.eff/m.n*100)+'%</span></div>';}
+  if(!machinesN)h+='<p class="empty">No machines yet.</p>';
+  h+='</div>'+(worn?'<div class="row" style="margin-top:8px"><button class="money" data-stat="repairall"'+(money<repairAll?' disabled':'')+'>Repair all '+worn+' for '+$$(repairAll)+'</button></div>':'')+'</div>';
+  const lg=logi;
+  h+='<div><h3>Logistics</h3><div class="tiles">'+
+    '<div class="tile"><span class="eyebrow">Belt use</span><span class="v">'+Math.round((lg.util||0)*100)+'%</span><span class="ct">'+(lg.items||0)+' items on '+(lg.belts||0)+' belts</span></div>'+
+    '<div class="tile"><span class="eyebrow">Backed-up belts</span><span class="v '+(lg.jams>5?'bad':'')+'">'+(lg.jams||0)+'</span><span class="ct">front item can’t move on</span></div>'+
+    '<div class="tile"><span class="eyebrow">Storage</span><span class="v">'+(lg.cap?Math.round(lg.used/lg.cap*100):0)+'%</span><span class="ct">'+(lg.used||0).toLocaleString('en-US')+' in '+(lg.chests||0)+' chests</span></div>'+
+    '<div class="tile"><span class="eyebrow">Train routes</span><span class="v">'+(lg.routes||0)+'</span><span class="ct">avg load '+Math.round((lg.avgLoad||0)*100)+'% &middot; '+(lg.plots||0)+' plots linked</span></div>'+
+    '<div class="tile"><span class="eyebrow">Splitters</span><span class="v">'+(lg.splitters||0)+'</span><span class="ct">'+(stats.beltMoves||0).toLocaleString('en-US')+' belt hand-offs so far</span></div></div></div>';
+  h+='<p class="empty">Power, pollution and dynamic prices aren’t in the game yet, so they have no stats here.</p>';
+  setHTML($('statsBody'),h);
+}
 
 // ---------- input ----------
 function updMouse(ev){const r=cv.getBoundingClientRect();mouse.x=ev.clientX-r.left;mouse.y=ev.clientY-r.top;
@@ -1132,9 +1638,12 @@ cv.addEventListener('contextmenu',ev=>ev.preventDefault());
 cv.addEventListener('pointerdown',ev=>{
   try{cv.setPointerCapture(ev.pointerId);}catch(_){}
   updMouse(ev);const x=mouse.tx,y=mouse.ty;
+  if(ev.button===2&&(tool==='bp'||tool==='bpsel')){tool=null;bpSel=null;uiDirty=true;return;}
   if(ev.button===2||(ev.button===0&&(tool==='remove'||ev.altKey))){mouse.down=2;removeAt(x,y);uiDirty=true;return;}
   if(ev.button!==0)return;
   mouse.down=0;mouse.lx=x;mouse.ly=y;mouse.placed=null;
+  if(tool==='bpsel'){bpSel={x0:x,y0:y,x1:x,y1:y};return;}
+  if(tool==='bp'){if(bps[bpIdx]&&placeBp(bps[bpIdx],x,y,bpRot,ev.shiftKey)){toast('Placed '+bps[bpIdx].name);uiDirty=true;}mouse.down=-1;return;}
   if(tool){mouse.placed=tryPlace(x,y,tool,tdir);uiDirty=true;}
   else{const e=at(x,y);
     if(e){openEnt(e);mouse.down=-1;}
@@ -1143,8 +1652,9 @@ cv.addEventListener('pointerdown',ev=>{
 });
 cv.addEventListener('pointermove',ev=>{
   updMouse(ev);const x=mouse.tx,y=mouse.ty;
+  if(tool==='bpsel'&&bpSel&&mouse.down===0){bpSel.x1=Math.max(0,Math.min(W-1,x));bpSel.y1=Math.max(0,Math.min(H-1,y));return;}
   if(mouse.down===2){removeAt(x,y);uiDirty=true;}
-  else if(mouse.down===0&&tool){
+  else if(mouse.down===0&&tool&&tool!=='bp'&&tool!=='bpsel'){
     const belt=!!BELT_MUL[tool];let n=0;
     while((mouse.lx!==x||mouse.ly!==y)&&n++<64){
       const dx=x-mouse.lx,dy=y-mouse.ly;let d;
@@ -1156,27 +1666,34 @@ cv.addEventListener('pointermove',ev=>{
     uiDirty=true;
   }else if(mouse.down===0&&mining&&(mining.x!==x||mining.y!==y)){mining=inb(x,y)&&ore[y*W+x]&&!at(x,y)&&ownedAt(x,y)?{x,y,p:0}:null;}
 });
-const up=()=>{mouse.down=-1;mining=null;mouse.placed=null;};
+const up=()=>{
+  if(tool==='bpsel'&&bpSel&&mouse.down===0){const s=bpSel;bpSel=null;tool=null;captureBp(Math.min(s.x0,s.x1),Math.min(s.y0,s.y1),Math.max(s.x0,s.x1),Math.max(s.y0,s.y1));uiDirty=true;}
+  mouse.down=-1;mining=null;mouse.placed=null;};
 cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
 cv.addEventListener('wheel',ev=>{ev.preventDefault();updMouse(ev);zoomAt(Math.exp(-ev.deltaY*(ev.deltaMode===1?.05:.0015)),mouse.x,mouse.y);},{passive:false});
-function zoomAt(f,px,py){const wx=(px-SW/2)/cam.z+cam.x,wy=(py-SH/2)/cam.z+cam.y;cam.z=Math.max(.3,Math.min(2.5,cam.z*f));cam.x=wx-(px-SW/2)/cam.z;cam.y=wy-(py-SH/2)/cam.z;}
+function zoomAt(f,px,py){const wx=(px-SW/2)/cam.z+cam.x,wy=(py-SH/2)/cam.z+cam.y;cam.z=Math.max(.25,Math.min(2.5,cam.z*f));cam.x=wx-(px-SW/2)/cam.z;cam.y=wy-(py-SH/2)/cam.z;}
 const keys={};
 const anyOpen=()=>!$('help').hidden||!$('menu').hidden||!$('win').hidden;
 function toggleInv(){show('inv',$('inv').hidden);if(!$('inv').hidden){cache.invGrid=cache.recGrid=null;drawInv();}}
 function toggleCo(){if($('co').hidden)openCo();else show('co',false);}
+function toggleStats(){show('stats',$('stats').hidden);if(!$('stats').hidden){cache.statsBody=null;drawStats();}}
+function startBpSel(){tool=tool==='bpsel'?null:'bpsel';bpSel=null;uiDirty=true;if(tool)toast('Drag a box around the buildings you want to save');}
 addEventListener('keydown',ev=>{
+  if(ev.target&&(ev.target.tagName==='INPUT'||ev.target.tagName==='TEXTAREA'))return;
   const k=ev.key.toLowerCase();
   if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))ev.preventDefault();
-  if(k==='escape'){if(anyOpen()){show('help',false);show('menu',false);show('win',false);}else if(!$('co').hidden)show('co',false);else if(!$('inv').hidden)show('inv',false);else if(entOpen)closeEnt();else{tool=null;uiDirty=true;}return;}
+  if(k==='escape'){if(anyOpen()){show('help',false);show('menu',false);show('win',false);}else if(!$('co').hidden)show('co',false);else if(!$('stats').hidden)show('stats',false);else if(!$('inv').hidden)show('inv',false);else if(entOpen)closeEnt();else{tool=null;bpSel=null;uiDirty=true;}return;}
   if(anyOpen()){if(k==='h'||k==='?')show('help',false);return;}
   keys[k]=true;
   if(ev.ctrlKey||ev.metaKey)return;
   if(k>='1'&&k<='9')selectTool(HOTBAR[+k-1]);
   else if(k==='0'||k==='x')selectTool('remove');
-  else if(k==='r'){if(tool&&tool!=='remove')tdir=(tdir+(ev.shiftKey?3:1))%4;else{const e=at(mouse.tx,mouse.ty);if(e&&(isBelt(e)||isIns(e)||e.type==='drill'))e.dir=(e.dir+(ev.shiftKey?3:1))%4;}}
+  else if(k==='r'){if(tool==='bp')bpRot=(bpRot+(ev.shiftKey?3:1))%4;else if(tool&&ITEMS[tool])tdir=(tdir+(ev.shiftKey?3:1))%4;else if(!tool){const e=at(mouse.tx,mouse.ty);if(e&&(isBelt(e)||isIns(e)||e.type==='drill'||e.type==='splitter'))e.dir=(e.dir+(ev.shiftKey?3:1))%4;}}
   else if(k==='q'){const e=at(mouse.tx,mouse.ty);if(e&&ITEMS[e.type]&&!e.hq){tool=e.type;tdir=e.dir;}else tool=null;uiDirty=true;}
   else if(k==='e')toggleInv();
   else if(k==='c'||k==='t')toggleCo();
+  else if(k==='p')toggleStats();
+  else if(k==='b')startBpSel();
   else if(k==='h'||k==='?')show('help',true);
   else if(k==='='||k==='+')zoomAt(1.2,SW/2,SH/2);
   else if(k==='-'||k==='_')zoomAt(1/1.2,SW/2,SH/2);
@@ -1186,18 +1703,25 @@ addEventListener('blur',()=>{for(const k in keys)keys[k]=false;up();});
 document.addEventListener('click',ev=>{
   const b=ev.target.closest('button');if(!b||b.disabled)return;
   if(b.dataset.close){const id=b.dataset.close;if(id==='entp')closeEnt();else show(id,false);return;}
-  if(b.dataset.tab){coTab=b.dataset.tab;cache.coBody=null;drawCo();return;}
+  if(b.dataset.tab){coTab=b.dataset.tab;bpDel=-1;cache.coBody=null;drawCo();return;}
   if(b.dataset.co)return coAct(b.dataset.co,ev.shiftKey);
+  if(b.dataset.alert!==undefined){const a=alerts[+b.dataset.alert];if(a){if(a.c)openCo('contracts');else jumpTo(a.e);}return;}
+  if(b.dataset.stat==='repairall'){let n=0;for(const e of ents)if(e.eff!==undefined&&e.eff<.995&&repair(e))n++;toast('Repaired '+n+' machines');cache.statsBody=null;drawStats();return;}
   if(b.dataset.slot)return selectTool(b.dataset.slot);
   if(b.dataset.rec){queueCraft(b.dataset.rec,ev.shiftKey?5:1);cache.recGrid=null;drawInv();recInfo(b.dataset.rec);return;}
   if(b.dataset.inv){const t=b.dataset.inv;if(ITEMS[t].place){selectTool(t);if(tool===t)show('inv',false);}return;}
   if(b.dataset.act){if(!b.dataset.act.startsWith('none'))entAct(b.dataset.act);return;}
 });
+document.addEventListener('change',ev=>{const t=ev.target;if(t.dataset&&t.dataset.bpname!==undefined){const bp=bps[+t.dataset.bpname];if(bp){bp.name=t.value.trim().slice(0,40)||bp.name;saveBps();cache.coBody=null;}}});
+$('statsBody').addEventListener('mousemove',ev=>{const s=ev.target.closest('#spark');if(!s)return;const svg=s.querySelector('svg'),r=svg.getBoundingClientRect(),vals=s.dataset.hist.split(',').map(Number),n=vals.length;if(n<2)return;
+  const i=Math.max(0,Math.min(n-1,Math.round((ev.clientX-r.left)/r.width*(n-1))));$('sparkTip').textContent=(i===n-1?'Now':(n-1-i)+' min ago')+': '+$$(vals[i])+'/min';});
 $('recGrid').addEventListener('mouseover',ev=>{const b=ev.target.closest('[data-rec]');if(b)recInfo(b.dataset.rec);});
 $('bCo').onclick=()=>openCo();
+$('bStats').onclick=toggleStats;
 $('bInv').onclick=toggleInv;
+$('bBp').onclick=startBpSel;
 $('bHelp').onclick=()=>show('help',true);
-$('bMenu').onclick=()=>{$('menuStats').textContent='Played '+playTime()+' · '+(ents.length-1)+' buildings · '+$$(stats.life)+' earned';show('menuConfirm',false);show('menuMain',true);show('menu',true);};
+$('bMenu').onclick=()=>{$('menuStats').textContent='Played '+playTime()+' · '+(ents.length-1)+' buildings · '+$$(stats.life)+' earned · '+contracts.done+' contracts';show('menuConfirm',false);show('menuMain',true);show('menu',true);};
 $('mSave').onclick=()=>{save();toast('Game saved');show('menu',false);};
 $('mNew').onclick=()=>{show('menuMain',false);show('menuConfirm',true);};
 $('mNewNo').onclick=()=>{show('menuConfirm',false);show('menuMain',true);};
@@ -1206,34 +1730,37 @@ $('mNewYes').onclick=()=>{newGame();save();show('menu',false);show('help',true);
 // ---------- save / load ----------
 function serialize(){
   const mined={};for(let i=0;i<W*H;i++)if(amt[i]!==amt0[i])mined[i]=amt[i];
-  const E=ents.map(e=>{const o=Object.assign({},e);delete o.id;delete o.tk;delete o.v;delete o.earned;return o;});
-  return {v:2,seed,won,inv,queue,ticks,cam:{x:cam.x,y:cam.y,z:cam.z},mined,E,money,stats,research,upg,cos,ms,ch,owned:Array.from(owned)};
+  const E=ents.map(e=>{const o=Object.assign({},e);delete o.id;delete o.tk;delete o.v;delete o.earned;delete o.jam;delete o.rej;return o;});
+  return {v:3,seed,won,inv,queue,ticks,cam:{x:cam.x,y:cam.y,z:cam.z},mined,E,money,stats,research,upg,cos,ms,ch,owned:Array.from(owned),xp,rep,contracts,revHist,bps};
 }
 function reset(s){
   genMap(s);ents=[];grid.fill(null);nextId=1;queue=[];ticks=0;won=false;inv={};tool=null;mining=null;closeEnt();
-  money=0;stats={life:0,auto:0,raw:0,maxDepth:0,maxAutoVal:0};research={};upg={};cos={};ms={};ch={};
-  owned=new Uint8Array(PN*PN);owned[12]=1;revBuf.fill(0);revCur=0;rpm=0;
+  money=0;stats={life:0,auto:0,raw:0,maxDepth:0,maxAutoVal:0,beltMoves:0,splitters:0,lastCraft:0};research={};upg={};cos={};ms={};ch={};xp={};rep={};
+  contracts={offers:[],active:[],next:1,done:0,cool:5};revHist=[];prodR={};consR={};soldR={};valR={};alerts=[];logi={};mstat={};
+  owned=new Uint8Array(PN*PN);owned[12]=1;revBuf.fill(0);spendBuf.fill(0);revCur=0;spendCur=0;rpm=0;epm=0;rebuild();
 }
 function newGame(){
   reset((Math.random()*1e9)|0);inv=Object.assign({},START_INV);
   const hq=mk('moneygen',W/2-1,H/2-1,0);hq.hq=true;addEnt(hq);
   cam.x=W/2*T;cam.y=H/2*T;cam.z=1;uiDirty=true;
-  setTimeout(()=>toast('Tip: point a drill’s chute into the Money Generator to start earning. Upgrade it to Mk. II to sell plates.'),600);
+  setTimeout(()=>toast('Tip: point a drill’s chute into the Money Generator to start earning. Contract offers show up in Company (C).'),600);
 }
 function load(s){
   reset(s.seed);
   for(const i in s.mined){const v=s.mined[i];amt[i]=v;if(v<=0)ore[i]=0;}
   chunks.fill(null);
   won=!!s.won;inv=s.inv||{};queue=(s.queue||[]).filter(q=>RECIPES[q.r]);ticks=s.ticks|0;
-  money=+s.money||0;Object.assign(stats,s.stats||{});research=s.research||{};upg=s.upg||{};cos=s.cos||{};ms=s.ms||{};ch=s.ch||{};
+  money=+s.money||0;Object.assign(stats,s.stats||{});research=s.research||{};upg=s.upg||{};cos=s.cos||{};ms=s.ms||{};ch=s.ch||{};xp=s.xp||{};rep=s.rep||{};
+  if(s.contracts)contracts=Object.assign({offers:[],active:[],next:1,done:0,cool:5},s.contracts);revHist=s.revHist||[];
   if(s.owned)owned=Uint8Array.from(s.owned);owned[12]=1;
   if(s.cam){cam.x=s.cam.x;cam.y=s.cam.y;cam.z=s.cam.z;}
   for(const o of s.E||[]){if(!ITEMS[o.type])continue;const e=Object.assign(mk(o.type,o.x,o.y,o.dir),o);
     const[w,h]=footprint(e.type);let free=true;for(let j=0;j<h;j++)for(let i=0;i<w;i++)if(!inb(e.x+i,e.y+j)||at(e.x+i,e.y+j))free=false;if(free)addEnt(e);}
   if(!ents.some(e=>e.hq)){const hq=mk('moneygen',W/2-1,H/2-1,0);hq.hq=true;addEnt(hq);}
-  uiDirty=true;
+  if(Array.isArray(s.bps)&&!bps.length)bps=s.bps.filter(validBp);
+  rebuild();uiDirty=true;
 }
-function save(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(serialize()));}catch(_){}}
+function save(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(serialize()));}catch(_){}saveBps();}
 
 // ---------- loop ----------
 let last=0,acc=0,frame=0;
@@ -1248,14 +1775,14 @@ function loop(now){
   render(ticks/60);
   frame++;
   if(frame%6===0){status();drawHUD();}
-  if(frame%15===0){if(!$('inv').hidden)drawInv();if(!$('co').hidden)drawCo();if(entOpen){if(!ents.includes(entOpen))closeEnt();else drawEnt();}}
+  if(frame%15===0){if(!$('inv').hidden)drawInv();if(!$('co').hidden)drawCo();if(!$('stats').hidden)drawStats();if(entOpen){if(!ents.includes(entOpen))closeEnt();else drawEnt();}}
   if(uiDirty){uiDirty=false;drawHUD();}
   if(ticks%1800===0&&ticks>0)save();
   requestAnimationFrame(loop);
 }
 function start(data){
-  resize();makeIcons();
-  let s=data&&data.v===2?data:null;
+  resize();makeIcons();loadBps();
+  let s=data&&data.v===3?data:null;
   if(!s){try{const raw=localStorage.getItem(SAVE_KEY);if(raw)s=JSON.parse(raw);}catch(_){s=null;}}
   let fresh=!s;
   if(s){try{load(s);}catch(_){fresh=true;}}
