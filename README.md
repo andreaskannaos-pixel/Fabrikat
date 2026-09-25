@@ -22,6 +22,9 @@ Progress saves in the browser automatically.
 | `C` | Company: contracts, goals, research, upgrades, land, market, blueprints |
 | `P` | Factory statistics |
 | `B` | Save a blueprint (drag a box) |
+| `M` | World map |
+| `T` | Research |
+| `G` | Guide |
 | `WASD` / arrows | Move camera |
 | Scroll, `+` `-` | Zoom |
 | `H` | Help |
@@ -50,3 +53,19 @@ Everything runs on money. The **Money Generator** turns items into cash, and eac
 - Belts feed any building they point into.
 - Inserters move items from the building behind them into the one in front.
 - Furnaces need coal. Assemblers craft the recipe you set.
+
+## Nation layer
+
+Your factory pays for cities, cities grow people, and people become workers or soldiers. Soldiers take territory, and territory sends new resources back to the factory.
+
+- **Campaign:** 10 missions teach the loop, from your first furnace to surviving an invasion. Menus unlock as you go; Settings can skip ahead.
+- **World map (`M`):** 61 provinces across plains, forest, desert, mountains, volcanic land and arctic, shared with 5 computer-run nations. Captured provinces send their resource to your factory every 10 seconds, into an Import Depot if you build one.
+- **Cities:** Mk. I to Mk. V, bought with money and materials. Each province has a few city slots.
+- **Population:** one slider splits people between workers (taxes, plus up to +100% factory speed) and soldiers. Peacetime, Mobilized and War Economy set how far you can push it and what it costs.
+- **Military:** infantry, mechanized, artillery, armor, air wings and special forces. Attack any neighbouring province, or land from a port with transport ships. Forts and terrain strengthen defense.
+- **Diplomacy:** relations from -100 to +100; alliances, peace, war, gifts, trade routes, requests for allied troops and shipping raids.
+- **Strategic:** five rocket types and SAM sites with visible coverage circles and interception.
+- **Research:** five tabs (Industry, Civilization, Military, Strategic, Naval). Advanced research costs materials as well as money.
+- **Guide (`G`), Settings** (quality presets, FPS limit, particle and effect density, animation and map detail, performance mode) and a News feed.
+
+It's single-player: every other nation is computer-controlled, and there is no online chat.
