@@ -1,0 +1,914 @@
+<meta charset="utf-8">
+<title>Fabrikat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: dark;
+  --void:#15150f; --ground:#3a372b; --panel:#1f201a; --panel2:#2b2c24; --line:#4b4a3b;
+  --text:#ece6d3; --dim:#a19c86; --amber:#e3a52a; --amber-ink:#241a04; --blue:#4f8fd0; --red:#d2553f; --green:#79b25a;
+  --ui:"Chakra Petch","Segoe UI",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+html,body{height:100%;margin:0;background:var(--void);color:var(--text);overflow:hidden;font-family:var(--ui);font-size:14px}
+[hidden]{display:none!important}
+#game{position:fixed;inset:0;width:100%;height:100%;display:block;cursor:crosshair;touch-action:none}
+#hud{position:fixed;inset:0;pointer-events:none}
+#hud > *{pointer-events:auto}
+button{font-family:var(--ui);font-size:13px;font-weight:600;color:var(--text);background:var(--panel2);border:1px solid var(--line);border-radius:3px;padding:6px 10px;cursor:pointer;letter-spacing:.02em}
+button:hover{border-color:var(--dim)}
+button:focus-visible{outline:2px solid var(--amber);outline-offset:1px}
+button.primary{background:var(--amber);color:var(--amber-ink);border-color:var(--amber)}
+button.primary:hover{filter:brightness(1.08)}
+button.danger{background:var(--red);border-color:var(--red);color:#1a0906}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:3px;box-shadow:0 6px 24px rgba(0,0,0,.45)}
+.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--dim);font-weight:600}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+h1,h2,h3{margin:0;text-wrap:balance}
+
+#goal{position:absolute;left:16px;top:16px;width:260px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+#goal h1{font-size:20px;font-weight:700;letter-spacing:.02em}
+#gRows{display:flex;flex-direction:column;gap:6px}
+.grow{display:grid;grid-template-columns:22px 1fr auto;gap:4px 8px;align-items:center}
+.grow img{width:22px;height:22px;grid-row:span 2}
+.grow .nm{font-size:13px}
+.grow .ct{font-family:var(--mono);font-size:12px;color:var(--dim)}
+.bar{grid-column:2 / 4;height:4px;background:#11110d;border-radius:2px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--amber)}
+.bar.done i{background:var(--green)}
+#goal .unlock{margin:0;font-size:12px;color:var(--dim)}
+#goal .unlock b{color:var(--text);font-weight:600}
+
+#topbtns{position:absolute;right:16px;top:16px;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+#queue{position:absolute;right:16px;top:60px;display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;max-width:320px}
+.qi{position:relative;width:40px;height:40px;background:var(--panel);border:1px solid var(--line);border-radius:3px;display:grid;place-items:center}
+.qi img{width:28px;height:28px}
+.qi i{position:absolute;left:0;bottom:0;height:3px;background:var(--amber)}
+
+#hotbar{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);display:flex;gap:4px;padding:6px;flex-wrap:wrap;justify-content:center;max-width:calc(100% - 32px);box-sizing:border-box}
+.slot{position:relative;width:54px;height:54px;padding:0;display:grid;place-items:center;background:var(--panel2)}
+.slot img{width:36px;height:36px}
+.slot .k{position:absolute;left:4px;top:2px;font-family:var(--mono);font-size:10px;color:var(--dim)}
+.slot .n{position:absolute;right:4px;bottom:2px;font-family:var(--mono);font-size:12px;font-weight:600}
+.slot.sel{border-color:var(--amber);box-shadow:inset 0 0 0 1px var(--amber)}
+.slot.off{opacity:.35}
+.slot .x{font-size:22px;color:var(--red);font-weight:700}
+
+#status{position:absolute;left:16px;bottom:16px;max-width:min(320px,calc(100% - 32px));font-family:var(--mono);font-size:12px;color:var(--dim);background:rgba(21,21,15,.78);padding:6px 9px;border-radius:3px;line-height:1.5}
+#status:empty{display:none}
+#status b{color:var(--text);font-weight:600}
+#toasts{position:absolute;left:50%;top:16px;transform:translateX(-50%);display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none;width:min(440px,calc(100% - 32px))}
+.toast{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--amber);padding:8px 12px;border-radius:3px;font-weight:600;transition:opacity .4s}
+.toast.big{border-left-color:var(--green);font-size:16px}
+
+.modal{position:fixed;z-index:5;display:flex;flex-direction:column;max-height:calc(100% - 32px);box-sizing:border-box}
+#inv{left:50%;top:50%;transform:translate(-50%,-50%);width:min(760px,calc(100% - 32px))}
+#entp{right:16px;top:108px;width:min(340px,calc(100% - 32px));max-height:calc(100% - 200px)}
+.mhead{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.mhead h2{font-size:18px;font-weight:700}
+.mbody{padding:12px 14px;overflow:auto;display:grid;gap:14px}
+#inv .mbody{grid-template-columns:1fr 1fr}
+@media (max-width:640px){#inv .mbody{grid-template-columns:1fr}}
+.mbody h3{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--dim);margin-bottom:8px;font-weight:600}
+.hint{text-transform:none;letter-spacing:0;font-weight:500}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(48px,1fr));gap:4px}
+.cell{position:relative;aspect-ratio:1;max-width:100%;padding:0;display:grid;place-items:center;background:var(--panel2)}
+.cell img{width:70%;height:70%}
+.cell .n{position:absolute;right:3px;bottom:1px;font-family:var(--mono);font-size:11px;font-weight:600;text-shadow:0 1px 0 #000}
+.cell.no{opacity:.45}
+.cell.lock{opacity:.18;cursor:default}
+.cell.on{border-color:var(--amber);box-shadow:inset 0 0 0 1px var(--amber)}
+.recinfo{margin-top:10px;min-height:66px;font-size:13px;color:var(--dim);line-height:1.5}
+.recinfo b{color:var(--text)}
+.ing{display:inline-flex;align-items:center;gap:3px;margin-right:10px;font-family:var(--mono);font-size:12px}
+.ing img{width:18px;height:18px}
+.ing.miss{color:var(--red)}
+.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;align-items:center;font-size:13px}
+.kv .k{color:var(--dim)}
+.pbar{height:6px;background:#11110d;border-radius:3px;overflow:hidden}
+.pbar i{display:block;height:100%;background:var(--amber)}
+.empty{color:var(--dim);font-size:13px}
+
+.overlay{position:fixed;inset:0;z-index:10;background:rgba(12,12,9,.72);display:grid;place-items:center;padding-inline:16px}
+.card{width:min(620px,100%);max-height:calc(100% - 32px);overflow:auto;padding:20px 22px;box-sizing:border-box}
+.card h2{font-size:28px;font-weight:700;letter-spacing:.01em}
+.card p{line-height:1.55;max-width:62ch}
+.card .sub{color:var(--dim);margin-top:4px}
+.keys{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:14px 0;font-size:13px;align-items:baseline}
+kbd{font-family:var(--mono);font-size:11px;background:var(--panel2);border:1px solid var(--line);border-bottom-width:2px;border-radius:3px;padding:1px 5px;white-space:nowrap}
+.flow{border-top:1px solid var(--line);padding-top:12px;margin-top:4px;font-size:13px;color:var(--dim)}
+.flow b{color:var(--text)}
+.hazard{height:6px;background:repeating-linear-gradient(-45deg,var(--amber) 0 8px,#1f201a 8px 16px);margin:-20px -22px 16px}
+</style>
+
+<canvas id="game"></canvas>
+<div id="hud">
+  <section id="goal" class="panel">
+    <div><span class="eyebrow" id="gNum">Milestone 1 of 4</span><h1 id="gName">Automation</h1></div>
+    <div id="gRows"></div>
+    <p class="unlock" id="gUnlock"></p>
+    <button id="deposit" class="primary">Deposit from inventory</button>
+  </section>
+  <div id="topbtns">
+    <button id="bInv">Inventory <kbd>E</kbd></button>
+    <button id="bHelp">Help <kbd>H</kbd></button>
+    <button id="bMenu">Menu</button>
+  </div>
+  <div id="queue"></div>
+  <nav id="hotbar" class="panel"></nav>
+  <div id="status"></div>
+  <div id="toasts"></div>
+</div>
+
+<div id="inv" class="panel modal" hidden>
+  <div class="mhead"><h2>Inventory</h2><button data-close="inv">Close <kbd>E</kbd></button></div>
+  <div class="mbody">
+    <div><h3>Items <span class="hint">click a building to hold it</span></h3><div id="invGrid" class="grid"></div></div>
+    <div><h3>Crafting <span class="hint">click = 1, shift+click = 5</span></h3><div id="recGrid" class="grid"></div><div id="recInfo" class="recinfo"></div></div>
+  </div>
+</div>
+
+<div id="entp" class="panel modal" hidden>
+  <div class="mhead"><h2 id="entTitle">Building</h2><button data-close="entp">Close <kbd>Esc</kbd></button></div>
+  <div class="mbody" id="entBody"></div>
+</div>
+
+<div id="help" class="overlay" hidden>
+  <div class="card panel">
+    <div class="hazard"></div>
+    <h2>Fabrikat</h2>
+    <p class="sub">Mine ore, smelt it, build machines that build machines. Feed the Hub to hit each milestone. The last one launches a rocket.</p>
+    <div class="keys">
+      <span><kbd>1</kbd>&ndash;<kbd>8</kbd></span><span>Pick a building from the hotbar, then click the ground to place it</span>
+      <span><kbd>Drag</kbd></span><span>Lay belts in a line. They turn corners for you.</span>
+      <span><kbd>R</kbd></span><span>Rotate the building you're holding (or the one under the cursor)</span>
+      <span><kbd>X</kbd> / right-click</span><span>Remove a building. On a Chromebook, right-click is a two-finger click or Alt+click.</span>
+      <span><kbd>Q</kbd></span><span>Copy the building under the cursor</span>
+      <span><kbd>Click</kbd> ore</span><span>Mine by hand (hold the button down)</span>
+      <span><kbd>E</kbd></span><span>Inventory and hand crafting</span>
+      <span><kbd>W A S D</kbd></span><span>Move the camera (arrow keys work too). Scroll or <kbd>+</kbd> <kbd>-</kbd> to zoom.</span>
+      <span><kbd>Esc</kbd></span><span>Put the building away, close panels</span>
+    </div>
+    <div class="flow">
+      <b>How things connect.</b> A <b>drill</b> drops ore into whatever its chute faces: a belt, furnace or chest.
+      <b>Belts</b> carry items into any building they point at. <b>Inserters</b> lift items out of the building behind them and drop them into the one in front (the arrow shows where).
+      <b>Furnaces</b> burn coal, so feed them coal as well as ore. <b>Assemblers</b> craft whatever recipe you set.
+      Click any building to look inside it.
+    </div>
+    <p class="row" style="margin-top:16px;margin-bottom:0"><button class="primary" data-close="help">Start building</button><span class="eyebrow">Progress saves in this browser</span></p>
+  </div>
+</div>
+
+<div id="menu" class="overlay" hidden>
+  <div class="card panel">
+    <div class="hazard"></div>
+    <h2>Menu</h2>
+    <p class="sub" id="menuStats"></p>
+    <div class="row" id="menuMain"><button class="primary" data-close="menu">Resume</button><button id="mSave">Save now</button><button id="mNew">New game</button></div>
+    <div class="row" id="menuConfirm" hidden><span>Erase this factory and start a new map?</span><button class="danger" id="mNewYes">Erase and restart</button><button id="mNewNo">Keep playing</button></div>
+  </div>
+</div>
+
+<div id="win" class="overlay" hidden>
+  <div class="card panel">
+    <div class="hazard"></div>
+    <h2>Rocket launched</h2>
+    <p class="sub" id="winStats"></p>
+    <p>All four milestones are done. Your factory keeps running if you want to keep expanding it.</p>
+    <p class="row"><button class="primary" data-close="win">Keep building</button></p>
+  </div>
+</div>
+
+<script>
+(()=>{
+'use strict';
+const W=160,H=160,T=32,PX=16,CS=16,CW=W/CS,CH=H/CS;
+const DX=[0,1,0,-1],DY=[-1,0,1,0];
+const GAP=0.25, BELT_SPEED=1.875, DRILL_RATE=0.5, CHEST_CAP=800;
+const SAVE_KEY='fabrikat-save-v1';
+
+const ITEMS={
+  iron_ore:{n:'Iron ore',c:'#7d93a8',s:'ore'},
+  copper_ore:{n:'Copper ore',c:'#d0773f',s:'ore'},
+  coal:{n:'Coal',c:'#35332f',s:'ore'},
+  stone:{n:'Stone',c:'#b3a37e',s:'ore'},
+  iron_plate:{n:'Iron plate',c:'#c3ccd4',s:'plate'},
+  copper_plate:{n:'Copper plate',c:'#e2894a',s:'plate'},
+  steel:{n:'Steel',c:'#8fa0ad',s:'bar'},
+  gear:{n:'Iron gear',c:'#aab4bc',s:'gear'},
+  cable:{n:'Copper cable',c:'#e2894a',s:'cable'},
+  circuit:{n:'Circuit',c:'#4f9a45',s:'chip'},
+  red_sci:{n:'Red science',c:'#d24b3c',s:'flask'},
+  green_sci:{n:'Green science',c:'#6cc04a',s:'flask'},
+  rocket_part:{n:'Rocket part',c:'#e8e2cf',s:'rocket'},
+  belt:{n:'Conveyor belt',place:1},
+  fast_belt:{n:'Fast belt',place:1},
+  inserter:{n:'Inserter',place:1},
+  fast_inserter:{n:'Fast inserter',place:1},
+  drill:{n:'Mining drill',place:1},
+  furnace:{n:'Stone furnace',place:1},
+  assembler:{n:'Assembler',place:1},
+  chest:{n:'Chest',place:1},
+};
+const RECIPES={
+  gear:{in:{iron_plate:2},out:1,t:0.5,tier:0},
+  cable:{in:{copper_plate:1},out:2,t:0.5,tier:0},
+  circuit:{in:{iron_plate:1,cable:3},out:1,t:0.5,tier:0},
+  belt:{in:{gear:1,iron_plate:1},out:2,t:0.5,tier:0},
+  inserter:{in:{circuit:1,gear:1,iron_plate:1},out:1,t:0.5,tier:0},
+  drill:{in:{circuit:2,gear:3,iron_plate:5},out:1,t:2,tier:0},
+  furnace:{in:{stone:5},out:1,t:0.5,tier:0},
+  chest:{in:{iron_plate:4},out:1,t:0.5,tier:0},
+  red_sci:{in:{copper_plate:1,gear:1},out:1,t:3,tier:0},
+  assembler:{in:{circuit:3,gear:5,iron_plate:9},out:1,t:1,tier:1},
+  fast_belt:{in:{gear:3,belt:1},out:1,t:0.5,tier:2},
+  fast_inserter:{in:{circuit:2,iron_plate:2,inserter:1},out:1,t:0.5,tier:2},
+  green_sci:{in:{inserter:1,belt:1},out:1,t:4,tier:2},
+  rocket_part:{in:{steel:4,circuit:6,green_sci:1},out:1,t:6,tier:3},
+};
+const SMELT={iron_ore:{o:'iron_plate',n:1,t:2,tier:0},copper_ore:{o:'copper_plate',n:1,t:2,tier:0},iron_plate:{o:'steel',n:5,t:6,tier:2}};
+const MILESTONES=[
+  {name:'Automation',need:{iron_plate:40,copper_plate:40,gear:20},unlock:'Assembler'},
+  {name:'Logistics',need:{red_sci:30,circuit:50},unlock:'Fast belt, fast inserter, green science, steel smelting'},
+  {name:'Industry',need:{red_sci:60,green_sci:60,steel:30},unlock:'Rocket parts'},
+  {name:'Launch',need:{rocket_part:10},unlock:'Rocket launch'},
+];
+const HOTBAR=['belt','inserter','drill','furnace','assembler','chest','fast_belt','fast_inserter'];
+const ORES=['iron_ore','copper_ore','coal','stone'];
+const ORECOL=[[112,132,152],[204,110,58],[44,43,41],[176,160,122]];
+const START_INV={drill:6,furnace:6,belt:40,inserter:10,chest:4,iron_plate:20,coal:10,stone:10};
+
+// ---------- noise ----------
+function mulberry(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function hash(x,y,s){let h=Math.imul(x|0,374761393)+Math.imul(y|0,668265263)+Math.imul(s|0,982451653)|0;h=Math.imul(h^h>>>13,1274126177);h^=h>>>16;return(h>>>0)/4294967296}
+function vnoise(x,y,s){const xi=Math.floor(x),yi=Math.floor(y),xf=x-xi,yf=y-yi,u=xf*xf*(3-2*xf),v=yf*yf*(3-2*yf);
+  const a=hash(xi,yi,s),b=hash(xi+1,yi,s),c=hash(xi,yi+1,s),d=hash(xi+1,yi+1,s);return a+(b-a)*u+(c-a)*v+(a-b-c+d)*u*v}
+
+// ---------- state ----------
+let seed=1, level=0, inv={}, queue=[], ticks=0, won=false;
+let ore=new Uint8Array(W*H), amt=new Int32Array(W*H), amt0=new Int32Array(W*H);
+let ents=[], grid=new Array(W*H).fill(null), hub=null, nextId=1, listsDirty=true;
+let L={belt:[],ins:[],drill:[],furn:[],asm:[]};
+const cam={x:W/2*T,y:H/2*T,z:1};
+let tool=null, tdir=1, mining=null, floats=[];
+const chunks=new Array(CW*CH).fill(null);
+
+const inb=(x,y)=>x>=0&&y>=0&&x<W&&y<H;
+const at=(x,y)=>inb(x,y)?grid[y*W+x]:null;
+const isBelt=e=>!!e&&(e.type==='belt'||e.type==='fast_belt');
+const isIns=e=>!!e&&(e.type==='inserter'||e.type==='fast_inserter');
+const unlocked=r=>RECIPES[r]&&RECIPES[r].tier<=level;
+const add=(o,k,n)=>{o[k]=(o[k]||0)+n;if(o[k]<=0)delete o[k]};
+const total=o=>{let s=0;for(const k in o)s+=o[k];return s};
+const fmt=n=>n>=10000?(n/1000|0)+'k':''+n;
+
+// ---------- map ----------
+function genMap(s){
+  seed=s; ore.fill(0); amt.fill(0);
+  const r=mulberry(s), cx=W/2, cy=H/2;
+  const patches=[[0,-13,-9,6],[1,13,-8,5.5],[2,-7,13,5],[3,12,11,4.5],[0,4,-24,6],[2,26,4,5]];
+  for(let k=0;k<26;k++){const a=r()*Math.PI*2,d=24+r()*48;patches.push([k%4,Math.cos(a)*d,Math.sin(a)*d,4+r()*5]);}
+  patches.forEach(([o,px,py,rad],k)=>{
+    const X=Math.round(cx+px),Y=Math.round(cy+py),dc=Math.hypot(px,py);
+    for(let y=Y-rad-3;y<=Y+rad+3;y++)for(let x=X-rad-3;x<=X+rad+3;x++){
+      if(!inb(x,y)||Math.abs(x-cx)<4&&Math.abs(y-cy)<4)continue;
+      const d=Math.hypot(x-X,y-Y)/rad+(vnoise(x*.35,y*.35,s+k*13)-.5)*.9;
+      if(d<1){const i=y*W+x;ore[i]=o+1;amt[i]=Math.round((1.15-d*.6)*(500+dc*22));}
+    }
+  });
+  amt0.set(amt); chunks.fill(null);
+}
+function chunk(ci,cj){
+  let c=chunks[cj*CW+ci]; if(c)return c;
+  c=document.createElement('canvas'); c.width=c.height=CS*PX;
+  const g=c.getContext('2d'), img=g.createImageData(CS*PX,CS*PX), d=img.data, SZ=CS*PX;
+  for(let ty=0;ty<CS;ty++)for(let tx=0;tx<CS;tx++){
+    const X=ci*CS+tx,Y=cj*CS+ty,o=ore[Y*W+X];
+    let rocks=null;
+    if(o){rocks=[];for(let k=0;k<5;k++)rocks.push([2+hash(X,Y,k*3+1)*12,2+hash(X,Y,k*3+2)*12,2.2+hash(X,Y,k*3+3)*2.6]);}
+    for(let py=0;py<PX;py++)for(let px=0;px<PX;px++){
+      const wx=X*PX+px,wy=Y*PX+py;
+      const n=vnoise(wx/90,wy/90,seed)*.55+vnoise(wx/23,wy/23,seed+7)*.3+hash(wx,wy,seed)*.15;
+      let R=50+n*24,G=48+n*21,B=36+n*14;
+      if(rocks){
+        let hit=false,sh=false;
+        for(const[rx,ry,rr]of rocks){const dx=px+.5-rx,dy=py+.5-ry,dd=Math.hypot(dx,dy);
+          if(dd<rr){const col=ORECOL[o-1],f=.72+.5*(1-(dx+dy+rr)/(rr*2.4))+hash(wx,wy,5)*.08;R=col[0]*f;G=col[1]*f;B=col[2]*f;hit=true;break;}
+          if(dd<rr+1.3)sh=true;}
+        if(!hit&&sh){R*=.55;G*=.55;B*=.55;}
+      }
+      const i=((ty*PX+py)*SZ+tx*PX+px)*4; d[i]=R;d[i+1]=G;d[i+2]=B;d[i+3]=255;
+    }
+  }
+  g.putImageData(img,0,0); chunks[cj*CW+ci]=c; return c;
+}
+const dirtyChunk=(x,y)=>{chunks[((y/CS)|0)*CW+((x/CS)|0)]=null};
+function mineTile(i){amt[i]--; if(amt[i]<=0){amt[i]=0;ore[i]=0;dirtyChunk(i%W,(i/W)|0);}}
+
+// ---------- entities ----------
+function mk(type,x,y,dir){
+  const e={type,x,y,dir:dir||0};
+  switch(type){
+    case 'belt':case 'fast_belt':e.items=[];break;
+    case 'inserter':case 'fast_inserter':e.hold=null;e.a=0;e.ph=0;break;
+    case 'drill':e.prog=0;e.buf=null;e.on=false;break;
+    case 'furnace':e.inT=null;e.inN=0;e.coal=0;e.fuel=0;e.outT=null;e.outN=0;e.prog=0;e.cur=null;break;
+    case 'assembler':e.rec=null;e.inv={};e.outN=0;e.prog=0;e.work=false;break;
+    case 'chest':e.inv={};break;
+    case 'hub':e.w=3;e.h=3;e.inv={};break;
+  }
+  return e;
+}
+function addEnt(e){e.id=nextId++;const w=e.w||1,h=e.h||1;for(let y=0;y<h;y++)for(let x=0;x<w;x++)grid[(e.y+y)*W+e.x+x]=e;ents.push(e);listsDirty=true;}
+function delEnt(e){const w=e.w||1,h=e.h||1;for(let y=0;y<h;y++)for(let x=0;x<w;x++)grid[(e.y+y)*W+e.x+x]=null;ents.splice(ents.indexOf(e),1);listsDirty=true;}
+function rebuild(){L={belt:[],ins:[],drill:[],furn:[],asm:[]};for(const e of ents){
+  if(isBelt(e))L.belt.push(e);else if(isIns(e))L.ins.push(e);else if(e.type==='drill')L.drill.push(e);else if(e.type==='furnace')L.furn.push(e);else if(e.type==='assembler')L.asm.push(e);}
+  listsDirty=false;}
+
+function accepts(e,t){
+  if(!e)return false;
+  switch(e.type){
+    case 'chest':return total(e.inv)<CHEST_CAP;
+    case 'hub':return true;
+    case 'furnace':{
+      if(t==='coal')return e.coal<10;
+      const s=SMELT[t]; if(!s||s.tier>level)return false;
+      if(e.inN>0&&e.inT!==t)return false;
+      if(e.outN>0&&e.outT!==s.o)return false;
+      return e.inN<Math.max(10,s.n*3);}
+    case 'assembler':{if(!e.rec)return false;const need=RECIPES[e.rec].in[t];return !!need&&(e.inv[t]||0)<need*2;}
+  }
+  return false;
+}
+function give(e,t){
+  switch(e.type){
+    case 'chest':case 'hub':case 'assembler':add(e.inv,t,1);break;
+    case 'furnace':if(t==='coal')e.coal++;else{e.inT=t;e.inN++;}break;
+  }
+}
+function take(e,pred){
+  if(!e)return null;
+  if(isBelt(e)){const it=e.items;for(let i=0;i<it.length;i++)if(pred(it[i].t)){const t=it[i].t;it.splice(i,1);return t;}return null;}
+  switch(e.type){
+    case 'chest':for(const k in e.inv)if(pred(k)){add(e.inv,k,-1);return k;}return null;
+    case 'furnace':if(e.outN>0&&pred(e.outT)){const t=e.outT;if(--e.outN===0)e.outT=null;return t;}return null;
+    case 'assembler':if(e.outN>0&&pred(e.rec)){e.outN--;return e.rec;}return null;
+  }
+  return null;
+}
+function beltRoom(b,p){const it=b.items;if(it.length>=4)return false;for(const o of it)if(Math.abs(o.p-p)<GAP)return false;return true;}
+function beltPut(b,t,p){if(!beltRoom(b,p))return false;const it=b.items;let i=0;while(i<it.length&&it[i].p>p)i++;it.splice(i,0,{t,p});return true;}
+const canPut=(e,t)=>isBelt(e)?beltRoom(e,.5):accepts(e,t);
+function put(e,t){if(isBelt(e))return beltPut(e,t,.5);give(e,t);return true;}
+
+// ---------- simulation ----------
+function updBelt(b){
+  if(b.tk===ticks||b.v)return;
+  b.v=true;
+  const n=at(b.x+DX[b.dir],b.y+DY[b.dir]);
+  if(isBelt(n)&&n!==b)updBelt(n);
+  b.v=false; b.tk=ticks;
+  const sp=BELT_SPEED*(b.type==='fast_belt'?2:1)/60, it=b.items;
+  for(let i=0;i<it.length;i++){const lim=i===0?1:it[i-1].p-GAP;const np=Math.min(it[i].p+sp,lim);if(np>it[i].p)it[i].p=np;}
+  if(it.length&&it[0].p>=1&&n){
+    const t=it[0].t;
+    if(isBelt(n)){const nt=n.items,tail=nt[nt.length-1];if(nt.length<4&&(!tail||tail.p>=GAP)){nt.push({t,p:0});it.shift();}}
+    else if(accepts(n,t)){give(n,t);it.shift();}
+  }
+}
+function updIns(e){
+  const s=(e.type==='fast_inserter'?1/0.18:1/0.5)/60, d=e.dir;
+  if(e.ph===0){
+    const tgt=at(e.x+DX[d],e.y+DY[d]),src=at(e.x-DX[d],e.y-DY[d]);
+    if(!tgt||!src||tgt===src||isIns(src))return;
+    const t=take(src,t=>canPut(tgt,t)); if(t){e.hold=t;e.ph=1;}
+  }else if(e.ph===1){
+    e.a=Math.min(1,e.a+s);
+    if(e.a>=1){const tgt=at(e.x+DX[d],e.y+DY[d]);if(tgt&&canPut(tgt,e.hold)){put(tgt,e.hold);e.hold=null;e.ph=2;}}
+  }else{e.a=Math.max(0,e.a-s);if(e.a<=0)e.ph=0;}
+}
+function updDrill(e){
+  const i=e.y*W+e.x;
+  e.on=false;
+  if(!e.buf&&ore[i]){e.on=true;e.prog+=DRILL_RATE/60;if(e.prog>=1){e.prog=0;e.buf=ORES[ore[i]-1];mineTile(i);}}
+  if(e.buf){const tgt=at(e.x+DX[e.dir],e.y+DY[e.dir]);
+    if(tgt){if(isBelt(tgt)){if(beltPut(tgt,e.buf,.25))e.buf=null;}else if(accepts(tgt,e.buf)){give(tgt,e.buf);e.buf=null;}}}
+}
+function updFurn(e){
+  if(!e.cur){
+    const s=e.inT&&SMELT[e.inT];
+    if(s&&e.inN>=s.n&&(e.outN===0||e.outT===s.o)&&e.outN<50){
+      if(e.fuel<=0&&e.coal>0){e.coal--;e.fuel+=5;}
+      if(e.fuel>0){e.fuel--;e.inN-=s.n;e.cur=e.inT;e.prog=0;if(e.inN===0)e.inT=null;}
+    }
+  }
+  if(e.cur){const s=SMELT[e.cur];e.prog+=1/(s.t*60);if(e.prog>=1){e.outT=s.o;e.outN++;e.cur=null;e.prog=0;}}
+}
+function updAsm(e){
+  if(!e.rec)return; const r=RECIPES[e.rec];
+  if(!e.work){
+    if(e.outN<Math.max(10,r.out*4)&&Object.entries(r.in).every(([k,a])=>(e.inv[k]||0)>=a)){
+      for(const k in r.in)add(e.inv,k,-r.in[k]);e.work=true;e.prog=0;}
+  }
+  if(e.work){e.prog+=1/(r.t*60);if(e.prog>=1){e.outN+=r.out;e.work=false;e.prog=0;}}
+}
+function updCraft(){
+  const q=queue[0]; if(!q)return; const R=RECIPES[q.r];
+  if(!q.s){
+    if(Object.entries(R.in).every(([k,a])=>(inv[k]||0)>=a)){for(const k in R.in)add(inv,k,-R.in[k]);q.s=1;q.p=0;}
+    else{queue.shift();toast('Not enough materials for '+ITEMS[q.r].n);return;}
+  }
+  q.p+=1/(R.t*60);
+  if(q.p>=1){add(inv,q.r,R.out);queue.shift();}
+}
+function handMine(){
+  if(!mining)return; const i=mining.y*W+mining.x;
+  if(!ore[i]||at(mining.x,mining.y)){mining=null;return;}
+  mining.p+=1/30;
+  if(mining.p>=1){mining.p=0;const t=ORES[ore[i]-1];add(inv,t,1);mineTile(i);floats.push({x:mining.x,y:mining.y,s:'+1 '+ITEMS[t].n,t:0});}
+}
+function checkMilestone(){
+  const m=MILESTONES[level]; if(!m)return;
+  for(const k in m.need)if((hub.inv[k]||0)<m.need[k])return;
+  for(const k in m.need)add(hub.inv,k,-m.need[k]);
+  level++;
+  if(level>=MILESTONES.length){won=true;$('winStats').textContent='Launched after '+playTime()+' of play.';show('win',true);}
+  else toast('Milestone done: '+m.name+'. Unlocked: '+m.unlock,true);
+  uiDirty=true;
+}
+function tick(){
+  ticks++;
+  if(listsDirty)rebuild();
+  for(const e of L.drill)updDrill(e);
+  for(const e of L.furn)updFurn(e);
+  for(const e of L.asm)updAsm(e);
+  for(const e of L.ins)updIns(e);
+  for(const e of L.belt)updBelt(e);
+  updCraft(); handMine();
+  if(ticks%20===0)checkMilestone();
+}
+
+// ---------- building ----------
+function tryPlace(x,y,type,dir){
+  if(!inb(x,y))return null;
+  const ex=at(x,y), isB=type==='belt'||type==='fast_belt';
+  if(ex){
+    if(isBelt(ex)&&isB){
+      if(ex.type===type){ex.dir=dir;return ex;}
+      if(!inv[type])return null;
+      add(inv,type,-1);add(inv,ex.type,1);ex.type=type;ex.dir=dir;listsDirty=true;return ex;
+    }
+    return null;
+  }
+  if(!inv[type]){toastOnce('You have no '+ITEMS[type].n+' left. Craft more with E.');return null;}
+  if(type==='drill'&&!ore[y*W+x]){toastOnce('Drills go on ore.');return null;}
+  add(inv,type,-1);const e=mk(type,x,y,dir);addEnt(e);return e;
+}
+function refund(e){
+  add(inv,e.type,1);
+  if(e.items)for(const o of e.items)add(inv,o.t,1);
+  if(e.hold)add(inv,e.hold,1);
+  if(e.buf)add(inv,e.buf,1);
+  if(e.type==='furnace'){if(e.inN)add(inv,e.inT,e.inN);if(e.coal)add(inv,'coal',e.coal);if(e.outN)add(inv,e.outT,e.outN);if(e.cur)add(inv,e.cur,SMELT[e.cur].n);}
+  if(e.type==='assembler'){for(const k in e.inv)add(inv,k,e.inv[k]);if(e.outN)add(inv,e.rec,e.outN);if(e.work)for(const k in RECIPES[e.rec].in)add(inv,k,RECIPES[e.rec].in[k]);}
+  if(e.type==='chest')for(const k in e.inv)add(inv,k,e.inv[k]);
+}
+function removeAt(x,y){const e=at(x,y);if(!e||e.type==='hub')return;refund(e);delEnt(e);if(entOpen===e)closeEnt();}
+
+// ---------- hand crafting ----------
+function plan(r,sim,out,depth){
+  if(depth>6||!unlocked(r))return false;
+  const R=RECIPES[r],snap=Object.assign({},sim),len=out.length;
+  for(const k in R.in){
+    while((sim[k]||0)<R.in[k]){
+      if(!RECIPES[k]||!plan(k,sim,out,depth+1)){for(const q in sim)delete sim[q];Object.assign(sim,snap);out.length=len;return false;}
+    }
+    sim[k]-=R.in[k];
+  }
+  sim[r]=(sim[r]||0)+R.out; out.push(r); return true;
+}
+function canCraft(r){return plan(r,Object.assign({},inv),[],0);}
+function queueCraft(r,n){
+  const sim=Object.assign({},inv);
+  for(const q of queue){const R=RECIPES[q.r];if(!q.s)for(const k in R.in)sim[k]=(sim[k]||0)-R.in[k];sim[q.r]=(sim[q.r]||0)+R.out;}
+  let made=0;const out=[];
+  for(let k=0;k<n;k++){if(plan(r,sim,out,0))made++;else break;}
+  if(!made){toast('Missing materials for '+ITEMS[r].n);return;}
+  for(const x of out)queue.push({r:x,p:0,s:0});
+  uiDirty=true;
+}
+
+// ---------- drawing helpers ----------
+function shade(hex,f){const n=parseInt(hex.slice(1),16),m=v=>Math.max(0,Math.min(255,Math.round(f>1?v+(255-v)*(f-1):v*f)));return 'rgb('+m(n>>16)+','+m(n>>8&255)+','+m(n&255)+')';}
+function poly(g,P){g.beginPath();g.moveTo(P[0][0],P[0][1]);for(let i=1;i<P.length;i++)g.lineTo(P[i][0],P[i][1]);g.closePath();}
+function circ(g,x,y,r){g.beginPath();g.arc(x,y,r,0,Math.PI*2);}
+function rot(g,dir){g.translate(16,16);g.rotate(dir*Math.PI/2);g.translate(-16,-16);}
+const O='#16150f';
+function drawItemShape(g,t){
+  const it=ITEMS[t],c=it.c; g.lineJoin='round'; g.lineCap='round';
+  switch(it.s){
+    case 'ore':{const R=[[11,20,7.5],[21,21,6.5],[17,11,6.5]];
+      for(const[x,y,r]of R){g.fillStyle=O;circ(g,x,y,r+1.5);g.fill();}
+      for(const[x,y,r]of R){g.fillStyle=c;circ(g,x,y,r);g.fill();g.fillStyle=shade(c,t==='coal'?1.25:1.4);circ(g,x-r*.35,y-r*.35,r*.38);g.fill();}break;}
+    case 'plate':for(const y of[17,10]){g.fillStyle=O;poly(g,[[3,y+5],[16,y-1.5],[29,y+5],[16,y+11.5]]);g.fill();
+      g.fillStyle=shade(c,y===10?1.12:.78);poly(g,[[5.5,y+5],[16,y],[26.5,y+5],[16,y+10]]);g.fill();}break;
+    case 'bar':g.fillStyle=O;poly(g,[[3,26],[8,10],[24,10],[29,26]]);g.fill();g.fillStyle=c;poly(g,[[5.5,24.5],[9.5,11.5],[22.5,11.5],[26.5,24.5]]);g.fill();
+      g.fillStyle=shade(c,1.4);poly(g,[[9.5,11.5],[22.5,11.5],[21.4,15],[10.6,15]]);g.fill();break;
+    case 'gear':g.save();g.translate(16,16);
+      for(const[col,w,h,r0,rr]of[[O,7,8,-14.5,10.8],[c,4.6,6,-13,9.2]]){g.fillStyle=col;for(let k=0;k<8;k++){g.save();g.rotate(k*Math.PI/4);g.fillRect(-w/2,r0,w,h);g.restore();}circ(g,0,0,rr);g.fill();}
+      g.fillStyle=shade(c,1.25);circ(g,-2,-2,4.5);g.fill();g.fillStyle=O;circ(g,0,0,3.4);g.fill();g.restore();break;
+    case 'cable':for(const[col,w]of[[O,5.5],[c,3]]){g.strokeStyle=col;g.lineWidth=w;g.beginPath();g.moveTo(5,25);g.bezierCurveTo(9,3,17,31,20,12);g.bezierCurveTo(22,5,26,7,28,5);g.stroke();}break;
+    case 'chip':g.fillStyle='#c9a640';for(let k=0;k<4;k++){g.fillRect(8.5+k*4.5,3.5,2,5);g.fillRect(8.5+k*4.5,23.5,2,5);}
+      g.fillStyle=O;g.fillRect(4,7,24,18);g.fillStyle=c;g.fillRect(5.5,8.5,21,15);g.fillStyle='#1d2a1a';g.fillRect(11,12,10,8);break;
+    case 'flask':{const P=[[13,4],[19,4],[19,12],[27,25],[25,29],[7,29],[5,25],[13,12]];
+      g.fillStyle='#d6dcd6';poly(g,P);g.fill();g.fillStyle=c;poly(g,[[10.8,17],[21.2,17],[27,25],[25,29],[7,29],[5,25]]);g.fill();
+      g.strokeStyle=O;g.lineWidth=2;poly(g,P);g.stroke();g.fillStyle='rgba(255,255,255,.55)';g.fillRect(14.5,6,2,6);break;}
+    case 'rocket':g.fillStyle='#d2553f';poly(g,[[8,22],[12,16],[12,26],[8,28]]);g.fill();poly(g,[[24,22],[20,16],[20,26],[24,28]]);g.fill();
+      g.fillStyle=c;poly(g,[[16,2],[21,10],[21,26],[11,26],[11,10]]);g.fill();g.strokeStyle=O;g.lineWidth=1.8;g.stroke();
+      g.fillStyle='#4f8fd0';circ(g,16,14,2.6);g.fill();g.fillStyle='#e3a52a';poly(g,[[13,27],[19,27],[16,31]]);g.fill();break;
+  }
+}
+function drawBelt(g,e,tm){
+  const fast=e.type==='fast_belt';
+  g.save();rot(g,e.dir);
+  g.fillStyle='#2a2922';g.fillRect(0,0,32,32);
+  g.fillStyle='#5b5747';g.fillRect(2,0,3,32);g.fillRect(27,0,3,32);
+  const off=(tm*BELT_SPEED*(fast?2:1)*32)%16;
+  g.strokeStyle=fast?'#d2553f':'#e3a52a';g.lineWidth=2.5;g.lineCap='round';g.lineJoin='round';g.beginPath();
+  for(let k=0;k<3;k++){const y=k*16-off+4;if(y<2||y>25)continue;g.moveTo(10,y+5);g.lineTo(16,y);g.lineTo(22,y+5);}
+  g.stroke();g.restore();
+}
+function drawIns(g,e){
+  const fast=e.type==='fast_inserter';
+  g.save();rot(g,e.dir);g.fillStyle='rgba(236,230,211,.55)';poly(g,[[16,1.5],[12,6],[20,6]]);g.fill();g.restore();
+  g.fillStyle='#22221c';g.fillRect(9,9,14,14);g.fillStyle=fast?'#4f8fd0':'#e3a52a';g.fillRect(11,11,10,10);
+  const ang=((e.dir+2)%4)*Math.PI/2-Math.PI/2+(e.a||0)*Math.PI;
+  const ex=16+Math.cos(ang)*13,ey=16+Math.sin(ang)*13;
+  g.strokeStyle=O;g.lineWidth=5;g.lineCap='round';g.beginPath();g.moveTo(16,16);g.lineTo(ex,ey);g.stroke();
+  g.strokeStyle='#cfc8ae';g.lineWidth=3;g.stroke();
+  g.fillStyle=O;circ(g,16,16,3);g.fill();
+  if(e.hold)g.drawImage(ICON[e.hold],ex-6,ey-6,12,12);
+}
+function drawDrill(g,e,tm){
+  g.save();rot(g,e.dir);
+  g.fillStyle='#23251a';g.fillRect(2,3,28,27);g.fillStyle='#636d36';g.fillRect(4,6,24,22);
+  g.fillStyle='#4e5629';g.fillRect(4,24,24,4);
+  g.fillStyle='#23251a';g.fillRect(10,0,12,6);g.fillStyle='#e3a52a';g.fillRect(12,1,8,2.5);
+  g.restore();
+  g.save();g.translate(16,17);g.rotate(e.on?tm*5:0);
+  g.fillStyle='#2b2d20';circ(g,0,0,8);g.fill();
+  g.strokeStyle='#cfc8ae';g.lineWidth=2.5;g.lineCap='round';g.beginPath();
+  for(let k=0;k<3;k++){const a=k*Math.PI*2/3;g.moveTo(0,0);g.lineTo(Math.cos(a)*6.5,Math.sin(a)*6.5);}g.stroke();g.restore();
+  if(e.ghost===undefined&&!e.on&&!e.buf){g.fillStyle='#d2553f';circ(g,26,26,2.5);g.fill();}
+}
+function drawFurn(g,e,tm){
+  g.fillStyle='#342a20';g.fillRect(2,2,28,28);g.fillStyle='#7a6650';g.fillRect(3.5,3.5,25,25);
+  g.strokeStyle='#5e4d3b';g.lineWidth=1;g.beginPath();
+  for(const y of[9.5,15.5,21.5]){g.moveTo(4,y);g.lineTo(28,y);}
+  for(const[x,y0]of[[10,4],[20,4],[15,10],[25,10],[10,16],[20,16],[15,22],[25,22]]){g.moveTo(x+.5,y0);g.lineTo(x+.5,y0+5.5);}g.stroke();
+  const on=!!e.cur;
+  g.fillStyle='#16110c';g.fillRect(9,17,14,10);
+  if(on){const f=.7+.3*Math.sin(tm*13+e.x*3)*Math.sin(tm*7.7);g.fillStyle='rgba(255,'+(120+f*80|0)+',40,'+(0.65+f*.3)+')';g.fillRect(10,19,12,8);}
+}
+function drawAsm(g,e,tm){
+  g.fillStyle='#22272a';g.fillRect(1,1,30,30);g.fillStyle='#5d6870';g.fillRect(2.5,2.5,27,27);
+  g.fillStyle='#313a3f';g.fillRect(7,7,18,18);
+  if(e.rec)g.drawImage(ICON[e.rec],8,8,16,16);
+  else{g.strokeStyle='#76828a';g.lineWidth=1.5;circ(g,16,16,5);g.stroke();}
+  g.fillStyle=e.work?'#79b25a':'#1b1f22';g.fillRect(25,4,3.5,3.5);
+  if(e.work){g.fillStyle='#e3a52a';g.fillRect(7,26,18*e.prog,2);}
+}
+function drawChest(g){
+  g.fillStyle='#3a2512';g.fillRect(4,5,24,23);g.fillStyle='#8b5a2b';g.fillRect(5.5,6.5,21,20);
+  g.fillStyle='#6b4420';g.fillRect(5.5,13,21,2);g.fillRect(5.5,20,21,2);
+  g.fillStyle='#c9a640';g.fillRect(14,12,4,5);
+}
+function drawHub(g,tm){
+  g.fillStyle='#1c1d17';g.fillRect(0,0,96,96);
+  g.save();g.beginPath();g.rect(0,0,96,96);g.rect(7,7,82,82);g.clip('evenodd');
+  g.fillStyle='#e3a52a';g.fillRect(0,0,96,96);g.fillStyle='#1f201a';
+  for(let i=-96;i<192;i+=14){poly(g,[[i,0],[i+7,0],[i+7-96,96],[i-96,96]]);g.fill();}g.restore();
+  g.fillStyle='#2b2c24';g.fillRect(10,10,76,76);
+  const m=MILESTONES[level];let f=1;
+  if(m){let a=0,b=0;for(const k in m.need){a+=Math.min(hub.inv[k]||0,m.need[k]);b+=m.need[k];}f=a/b;}
+  g.lineWidth=6;g.strokeStyle='#3a3a30';circ(g,48,48,27);g.stroke();
+  g.strokeStyle=m?'#e3a52a':'#79b25a';g.beginPath();g.arc(48,48,27,-Math.PI/2,-Math.PI/2+f*Math.PI*2);g.stroke();
+  g.fillStyle='#ece6d3';g.font='700 13px "Chakra Petch", sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText('HUB',48,44);
+  g.fillStyle='#a19c86';g.font='600 9px "JetBrains Mono", monospace';g.fillText(m?Math.floor(f*100)+'%':'DONE',48,56);
+}
+function drawEntity(g,e,tm){
+  switch(e.type){
+    case 'belt':case 'fast_belt':drawBelt(g,e,tm);break;
+    case 'inserter':case 'fast_inserter':drawIns(g,e);break;
+    case 'drill':drawDrill(g,e,tm);break;
+    case 'furnace':drawFurn(g,e,tm);break;
+    case 'assembler':drawAsm(g,e,tm);break;
+    case 'chest':drawChest(g);break;
+    case 'hub':drawHub(g,tm);break;
+  }
+}
+const ICON={},ICONURL={};
+function makeIcons(){
+  for(const t in ITEMS){const c=document.createElement('canvas');c.width=c.height=64;const g=c.getContext('2d');g.scale(2,2);
+    if(ITEMS[t].place){const e=mk(t,0,0,0);e.ghost=1;if('a' in e)e.a=.5;drawEntity(g,e,.2);}else drawItemShape(g,t);
+    ICON[t]=c;ICONURL[t]=c.toDataURL();}
+}
+
+// ---------- render ----------
+const $=id=>document.getElementById(id);
+const cv=$('game'),ctx=cv.getContext('2d');
+let dpr=1,SW=0,SH=0;
+function resize(){dpr=Math.min(2,window.devicePixelRatio||1);SW=innerWidth;SH=innerHeight;cv.width=SW*dpr|0;cv.height=SH*dpr|0;}
+const sx=wx=>(wx-cam.x)*cam.z+SW/2, sy=wy=>(wy-cam.y)*cam.z+SH/2;
+const mouse={x:0,y:0,tx:0,ty:0,down:-1,lx:0,ly:0,placed:null};
+function render(tm){
+  const z=cam.z;
+  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.fillStyle='#15150f';ctx.fillRect(0,0,SW,SH);
+  const x0=Math.max(0,Math.floor((cam.x-SW/2/z)/T)),x1=Math.min(W-1,Math.floor((cam.x+SW/2/z)/T));
+  const y0=Math.max(0,Math.floor((cam.y-SH/2/z)/T)),y1=Math.min(H-1,Math.floor((cam.y+SH/2/z)/T));
+  ctx.imageSmoothingEnabled=z<.9;
+  for(let cj=(y0/CS|0);cj<=(y1/CS|0);cj++)for(let ci=(x0/CS|0);ci<=(x1/CS|0);ci++){
+    const wx=ci*CS*T,wy=cj*CS*T,a=Math.floor(sx(wx)),b=Math.floor(sy(wy)),c=Math.floor(sx(wx+CS*T)),d=Math.floor(sy(wy+CS*T));
+    ctx.drawImage(chunk(ci,cj),a,b,c-a,d-b);
+  }
+  ctx.imageSmoothingEnabled=true;
+  if(tool&&z>=.6){ctx.strokeStyle='rgba(236,230,211,.07)';ctx.lineWidth=1;ctx.beginPath();
+    for(let x=x0;x<=x1+1;x++){const p=Math.round(sx(x*T))+.5;ctx.moveTo(p,sy(y0*T));ctx.lineTo(p,sy((y1+1)*T));}
+    for(let y=y0;y<=y1+1;y++){const p=Math.round(sy(y*T))+.5;ctx.moveTo(sx(x0*T),p);ctx.lineTo(sx((x1+1)*T),p);}ctx.stroke();}
+  const belts=[],mids=[],inss=[];const seen=new Set();
+  for(let y=Math.max(0,y0-2);y<=y1;y++)for(let x=Math.max(0,x0-2);x<=x1;x++){const e=grid[y*W+x];if(!e||seen.has(e))continue;seen.add(e);
+    if(isBelt(e))belts.push(e);else if(isIns(e))inss.push(e);else mids.push(e);}
+  const drawAt=(e,alpha)=>{ctx.save();ctx.translate(sx(e.x*T),sy(e.y*T));ctx.scale(z,z);if(alpha)ctx.globalAlpha=alpha;drawEntity(ctx,e,tm);ctx.restore();};
+  for(const e of belts)drawAt(e);
+  const is=14*z;
+  for(const e of belts)for(const o of e.items){const q=o.p-.5;ctx.drawImage(ICON[o.t],sx((e.x+.5+DX[e.dir]*q)*T)-is/2,sy((e.y+.5+DY[e.dir]*q)*T)-is/2,is,is);}
+  for(const e of mids)drawAt(e);
+  for(const e of inss)drawAt(e);
+  // hover + ghost
+  const hx=mouse.tx,hy=mouse.ty;
+  if(inb(hx,hy)){
+    if(tool&&tool!=='remove'){
+      const g=mk(tool,hx,hy,tdir);g.ghost=1;const ex=at(hx,hy);
+      const ok=(!ex||(isBelt(ex)&&(tool==='belt'||tool==='fast_belt')))&&(tool!=='drill'||ore[hy*W+hx])&&inv[tool]>0;
+      drawAt(g,.6);
+      if(!ok){ctx.fillStyle='rgba(210,85,63,.35)';ctx.fillRect(sx(hx*T),sy(hy*T),T*z,T*z);}
+    }
+    const he=at(hx,hy);let bx=hx,by=hy,bw=1,bh=1;if(he){bx=he.x;by=he.y;bw=he.w||1;bh=he.h||1;}
+    ctx.strokeStyle=tool==='remove'?'#d2553f':'rgba(236,230,211,.8)';ctx.lineWidth=2;ctx.strokeRect(sx(bx*T)+1,sy(by*T)+1,bw*T*z-2,bh*T*z-2);
+    if(mining){ctx.fillStyle='#11110d';ctx.fillRect(sx(mining.x*T)+3,sy(mining.y*T)+T*z-7,T*z-6,4);ctx.fillStyle='#e3a52a';ctx.fillRect(sx(mining.x*T)+3,sy(mining.y*T)+T*z-7,(T*z-6)*mining.p,4);}
+  }
+  ctx.font='600 12px "Chakra Petch", sans-serif';ctx.textAlign='center';
+  for(const f of floats){ctx.globalAlpha=Math.max(0,1-f.t/60);ctx.fillStyle='#16150f';ctx.fillText(f.s,sx((f.x+.5)*T)+1,sy(f.y*T)-f.t*.5+1);ctx.fillStyle='#ece6d3';ctx.fillText(f.s,sx((f.x+.5)*T),sy(f.y*T)-f.t*.5);}
+  ctx.globalAlpha=1;
+}
+
+// ---------- UI ----------
+let uiDirty=true,entOpen=null;
+const cache={};
+function setHTML(el,html){if(cache[el.id]!==html){cache[el.id]=html;el.innerHTML=html;}}
+const img=(t,cls)=>'<img src="'+ICONURL[t]+'" alt="'+ITEMS[t].n+'"'+(cls?' class="'+cls+'"':'')+'>';
+function show(id,on){$(id).hidden=!on;}
+function toast(msg,big){const d=document.createElement('div');d.className='toast'+(big?' big':'');d.textContent=msg;$('toasts').appendChild(d);
+  setTimeout(()=>{d.style.opacity='0';setTimeout(()=>d.remove(),400);},big?5000:2600);
+  while($('toasts').children.length>4)$('toasts').firstChild.remove();}
+let lastToast='',lastToastT=0;
+function toastOnce(m){if(m===lastToast&&performance.now()-lastToastT<2500)return;lastToast=m;lastToastT=performance.now();toast(m);}
+function playTime(){const s=ticks/60|0,h=s/3600|0,m=(s/60|0)%60;return (h?h+'h ':'')+m+'m';}
+
+function drawHUD(){
+  const m=MILESTONES[level];
+  $('gNum').textContent=m?'Milestone '+(level+1)+' of '+MILESTONES.length:'All milestones done';
+  $('gName').textContent=m?m.name:'Rocket launched';
+  if(m){
+    let h='';for(const k in m.need){const have=Math.min(hub.inv[k]||0,m.need[k]),f=have/m.need[k];
+      h+='<div class="grow">'+img(k)+'<span class="nm">'+ITEMS[k].n+'</span><span class="ct">'+have+' / '+m.need[k]+'</span><div class="bar'+(f>=1?' done':'')+'"><i style="width:'+(f*100).toFixed(1)+'%"></i></div></div>';}
+    setHTML($('gRows'),h);
+    setHTML($('gUnlock'),'Unlocks: <b>'+m.unlock+'</b>');
+    $('deposit').hidden=false;
+  }else{setHTML($('gRows'),'');setHTML($('gUnlock'),'Your factory is complete. Keep expanding it.');$('deposit').hidden=true;}
+  let hb='';HOTBAR.forEach((t,i)=>{const n=inv[t]||0,lock=!unlocked(t);
+    hb+='<button class="slot'+(tool===t?' sel':'')+(lock||!n?' off':'')+'" data-slot="'+t+'" title="'+ITEMS[t].n+(lock?' (locked)':'')+'"><span class="k">'+(i+1)+'</span>'+img(t)+'<span class="n">'+(n?fmt(n):'')+'</span></button>';});
+  hb+='<button class="slot'+(tool==='remove'?' sel':'')+'" data-slot="remove" title="Remove buildings"><span class="k">X</span><span class="x">&times;</span></button>';
+  setHTML($('hotbar'),hb);
+  let q='';queue.slice(0,8).forEach((it,i)=>{q+='<div class="qi" title="'+ITEMS[it.r].n+'">'+img(it.r)+(i===0?'<i style="width:'+(it.p*100).toFixed(0)+'%"></i>':'')+'</div>';});
+  if(queue.length>8)q+='<div class="qi mono">+'+(queue.length-8)+'</div>';
+  setHTML($('queue'),q);
+}
+function status(){
+  const x=mouse.tx,y=mouse.ty;if(!inb(x,y)){setHTML($('status'),'');return;}
+  const e=at(x,y),i=y*W+x;let s='';
+  if(tool==='remove')s='<b>Remove mode</b> &middot; click buildings to pick them up<br>';
+  else if(tool)s='<b>'+ITEMS[tool].n+'</b> &middot; facing '+['up','right','down','left'][tdir]+' &middot; R rotates<br>';
+  if(e){s+='<b>'+(e.type==='hub'?'Hub':ITEMS[e.type].n)+'</b>';
+    if(e.type==='drill')s+=' &middot; '+(ore[i]?ITEMS[ORES[ore[i]-1]].n+', '+amt[i]+' left':'no ore left');
+    if(e.type==='furnace')s+=' &middot; '+(e.cur?'smelting':e.coal||e.fuel?'waiting for ore':'needs coal');
+    if(e.type==='assembler')s+=' &middot; '+(e.rec?ITEMS[e.rec].n:'no recipe, click to set one');
+    s+=' &middot; click to open';}
+  else if(ore[i])s+='<b>'+ITEMS[ORES[ore[i]-1]].n+'</b> &middot; '+amt[i]+' left'+(tool?'':' &middot; hold click to mine');
+  setHTML($('status'),s);
+}
+function drawInv(){
+  const all=Object.keys(ITEMS).filter(k=>inv[k]>0);
+  setHTML($('invGrid'),all.length?all.map(k=>'<button class="cell" data-inv="'+k+'" title="'+ITEMS[k].n+'">'+img(k)+'<span class="n">'+fmt(inv[k])+'</span></button>').join(''):'<p class="empty">Empty. Click ore on the map to mine it.</p>');
+  let h='';for(const r in RECIPES){const lock=!unlocked(r);h+='<button class="cell'+(lock?' lock':canCraft(r)?'':' no')+'" data-rec="'+r+'"'+(lock?' disabled':'')+' title="'+ITEMS[r].n+'">'+img(r)+'</button>';}
+  setHTML($('recGrid'),h);
+}
+function recInfo(r){
+  const R=RECIPES[r];if(!R){$('recInfo').innerHTML='';return;}
+  if(!unlocked(r)){$('recInfo').innerHTML='<b>'+ITEMS[r].n+'</b><br>Locked. Reach milestone '+R.tier+' to unlock it.';return;}
+  let h='<b>'+ITEMS[r].n+'</b>'+(R.out>1?' &times;'+R.out:'')+' &middot; '+R.t+'s<br>';
+  for(const k in R.in)h+='<span class="ing'+((inv[k]||0)<R.in[k]?' miss':'')+'">'+img(k)+R.in[k]+' '+ITEMS[k].n+'</span>';
+  h+='<br>'+(canCraft(r)?'Ready to craft. Missing parts are crafted first.':'Not enough materials.');
+  $('recInfo').innerHTML=h;
+}
+function cellList(o,act){const ks=Object.keys(o).filter(k=>o[k]>0);return ks.length?'<div class="grid">'+ks.map(k=>'<button class="cell" data-act="'+act+':'+k+'" title="Take '+ITEMS[k].n+'">'+img(k)+'<span class="n">'+fmt(o[k])+'</span></button>').join('')+'</div>':'<p class="empty">Empty</p>';}
+function drawEnt(){
+  const e=entOpen;if(!e)return;let h='';const title=e.type==='hub'?'Hub':ITEMS[e.type].n;
+  $('entTitle').textContent=title;
+  if(e.type==='hub'){
+    const m=MILESTONES[level];
+    h+='<p class="empty" style="margin:0">Belts and inserters can deliver straight into any Hub tile. Items that finish a milestone are used up.</p>';
+    if(m)h+='<div class="row"><button class="primary" data-act="deposit">Deposit from inventory</button></div>';
+    h+='<div><h3>Stored <span class="hint">click to take</span></h3>'+cellList(e.inv,'take')+'</div>';
+  }else if(e.type==='chest'){
+    h+='<div class="row"><span class="mono">'+total(e.inv)+' / '+CHEST_CAP+'</span><button data-act="takeall">Take all</button></div><div>'+cellList(e.inv,'take')+'</div>';
+  }else if(e.type==='furnace'){
+    const s=e.cur?SMELT[e.cur]:null;
+    h+='<div class="kv"><span class="k">Input</span><span>'+(e.inN?'<span class="ing">'+img(e.inT)+e.inN+' '+ITEMS[e.inT].n+'</span>':'empty')+'</span>'+
+      '<span class="k">Fuel</span><span><span class="ing">'+img('coal')+e.coal+' coal</span> + '+e.fuel+' smelts burning</span>'+
+      '<span class="k">Output</span><span>'+(e.outN?'<span class="ing">'+img(e.outT)+e.outN+' '+ITEMS[e.outT].n+'</span>':'empty')+'</span>'+
+      '<span class="k">Working</span><div class="pbar"><i style="width:'+(e.prog*100).toFixed(0)+'%"></i></div></div>';
+    h+='<div class="row"><button data-act="coal">Add coal</button><button data-act="ore">Add ore</button><button data-act="out" class="primary">Take output</button></div>';
+    h+='<p class="empty" style="margin:0">Smelts iron ore and copper ore into plates. 1 coal lasts 5 smelts.'+(level>=2?' 5 iron plates make 1 steel.':'')+'</p>';
+  }else if(e.type==='assembler'){
+    if(e.rec){const R=RECIPES[e.rec];
+      h+='<div class="kv"><span class="k">Making</span><span class="ing">'+img(e.rec)+ITEMS[e.rec].n+(R.out>1?' &times;'+R.out:'')+'</span><span class="k">Needs</span><span>';
+      for(const k in R.in)h+='<span class="ing'+((e.inv[k]||0)<R.in[k]?' miss':'')+'">'+img(k)+(e.inv[k]||0)+'/'+R.in[k]+'</span>';
+      h+='</span><span class="k">Output</span><span class="mono">'+e.outN+'</span><span class="k">Working</span><div class="pbar"><i style="width:'+(e.prog*100).toFixed(0)+'%"></i></div></div>';
+      h+='<div class="row"><button data-act="fill">Fill from inventory</button><button data-act="out" class="primary">Take output</button></div>';}
+    h+='<div><h3>Recipe</h3><div class="grid">';
+    for(const r in RECIPES){if(!unlocked(r))continue;h+='<button class="cell'+(e.rec===r?' on':'')+'" data-act="rec:'+r+'" title="'+ITEMS[r].n+'">'+img(r)+'</button>';}
+    h+='</div></div>';
+  }else if(e.type==='drill'){
+    const i=e.y*W+e.x;
+    h+='<div class="kv"><span class="k">Mining</span><span>'+(ore[i]?ITEMS[ORES[ore[i]-1]].n+' ('+amt[i]+' left)':'Nothing. This patch is used up.')+'</span><span class="k">Output</span><span>'+(e.buf?'Blocked. Clear the spot the chute faces.':'Flowing')+'</span><span class="k">Rate</span><span class="mono">'+DRILL_RATE+' / s</span></div>';
+  }else if(isBelt(e)){h+='<p class="empty" style="margin:0">Carries up to 4 items. Moves '+(BELT_SPEED*(e.type==='fast_belt'?2:1))+' tiles per second.</p><div>'+cellList(e.items.reduce((o,x)=>(o[x.t]=(o[x.t]||0)+1,o),{}),'none')+'</div>';}
+  else if(isIns(e)){h+='<p class="empty" style="margin:0">Takes items from the tile behind it and drops them in front, where the arrow points. Only picks up what the target can use.</p>';}
+  setHTML($('entBody'),h);
+}
+function openEnt(e){entOpen=e;cache.entBody=null;show('entp',true);drawEnt();}
+function closeEnt(){entOpen=null;show('entp',false);}
+function deposit(){
+  const m=MILESTONES[level];if(!m)return;let n=0;
+  for(const k in m.need){const want=m.need[k]-(hub.inv[k]||0),mv=Math.min(want,inv[k]||0);if(mv>0){add(inv,k,-mv);add(hub.inv,k,mv);n+=mv;}}
+  toast(n?'Deposited '+n+' items into the Hub':'Nothing in your inventory that the Hub needs yet');checkMilestone();uiDirty=true;
+}
+function entAct(a){
+  const e=entOpen;if(!e)return;const[k,v]=a.split(':');
+  if(k==='deposit')deposit();
+  else if(k==='take'){const store=e.inv;if(store[v]){add(inv,v,store[v]);delete store[v];}}
+  else if(k==='takeall'){for(const q in e.inv)add(inv,q,e.inv[q]);e.inv={};}
+  else if(k==='coal'){const n=Math.min(10-e.coal,inv.coal||0);if(n>0){e.coal+=n;add(inv,'coal',-n);}else toast('You have no coal');}
+  else if(k==='ore'){let done=false;for(const t of['iron_ore','copper_ore',...(level>=2?['iron_plate']:[])]){while(inv[t]>0&&accepts(e,t)){add(inv,t,-1);give(e,t);done=true;}if(done)break;}if(!done)toast('No ore this furnace can take');}
+  else if(k==='out'){if(e.type==='furnace'&&e.outN){add(inv,e.outT,e.outN);e.outN=0;e.outT=null;}if(e.type==='assembler'&&e.outN){add(inv,e.rec,e.outN);e.outN=0;}}
+  else if(k==='fill'){const R=RECIPES[e.rec];let any=false;for(const q in R.in){const want=R.in[q]*5-(e.inv[q]||0),n=Math.min(want,inv[q]||0);if(n>0){add(inv,q,-n);add(e.inv,q,n);any=true;}}if(!any)toast('You have none of the ingredients');}
+  else if(k==='rec'){if(e.rec===v)return;for(const q in e.inv)add(inv,q,e.inv[q]);if(e.outN)add(inv,e.rec,e.outN);if(e.work)for(const q in RECIPES[e.rec].in)add(inv,q,RECIPES[e.rec].in[q]);
+    e.inv={};e.outN=0;e.work=false;e.prog=0;e.rec=v;}
+  cache.entBody=null;drawEnt();uiDirty=true;
+}
+function selectTool(t){
+  if(t!=='remove'&&!unlocked(t)){toastOnce(ITEMS[t].n+' is locked. Finish milestones to unlock it.');return;}
+  tool=tool===t?null:t;mining=null;uiDirty=true;
+}
+
+// ---------- input ----------
+function updMouse(ev){const r=cv.getBoundingClientRect();mouse.x=ev.clientX-r.left;mouse.y=ev.clientY-r.top;
+  mouse.tx=Math.floor(((mouse.x-SW/2)/cam.z+cam.x)/T);mouse.ty=Math.floor(((mouse.y-SH/2)/cam.z+cam.y)/T);}
+cv.addEventListener('contextmenu',ev=>ev.preventDefault());
+cv.addEventListener('pointerdown',ev=>{
+  try{cv.setPointerCapture(ev.pointerId);}catch(_){}
+  updMouse(ev);const x=mouse.tx,y=mouse.ty;
+  if(ev.button===2||(ev.button===0&&(tool==='remove'||ev.altKey))){mouse.down=2;removeAt(x,y);uiDirty=true;return;}
+  if(ev.button!==0)return;
+  mouse.down=0;mouse.lx=x;mouse.ly=y;mouse.placed=null;
+  if(tool){mouse.placed=tryPlace(x,y,tool,tdir);uiDirty=true;}
+  else{const e=at(x,y);if(e){openEnt(e);mouse.down=-1;}else if(inb(x,y)&&ore[y*W+x])mining={x,y,p:0};}
+});
+cv.addEventListener('pointermove',ev=>{
+  updMouse(ev);const x=mouse.tx,y=mouse.ty;
+  if(mouse.down===2){removeAt(x,y);uiDirty=true;}
+  else if(mouse.down===0&&tool){
+    const belt=tool==='belt'||tool==='fast_belt';
+    let n=0;
+    while((mouse.lx!==x||mouse.ly!==y)&&n++<64){
+      const dx=x-mouse.lx,dy=y-mouse.ly;let d;
+      if(Math.abs(dx)>=Math.abs(dy))d=dx>0?1:3;else d=dy>0?2:0;
+      if(belt){tdir=d;if(isBelt(mouse.placed))mouse.placed.dir=d;}
+      mouse.lx+=DX[d];mouse.ly+=DY[d];
+      mouse.placed=tryPlace(mouse.lx,mouse.ly,tool,tdir);
+    }
+    uiDirty=true;
+  }else if(mouse.down===0&&mining&&(mining.x!==x||mining.y!==y)){mining=inb(x,y)&&ore[y*W+x]&&!at(x,y)?{x,y,p:0}:null;}
+});
+const up=()=>{mouse.down=-1;mining=null;mouse.placed=null;};
+cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
+cv.addEventListener('wheel',ev=>{ev.preventDefault();updMouse(ev);zoomAt(Math.exp(-ev.deltaY*(ev.deltaMode===1?.05:.0015)),mouse.x,mouse.y);},{passive:false});
+function zoomAt(f,px,py){const wx=(px-SW/2)/cam.z+cam.x,wy=(py-SH/2)/cam.z+cam.y;cam.z=Math.max(.35,Math.min(2.5,cam.z*f));cam.x=wx-(px-SW/2)/cam.z;cam.y=wy-(py-SH/2)/cam.z;}
+const keys={};
+const anyOpen=()=>!$('help').hidden||!$('menu').hidden||!$('win').hidden;
+addEventListener('keydown',ev=>{
+  const k=ev.key.toLowerCase();
+  if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))ev.preventDefault();
+  if(k==='escape'){if(anyOpen()){show('help',false);show('menu',false);show('win',false);}else if(!$('inv').hidden)show('inv',false);else if(entOpen)closeEnt();else{tool=null;uiDirty=true;}return;}
+  if(anyOpen()){if(k==='h'||k==='?')show('help',false);return;}
+  keys[k]=true;
+  if(ev.ctrlKey||ev.metaKey)return;
+  if(k>='1'&&k<='8')selectTool(HOTBAR[+k-1]);
+  else if(k==='0'||k==='x')selectTool('remove');
+  else if(k==='r'){if(tool&&tool!=='remove')tdir=(tdir+(ev.shiftKey?3:1))%4;else{const e=at(mouse.tx,mouse.ty);if(e&&(isBelt(e)||isIns(e)||e.type==='drill'))e.dir=(e.dir+(ev.shiftKey?3:1))%4;}}
+  else if(k==='q'){const e=at(mouse.tx,mouse.ty);if(e&&ITEMS[e.type]){tool=e.type;tdir=e.dir;}else tool=null;uiDirty=true;}
+  else if(k==='e'){show('inv',$('inv').hidden);if(!$('inv').hidden){cache.invGrid=cache.recGrid=null;drawInv();}}
+  else if(k==='h'||k==='?')show('help',true);
+  else if(k==='='||k==='+')zoomAt(1.2,SW/2,SH/2);
+  else if(k==='-'||k==='_')zoomAt(1/1.2,SW/2,SH/2);
+});
+addEventListener('keyup',ev=>{keys[ev.key.toLowerCase()]=false;});
+addEventListener('blur',()=>{for(const k in keys)keys[k]=false;up();});
+document.addEventListener('click',ev=>{
+  const b=ev.target.closest('button');if(!b)return;
+  if(b.dataset.close){const id=b.dataset.close;if(id==='entp')closeEnt();else show(id,false);return;}
+  if(b.dataset.slot)return selectTool(b.dataset.slot);
+  if(b.dataset.rec){queueCraft(b.dataset.rec,ev.shiftKey?5:1);cache.recGrid=null;drawInv();recInfo(b.dataset.rec);return;}
+  if(b.dataset.inv){const t=b.dataset.inv;if(ITEMS[t].place){selectTool(t);if(tool===t)show('inv',false);}return;}
+  if(b.dataset.act){if(!b.dataset.act.startsWith('none'))entAct(b.dataset.act);return;}
+});
+$('recGrid').addEventListener('mouseover',ev=>{const b=ev.target.closest('[data-rec]');if(b)recInfo(b.dataset.rec);});
+$('deposit').onclick=deposit;
+$('bInv').onclick=()=>{show('inv',$('inv').hidden);cache.invGrid=cache.recGrid=null;drawInv();};
+$('bHelp').onclick=()=>show('help',true);
+$('bMenu').onclick=()=>{$('menuStats').textContent='Played '+playTime()+' · '+(ents.length-1)+' buildings · milestone '+Math.min(level+1,MILESTONES.length)+' of '+MILESTONES.length;show('menuConfirm',false);show('menuMain',true);show('menu',true);};
+$('mSave').onclick=()=>{save();toast('Game saved');show('menu',false);};
+$('mNew').onclick=()=>{show('menuMain',false);show('menuConfirm',true);};
+$('mNewNo').onclick=()=>{show('menuConfirm',false);show('menuMain',true);};
+$('mNewYes').onclick=()=>{newGame();save();show('menu',false);show('help',true);};
+
+// ---------- save / load ----------
+function serialize(){
+  const mined={};for(let i=0;i<W*H;i++)if(amt[i]!==amt0[i])mined[i]=amt[i];
+  const E=ents.filter(e=>e.type!=='hub').map(e=>{const o=Object.assign({},e);delete o.id;delete o.tk;delete o.v;return o;});
+  return {v:1,seed,level,won,inv,queue,ticks,cam:{x:cam.x,y:cam.y,z:cam.z},mined,E,hub:hub.inv};
+}
+function reset(s){
+  genMap(s);ents=[];grid.fill(null);nextId=1;queue=[];ticks=0;level=0;won=false;inv={};tool=null;mining=null;closeEnt();
+  hub=mk('hub',W/2-1,H/2-1,0);addEnt(hub);
+}
+function newGame(){reset((Math.random()*1e9)|0);inv=Object.assign({},START_INV);cam.x=W/2*T;cam.y=H/2*T;cam.z=1;uiDirty=true;
+  setTimeout(()=>toast('Tip: put a drill on iron ore with its chute facing a furnace, then give the furnace coal.'),600);}
+function load(s){
+  reset(s.seed);
+  for(const i in s.mined){const v=s.mined[i];amt[i]=v;if(v<=0)ore[i]=0;}
+  chunks.fill(null);
+  level=s.level|0;won=!!s.won;inv=s.inv||{};queue=(s.queue||[]).filter(q=>RECIPES[q.r]);ticks=s.ticks|0;hub.inv=s.hub||{};
+  if(s.cam){cam.x=s.cam.x;cam.y=s.cam.y;cam.z=s.cam.z;}
+  for(const o of s.E||[]){if(!ITEMS[o.type]||at(o.x,o.y))continue;const e=Object.assign(mk(o.type,o.x,o.y,o.dir),o);addEnt(e);}
+  uiDirty=true;
+}
+function save(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(serialize()));}catch(_){}}
+
+// ---------- loop ----------
+let last=0,acc=0,frame=0;
+function loop(now){
+  const dt=Math.min(.1,(now-last)/1000||0);last=now;
+  const pan=700*dt/cam.z;
+  if(keys.w||keys.arrowup)cam.y-=pan;if(keys.s||keys.arrowdown)cam.y+=pan;
+  if(keys.a||keys.arrowleft)cam.x-=pan;if(keys.d||keys.arrowright)cam.x+=pan;
+  cam.x=Math.max(0,Math.min(W*T,cam.x));cam.y=Math.max(0,Math.min(H*T,cam.y));
+  acc+=dt;let n=0;while(acc>=1/60&&n<6){tick();acc-=1/60;n++;}if(n>=6)acc=0;
+  for(const f of floats)f.t++;floats=floats.filter(f=>f.t<60);
+  render(ticks/60);
+  frame++;
+  if(frame%6===0){status();drawHUD();}
+  if(frame%15===0){if(!$('inv').hidden)drawInv();if(entOpen){if(!ents.includes(entOpen))closeEnt();else drawEnt();}}
+  if(uiDirty){uiDirty=false;drawHUD();}
+  if(ticks%1800===0&&ticks>0)save();
+  requestAnimationFrame(loop);
+}
+function start(data){
+  resize();makeIcons();
+  let s=data&&data.v?data:null;
+  if(!s){try{const raw=localStorage.getItem(SAVE_KEY);if(raw)s=JSON.parse(raw);}catch(_){s=null;}}
+  let fresh=!s;
+  if(s){try{load(s);}catch(_){fresh=true;}}
+  if(fresh){newGame();show('help',true);}
+  drawHUD();
+  addEventListener('resize',resize);
+  addEventListener('beforeunload',save);
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)save();});
+  requestAnimationFrame(t=>{last=t;loop(t);});
+}
+const hot=window.claude&&window.claude.hot;
+if(hot&&hot.snapshot)hot.snapshot(()=>serialize());
+if(hot&&hot.ready)hot.ready(start);else start(hot&&hot.data||{});
+})();
+</script>
