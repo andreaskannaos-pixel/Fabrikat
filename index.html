@@ -224,6 +224,26 @@ input[type=range]{width:100%;accent-color:var(--amber);padding:0}
 .news.war{color:#eab4a6}
 .news.dip{color:#b8d2ea}
 .units{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:6px}
+.intro{position:fixed;inset:0;z-index:12;display:flex;align-items:flex-end;justify-content:center;padding:0 16px 84px;cursor:pointer;background:linear-gradient(to top,rgba(8,8,6,.94) 0%,rgba(8,8,6,.6) 45%,rgba(8,8,6,.3) 100%)}
+.introbox{width:min(780px,100%);display:grid;grid-template-columns:96px 1fr;gap:18px;align-items:center;background:rgba(21,21,15,.92);border:1px solid var(--line);border-top:3px solid var(--pc,var(--amber));border-radius:3px;padding:16px 18px;box-shadow:0 10px 40px rgba(0,0,0,.6);box-sizing:border-box}
+@media (max-width:520px){.introbox{grid-template-columns:1fr}.portrait{width:64px!important;height:64px!important}}
+.introtext .eyebrow{color:var(--pc,var(--amber));font-size:12px}
+.introtext p{font-size:19px;line-height:1.5;margin:6px 0 10px;min-height:3em;max-width:60ch;text-wrap:pretty}
+.introtext .row{justify-content:space-between}
+.portrait{width:96px;height:96px;border-radius:50%;position:relative;overflow:hidden;background:#0d0d0b center/72% no-repeat;border:2px solid var(--pc,var(--amber));box-shadow:0 0 26px rgba(0,0,0,.7),inset 0 0 18px rgba(0,0,0,.8)}
+.portrait i{position:absolute;display:block}
+.portrait.eye i{left:50%;top:50%;width:38px;height:38px;margin:-19px 0 0 -19px;border-radius:50%;background:radial-gradient(circle at 50% 50%,#1a0f02 0 22%,var(--pc) 24% 48%,#5a3606 62%,transparent 72%);box-shadow:0 0 22px var(--pc);animation:iris 4s ease-in-out infinite}
+.portrait.eye.talk i{animation:irisTalk .22s ease-in-out infinite alternate}
+.portrait.gear{animation:spin 9s linear infinite}
+.portrait.gear.talk{animation-duration:2.2s}
+.portrait.gear i{left:50%;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;border:2px solid #16150f;background:rgba(236,230,211,.3)}
+.portrait.smoke i{inset:14px;border-radius:50%;background:radial-gradient(circle,#e1d8f4 0,#8a80a6 45%,transparent 70%);filter:blur(5px);animation:drift 3.4s ease-in-out infinite}
+.portrait.smoke.talk i{animation-duration:.9s;filter:blur(3px)}
+@keyframes iris{0%,100%{transform:scale(1)}45%{transform:scale(1)}50%{transform:scale(1,.1)}55%{transform:scale(1)}}
+@keyframes irisTalk{from{transform:scale(1)}to{transform:scale(1.18)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes drift{0%,100%{transform:translate(-4px,4px) scale(.95)}50%{transform:translate(4px,-6px) scale(1.08)}}
+@media (prefers-reduced-motion:reduce){.portrait,.portrait i{animation:none!important}}
 .overlay{position:fixed;inset:0;z-index:10;background:rgba(12,12,9,.72);display:grid;place-items:center;padding-inline:16px}
 .card{width:min(660px,100%);max-height:calc(100% - 32px);overflow:auto;padding:20px 22px;box-sizing:border-box}
 .card h2{font-size:28px;font-weight:700;letter-spacing:.01em}
@@ -301,6 +321,13 @@ kbd{font-family:var(--mono);font-size:11px;background:var(--panel2);border:1px s
   <div class="mhead"><h2 id="wTitle">World</h2><div class="tabs" id="wTabs"><button data-wtab="prov">Province</button><button data-wtab="nations">Nations</button><button data-wtab="news">News</button></div></div>
   <div class="mbody" id="wBody"></div>
 </div>
+<div id="intro" class="intro" hidden>
+  <div class="introbox" role="dialog" aria-label="Introduction">
+    <div id="introPortrait" class="portrait"><i></i></div>
+    <div class="introtext"><span class="eyebrow" id="introName"></span><p id="introText" aria-live="polite"></p>
+      <div class="row"><span class="ct" id="introStep"></span><span class="ct">Click or press Space to continue</span><button id="introSkip" class="small">Skip intro</button></div></div>
+  </div>
+</div>
 <div id="banner" aria-live="polite"><div class="b1"></div><div class="b2"></div></div>
 
 <div id="entp" class="panel modal" hidden>
@@ -342,7 +369,7 @@ kbd{font-family:var(--mono);font-size:11px;background:var(--panel2);border:1px s
     <div class="hazard"></div>
     <h2>Menu</h2>
     <p class="sub" id="menuStats"></p>
-    <div class="row" id="menuMain"><button class="primary" data-close="menu">Resume</button><button id="mSave">Save now</button><button id="mNew">New game</button><button id="mExport">Export save code</button><button id="mImport">Import save code</button></div>
+    <div class="row" id="menuMain"><button class="primary" data-close="menu">Resume</button><button id="mSave">Save now</button><button id="mNew">New game</button><button id="mIntro">Replay intro</button><button id="mExport">Export save code</button><button id="mImport">Import save code</button></div>
     <div id="menuIO" hidden style="margin-top:12px"><p class="sub" id="ioMsg" style="margin:0 0 6px"></p><textarea id="ioText" rows="4" aria-label="Save code"></textarea>
       <div class="row" style="margin-top:6px"><button id="ioCopy">Copy code</button><button id="ioLoad" class="danger">Load this save (replaces your current game)</button><button id="ioClose">Done</button></div></div>
     <div class="row" id="menuConfirm" hidden><span>Erase this factory and start a new map? Blueprints are kept.</span><button class="danger" id="mNewYes">Erase and restart</button><button id="mNewNo">Keep playing</button></div>
@@ -1805,6 +1832,7 @@ function startBpSel(){tool=tool==='bpsel'?null:'bpsel';bpSel=null;uiDirty=true;i
 addEventListener('keydown',ev=>{
   if(ev.target&&(ev.target.tagName==='INPUT'||ev.target.tagName==='TEXTAREA'))return;
   const k=ev.key.toLowerCase();
+  if(intro){if(k===' '||k==='enter'){ev.preventDefault();introNext();}else if(k==='escape')introEnd();return;}
   if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))ev.preventDefault();
   if(k===' '&&!anyOpen()){paused=!paused;toast(paused?'Paused. Press Space to continue.':'Running');uiDirty=true;return;}
   if(k==='escape'){if(anyOpen()){show('help',false);show('menu',false);show('win',false);}else if(['res','cities','mil','guide','settings'].some(id=>!$(id).hidden)){for(const id of['res','cities','mil','guide','settings'])show(id,false);uiDirty=true;}else if(!$('co').hidden)show('co',false);else if(!$('stats').hidden)show('stats',false);else if(!$('inv').hidden)show('inv',false);else if(entOpen)closeEnt();else{tool=null;bpSel=null;uiDirty=true;}return;}
@@ -1886,7 +1914,7 @@ function openMenu(){$('menuStats').textContent='Played '+playTime()+' · '+(ents
 $('mSave').onclick=()=>{save();toast('Game saved');show('menu',false);};
 $('mNew').onclick=()=>{show('menuMain',false);show('menuConfirm',true);};
 $('mNewNo').onclick=()=>{show('menuConfirm',false);show('menuMain',true);};
-$('mNewYes').onclick=()=>{newGame();save();show('menu',false);show('help',true);};
+$('mNewYes').onclick=()=>{newGame();save();show('menu',false);playIntro(()=>show('help',true));};
 
 // ---------- save / load ----------
 function serialize(){
@@ -2625,8 +2653,8 @@ function drawGuide(){setHTML($('guideBody'),'<div class="guide"><nav>'+GUIDE.map
 
 // ---------- sound ----------
 let actx=null;const sfxT={};
-function sfx(k){
-  if(!settings.sound||!settings.vol)return;const now=performance.now();if(sfxT[k]&&now-sfxT[k]<({coin:400,place:45,remove:45,boom:150,alert:700,fanfare:500}[k]||80))return;sfxT[k]=now;
+function sfx(k,pitch){
+  if(!settings.sound||!settings.vol)return;const now=performance.now();if(sfxT[k]&&now-sfxT[k]<({blip:45,coin:400,place:45,remove:45,boom:150,alert:700,fanfare:500}[k]||80))return;sfxT[k]=now;
   try{actx=actx||new(window.AudioContext||window.webkitAudioContext)();if(actx.state==='suspended')actx.resume();}catch(_){return;}
   const t=actx.currentTime,V=settings.vol*.3;
   const tone=(f,d,type,at,f2)=>{const o=actx.createOscillator(),g=actx.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,t+at);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+at+d);
@@ -2641,6 +2669,7 @@ function sfx(k){
     case 'launch':noise(.9,400,2400);break;
     case 'fanfare':tone(523,.13,'triangle',0);tone(659,.13,'triangle',.11);tone(784,.3,'triangle',.22);break;
     case 'alert':tone(660,.12,'square',0);tone(440,.2,'square',.14);break;
+    case 'blip':tone((pitch||500)*(.92+Math.random()*.16),.04,'triangle',0);break;
   }
 }
 
@@ -2684,6 +2713,57 @@ function worldLoad(w){
   ais=w.ais||ais;Object.assign(nat,w.nat||{});nat.committed=0;news=w.news||[];missionIdx=w.missionIdx|0;unlockAll=!!w.unlockAll;wDirty=true;return true;
 }
 
+// ---------- introduction ----------
+const INTROS=[
+  {n:'The Overseer',c:'#e3a52a',kind:'eye',pitch:520,lines:[
+    'Ah. You\u2019re awake. Good. I was beginning to think the last one wasn\u2019t coming back either.',
+    'I am the Overseer. I run the numbers here. All of them.',
+    'This plot of dirt is yours now. So is that humming green box in the middle. We call it the Money Generator.',
+    'Feed it ore and it pays you. Feed it something you worked harder on, and it pays you more. It\u2019s very fair. Fairer than people.',
+    'Money becomes cities. Cities become people. People become\u2026 options.',
+    'There are five other nations out there. They are already watching your chimneys.',
+    'Start small. Put a drill on that iron ore and point its chute at the generator. I\u2019ll be counting.']},
+  {n:'Baron Cogsworth',c:'#d9b54a',kind:'gear',pitch:700,lines:[
+    'Hello down there! Up here! The gear! No, the big one!',
+    'Baron Cogsworth, at your service. Former industrialist. Current\u2026 component.',
+    'Long story. Involves a furnace, a very bad investment, and a surprisingly strong conveyor belt.',
+    'Anyway! You\u2019ve got land, a few drills, and the finest Money Generator a bankrupt fellow could leave behind.',
+    'Ore goes in, cash comes out. Plates pay better. Circuits pay better still. You see where this is going.',
+    'Build enough and you\u2019ll have cities, armies, even rockets. The neighbours won\u2019t like it. Neighbours never do.',
+    'Right then! Drill on the iron, chute into the generator. Chop chop!']},
+  {n:'The Voice in the Chimney',c:'#b7a8d8',kind:'smoke',pitch:300,lines:[
+    '\u2026can you hear me? \u2026good. The smoke carries voices, you know.',
+    'I have lived in this chimney for a very long time. I have watched many factories rise.',
+    'Most of them fell. Not to rivals. They fell because they stopped growing.',
+    'The green machine in the middle is hungry. Ore, plates, anything with work in it.',
+    'Feed it well, and it will feed your cities. Your cities will feed your armies.',
+    'Beyond the dark edges of your land, five nations are lighting furnaces of their own.',
+    'Begin. The iron lies to the north-west. I will be in the smoke, watching.']},
+];
+let intro=null;
+function playIntro(done){
+  if(intro)introEnd(true);
+  const P=INTROS[Math.floor(Math.random()*INTROS.length)];
+  intro={P,i:0,shown:0,done,timer:null,wasPaused:paused};paused=true;
+  const box=$('intro'),por=$('introPortrait');box.style.setProperty('--pc',P.c);
+  $('introName').textContent=P.n;por.className='portrait '+P.kind;por.style.backgroundImage=P.kind==='gear'?'url('+ICONURL.gear+')':'';
+  show('intro',true);introLine();
+}
+function introLine(){
+  const I=intro,line=I.P.lines[I.i],por=$('introPortrait');I.shown=0;$('introText').textContent='';por.classList.add('talk');
+  $('introStep').textContent=(I.i+1)+' / '+I.P.lines.length;clearInterval(I.timer);
+  I.timer=setInterval(()=>{I.shown++;$('introText').textContent=line.slice(0,I.shown);const c=line[I.shown-1];if(c&&/[a-z0-9]/i.test(c)&&I.shown%2)sfx('blip',I.P.pitch);
+    if(I.shown>=line.length){clearInterval(I.timer);por.classList.remove('talk');}},28);
+}
+function introNext(){
+  const I=intro;if(!I)return;const line=I.P.lines[I.i];
+  if(I.shown<line.length){clearInterval(I.timer);I.shown=line.length;$('introText').textContent=line;$('introPortrait').classList.remove('talk');return;}
+  if(++I.i>=I.P.lines.length)return introEnd();introLine();
+}
+function introEnd(silent){const I=intro;if(!I)return;clearInterval(I.timer);intro=null;paused=I.wasPaused;show('intro',false);uiDirty=true;if(I.done&&!silent)I.done();}
+$('intro').addEventListener('click',ev=>{if(ev.target.id==='introSkip')introEnd();else introNext();});
+$('mIntro').onclick=()=>{show('menu',false);playIntro();};
+
 // ---------- loop ----------
 let last=0,acc=0,frame=0,gameSpeed=1,paused=false;
 function loop(now){
@@ -2711,7 +2791,7 @@ function start(data){
   if(!s){try{const raw=localStorage.getItem(SAVE_KEY);if(raw)s=JSON.parse(raw);}catch(_){s=null;}}
   let fresh=!s;
   if(s){try{load(s);offlineGain(s);}catch(_){fresh=true;}}
-  if(fresh){newGame();show('help',true);}
+  if(fresh){newGame();playIntro(()=>show('help',true));}
   drawHUD();
   addEventListener('resize',resize);
   addEventListener('beforeunload',save);

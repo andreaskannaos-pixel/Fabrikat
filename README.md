@@ -75,6 +75,8 @@ It's single-player: every other nation is computer-controlled, and there is no o
 
 ## Quality of life
 
+- **Introduction:** a new game opens with one of three characters (the Overseer, Baron Cogsworth or the Voice in the Chimney) talking you through the premise in typed subtitles. Replay it from the Menu.
+
 - **Pause and speed:** `Space` pauses; the top bar switches between 1×, 2× and 4×.
 - **Offline earnings:** when you come back, your nation earns half its usual income for the time you were away, up to 8 hours.
 - **Save codes:** Menu → Export save code gives a text code you can paste into Import on another computer (for example to move between school and home).
