@@ -188,6 +188,7 @@ h1,h2,h3{margin:0;text-wrap:balance}
 #nav button.on{border-color:var(--amber);color:var(--amber)}
 #nav .sep{width:1px;background:var(--line);margin:3px 6px}
 #nav .new{box-shadow:0 0 0 2px var(--amber)}
+#nav .locked{opacity:.5}
 .stat.spd{gap:2px;padding:2px 6px}
 .stat.spd button{padding:2px 7px;font-size:12px;font-family:var(--mono)}
 .stat.spd button.on{background:var(--amber);color:var(--amber-ink);border-color:var(--amber)}
@@ -845,7 +846,14 @@ function updDrill(e){
     if(tgt){if(isBelt(tgt))ok=beltPut(tgt,e.buf,.25);else if(accepts(tgt,e.buf)){give(tgt,e.buf);ok=true;}}
     if(ok)e.buf=null;else e.st='block';}
 }
+function genPush(e,t){
+  let rej=false;const w=e.w||1,h=e.h||1,seen=new Set();
+  for(let i=-1;i<=w;i++)for(let j=-1;j<=h;j++){if((i<0||i>=w)===(j<0||j>=h))continue;const n=at(e.x+i,e.y+j);
+    if(!n||n.type!=='moneygen'||seen.has(n))continue;seen.add(n);if(accepts(n,t)){give(n,t);e.genRej=null;return 1;}if(n.q.length<20)rej=true;}
+  e.genRej=rej?t:null;return 0;
+}
 function updFurn(e){
+  if(e.outN>0&&genPush(e,e.outT)){if(--e.outN===0)e.outT=null;}
   if(!e.cur){
     const s=e.inT&&SMELT[e.inT];
     if(!s||e.inN<s.n)e.st='starve';
@@ -860,6 +868,7 @@ function updFurn(e){
 }
 function updAsm(e){
   if(!e.rec){e.st='idle';return;}const r=RECIPES[e.rec];
+  if(e.outN>0&&genPush(e,e.rec))e.outN--;
   if(!e.work){
     e.miss=null;
     if(e.outN>=Math.max(10,r.out*4))e.st='block';
@@ -931,7 +940,7 @@ function rollRates(){
   }
 }
 function survey(){
-  const M={};machinesN=0;const run=new Set(),miss={};let worn=0,wornFirst=null,blockFirst=null,fuelFirst=null,emptyFirst=null,nofuel=0;
+  const M={};machinesN=0;const run=new Set(),miss={};let genRejE=null,worn=0,wornFirst=null,blockFirst=null,fuelFirst=null,emptyFirst=null,nofuel=0;
   for(const e of ents){
     if(!WEARS.has(e.type))continue;
     machinesN++;const m=M[e.type]||(M[e.type]={n:0,work:0,starve:0,block:0,idle:0,eff:0});
@@ -941,6 +950,7 @@ function survey(){
     if(e.st==='nofuel'){nofuel++;if(!fuelFirst)fuelFirst=e;}
     if(e.st==='empty'&&!emptyFirst)emptyFirst=e;
     if(e.eff<.8){worn++;if(!wornFirst||e.eff<wornFirst.eff)wornFirst=e;}
+    if(e.genRej&&!genRejE)genRejE=e;
     if(e.miss&&e.st==='starve'){(miss[e.miss]||(miss[e.miss]={n:0,e}));miss[e.miss].n++;}
     if(isMachine(e)&&e.work)run.add(e.rec);
     if(e.type==='furnace'&&e.cur)run.add('smelt:'+e.cur);
@@ -954,6 +964,7 @@ function survey(){
   logi={belts:L.belt.length,items,jams,util:L.belt.length?items/(L.belt.length*4):0,chests,cap,used,chestsFull,routes,plots:plots.size,avgLoad:trips?moved/trips/TRAIN_CAP:0,splitters:L.sp.length};
   const A=[];
   if(nofuel)A.push({s:'crit',t:nofuel+' furnace'+(nofuel>1?'s':'')+' out of coal',e:fuelFirst});
+  if(genRejE)A.push({s:'crit',t:'The Money Generator next to your '+ITEMS[genRejE.type].n.toLowerCase()+' can\u2019t take '+ITEMS[genRejE.genRej].n+' yet. Open it and upgrade to '+(DEPTH[genRejE.genRej]<=1?'Mk. II ($250)':'a higher model')+'.',e:at(genRejE.x+1,genRejE.y)&&at(genRejE.x+1,genRejE.y).type==='moneygen'?at(genRejE.x+1,genRejE.y):genRejE});
   if(rej)A.push({s:'crit',t:'A Money Generator can’t take '+ITEMS[rej.rej].n+'. Upgrade it or send that item elsewhere.',e:rej});
   const short=Object.entries(miss).sort((a,b)=>b[1].n-a[1].n)[0];
   if(short){const[k,v]=short;A.push({s:'warn',t:ITEMS[k].n+' shortage: '+v.n+' machine'+(v.n>1?'s':'')+' waiting. Making '+fr(prodR[k]||0)+'/min, using '+fr(consR[k]||0)+'/min.',e:v.e});}
@@ -1442,7 +1453,7 @@ function drawTop(){
   h+=(paused?'<span class="stat paused">PAUSED</span>':'')+'<span class="stat spd">'+[[0,'\u275a\u275a'],[1,'1\u00d7'],[2,'2\u00d7'],[4,'4\u00d7']].map(([v,l])=>'<button data-speed="'+v+'" class="'+((v===0?paused:!paused&&gameSpeed===v)?'on':'')+'" title="'+(v?'Game speed '+v+'\u00d7':'Pause (Space)')+'">'+l+'</button>').join('')+'</span>';
   setHTML($('topbar'),h);
   const openId={cities:'cities',military:'mil',research:'res',company:'co',stats:'stats',inv:'inv',guide:'guide',settings:'settings'};
-  setHTML($('nav'),NAV.map(n=>{if(n==='|')return '<span class="sep"></span>';const[k,l,key]=n;if((k==='world'||k==='cities'||k==='military')&&!unlockedNav(k))return '';
+  setHTML($('nav'),NAV.map(n=>{if(n==='|')return '<span class="sep"></span>';const[k,l,key]=n;if((k==='world'||k==='cities'||k==='military')&&!unlockedNav(k))return '<button data-locked="'+k+'" class="locked" title="Locked">\u{1F512} '+l+'</button>';
     const on=k===view||(openId[k]&&!$(openId[k]).hidden)||(k==='bp'&&(tool==='bpsel'||tool==='bp'));
     return '<button data-nav="'+k+'" class="'+(on?'on':'')+(stats['seen_'+k]||!['world','cities','military'].includes(k)?'':' new')+'">'+l+(key?' <kbd>'+key+'</kbd>':'')+'</button>';}).join(''));
   const m=MISSIONS[missionIdx];
@@ -1533,7 +1544,7 @@ function drawEnt(){
       '<span class="k">Output</span><span>'+(e.outN?'<span class="ing">'+img(e.outT)+e.outN+' '+ITEMS[e.outT].n+'</span>':'empty')+'</span>'+
       '<span class="k">Working</span><div class="pbar"><i style="width:'+(e.prog*100).toFixed(0)+'%"></i></div></div>';
     h+=condRow(e)+'<div class="row"><button data-act="coal">Add coal</button><button data-act="ore">Add ore</button><button data-act="out" class="primary">Take output</button></div>';
-    h+='<div><h3>Smelts</h3>'+Object.keys(SMELT).filter(smeltOk).map(k=>'<span class="ing">'+SMELT[k].n+img(k)+'&rarr;'+img(SMELT[k].o)+'</span>').join('')+'</div><p class="empty">One coal lasts '+(perk('nordex')?10:5)+' smelts.</p>';
+    h+='<div><h3>Smelts</h3>'+Object.keys(SMELT).filter(smeltOk).map(k=>'<span class="ing">'+SMELT[k].n+img(k)+'&rarr;'+img(SMELT[k].o)+'</span>').join('')+'</div><p class="empty">One coal lasts '+(perk('nordex')?10:5)+' smelts. Place it touching a Money Generator and its output sells automatically.'+(e.genRej?' <span class="bad">The generator next to it only takes raw ore right now. Upgrade it to Mk. II.</span>':'')+'</p>';
   }else if(isMachine(e)){
     const cat=MACHINE_CAT[e.type];
     if(e.rec){const R=RECIPES[e.rec];
@@ -1846,6 +1857,7 @@ function navAct(k){
   uiDirty=true;
 }
 document.addEventListener('click',ev=>{const b=ev.target.closest('button');if(!b||b.disabled)return;const d=b.dataset;
+  if(d.locked){const need={world:2,cities:2,military:4}[d.locked];toast((d.locked==='world'?'The World map':d.locked==='cities'?'Cities':'The Military')+' unlocks when you finish mission '+need+' ('+MISSIONS[need-1].n+'). Or unlock everything now in Settings.');return;}
   if(d.nav)return navAct(d.nav);
   if(d.speed!==undefined){const v=+d.speed;if(v===0)paused=!paused;else{paused=false;gameSpeed=v;}uiDirty=true;return;}
   if(d.w)return wAct(d.w);
@@ -2042,7 +2054,7 @@ function defList(p){const w=dwOf(p),a=[];if(w.wall)a.push(DEFS.wall.n[w.wall-1])
 const PORT={n:'Port',cost:15000,mat:{steel:100,concrete:100},res:'ports'};
 const MISSIONS=[
   {n:'Starting a Factory',d:'Get a production line running.',reward:500,obj:[['Mine 10 iron ore',()=>(stats.made.iron_ore||0)>=10],['Build a stone furnace',()=>(stats.built.furnace||0)>=1||ents.some(e=>e.type==='furnace')],['Produce 20 iron plates',()=>(stats.made.iron_plate||0)>=20],['Earn $50 at the Money Generator',()=>stats.life>=50]]},
-  {n:'Make Money',d:'Grow the business.',reward:1000,obj:[['Earn $5,000 in total',()=>stats.life>=5000]],unlock:'Cities and the World map'},
+  {n:'Make Money',d:'Grow the business.',reward:1000,obj:[['Earn $3,000 in total',()=>stats.life>=3000]],unlock:'Cities and the World map'},
   {n:'Your First City',d:'Found a city in a province you own.',reward:2000,obj:[['Build a city (World map, click your home province)',()=>cityCount()>=1],['Set the worker and soldier split in Cities',()=>!!stats.slider]]},
   {n:'Industrial Nation',d:'People run factories and fill armies.',reward:3000,obj:[['Reach 10,000 population',()=>nat.pop>=10000]],unlock:'Military'},
   {n:'First Army',d:'Raise your first troops.',reward:5000,obj:[['Recruit 1,000 soldiers (one infantry unit)',()=>(stats.recruitMP||0)>=1000]]},
@@ -2330,6 +2342,8 @@ function missionCheck(){
     if(missionIdx===4)research.infantry=1;
     banner(missionIdx>=MISSIONS.length?'YOU ARE READY':'MISSION COMPLETE',missionIdx>=MISSIONS.length?'The campaign is over. The world is yours to shape.':m.n+' · +'+$$(m.reward)+(m.unlock?' · unlocked '+m.unlock:''));
     report('world','Mission complete: '+m.n+'.');
+    if(missionIdx===2)setTimeout(()=>toast('Cities unlocked! Press M for the World map, click your home province (the star) and build a City Mk. I.','big'),1500);
+    if(missionIdx===4)setTimeout(()=>toast('Military unlocked! Open Military to recruit infantry from your soldiers.','big'),1500);
     missionStart(missionIdx);uiDirty=true;
   }
 }

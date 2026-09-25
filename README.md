@@ -54,12 +54,13 @@ Everything runs on money. The **Money Generator** turns items into cash, and eac
 - Belts feed any building they point into.
 - Inserters move items from the building behind them into the one in front.
 - Furnaces need coal. Assemblers craft the recipe you set.
+- Furnaces and machines touching a Money Generator sell their output into it directly (Mk. II or better for plates).
 
 ## Nation layer
 
 Your factory pays for cities, cities grow people, and people become workers or soldiers. Soldiers take territory, and territory sends new resources back to the factory.
 
-- **Campaign:** 10 missions teach the loop, from your first furnace to surviving an invasion. Menus unlock as you go; Settings can skip ahead.
+- **Campaign:** 10 missions teach the loop, from your first furnace to surviving an invasion. Locked menus (World, Cities, Military) show a lock and say which mission opens them; Settings can skip ahead.
 - **World map (`M`):** 61 provinces across plains, forest, desert, mountains, volcanic land and arctic, shared with 5 computer-run nations. Captured provinces send their resource to your factory every 10 seconds, into an Import Depot if you build one.
 - **Cities:** Mk. I to Mk. V, bought with money and materials. Each province has a few city slots.
 - **Population:** one slider splits people between workers (taxes, plus up to +100% factory speed) and soldiers. Peacetime, Mobilized and War Economy set how far you can push it and what it costs.
