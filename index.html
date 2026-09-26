@@ -1938,7 +1938,7 @@ function status(){
   else if(tool==='bp'&&bps[bpIdx])s='<b>'+esc(bps[bpIdx].name)+'</b> &middot; R rotates &middot; click to lay out construction sites, shift+click also orders missing buildings<br>';
   else if(tool&&ITEMS[tool])s='<b>'+ITEMS[tool].n+'</b>'+(toolRec?' making '+ITEMS[toolRec].n:'')+' &middot; facing '+['up','right','down','left'][tdir]+' &middot; R rotates<br>';
   {const g=provAtTile(x,y);if(g<0)s+='Sea<br>';else{const P=world.provs[g];s+=TERR[P.terr].n+' &middot; '+P.name+(P.owner===0?'':' &middot; '+(P.owner>0?NATIONS[P.owner].n:'Neutral'))+'<br>';
-    if(P.owner!==0)s+=(provBuyable(P)?'For sale: <span class="v">'+$$(provPrice(P))+'</span> &middot; click to see':P.owner>0?'Foreign land &middot; click to see':'Neutral. Only land next to yours is for sale.')+'<br>';}}
+    if(P.owner!==0)s+=(provBuyable(P)?'For sale: <span class="v">'+$$(provPrice(P))+'</span> &middot; click to see':P.owner>0?(foreignSale(P)?NATIONS[P.owner].n+' will sell it: <span class="v">'+$$(foreignPrice(P))+'</span> &middot; click to buy':'Foreign land &middot; click to see'):'Neutral. Only land next to yours is for sale.')+'<br>';}}
   if(e){s+='<b>'+(e.hq?'HQ Money Generator':ITEMS[e.type].n)+'</b>';
     if(e.type==='moneygen')s+=' &middot; '+GEN[e.mk].n+', takes '+GEN[e.mk].takes;
     if(e.type==='drill')s+=' &middot; '+(ore[i]?ITEMS[ORES[ore[i]-1]].n+', '+amt[i]+' left':'no ore left');
@@ -2109,7 +2109,7 @@ function coAct(a,shift){
     if(Object.keys(x.need).every(q=>(got[q]||0)>=xpNeed(x,q))){research[v]=1;toast('Discovery: '+x.n+'. '+x.d,'big');}else toast(gave?'Contributed '+gave+' items':'You have none of the materials it needs');}
   else if(k==='upg'){const u=UPGRADES[v];if(upgLv(v)<u.max&&money>=upgCost(v)){spend(upgCost(v));upg[v]=upgLv(v)+1;toast(u.n+' is now level '+upg[v]);}}
   else if(k==='cos'){if(cos[v]!==undefined)cos[v]=!cos[v];else if(!COSMETICS[v].ms&&money>=COSMETICS[v].cost){spend(COSMETICS[v].cost);cos[v]=true;toast('Bought '+COSMETICS[v].n);}}
-  else if(k==='land'){buyProv(P_(+v));}
+  else if(k==='land'){buyProv(P_(+v));}else if(k==='fland'){buyForeign(P_(+v));}
   else if(k==='landsee'){const p=P_(+v);show('co',false);lookAt(p,.55);openProv(p.id);return;}
   else if(k==='buy'){const n=shift?10:1,cost=marketPrice(v)*n;if(money>=cost){spend(cost);add(inv,v,n);stats.buys=(stats.buys||0)+1;toast('Bought '+n+' '+ITEMS[v].n);}else toast('Not enough money');}
   else if(k==='accept'){const c=contracts.offers.find(q=>q.id==v);if(c&&contracts.active.length<3){contracts.offers.splice(contracts.offers.indexOf(c),1);c.buys=stats.buys||0;contracts.active.push(c);toast('Accepted '+c.code+': '+contractLine(c)+' '+ITEMS[c.item].n);}}
@@ -2524,8 +2524,8 @@ const MISSIONS=[
     hint:'Press T for the tech tree. Green lines are done, amber ones are ready. Click a technology to see what it unlocks.'},
   {n:'Many Hands',d:'Villagers build for you.',reward:2000,obj:[['Place a blueprint and let villagers build 4 buildings',()=>(stats.constructed||0)>=4],['Earn $3,000 in total',()=>stats.life>=3000]],
     hint:'Open Company > Blueprints, buy a Guild blueprint and place it. Idle villagers leave the factory to build it, then go back to work.'},
-  {n:'Beyond the Fence',d:'Your factory sits inside a living world.',reward:3000,unlock:'Cities',obj:[['Zoom out (mouse wheel or M) to see the world',()=>!!stats.mapSeen],['Buy a neighbouring province',()=>(stats.bought||0)>=1]],
-    hint:'Zoom out with the mouse wheel or press M. Click land next to yours and choose Buy.',grant:()=>{research.city1=1;}},
+  {n:'Beyond the Fence',d:'Your factory sits inside a living world.',reward:3000,unlock:'Cities',obj:[['Zoom out (mouse wheel or M) to see the world',()=>!!stats.mapSeen],['Buy a neighbouring province (Company > Land)',()=>(stats.bought||0)>=1||(stats.captured||0)>=1]],
+    hint:'Zoom out with the mouse wheel or press M. Click land next to yours and choose Buy, or open Company > Land. If your neighbours own all of it, they sell border land at a premium.',grant:()=>{research.city1=1;}},
   {n:'Your First City',d:'Cities grow the people who run your factories.',reward:3000,obj:[['Build a City Mk. I in a province you own',()=>cityCount()>=1],['Check your workforce in the Cities tab',()=>!!stats.seen_cities]],
     hint:'Click your home province (the star) on the map and build a City Mk. I.'},
   {n:'Science!',d:'Labs turn science packs into late-game technology.',reward:5000,obj:[['Research Research Labs',()=>!!research.labs],['Build a science lab',()=>ents.some(e=>e.type==='lab'&&!e.off)],['Finish a technology in your labs',()=>(stats.labDone||0)>=1]],
@@ -2781,7 +2781,7 @@ function aiTick(){
     if(A.war&&!A.scripted&&!A.peaceOpen&&A.warT>600&&A.str<armyStr()*1.3&&Math.random()<.06){A.peaceOpen=true;report('dip',NATIONS[i].n+' is ready to discuss peace. Offer peace to end the war.');}
     const border=[];for(const p of own)for(const j of p.adj)border.push([p,P[j]]);
     if(tmin>8&&Math.random()<.1*(.5+A.agg)*DF[2]){
-      const c=border.filter(([,q])=>q.owner===-1&&!attacks.some(a=>a.to===q.id)).sort((a,b)=>a[1].gar-b[1].gar)[0];
+      const c=border.filter(([,q])=>q.owner===-1&&!reservedLand(q)&&!attacks.some(a=>a.to===q.id)).sort((a,b)=>a[1].gar-b[1].gar)[0];
       if(c){const need=provDef(c[1],i)*1.3;if(A.str*.4>need)aiAttack(i,c[1],Math.max(need,A.str*.3),c[0]);}
     }
     if(A.war&&!A.scripted&&Math.random()<.22*DF[1]){
@@ -3049,6 +3049,7 @@ const GUIDE=[
   ['Pipes and pressure','Every pipe network shows its pressure (from 20 kPa empty to 300 kPa full, plus 25 per pump). When machines wait for a fluid while its pipes are nearly empty, the pipes pulse red and the machines show LOW PRESSURE.'],
   ['Sea ports','Maritime Trade research unlocks sea ports on coastal land you own. Fill a port with belts or inserters and set up to three export deals with overseas partners. Ships leave with 20 or more items above what you keep, and bring back cash or rare resources. Flooding one partner with one item lowers its price for a while.'],
   ['Rivers','New worlds have rivers. Only rails, belts, pipes and water wells go on river tiles. A well on a river pumps twice as much water, and 50% more within two tiles of one.'],
+  ['Buying land','Click neutral land next to yours and choose Buy, or use Company > Land. Nations leave the neutral land on your border alone during the campaign (until Take Ground). If a neighbour already owns it, a nation at peace sells border provinces other than its capital at 2.5x the price; buying costs a little of its goodwill.'],
   ['Camera','Hold the right mouse button and drag to look around without moving the President. Release and the camera glides back to them (Settings can make it snap or stay). A right-click without dragging still removes a building.'],
   ['Drill targeting','Advanced Drill Targeting (Industry, early) lets a drill whose tile runs dry keep mining the same ore on any of the 8 tiles around it. A dashed green line shows where it reaches.'],
   ['Tech tree','Research (T) is a branching tree per branch. Lines show prerequisites: green is done, amber is ready, dashed grey is locked. Click a technology to see what it unlocks and what it costs, double-click or press Research to buy it, and drag to pan.'],
@@ -3790,6 +3791,16 @@ function renderMap(tm){
 // ---------- land ----------
 const ownedProvs=()=>world.provs.reduce((a,p)=>a+(p.owner===0?1:0),0);
 const provBuyable=p=>p.owner===-1&&p.adj.some(j=>world.provs[j].owner===0);
+// neutral provinces touching your land are off-limits to computer nations until the campaign reaches Take Ground
+const reservedLand=p=>!unlockAll&&missionIdx<9&&p.adj.some(j=>world.provs[j].owner===0);
+// a nation at peace sells a border province (not its capital, and only if it keeps at least 2) at 2.5x the price
+const foreignSale=p=>p.owner>0&&!!ais[p.owner]&&!ais[p.owner].dead&&!ais[p.owner].war&&p.id!==ais[p.owner].cap&&p.adj.some(j=>world.provs[j].owner===0)&&world.provs.filter(q=>q.owner===p.owner).length>=3;
+const foreignPrice=p=>Math.round(provPrice(p)*2.5/10)*10;
+function buyForeign(p){
+  if(!p||!foreignSale(p))return;const c=foreignPrice(p),o=p.owner,A=ais[o];if(money<c){toast('Not enough money for '+p.name+' ('+$$(c)+')','bad');return;}
+  spend(c);p.owner=0;p.gar=Math.max(3,p.gar*.3);A.rel=Math.max(-100,A.rel-8);wDirty=true;listsDirty=true;stats.bought=(stats.bought||0)+1;sfx('fanfare');
+  banner('LAND PURCHASED',NATIONS[o].n+' sold you '+p.name);report('dip','You bought '+p.name+' from '+NATIONS[o].n+' for '+$$(c)+'.');uiDirty=true;
+}
 function provPrice(p){let dv=0;for(const d of depo)if(d.p===p.id&&d.left>0)dv+=d.left*VAL[d.o]*.015;
   return Math.round((250+p.tiles*.4+dv+p.pop*.03)*Math.pow(1.5,Math.max(0,ownedProvs()-1))*({volcanic:1.4,arctic:1.2}[p.terr]||1)*(p.kind==='industrial'?1.5:1)*(perk('titan')?.8:1)/10)*10;}
 function buyProv(p){
@@ -3811,6 +3822,8 @@ function landHTML(){
   const own=world.provs.filter(p=>p.owner===0),buy=world.provs.filter(provBuyable).sort((a,b)=>provPrice(a)-provPrice(b));
   let h='<p class="empty">Your country has '+own.length+' province'+(own.length===1?'':'s')+'. Buy neutral land next to your borders, or take land by force. Each province brings its deposits, villages and people. Click any land on the map to see it.</p>';
   h+='<div><h3>For sale</h3><div class="list">'+(buy.length?buy.map(p=>'<div class="item"><span class="t">'+p.name+' <span class="ct">'+TERR[p.terr].n+' &middot; '+p.tiles+' tiles</span></span><span class="d">'+provAdv(p)+'</span><span class="icons">'+depIcons(p)+'</span><div class="a"><button class="money" data-co="land:'+p.id+'"'+(money<provPrice(p)?' disabled':'')+'>Buy '+$s(provPrice(p))+'</button><button class="small" data-co="landsee:'+p.id+'">Show on map</button></div></div>').join(''):'<p class="empty">No neutral land borders yours.</p>')+'</div></div>';
+  {const fs=world.provs.filter(foreignSale).sort((a,b)=>foreignPrice(a)-foreignPrice(b));
+    if(fs.length)h+='<div><h3>Offered by neighbours <span class="hint">nations at peace sell border land at 2.5x the price</span></h3><div class="list">'+fs.map(p=>'<div class="item"><span class="t">'+p.name+' <span class="ct">'+TERR[p.terr].n+' &middot; '+NATIONS[p.owner].n+'</span></span><span class="d">'+provAdv(p)+'</span><span class="icons">'+depIcons(p)+'</span><div class="a"><button class="money small" data-co="fland:'+p.id+'"'+(money<foreignPrice(p)?' disabled':'')+'>'+$s(foreignPrice(p))+'</button><button class="small" data-co="landsee:'+p.id+'">Show</button></div></div>').join('')+'</div></div>';}
   h+='<div><h3>Your provinces</h3><div class="list">'+own.map(p=>'<div class="item"><span class="t">'+p.name+' <span class="ct">'+TERR[p.terr].n+'</span></span><span class="d">'+provAdv(p)+'</span><span class="icons">'+depIcons(p)+'</span><div class="a"><button class="small" data-co="landsee:'+p.id+'">Show</button></div></div>').join('')+'</div></div>';
   return h;
 }
@@ -5101,6 +5114,7 @@ function drawCtxPop(){
       else h+='<button class="danger small" data-ctx="atk:.5">Attack · half</button><button class="danger small" data-ctx="atk:1">Attack · all</button>';}
     if(mil&&A&&!A.war)h+=ctxPop.arm?'<button class="danger small" data-ctx="waryes">Confirm war on '+esc(N.n)+'</button><button class="small" data-ctx="warno">Cancel</button>':'<button class="danger small" data-ctx="war">Declare war</button>';
     if(!mil&&own!==0)h+='<span class="ct">Research Basic Ballistics to raise an army.</span>';
+    if(foreignSale(p))h+='<button class="money small" data-ctx="fbuy"'+(money<foreignPrice(p)?' disabled':'')+' title="'+esc(N.n)+' sells border land at 2.5x the price">Buy '+$s(foreignPrice(p))+'</button>';
     if(provBuyable(p))h+='<button class="money small" data-ctx="buy"'+(money<provPrice(p)?' disabled':'')+'>Buy '+$s(provPrice(p))+'</button>';
     h+='<button class="small" data-ctx="info">Details</button></div>';}
   else{closeCtxPop();return;}
@@ -5117,6 +5131,7 @@ function ctxAct(a){
   else if(k==='warno'){ctxPop.arm=false;drawCtxPop();}
   else if(k==='waryes'){declareWar(p.owner,'player');ctxPop.arm=false;drawCtxPop();}
   else if(k==='buy'){buyProv(p);closeCtxPop();}
+  else if(k==='fbuy'){buyForeign(p);closeCtxPop();}
   else if(k==='info'){const id=ctxPop.p;closeCtxPop();openProv(id);}
   uiDirty=true;
 }

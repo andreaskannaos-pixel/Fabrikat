@@ -118,6 +118,9 @@ See `docs/AUTOMATION.md` for the state machines, `docs/UI14.md` for the start sc
 - **President:** the President tab opens the President's stats, weapons and armour, with a Character Editor button in its header.
 - **Layout:** panels never cover the nav bar.
 - **Sound:** a cash-register chime for revenue, plus sounds for opening and closing tabs, placing and removing buildings, and failed placements.
+- **Land:** buy neutral land next to yours by clicking it or in Company > Land.
+  - Computer nations leave the neutral land on your border alone until the campaign reaches Take Ground (mission 9).
+  - Nations at peace also sell border provinces (not their capital) at 2.5× the price, so the campaign can never be blocked by a full map.
 - **Early game:**
   - Ore tiles in your starting province hold 4× more ore.
   - **Advanced Drill Targeting** (early Industry research): a drill whose tile runs dry keeps mining the same ore on one of the 8 tiles around it, shown by a dashed green line.
