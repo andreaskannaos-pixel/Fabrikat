@@ -105,11 +105,38 @@ Everything runs on money. The **Money Generator** turns items into cash, and eac
 
 See `docs/AUTOMATION.md` for the state machines, `docs/UI14.md` for the start screen, saves, unlocks, overlays and attack popup, and `docs/ENGINE.md` for the tech tree, ceasefire, object pools, spatial grid, interpolation and pathfinding.
 
+## Endgame and logistics
+
+- **Science labs:** Research Labs unlocks labs and four science packs, all made in assemblers except Chemical science, which comes from chemical plants:
+  - Automation (copper plate + gear)
+  - Logistics (inserter + belt)
+  - Military (ammunition, steel, brick)
+  - Chemical (circuit boards, motors, chemicals)
+- **Lab research:** late technologies are researched by labs. Each unit consumes one set of the packs it needs. Pick one in the tech tree and every lab works on it together.
+  - Assembly Tuning is the starter lab technology.
+  - Lab technologies include Steam Turbines, Oil Cracking, Freight Rail, Maritime Trade and Rocket Silo.
+- **Rocket silo (3×3):** it builds a rocket part from one rocket control unit, one low density structure and one rocket fuel every 3 s. 50 parts make a rocket.
+  - The first launch wins the game and opens **Exotic Industry**, an endless research: +10% machine speed per level, each level costing 50% more.
+  - Every later launch pays $2M.
+- **Freight rail:** drag rails like belts across your land, neutral land and rivers. Freight depots (2×2) send their train (4 wagons: 400 items or 2,000 fluid) to another depot on the same line.
+  - A train leaves when full or 10 s after loading starts, accelerates to 12 tiles/s and unloads into the receiving depot.
+  - A depot can carry items or fluids. Fluid depots take fluid from pipes at one end and put it into pipes at the other.
+- **Fluids:**
+  - Oil Cracking: crude oil → heavy oil → light oil (with water) → petroleum gas (with water).
+  - Boilers make steam from water and coal, fuel or heavy oil. Each steam turbine gives up to 1.8 MW, and one boiler feeds two.
+  - Every pipe network shows its pressure (20–300 kPa, plus 25 per pump). Pipes pulse red and machines show LOW PRESSURE when they are waiting on a nearly empty network.
+- **Sea ports:** built on coastal land you own. Set up to 3 export deals with 4 overseas partners, each paying 25–60% over market in cash or rare resources (rare earth, titanium, uranium).
+  - Ships sail off the map with 20 to 300 items.
+  - Prices fall while you flood one partner with one item, and recover over time.
+- **Rivers:** new worlds have rivers. Only rails, belts, pipes and wells go on them. A well on a river pumps twice as much water, and 50% more within 2 tiles of one.
+
+See `docs/V17.md` for the architecture.
+
 ## Nation layer
 
 Your factory pays for cities, cities grow people, and people become workers or soldiers. Soldiers take territory, and territory sends new resources back to the factory.
 
-- **Campaign:** 10 missions teach the loop, from your first furnace to surviving an invasion. Menus stay hidden until you need them and then appear with a banner: World after mission 2, Cities with your first city, Military after the **Basic Ballistics** research (Industry tab, or free at mission 4), Diplomacy once you own two provinces or are at war. Settings can unlock everything.
+- **Campaign:** 10 missions walk through the whole game: First Steps (walk the President, mine, sell), Smelting Line, The Tech Tree, Many Hands (blueprints built by villagers), Beyond the Fence (zoom out and buy land), Your First City, Science! (labs), Arms and Borders, Take Ground and Survival. After that, the final objective is to launch a rocket. Menus stay hidden until you need them and then appear with a banner: World after mission 4, Cities with your first city, Military after **Basic Ballistics**, Diplomacy once you own two provinces or are at war, Naval after mission 9 or Maritime Trade. Settings can unlock everything.
 - **World map (`M`):** 61 provinces across plains, forest, desert, mountains, volcanic land and arctic, shared with 5 computer-run nations. Captured provinces send their resource to your factory every 10 seconds, into an Import Depot if you build one.
 - **Cities:** Mk. I to Mk. V, bought with money and materials. Each province has a few city slots.
 - **Population:** automatic. Your HQ houses 4,000 citizens before any city exists, enough for one infantry unit at peacetime. Soldiers are exactly the people serving in your units and update the moment you recruit; everyone else works (taxes, plus up to +100% factory speed). Peacetime, Mobilized and War Economy set how much of the population can enlist and what it costs.
