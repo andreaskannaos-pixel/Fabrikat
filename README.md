@@ -13,7 +13,7 @@ The game opens on a start screen: **New Game**, **Continue**, **Customization Sh
 
 | Key | Action |
 | --- | --- |
-| `1`–`9` | Pick a common building, or use the build palette (Mining, Logistics, Production, Chemistry, Power, Storage & Trade). Click to place; drag to lay belts. |
+| `1`–`9` | Pick a common building, or use the build palette (Mining, Logistics, Production, Chemistry, Power, Storage & Trade). Click to place. Drag to lay belts and pipes: belts turn corners, pressing on the end of an existing belt continues it, and the last belt of a drag turns into an adjacent machine. |
 | `R` | Rotate |
 | `X` / right-click (two-finger click) | Remove |
 | Hold `Alt` | Show machine details: recipe icons, fluid ports, pipe flow, crew and camp labels |
@@ -96,14 +96,14 @@ Everything runs on money. The **Money Generator** turns items into cash, and eac
 - **Logistics hubs:** big storage nodes with Requested and Exported items. Couriers pathfind (A*) between hubs and move items from surplus to deficit.
 - **Workforce manager:** there are no fixed crews. Villagers work in the factory until a job needs them: placing a blueprint drafts builders from the nearest village, a machine below 80% condition drafts an engineer, and both go back to work 3 seconds after their job ends. Crew size is 3 + 1 per hub + villages and population (up to 16, half of it engineers).
 - **Builders:** blueprints become construction jobs. Drafted builders claim a job, fetch the building from the nearest hub, chest or your inventory, walk to the site and build it over a few seconds.
-- **Engineers:** drafted per worn machine and based at the nearest Maintenance Bay, hub or HQ. They use a repair kit (bay, hub, then stock) or pay cash.
+- **Engineers:** drafted per worn machine and based at the nearest Maintenance Bay, hub or HQ. They use a Repair Kit (bay, hub, then stock). Paying 1.5× in cash needs the **Emergency Requisitions** research; until then a machine without a kit shows a Missing Repair Kit warning and waits. Hand repairs from the machine panel always work.
 - **Ammunition:** border camps use ammunition trucked from hubs or your stock. A dry camp fights at 35% strength.
 - **Military units:** one soldier or tank sprite per army, with a live troop badge (1.5K), gains and losses, and an ammunition bar.
 - **World generation:** layered-noise biomes with exclusive resources (uranium only in deserts, platinum and rare earth in volcanic land, lithium in the arctic, tungsten and cobalt in mountains), a generated world history, and points of interest in unclaimed land.
 - **Health:** heavy pollution slows villagers and machines. Clinics stocked with medical kits protect a 14-tile radius.
-- **Visuals:** belts autotile (straight, corners, T-junctions, crossings, end caps), warnings are pulsing icons over machines with details on hover, and night is a darkness layer that lights cut through.
+- **Visuals:** belts autotile (straight, corners, T-junctions, crossings, end caps), warnings are pulsing icons over machines with details on hover, and night is a darkness layer that lights cut through: flickering furnaces, muzzle flashes and explosions light the dark.
 
-See `docs/AUTOMATION.md` for the state machines and `docs/UI14.md` for the start screen, saves, unlocks, overlays and attack popup.
+See `docs/AUTOMATION.md` for the state machines, `docs/UI14.md` for the start screen, saves, unlocks, overlays and attack popup, and `docs/ENGINE.md` for the tech tree, ceasefire, object pools, spatial grid, interpolation and pathfinding.
 
 ## Nation layer
 
@@ -112,12 +112,13 @@ Your factory pays for cities, cities grow people, and people become workers or s
 - **Campaign:** 10 missions teach the loop, from your first furnace to surviving an invasion. Menus stay hidden until you need them and then appear with a banner: World after mission 2, Cities with your first city, Military after the **Basic Ballistics** research (Industry tab, or free at mission 4), Diplomacy once you own two provinces or are at war. Settings can unlock everything.
 - **World map (`M`):** 61 provinces across plains, forest, desert, mountains, volcanic land and arctic, shared with 5 computer-run nations. Captured provinces send their resource to your factory every 10 seconds, into an Import Depot if you build one.
 - **Cities:** Mk. I to Mk. V, bought with money and materials. Each province has a few city slots.
-- **Population:** automatic. Soldiers are exactly the people serving in your units, everyone else works (taxes, plus up to +100% factory speed). Peacetime, Mobilized and War Economy set how much of the population can enlist and what it costs.
+- **Population:** automatic. Your HQ houses 4,000 citizens before any city exists, enough for one infantry unit at peacetime. Soldiers are exactly the people serving in your units and update the moment you recruit; everyone else works (taxes, plus up to +100% factory speed). Peacetime, Mobilized and War Economy set how much of the population can enlist and what it costs.
 - **Military:** infantry, mechanized, artillery, armor, air wings and special forces. Click enemy or neutral land, or an army badge, on the map: a small popup offers Declare war, Attack with half or all of your force, Buy (neutral land) or Details, with no need to open the Nations tab. Attack any neighbouring province, or land from a port with transport ships. Forts and terrain strengthen defense.
 - **Diplomacy:** relations from -100 to +100; alliances, peace, war, gifts, trade routes, requests for allied troops and shipping raids.
 - **Town defenses:** walls (wooden palisade, stone, concrete), watchtowers (early warning), up to 3 bunkers, tank traps and minefields, built per province on the World map. They stack with forts and terrain, and computer nations fortify their own towns over time.
 - **Strategic:** five rocket types and SAM sites with visible coverage circles and interception.
-- **Research:** five tabs (Industry, Civilization, Military, Strategic, Naval). Advanced research costs materials as well as money.
+- **Research (`T`):** a branching tech tree per branch (Industry, Civilization, Military, Strategic, Naval). Lines show prerequisites (green done, amber ready, dashed locked); click a node for what it unlocks and costs, double-click or press Research to buy, drag to pan. Experimental technologies appear as unknown signals. Advanced research costs materials as well as money.
+- **Ceasefire:** losing a province or having HQ raided pulls nearby enemies back and blocks attacks on your home province for 90 seconds. The President respawns with 10 seconds of protection, so HQ can't be spawn-camped.
 - **Guide (`G`), Settings** (quality presets, FPS limit, particle and effect density, animation and map detail, performance mode) and a News feed.
 
 It's single-player: every other nation is computer-controlled, and there is no online chat.

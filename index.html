@@ -6,8 +6,8 @@
 <style>
 :root{
   color-scheme: dark;
-  --void:#1d2024; --panel:#24282d; --panel2:#2e3339; --line:#434a52;
-  --text:#eef0f1; --dim:#a3abb4; --amber:#f0a62e; --amber-ink:#2a1a02; --red:#e05a44; --green:#5dbb6a; --gold:#f2c14e; --idle:#6f767e;
+  --void:#1d2024; --panel:#24282d; --panel2:#2e3339; --line:#4a525b;
+  --text:#eef0f1; --dim:#b0b8c1; --amber:#f0a62e; --amber-ink:#2a1a02; --red:#e05a44; --green:#5dbb6a; --gold:#f2c14e; --idle:#6f767e;
   --c-mine:#c08a3e; --c-smelt:#d9582f; --c-prod:#3f82d6; --c-chem:#8f5fd3; --c-power:#e6b523; --c-log:#8b939c; --c-store:#4fa35a; --c-mil:#d0503c; --c-res:#35b7c9;
   --ui:"Chakra Petch","Segoe UI",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
 }
@@ -361,6 +361,54 @@ canvas.petc{width:40px;height:40px;vertical-align:middle;margin-right:8px;backgr
 :root[data-skin="blueprint"] input,:root[data-skin="blueprint"] textarea{background:#0b2547}
 :root[data-skin="blueprint"] .title{background:radial-gradient(ellipse at 50% 30%,#18477a 0%,#0b2547 70%)}
 :root[data-skin="dark"] .title{background:radial-gradient(ellipse at 50% 30%,#1a1d21 0%,#060708 70%)}
+
+/* ---------- V16: tech tree ---------- */
+#res{width:min(1220px,calc(100% - 32px));height:min(780px,calc(100% - 32px));background:var(--panel)}
+#resBody{padding:0;display:block;overflow:hidden;flex:1;min-height:0}
+.tt{display:grid;grid-template-columns:minmax(0,1fr) 300px;height:100%;min-height:0}
+.tt-scroll{position:relative;overflow:auto;min-height:0;cursor:grab;background-color:var(--void);background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1.2px);background-size:22px 22px;overscroll-behavior:contain}
+.tt-scroll.panning{cursor:grabbing;user-select:none}
+.tt-canvas{position:relative}
+.tt-svg{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}
+.tt-svg path{fill:none;stroke-width:2.5;stroke-linecap:round}
+.tt-svg .e-done{stroke:var(--green)}.tt-svg .e-ready{stroke:var(--amber)}.tt-svg .e-lock{stroke:#5b636c;stroke-dasharray:6 6}
+.tt-svg .e-hl{stroke-width:4.5}
+.tn{position:absolute;width:190px;height:68px;box-sizing:border-box;display:grid;grid-template-columns:44px minmax(0,1fr);gap:9px;align-items:center;padding:0 10px 0 9px;text-align:left;background:var(--panel2);border:2px solid var(--line);border-radius:8px;box-shadow:0 3px 0 rgba(0,0,0,.35);transition:transform .12s,border-color .12s}
+.tn:hover{transform:translateY(-2px);border-color:var(--dim)}
+.tn .ti{width:44px;height:44px;border-radius:7px;background:#16181b;border:1px solid var(--line);display:grid;place-items:center}
+.tn .ti img{width:34px;height:34px}
+.tn .ti svg{width:26px;height:26px;fill:none;stroke:var(--amber);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tn .tx{min-width:0;display:flex;flex-direction:column;gap:3px}
+.tn b{font-size:12px;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tn .tcs{display:flex;gap:7px;align-items:center;flex-wrap:nowrap;overflow:hidden}
+.tn .tc{font-family:var(--mono);font-size:11px;color:var(--dim);display:inline-flex;gap:2px;align-items:center;white-space:nowrap}
+.tn .tc img{width:14px;height:14px}.tn .tc.miss{color:var(--red)}.tn .tc.ok{color:var(--green)}
+.tn .tx2{font-size:10px;color:var(--amber);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tn .st{position:absolute;right:-9px;top:-9px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;border:2px solid var(--void)}
+.tn .st svg{width:13px;height:13px;fill:none;stroke:#101214;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.tn.s-done{border-color:var(--green)}.tn.s-done .st{background:var(--green)}
+.tn.s-done .ti{border-color:rgba(98,196,111,.5)}
+.tn.s-afford{border-color:var(--amber);box-shadow:0 0 0 3px rgba(240,166,46,.2),0 3px 0 rgba(0,0,0,.35);animation:ttpulse 2.2s ease-in-out infinite}
+.tn.s-ready{border-color:#8a6a2a}
+.tn.s-lock{opacity:.6}.tn.s-lock .ti{filter:grayscale(1) brightness(.8)}.tn.s-lock .st{background:#7a838c}.tn.s-lock .st svg{stroke:#101214;stroke-width:2.4}
+.tn.exp{border-style:dashed}
+.tn.sel{outline:3px solid #fff;outline-offset:3px}
+@keyframes ttpulse{50%{box-shadow:0 0 0 6px rgba(240,166,46,.08),0 3px 0 rgba(0,0,0,.35)}}
+@media (prefers-reduced-motion:reduce){.tn.s-afford{animation:none}.tn{transition:none}}
+.tt-side{border-left:1px solid var(--line);padding:14px;overflow:auto;display:flex;flex-direction:column;gap:12px;min-height:0}
+.tt-side .tt-h{font-size:18px;margin:0;text-transform:none;letter-spacing:0;color:var(--text)}
+.tt-d{margin:0;color:var(--text);line-height:1.45}
+.tt-un{display:flex;flex-wrap:wrap;gap:6px 2px;margin-top:5px}
+.tt-req{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}.tt-req .ok{color:var(--green)}
+.tt-side button.big{padding:10px;font-size:15px}
+.pill{align-self:flex-start;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:99px;border:1px solid}
+.p-ok{color:var(--green);border-color:var(--green)}.p-go{color:var(--amber);border-color:var(--amber)}.p-warn{color:#d8a24a;border-color:#8a6a2a}.p-lock{color:var(--dim);border-color:var(--line)}
+.tt-leg{margin-top:auto;display:flex;flex-wrap:wrap;gap:6px 12px;font-size:11px;color:var(--dim);padding-top:10px;border-top:1px solid var(--line)}
+.tt-leg span{display:inline-flex;gap:5px;align-items:center}.lg{width:12px;height:12px;border-radius:3px;border:2px solid}
+.lg.done{border-color:var(--green)}.lg.afford{border-color:var(--amber)}.lg.ready{border-color:#8a6a2a}.lg.lock{border-color:#7a838c;border-style:dashed}
+.tt-leg p{flex-basis:100%;margin:2px 0 0}
+@media (max-width:760px){.tt{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}.tt-side{border-left:0;border-top:1px solid var(--line);max-height:45%}}
+.sanct{font-size:12px;font-weight:700;color:#8fdcff;margin-bottom:4px}
 </style>
 
 <canvas id="game"></canvas>
@@ -1070,7 +1118,7 @@ function updAsm(e){
   powDem+=drawKW(e,e.work);if(e.surge>0)e.surge--;
   if(e.work){e.st='work';wear(e);let sp=machSpd()*e.eff*tuneSpeed(e)/(r.t*60);
     if(needsCool(e)){if(e.cool>0){e.cool=Math.max(0,e.cool-.5/60);e.hot=0;}else{sp*=.5;e.hot=1;}}else e.hot=0;
-    if(e.type==='fabricator'&&(stats.stage||0)>=2&&powSat<.9){if(!e.brown&&e.prog>0){e.prog=0;scrapMin++;floats.push({x:e.x+.5,y:e.y,s:'batch ruined',t:0,c:'#d2553f'});}e.brown=1;}else e.brown=0;
+    if(e.type==='fabricator'&&(stats.stage||0)>=2&&powSat<.9){if(!e.brown&&e.prog>0){e.prog=0;scrapMin++;FX.float(e.x+.5,e.y,'batch ruined','#d2553f');}e.brown=1;}else e.brown=0;
     e.prog+=sp;
     if(e.prog>=1){e.outN+=r.out;produce(o,r.out);if(by){e.byN=(e.byN||0)+by[1];produce(by[0],by[1]);}const pr=modStats(e).pr;if(pr){e.pb=(e.pb||0)+pr;if(e.pb>=1){e.pb--;e.outN+=r.out;produce(o,r.out);}}e.work=false;e.prog=0;}}
 }
@@ -1120,7 +1168,7 @@ function handMine(){
   if(!mining)return;const i=mining.y*W+mining.x;
   if(!ore[i]||at(mining.x,mining.y)){mining=null;return;}
   mining.p+=1/30;
-  if(mining.p>=1){mining.p=0;const t=ORES[ore[i]-1];add(inv,t,1);produce(t,1);mineTile(i);floats.push({x:mining.x+.5,y:mining.y,s:'+1 '+ITEMS[t].n,t:0,c:'#ece6d3'});}
+  if(mining.p>=1){mining.p=0;const t=ORES[ore[i]-1];add(inv,t,1);produce(t,1);mineTile(i);FX.float(mining.x+.5,mining.y,'+1 '+ITEMS[t].n,'#ece6d3');}
 }
 
 // ---------- statistics & problems ----------
@@ -1173,18 +1221,18 @@ function survey(){
   fluidAlerts(A);siteAlert(A);extraAlerts(A);
   alerts=trimLocal(A).slice(0,5);
 }
-function perSecond(){ui14Second();
+function perSecond(){ui14Second();ui15Second();
   revBuf[revIdx]=revCur;spendBuf[revIdx]=spendCur;revCur=0;spendCur=0;revIdx=(revIdx+1)%60;
   rpm=revBuf.reduce((a,b)=>a+b,0);epm=spendBuf.reduce((a,b)=>a+b,0);
   if(ticks%3600===0){revHist.push(rpm);if(revHist.length>30)revHist.shift();}
   rollRates();survey();contractSecond();nationSecond();systemsSecond();
   if(rpm>2000&&rpm>(stats.rpmRec||0)*1.15&&ticks-(stats.recT||0)>7200){if(stats.rpmRec)banner('NEW PRODUCTION RECORD',$$(rpm)+' per minute');stats.rpmRec=rpm;stats.recT=ticks;}
   if(view==='factory'&&L.gen.some(g=>g.earned>0))sfx('coin');
-  for(const g of L.gen){if(g.earned>0){floats.push({x:g.x+1,y:g.y,s:'+'+$s(g.earned),t:0,c:'#d9b54a'});g.earned=0;}}
+  for(const g of L.gen){if(g.earned>0){FX.float(g.x+1,g.y,'+'+$s(g.earned),'#d9b54a');g.earned=0;}}
   checkGoals();
 }
 function tick(){
-  ticks++;
+  ticks++;snapPrev();
   if(listsDirty)rebuild();
   powerTick();fluidTick();
   for(const e of L.drill)updDrill(e);
@@ -1225,7 +1273,7 @@ function tryPlace(x,y,type,dir,quiet){
     add(inv,type,-1);add(inv,ex.type,1);ex.type=type;ex.dir=dir;listsDirty=true;return ex;
   }
   if(!inv[type]){if(!quiet)toastOnce('You have no '+ITEMS[type].n+' left. Craft it (E) or buy it (C > Market).');return null;}
-  add(inv,type,-1);const e=mk(type,x,y,dir);addEnt(e);stats.built[type]=(stats.built[type]||0)+1;if(!quiet)sfx('place');if(toolRec&&isMachine(e)&&RECIPES[toolRec]&&RECIPES[toolRec].cat===MACHINE_CAT[type]&&unlocked(toolRec))e.rec=toolRec;if(settings.vfx>0)ffx.push({x,y,w:e.w||1,h:e.h||1,t:0});
+  add(inv,type,-1);const e=mk(type,x,y,dir);addEnt(e);stats.built[type]=(stats.built[type]||0)+1;if(!quiet)sfx('place');if(toolRec&&isMachine(e)&&RECIPES[toolRec]&&RECIPES[toolRec].cat===MACHINE_CAT[type]&&unlocked(toolRec))e.rec=toolRec;if(settings.vfx>0)FX.built(x,y,e.w||1,e.h||1);
   if(type==='splitter')stats.splitters=1;
   return e;
 }
@@ -1935,7 +1983,7 @@ function entAct(a){
   else if(k==='fill'){const R=RECIPES[e.rec];let any=false;for(const q in R.in){const want=R.in[q]*5-(e.inv[q]||0),n=Math.min(want,inv[q]||0);if(n>0){add(inv,q,-n);add(e.inv,q,n);any=true;}}if(!any)toast('You have none of the ingredients');}
   else if(k==='rec'){if(e.rec===v)return;for(const q in e.inv)add(inv,q,e.inv[q]);if(e.outN)add(inv,ro(e.rec),e.outN);if(e.byN)add(inv,RECIPES[e.rec].by[0],e.byN);e.byN=0;if(e.work)for(const q in RECIPES[e.rec].in)add(inv,q,RECIPES[e.rec].in[q]);
     e.inv={};e.outN=0;e.work=false;e.prog=0;e.rec=v;}
-  else if(k==='sell'){const n=inv[v]||0;if(n>0&&DEPTH[v]<=GEN[e.mk].depth){let got=0;for(let j=0;j<n;j++)got+=sell(v,false,e.mk,null);delete inv[v];floats.push({x:e.x+1,y:e.y,s:'+'+$s(got),t:0,c:'#d9b54a'});}}
+  else if(k==='sell'){const n=inv[v]||0;if(n>0&&DEPTH[v]<=GEN[e.mk].depth){let got=0;for(let j=0;j<n;j++)got+=sell(v,false,e.mk,null);delete inv[v];FX.float(e.x+1,e.y,'+'+$s(got),'#d9b54a');}}
   else if(k==='gup'){const nx=GEN[e.mk+1];if(nx&&money>=nx.cost){spend(nx.cost);e.mk++;toast(ITEMS.moneygen.n+' upgraded to '+nx.n,'big');}}
   else if(k==='repair'){if(!repair(e))toast('Not enough money to repair it');}
   else if(k==='oc'){e.oc=+v;}
@@ -1980,21 +2028,6 @@ function drawCo(){
       h+='<div class="item'+(done?' done':'')+'"><span class="t">'+m.n+'</span><span class="d">Earn '+$$(m.goal)+(m.d?' '+m.d:' in total')+(m.reward?'. Bonus '+$$(m.reward)+'.':'.')+'</span><div class="bar'+(done?' done':'')+'"><i style="width:'+(have/m.goal*100).toFixed(1)+'%"></i></div><div class="a"><span class="badge'+(done?' ok':'')+'">'+(done?'Done':$s(have))+'</span></div></div>';}
     h+='</div></div>'+fmsHTML()+'<div><h3>Challenges</h3><div class="list">';
     for(const c of CHALLENGES){const done=!!ch[c.id];h+='<div class="item'+(done?' done':'')+'"><span class="t">'+c.n+'</span><span class="d">'+c.d+'</span><div class="a"><span class="badge'+(done?' ok':'')+'">'+(done?'Done':'Open')+'</span></div></div>';}
-    h+='</div></div>';
-  }else if(coTab==='research'){
-    h+='<div class="list">';
-    for(const r of RESEARCH){const done=!!research[r.id],reqOk=r.req.every(q=>research[q]);
-      const un=[...new Set(Object.keys(RECIPES).filter(k=>RECIPES[k].res===r.id).map(ro))].concat(Object.keys(SMELT).filter(k=>SMELT[k].res===r.id).map(k=>SMELT[k].o));
-      h+='<div class="item'+(done?' done':'')+'"><span class="t">'+r.n+'</span><span class="d">'+r.d+(reqOk||done?'':' Needs '+r.req.filter(q=>!research[q]).map(q=>RESEARCH.find(x=>x.id===q).n).join(' and ')+'.')+'</span><span class="icons">'+un.map(img).join('')+'</span>'+
-        '<div class="a">'+(done?'<span class="badge ok">Researched</span>':'<button class="money" data-co="res:'+r.id+'"'+(!reqOk||money<r.cost?' disabled':'')+'>'+$$(r.cost)+'</button>')+'</div></div>';}
-    h+='</div>';
-    const xs=EXPERIMENTS.filter(x=>research[x.after]);
-    h+='<div><h3>Experimental <span class="hint">paid in materials, not money</span></h3><div class="list">';
-    if(!xs.length)h+='<p class="empty">Signals of unknown technology appear after Fabrication.</p>';
-    for(const x of xs){const done=!!research[x.id],got=xp[x.id]||{};
-      h+='<div class="item'+(done?' done':' hot')+'"><span class="t">'+(done?x.n:'Unknown technology')+'</span><span class="d">'+(done?x.d:'Contribute the materials below to find out what it does.')+'</span><span class="icons">'+
-        Object.keys(x.need).map(k=>'<span class="ing'+((got[k]||0)<xpNeed(x,k)?'':' good')+'">'+img(k)+(got[k]||0)+'/'+xpNeed(x,k)+'</span>').join('')+'</span>'+
-        '<div class="a">'+(done?'<span class="badge ok">Discovered</span>':'<button class="primary" data-co="xp:'+x.id+'">Contribute</button>')+'</div></div>';}
     h+='</div></div>';
   }else if(coTab==='upgrades'){
     h+='<div><h3>Factory upgrades</h3><div class="list">';
@@ -2119,7 +2152,7 @@ cv.addEventListener('pointerdown',ev=>{
   mouse.down=0;mouse.lx=x;mouse.ly=y;mouse.placed=null;
   if(tool==='bpsel'){bpSel={x0:x,y0:y,x1:x,y1:y};return;}
   if(tool==='bp'){if(bps[bpIdx]&&placeBp(bps[bpIdx],x,y,bpRot,ev.shiftKey)){toast('Placed '+bps[bpIdx].name);uiDirty=true;}mouse.down=-1;return;}
-  if(tool){mouse.placed=tryPlace(x,y,tool,tdir);uiDirty=true;}
+  if(tool){mouse.placed=tryPlace(x,y,tool,tdir)||(BELT_MUL[tool]?dragStart(x,y):null);mouse.dragN=0;uiDirty=true;}
   else{if(ctxPointer(mouse.x,mouse.y,-1)){mouse.down=-1;return;}const fk=folkAt(((mouse.x-SW/2)/cam.z+cam.x)/T,((mouse.y-SH/2)/cam.z+cam.y)/T);if(fk&&!at(x,y)){if(pl&&!pl.dead&&Math.hypot(pl.x-fk.x,pl.y-fk.y)>3)walkTo(fk.x,fk.y,1.6,()=>say(fk,folkLine(fk)));else say(fk,folkLine(fk));mouse.down=-1;return;}const e=at(x,y);
     if(e&&!e.off){openEnt(e);walkTo(e.x+(e.w||1)/2,e.y+(e.h||1)+.7,1.3);mouse.down=-1;}
     else if(inb(x,y)&&!ownedAt(x,y)){openCtxPop(provAtTile(x,y),mouse.x,mouse.y,null);mouse.down=-1;}
@@ -2143,7 +2176,7 @@ cv.addEventListener('pointermove',ev=>{
       if(Math.abs(dx)>=Math.abs(dy))d=dx>0?1:3;else d=dy>0?2:0;
       if(belt){tdir=d;if(isBelt(mouse.placed))mouse.placed.dir=d;}
       mouse.lx+=DX[d];mouse.ly+=DY[d];
-      mouse.placed=tryPlace(mouse.lx,mouse.ly,tool,tdir);
+      mouse.placed=tryPlace(mouse.lx,mouse.ly,tool,tdir);mouse.dragN=(mouse.dragN||0)+1;
     }
     uiDirty=true;
   }else if(mouse.down===0&&mining&&(mining.x!==x||mining.y!==y)){mining=inb(x,y)&&ore[y*W+x]&&!at(x,y)&&ownedAt(x,y)?{x,y,p:0}:null;}
@@ -2152,6 +2185,7 @@ const up=ev=>{firing=false;
   if(ev&&ev.pointerType==='touch'){const was=touches.size;touches.delete(ev.pointerId);if(was>=2||gest){if(touches.size<2)gest=null;mouse.down=-1;wdrag=null;return;}}
   if(view==='world'){if(wdrag&&!wdrag.moved){const g=provAt(mouse.x,mouse.y);if(!ctxPointer(mouse.x,mouse.y,g)&&g>=0)openProv(g);}wdrag=null;return;}
   if(tool==='bpsel'&&bpSel&&mouse.down===0){const s=bpSel;bpSel=null;tool=null;captureBp(Math.min(s.x0,s.x1),Math.min(s.y0,s.y1),Math.max(s.x0,s.x1),Math.max(s.y0,s.y1));uiDirty=true;}
+  if(mouse.down===0&&mouse.dragN>0&&isBelt(mouse.placed))beltAutoConnect(mouse.placed);mouse.dragN=0;
   mouse.down=-1;mining=null;mouse.placed=null;};
 cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
 cv.addEventListener('wheel',ev=>{ev.preventDefault();updMouse(ev);camGoal=null;zoomAt(Math.exp(-ev.deltaY*(ev.deltaMode===1?.05:.0015)),mouse.x,mouse.y);},{passive:false});
@@ -2240,7 +2274,7 @@ document.addEventListener('click',ev=>{const b=ev.target.closest('button');if(!b
   if(d.wtab){wtab=d.wtab;cache.wBody=null;drawWPanel();return;}
   if(d.newstab){newsTab=d.newstab;cache.wBody=null;drawWPanel();return;}
   if(d.mob){nat.mob=+d.mob;nat.share=Math.min(nat.share,mobState().max);report('world','Your nation is now on '+MOB[nat.mob].n+' footing.');cache.milBody=null;drawMil();return;}
-  if(d.recU){const U=UNITS[d.recU];if(mpFree()<U.mp)toast('Not enough people to enlist. Grow your cities or raise mobilization.','bad');else if(buyWith(U.cost,U.mat,U.n)){nat.units[d.recU]=(nat.units[d.recU]||0)+1;stats.recruitMP=(stats.recruitMP||0)+U.mp;toast('Recruited '+U.n);}cache.milBody=null;drawMil();return;}
+  if(d.recU){const U=UNITS[d.recU];if(mpFree()<U.mp)toast('Not enough people to enlist. Grow your cities or raise mobilization.','bad');else if(buyWith(U.cost,U.mat,U.n)){nat.units[d.recU]=(nat.units[d.recU]||0)+1;nat.soldiers=Math.min(nat.pop,mpUsed());nat.workers=nat.pop-nat.soldiers;stats.recruitMP=(stats.recruitMP||0)+U.mp;toast('Recruited '+U.n);}cache.milBody=null;drawMil();return;}
   if(d.ship){const S=SHIPS[d.ship];if(buyWith(S.cost,S.mat,S.n)){nat.ships[d.ship]=(nat.ships[d.ship]||0)+1;toast('Built '+S.n);}cache.milBody=null;drawMil();return;}
   if(d.rk){const R=ROCKETS[d.rk],c=Math.round(R.cost*(research.missile_infra?.8:1));if(buyWith(c,R.mat,R.n)){nat.rockets[d.rk]=(nat.rockets[d.rk]||0)+1;toast('Built '+R.n);}cache.milBody=null;drawMil();return;}
   if(d.res){const r=RESEARCH.find(x=>x.id===d.res);if(r&&!research[r.id]&&r.req.every(q=>research[q])&&buyWith(resCost(r),r.mat||{},r.n)){stats.rp=Math.max(0,(stats.rp||0)-Math.round(r.cost*(evActive('breakthrough')?.75:1)));if(evActive('breakthrough'))events=events.filter(x=>x.id!=='breakthrough');research[r.id]=1;toast('Researched '+r.n,'big');}cache.resBody=null;drawRes();return;}
@@ -2344,6 +2378,7 @@ RESEARCH.push(
   {id:'metro',tab:'civ',tier:4,n:'Metropolitan Infrastructure',cost:3e6,mat:{electric_motor:100},req:['city4'],d:'+25% capacity and +25% tax.'},
   {id:'city5',tab:'civ',tier:5,n:'City Mk. V',cost:1e7,mat:{computer:50,titanium:200},req:['city4'],d:'The largest cities in the world.'},
   {id:'megacity',tab:'civ',tier:5,n:'Megacity Infrastructure',cost:2.5e7,mat:{industrial_robot:20},req:['city5'],d:'+50% city capacity.'},
+  {id:'requisitions',tab:'industry',tier:1,n:'Emergency Requisitions',cost:1500,mat:{iron_plate:50},req:['automation'],d:'Engineers may pay 1.5× the repair price in cash when no Repair Kit is available. Without it, worn machines wait for kits.'},
   {id:'ballistics',tab:'industry',tier:1,n:'Basic Ballistics',cost:2500,mat:{iron_plate:80},req:[],d:'Gun barrels and powder charges. Unlocks the Military tab.'},
   {id:'infantry',tab:'military',tier:1,n:'Infantry',cost:3000,mat:{iron_plate:100},req:['ballistics'],d:'Recruit infantry.'},
   {id:'training',tab:'military',tier:1,n:'Basic Military Training',cost:10000,mat:{},req:['infantry'],d:'+20% strength for every unit.'},
@@ -2436,7 +2471,7 @@ const MISSIONS=[
   {n:'Starting a Factory',d:'Get a production line running.',reward:500,obj:[['Mine 10 iron ore',()=>(stats.made.iron_ore||0)>=10],['Build a stone furnace',()=>(stats.built.furnace||0)>=1||ents.some(e=>e.type==='furnace')],['Produce 20 iron plates',()=>(stats.made.iron_plate||0)>=20],['Earn $50 at the Money Generator',()=>stats.life>=50]]},
   {n:'Make Money',d:'Grow the business.',reward:1000,obj:[['Earn $3,000 in total',()=>stats.life>=3000]],unlock:'Cities and the World map'},
   {n:'Your First City',d:'Found a city in a province you own.',reward:2000,obj:[['Build a city (click your home land, or zoom out with M)',()=>cityCount()>=1],['Check your workforce in the new Cities tab',()=>!!stats.seen_cities]]},
-  {n:'Industrial Nation',d:'People run factories and fill armies.',reward:3000,obj:[['Reach 10,000 population',()=>nat.pop>=10000]],unlock:'Military (Basic Ballistics)'},
+  {n:'Industrial Nation',d:'People run factories and fill armies.',reward:3000,obj:[['Reach 10,000 people in your cities',()=>nat.pop-HQ_POP>=10000]],unlock:'Military (Basic Ballistics)'},
   {n:'First Army',d:'Raise your first troops.',reward:5000,obj:[['Recruit 1,000 soldiers (one infantry unit)',()=>(stats.recruitMP||0)>=1000]]},
   {n:'First War',d:'Expand your borders.',reward:10000,obj:[['Capture a neutral province',()=>(stats.captured||0)>=1]]},
   {n:'Defend Your Nation',d:'Protect what you hold.',reward:10000,obj:[['Research Defensive Structures',()=>!!research.defenses],['Build a fort in one of your provinces',()=>world.provs.some(p=>p.owner===0&&p.fort>0)]]},
@@ -2502,7 +2537,7 @@ function genWorld(s){
   for(let i=1;i<ais.length;i++){const c=provs[ais[i].cap];c.sam=0;}
   wDirty=true;
 }
-function initNation(){nat={share:.2,mob:0,units:{},ships:{},rockets:{},committed:0,support:0,pop:0,cap:0,workers:0,soldiers:0,tax:0,upkeep:0,trade:0};attacks=[];rkts=[];wfx=[];news=[];missionIdx=0;}
+function initNation(){nat={share:.2,mob:0,units:{},ships:{},rockets:{},committed:0,support:0,pop:HQ_POP,cap:HQ_POP,workers:HQ_POP,soldiers:0,tax:0,upkeep:0,trade:0};attacks=[];rkts=[];wfx=[];news=[];missionIdx=0;}
 const P_=i=>world.provs[i];
 const cityCount=()=>world.provs.reduce((a,p)=>a+(p.owner===0?p.cities.length:0),0);
 const slots=p=>TERR[p.terr].slots+(p.id===world.home?2:0);
@@ -2518,7 +2553,7 @@ const transportCap=()=>(nat.ships.transport||0)*50*(research.cargo?1.5:1);
 function indMult(){
   if(!nat||!nat.pop)return 1;
   const m=mobState(),b=research.industrial_districts?1:.5;
-  return m.ind*(1+b*Math.min(1,nat.workers/(machinesN*150+1)));
+  return m.ind*(1+b*Math.min(1,Math.max(0,nat.workers-HQ_POP)/(machinesN*150+1)));
 }
 function armyLoss(s){const tot=armyStr();if(tot<=0||s<=0)return;const f=Math.min(1,s/tot);for(const k in nat.units)nat.units[k]*=(1-f);}
 const unitFmt=n=>n>0&&n<1?n.toFixed(1):n%1?(Math.round(n*10)/10).toString():''+n;
@@ -2566,6 +2601,7 @@ function playerAttack(t,frac){
   report('war','Your army ('+Math.round(s)+' strength) is attacking '+t.name+(o.naval?' from the sea':'')+'.');
 }
 function aiAttack(i,q,str,from){
+  if(q.owner===0&&Sanctuary.blocks(q)){if(ais[i]&&ais[i].scripted)nat.survival=(stats.sanct||0)+5;return;}
   if(!from){const f=q.adj.map(P_).filter(p=>p.owner===i);from=f[0]||P_(ais[i].cap);}
   const naval=!q.adj.includes(from.id);
   const warn=q.owner===0&&dwOf(q).tower;
@@ -2585,11 +2621,11 @@ function resolveAttack(a){
   if(a.a===0)armyLoss(loss*(a.own/a.str));else ais[a.a].str=Math.max(0,ais[a.a].str-loss);
   if(prev===0)armyLoss(Math.min(availStr()*.25,atk*.15));
   if(win){
-    if(t.id===world.home){const st=Math.round(money*.05);money-=st;report('war',NATIONS[a.a].n+' raided Fabrikat Works and seized '+$$(st)+'.');toast(NATIONS[a.a].n+' raided your home province!','bad');fxAdd('boom',t.cx,t.cy);return;}
+    if(t.id===world.home){const st=Math.round(money*.05);money-=st;report('war',NATIONS[a.a].n+' raided Fabrikat Works and seized '+$$(st)+'.');toast(NATIONS[a.a].n+' raided your home province!','bad');fxAdd('boom',t.cx,t.cy);Sanctuary.trigger(NATIONS[a.a].n+' raided your headquarters.');return;}
     t.owner=a.a;t.gar=5+t.pop/2000+(a.a>0?(a.str-loss)*.3:0);t.fort=Math.max(0,t.fort-1);{const w=dwOf(t);if(w.wall)w.wall--;w.mines=0;}wDirty=true;
     fxAdd('capture',t.cx,t.cy,a.a);
     if(a.a===0){stats.captured=(stats.captured||0)+1;banner('TERRITORY CAPTURED',t.name+(t.res?' · '+ITEMS[t.res].n:''));report('war','You captured '+t.name+'.');}
-    else if(prev===0){report('war',NATIONS[a.a].n+' captured '+t.name+'.');toast(NATIONS[a.a].n+' captured '+t.name,'bad');}
+    else if(prev===0){report('war',NATIONS[a.a].n+' captured '+t.name+'.');toast(NATIONS[a.a].n+' captured '+t.name,'bad');Sanctuary.trigger('You lost '+t.name+'.');}
     else report('world',NATIONS[a.a].n+' took '+t.name+(prev>0?' from '+NATIONS[prev].n:'')+'.');
     if(prev>0&&!world.provs.some(p=>p.owner===prev)){ais[prev].dead=1;ais[prev].war=false;report('world',NATIONS[prev].n+' has fallen.');}
   }else{
@@ -2638,17 +2674,17 @@ function worldTick(){
     if(r.icpt&&!r.icpt.done&&f>=r.icpt.at){r.icpt.done=1;if(r.icpt.ok){rkts.splice(rkts.indexOf(r),1);const p=rktPos(r,f);fxAdd('intercept',p[0],p[1]);
       const t=P_(r.tid);if(t.owner===0){stats.intercepts=(stats.intercepts||0)+1;banner('INTERCEPTED','Your SAM sites stopped a rocket over '+t.name);}else report('war','Your rocket was intercepted over '+t.name+'.');continue;}}
     if(f>=1){rkts.splice(rkts.indexOf(r),1);rocketHit(r);}}
-  for(const f of wfx)f.t++;wfx=wfx.filter(f=>f.t<f.dur);
+  for(const f of wfx)f.t++;sweep(wfx,FX.aWfx);
 }
 function rktPos(r,f){const x=r.from[0]+(r.to[0]-r.from[0])*f,y=r.from[1]+(r.to[1]-r.from[1])*f,L=Math.hypot(r.to[0]-r.from[0],r.to[1]-r.from[1]);return[x,y-Math.sin(Math.PI*f)*L*.28];}
 function nationSecond(){
-  let pop=0,cap=0,taxBase=0;const grow=evActive('drought')?0:research.infrastructure?2:1;
+  let pop=HQ_POP,cap=HQ_POP,taxBase=0;const grow=evActive('drought')?0:research.infrastructure?2:1;
   for(const p of world.provs){if(p.owner!==0)continue;
     for(const c of p.cities){const cc=cityCap(c);if(ticks-c.b<180)continue;c.pop=Math.min(cc,c.pop+(grow?Math.max(15,(cc-c.pop)*.015)*grow*(p.terr==='plains'?1.25:1):0));pop+=c.pop;cap+=cc;taxBase+=c.pop*CITY[c.mk].tax;
       if(c.pop>=cc*.995&&c.full!==c.mk){c.full=c.mk;banner('POPULATION CAPACITY REACHED',CITY[c.mk].n+' in '+p.name+' is full');}}
     if(p.id!==world.home){pop+=p.pop*.5;cap+=p.pop*.5;taxBase+=p.pop*.25;}}
-  const M=mobState();nat.share=pop>0?Math.min(M.max,mpUsed()/pop):0;
-  nat.pop=pop;nat.cap=cap;nat.soldiers=pop*nat.share;nat.workers=pop-nat.soldiers;
+  const M=mobState();nat.soldiers=Math.min(pop,mpUsed());nat.share=pop>0?nat.soldiers/pop:0;
+  nat.pop=pop;nat.cap=cap;nat.workers=pop-nat.soldiers;
   const tm=(research.roads?1.15:1)*(research.commercial?1.25:1)*(research.metro?1.25:1);
   const tax=taxBase*(1-nat.share)*.06/60*tm;money+=tax;stats.life+=tax;nat.tax=tax*60;
   let up=0;for(const k in UNITS)up+=(nat.units[k]||0)*UNITS[k].up;for(const k in SHIPS)up+=(nat.ships[k]||0)*SHIPS[k].up;
@@ -2938,30 +2974,6 @@ function drawMil(){
     h+='</div></div>';}
   setHTML($('milBody'),h);
 }
-function drawRes(){
-  const tabs=[['industry','Industry',1],['civ','Civilization',unlockedNav('cities')],['military','Military',unlockedNav('military')],['strategic','Strategic',unlockedNav('strategic')],['naval','Naval',unlockedNav('naval')]];
-  if(!tabs.find(t=>t[0]===resTab&&t[2]))resTab='industry';
-  setHTML($('resTabs'),tabs.filter(t=>t[2]).map(t=>'<button data-restab="'+t[0]+'" class="'+(resTab===t[0]?'on':'')+'">'+t[1]+'</button>').join('')+'<button data-close="res">Close <kbd>T</kbd></button>');
-  let h=stats.rp>0?'<p class="empty">Research credit: '+$$(stats.rp)+' comes off your next research.</p>':'';const list=RESEARCH.filter(r=>(r.tab||'industry')===resTab);
-  for(let tier=1;tier<=5;tier++){const L=list.filter(r=>(r.tier||1)===tier);if(!L.length)continue;
-    h+='<div><h3>Tier '+tier+'</h3><div class="list">';
-    for(const r of L){const done=!!research[r.id],reqOk=r.req.every(q=>research[q]),mat=r.mat||{};
-      const un=[...new Set(Object.keys(RECIPES).filter(k=>RECIPES[k].res===r.id).map(ro))].concat(Object.keys(SMELT).filter(k=>SMELT[k].res===r.id).map(k=>SMELT[k].o));
-      h+='<div class="item'+(done?' done':'')+'"><span class="t">'+r.n+'</span><span class="d">'+r.d+(reqOk||done?'':' Needs '+r.req.filter(q=>!research[q]).map(q=>(RESEARCH.find(x=>x.id===q)||{n:q}).n).join(' and ')+'.')+'</span>'+
-        (un.length?'<span class="icons">'+un.map(img).join('')+'</span>':'')+(done?'':'<span class="icons">'+costHTML(resCost(r),mat)+'</span>')+
-        '<div class="a">'+(done?'<span class="badge ok">Researched</span>':'<button class="money" data-res="'+r.id+'"'+(!reqOk||!canPay(resCost(r),mat)?' disabled':'')+'>Research</button>')+'</div></div>';}
-    h+='</div></div>';}
-  if(resTab==='industry'){const xs=EXPERIMENTS.filter(x=>research[x.after]);
-    h+='<div><h3>Experimental <span class="hint">paid in materials from your inventory</span></h3><div class="list">';
-    if(!xs.length)h+='<p class="empty">Signals of unknown technology appear after Fabrication.</p>';
-    for(const x of xs){const done=!!research[x.id],got=xp[x.id]||{};
-      h+='<div class="item'+(done?' done':' hot')+'"><span class="t">'+(done?x.n:'Unknown technology')+'</span><span class="d">'+(done?x.d:'Contribute the materials below to find out what it does.')+'</span><span class="icons">'+
-        Object.keys(x.need).map(k=>'<span class="ing'+((got[k]||0)<xpNeed(x,k)?'':' good')+'">'+img(k)+(got[k]||0)+'/'+xpNeed(x,k)+'</span>').join('')+'</span>'+
-        '<div class="a">'+(done?'<span class="badge ok">Discovered</span>':'<button class="primary" data-co="xp:'+x.id+'">Contribute</button>')+'</div></div>';}
-    h+='</div></div>';}
-  h+='<p class="empty">Research costs money and materials. Materials come from your inventory first, then your chests and import depots.</p>';
-  setHTML($('resBody'),h);
-}
 let resTab='industry',guideSec=0;
 const GUIDE=[
   ['Getting started','Place a drill on ore with its chute facing the Money Generator. Ore flows in and turns into money. Then smelt ore into plates in a furnace, because processed items sell for more. Follow the missions in the Bank panel; each one teaches the next step.'],
@@ -2973,6 +2985,9 @@ const GUIDE=[
   ['Main menu and saves','The start screen has New Game, Continue, the Customization Shop and the Character Editor. Every game has its own save slot (up to 6), saved automatically; Continue lists them with date, stage and money. Menu > Main menu returns there.'],
   ['Customization','Credits are earned by reaching stages, completing missions and milestones, and they carry over to every save. Spend them in the Customization Shop on machine paint jobs, UI themes (Dark Mode, Blueprint Blue) and pets that follow your President. The Character Editor sets head, body and clothes colour.'],
   ['Clean screen','Menus appear as you need them: World and Diplomacy as your nation grows, Cities with your first city, Military after Basic Ballistics. Recipe icons, fluid ports and crew labels stay hidden until you hold Alt or a relevant building (a pipe shows fluid connections). Settings > Machine details can show them always.'],
+  ['Tech tree','Research (T) is a branching tree per branch. Lines show prerequisites: green is done, amber is ready, dashed grey is locked. Click a technology to see what it unlocks and what it costs, double-click or press Research to buy it, and drag to pan.'],
+  ['Repairs','Engineers fix machines below 80% condition with Repair Kits from a Maintenance Bay, a hub or your stock. Until you research Emergency Requisitions they never spend cash; a machine with no kit shows a Missing Repair Kit warning. You can always repair by hand from the machine panel.'],
+  ['Ceasefire','If you lose a province or your headquarters is raided, enemies near HQ pull back and your home province cannot be attacked for 90 seconds. The President respawns with 10 seconds of protection, so you are never spawn-killed.'],
   ['Research','Research is split into five tabs: Industry, Civilization, Military, Strategic and Naval. Advanced research costs materials as well as money, so your factory feeds your whole nation.'],
   ['Diplomacy','Every nation has relations from -100 to +100 with you. Gifts and trade raise them. Allies join your wars and can send troops. Nations with bad relations and an aggressive streak may declare war.'],
   ['Trade','Build a port in a coastal province, then open a trade route with a nation at peace with you. Routes pay every minute. Enemy warships can raid your routes unless your own navy is stronger.'],
@@ -3263,7 +3278,7 @@ function genPanel(e){
 // ---------- crew ----------
 const CREW={drill:.5,furnace:.5,assembler:1,chemplant:1.5,fabricator:2};
 let crewUsed=0,crewMult=1;
-const crewCap=()=>Math.round(50+(nat&&nat.workers||0)/100*(research.industrial_districts?1.25:1));
+const crewCap=()=>Math.round(50+Math.max(0,(nat&&nat.workers||0)-HQ_POP)/100*(research.industrial_districts?1.25:1));
 function crewSecond(){let u=0;for(const t in CREW){const m=mstat[t];if(m)u+=CREW[t]*(m.n-m.idle);}crewUsed=u;const c=crewCap();crewMult=u>c?Math.max(.4,c/u):1;}
 
 // ---------- alternative recipes ----------
@@ -3881,7 +3896,7 @@ function drawPerson(g,x,y,s,R,ph,dir,moving){
 }
 function drawFolk(tm){
   const z=cam.z;if(z<.4)return;const s=T*z*.62;
-  for(const f of folk){const X=sx(f.x*T),Y=sy(f.y*T);if(X<-20||Y<-20||X>SW+20||Y>SH+20)continue;drawPerson(ctx,X,Y,s,folkRole(f),f.ph,f.dir,f.wait<=0);}
+  for(const f of folk){const X=sx(IX(f)*T),Y=sy(IY(f)*T);if(X<-20||Y<-20||X>SW+20||Y>SH+20)continue;drawPerson(ctx,X,Y,s,folkRole(f),f.ph,f.dir,f.wait<=0);}
   for(const b of bubbles){b.t++;const f=b.f,X=sx((f?f.x:b.x)*T),Y=sy((f?f.y:b.y)*T)-T*z*.75;
     ctx.font='600 12px "Chakra Petch",sans-serif';const words=b.s.split(' '),lines=[];let l='';for(const w of words){if(ctx.measureText(l+' '+w).width>220&&l){lines.push(l);l=w;}else l=l?l+' '+w:w;}lines.push(l);
     const w=Math.max(...lines.map(q=>ctx.measureText(q).width))+18,h=lines.length*15+12;ctx.globalAlpha=Math.min(1,(300-b.t)/30);
@@ -3981,11 +3996,11 @@ function moveBody(o,dx,dy,r){
 const aimX=()=>((mouse.x-SW/2)/cam.z+cam.x)/T,aimY=()=>((mouse.y-SH/2)/cam.z+cam.y)/T;
 function fireAt(src,tx,ty,G,side,mult){
   const a=Math.atan2(ty-(src.y-.55),tx-src.x)+(Math.random()-.5)*(G.spread+(src===pl?0:.14))*2;
-  shots.push({x:src.x,y:src.y-.55,vx:Math.cos(a)*G.speed,vy:Math.sin(a)*G.speed,dmg:G.dmg*(mult||1),life:G.range/G.speed*60,side,splash:G.splash||0});
+  FX.shot(src.x,src.y-.55,Math.cos(a)*G.speed,Math.sin(a)*G.speed,G.dmg*(mult||1),G.range/G.speed*60,side,G.splash||0);
   if(Math.hypot(src.x*T-cam.x,src.y*T-cam.y)<SW/cam.z)sfx('shot');
 }
 function hurtPl(d){
-  if(!pl||pl.dead)return;pl.hp-=d*(pl.armor?.8:1);pl.hitT=ticks;sfx('hit');
+  if(!pl||pl.dead||pl.invT>ticks)return;pl.hp-=d*(pl.armor?.8:1);pl.hitT=ticks;sfx('hit');
   if(pl.hp<=0){pl.hp=0;pl.dead=300;pl.drawn=false;firing=false;const l=Math.round(Math.max(0,money)*.05);money-=l;stats.deaths=(stats.deaths||0)+1;
     banner('THE PRESIDENT IS DOWN','Evacuated to HQ. Medical bills: '+$$(l));report('war','The President was wounded in the field.');}
 }
@@ -3993,23 +4008,15 @@ function killTroop(t,byPl){
   t.hp=0;t.deadT=90;const a=t.a;
   if(a){if(t.kind==='inv'||t.kind==='atk'){a.str=Math.max(0,a.str-t.share);if(t.kind==='atk')a.own=Math.max(0,a.own-t.share);}
     else if(t.kind==='def'||t.kind==='gar'){const p=P_(a.to);p.gar=Math.max(1,p.gar-t.share);}}
-  if(t.kind==='bandit'&&byPl){const b=Math.round(150*((stats.stage||0)+1));money+=b;stats.life+=b;floats.push({x:t.x,y:t.y-1,s:'+'+$s(b)+' bounty',t:0,c:'#f2c14e'});}
+  if(t.kind==='bandit'&&byPl){const b=Math.round(150*((stats.stage||0)+1));money+=b;stats.life+=b;FX.float(t.x,t.y-1,'+'+$s(b)+' bounty','#f2c14e');}
   if(byPl){pl.kills=(pl.kills||0)+1;stats.kills=(stats.kills||0)+1;}
 }
-function explode(s){booms.push({x:s.x,y:s.y,t:0});sfx('boom');
+function explode(s){FX.boom(s.x,s.y);sfx('boom');
   for(const t of troops)if(t.hp>0&&(s.side===0?t.side!==0:t.side===0)&&Math.hypot(t.x-s.x,t.y-.5-s.y)<s.splash){t.hp-=s.dmg*.7;if(t.hp<=0)killTroop(t,s.side===0);}
   if(s.side!==0&&pl&&Math.hypot(pl.x-s.x,pl.y-.5-s.y)<s.splash)hurtPl(s.dmg*.5);}
-function shotsTick(){
-  for(const s of shots){s.x+=s.vx/60;s.y+=s.vy/60;s.life--;if(!inb(Math.floor(s.x),Math.floor(s.y))){s.life=0;continue;}
-    if(s.side===0){for(const t of troops)if(t.side!==0&&t.hp>0&&Math.abs(t.x-s.x)<.4&&Math.abs(t.y-.5-s.y)<.5){t.hp-=s.dmg;t.hitT=ticks;if(s.splash){s.life=0;explode(s);}else s.life=0;if(t.hp<=0)killTroop(t,s.fromPl);break;}}
-    else{if(pl&&!pl.dead&&Math.abs(pl.x-s.x)<.35&&Math.abs(pl.y-.5-s.y)<.5){hurtPl(s.dmg);s.life=0;continue;}
-      for(const t of troops)if(t.side===0&&t.hp>0&&Math.abs(t.x-s.x)<.4&&Math.abs(t.y-.5-s.y)<.5){t.hp-=s.dmg;t.hitT=ticks;s.life=0;if(t.hp<=0)killTroop(t,false);break;}}
-    if(s.life<=0&&s.splash&&!s.boomed){s.boomed=1;explode(s);}}
-  shots=shots.filter(s=>s.life>0);for(const b of booms)b.t++;booms=booms.filter(b=>b.t<30);
-}
 function plTick(){
   if(!pl)return;
-  if(pl.dead>0){if(--pl.dead===0){const h=hqSpot();pl.x=h.x+1;pl.y=h.y+2.7;pl.hp=plMax();camFollow=true;toast('The President is back at HQ.');}return;}
+  if(pl.dead>0){if(--pl.dead===0){const h=hqSpot();pl.x=h.x+1;pl.y=h.y+2.7;pl.hp=plMax();pl.px=pl.x;pl.py=pl.y;camFollow=true;Sanctuary.respawn();toast('The President is back at HQ, protected for 10 seconds.');}return;}
   let mx=0,my=0;if(view==='factory'){if(keys.w)my--;if(keys.s)my++;if(keys.a)mx--;if(keys.d)mx++;}
   if(mx||my){plGoal=null;camFollow=true;}
   else if(plGoal){const dx=plGoal.x-pl.x,dy=plGoal.y-pl.y,d=Math.hypot(dx,dy);if(d<plGoal.r){const g=plGoal;plGoal=null;if(g.then)g.then();}else{mx=dx/d;my=dy/d;}}
@@ -4041,11 +4048,8 @@ function combatStart(a){
 }
 function combatDone(a){let at=0,df=0;for(const t of troops){if(t.a!==a||t.hp<=0)continue;if(t.kind==='atk'||t.kind==='inv')at++;else if(t.kind==='def'||t.kind==='gar')df++;}return P_(a.to).owner===0&&a.a!==0?at===0:at===0||df===0;}
 function combatEnd(a){for(const t of troops)if(t.a===a&&t.hp>0){t.hp=0;t.deadT=40;t.gone=1;}}
-function findFoe(t){let best=null,bd=14;
-  for(const o of troops){if(o.hp<=0||(t.side===0)===(o.side===0))continue;const d=Math.hypot(o.x-t.x,o.y-t.y);if(d<bd){bd=d;best=o;}}
-  if(t.side!==0&&t.kind!=='camp'&&pl&&!pl.dead){const d=Math.hypot(pl.x-t.x,pl.y-t.y);if(d<bd){best=pl;}}
-  return best;}
 function troopTick(){
+  TG.build();
   for(const t of troops){if(t.hp<=0){t.deadT--;continue;}if(t.cd>0)t.cd--;
     if((ticks+t.id)%15===0)t.tgt=findFoe(t);
     const f=t.tgt&&(t.tgt===pl?!pl.dead:t.tgt.hp>0)?t.tgt:null;let tx=null,ty=null;
@@ -4057,11 +4061,11 @@ function troopTick(){
       if(d>.4){const s=t.sp/60;t.x+=dx/d*s;t.y+=dy/d*s;t.ph+=s*8;t.dir=dx<0?-1:1;t.moving=true;}
       else{t.moving=false;if(t.kind==='bandit')banditArrive(t);else if(t.kind==='camp'&&t.home)t.goal={x:t.home.x+(Math.random()-.5)*4,y:t.home.y+(Math.random()-.5)*3};else t.goal=null;}}
     else t.moving=false;}
-  troops=troops.filter(t=>t.hp>0||t.deadT>0);
+  sweep(troops,FX.aTroop);
 }
 // ---------- bandits ----------
 function banditSecond(){
-  if(ticks<20*3600||--banditT>0)return;banditT=600+Math.floor(Math.random()*500);
+  if(ticks<20*3600||--banditT>0||Sanctuary.active())return;banditT=600+Math.floor(Math.random()*500);
   const own=world.provs.filter(p=>p.owner===0&&p.vx!==undefined);if(!own.length)return;const p=own[Math.floor(Math.random()*own.length)];
   const cells=world.bcells[p.id];if(!cells||!cells.length)return;const c=cells[Math.floor(Math.random()*cells.length)],h=provHeart(p),n=3+Math.floor(Math.random()*3);
   for(let i=0;i<n;i++){const t=mkTroop(-1,c%W+.5+(Math.random()-.5)*2,(c/W|0)+.5+(Math.random()-.5)*2,{x:h.x+(Math.random()-.5)*2,y:h.y+(Math.random()-.5)*2},'bandit',null,0);t.hp=t.max=40;t.p=p.id;troops.push(t);}
@@ -4069,7 +4073,7 @@ function banditSecond(){
   toast('Bandits are heading for '+p.name+'! Stop them before they rob the village (F to draw a weapon).','bad');report('war','Bandits raided '+p.name+'.');
 }
 function banditArrive(t){if(t.hp<=0)return;const st=Math.round(Math.max(0,money)*.01+50);money-=Math.min(Math.max(0,money),st);t.hp=0;t.deadT=30;t.gone=1;
-  floats.push({x:t.x,y:t.y-1,s:'-'+$s(st)+' stolen',t:0,c:'#e05a44'});toastOnce('Bandits robbed '+P_(t.p).name+'.');}
+  FX.float(t.x,t.y-1,'-'+$s(st)+' stolen','#e05a44');toastOnce('Bandits robbed '+P_(t.p).name+'.');}
 // ---------- camps & supply ----------
 function campsSecond(){
   if(ticks%600!==0)return;
@@ -4082,7 +4086,7 @@ function campsSecond(){
     for(let i=have.length;i<per;i++){const t=mkTroop(0,c.x+(Math.random()-.5)*3,c.y+(Math.random()-.5)*2,null,'camp',null,0);t.home=c;troops.push(t);}
     for(let i=per;i<have.length;i++)have[i].hp=0,have[i].deadT=1;}
 }
-function trucksTick(){for(const k of trucks){const dx=k.tx-k.x,dy=k.ty-k.y,d=Math.hypot(dx,dy);if(d<.3){k.done=1;truckArrive(k);continue;}const s=4/60;k.x+=dx/d*s;k.y+=dy/d*s;k.dir=dx<0?-1:1;}trucks=trucks.filter(k=>!k.done);}
+function trucksTick(){for(const k of trucks){const dx=k.tx-k.x,dy=k.ty-k.y,d=Math.hypot(dx,dy);if(d<.3){k.done=1;truckArrive(k);continue;}const s=4/60;k.x+=dx/d*s;k.y+=dy/d*s;k.dir=dx<0?-1:1;}sweep(trucks,FX.aTruck);}
 function combatTick(){plTick();troopTick();shotsTick();trucksTick();}
 function combatSecond(){banditSecond();campsSecond();}
 // ---------- drawing ----------
@@ -4100,12 +4104,13 @@ function drawCombat(tm){
     ctx.fillStyle='rgba(0,0,0,.25)';ctx.beginPath();ctx.ellipse(X,Y+k*.1,k*.8,k*.2,0,0,7);ctx.fill();ctx.fillStyle='#6b7445';poly(ctx,[[X-k*.7,Y+k*.1],[X,Y-k*.7],[X+k*.7,Y+k*.1]]);ctx.fill();ctx.strokeStyle=OL;ctx.lineWidth=1.5;ctx.stroke();
     ctx.fillStyle='#3d4526';poly(ctx,[[X-k*.15,Y+k*.1],[X,Y-k*.35],[X+k*.15,Y+k*.1]]);ctx.fill();ctx.strokeStyle='#2a2522';ctx.beginPath();ctx.moveTo(X+k*.9,Y+k*.1);ctx.lineTo(X+k*.9,Y-k*1.1);ctx.stroke();ctx.fillStyle='#f0a62e';ctx.fillRect(X+k*.9,Y-k*1.1,k*.5,k*.3);
     if(z>.45&&CTX.stats){const sup=nat.supply===undefined?1:nat.supply,t='ARMY CAMP · '+Math.round(c.str||0)+' str · supply '+Math.round(sup*100)+'%';ctx.font='600 10px "JetBrains Mono",monospace';const w=ctx.measureText(t).width+12;ctx.fillStyle='rgba(30,34,38,.9)';rr(ctx,X-w/2,Y-k*1.7-12,w,16,3);ctx.fill();ctx.fillStyle=sup<.7?'#ff5a44':'#f2c14e';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(t,X,Y-k*1.7-4);}}
-  for(const k of trucks){if(!in_(k.x,k.y))continue;const X=sx(k.x*T),Y=sy(k.y*T),q=T*z*.5;ctx.fillStyle='rgba(0,0,0,.3)';ctx.fillRect(X-q*.9,Y-q*.1,q*1.9,q*.25);ctx.fillStyle=OL;ctx.fillRect(X-q,Y-q*.8,q*2,q*.75);ctx.fillStyle=k.ok?'#5d6b3a':'#a0402c';ctx.fillRect(X-q*.9,Y-q*.72,q*1.3,q*.6);ctx.fillStyle='#c9ced3';ctx.fillRect(X+q*(k.dir<0?-.95:.45),Y-q*.72,q*.5,q*.45);ctx.fillStyle='#1d1f22';circ(ctx,X-q*.55,Y,q*.2);ctx.fill();circ(ctx,X+q*.55,Y,q*.2);ctx.fill();}
-  for(const t of troops){if(in_(t.x,t.y))drawTroop(ctx,t,sx(t.x*T),sy(t.y*T),s);}
+  for(const k of trucks){if(!in_(k.x,k.y))continue;const X=sx(IX(k)*T),Y=sy(IY(k)*T),q=T*z*.5;ctx.fillStyle='rgba(0,0,0,.3)';ctx.fillRect(X-q*.9,Y-q*.1,q*1.9,q*.25);ctx.fillStyle=OL;ctx.fillRect(X-q,Y-q*.8,q*2,q*.75);ctx.fillStyle=k.ok?'#5d6b3a':'#a0402c';ctx.fillRect(X-q*.9,Y-q*.72,q*1.3,q*.6);ctx.fillStyle='#c9ced3';ctx.fillRect(X+q*(k.dir<0?-.95:.45),Y-q*.72,q*.5,q*.45);ctx.fillStyle='#1d1f22';circ(ctx,X-q*.55,Y,q*.2);ctx.fill();circ(ctx,X+q*.55,Y,q*.2);ctx.fill();}
+  for(const t of troops){if(in_(t.x,t.y))drawTroop(ctx,t,sx(IX(t)*T),sy(IY(t)*T),s);}
   ctx.strokeStyle='#ffe28a';ctx.lineWidth=Math.max(1.5,2.2*z);ctx.lineCap='round';ctx.beginPath();
   for(const b of shots){const X=sx(b.x*T),Y=sy(b.y*T),l=Math.hypot(b.vx,b.vy)||1;ctx.moveTo(X,Y);ctx.lineTo(X-b.vx/l*T*z*.45,Y-b.vy/l*T*z*.45);}ctx.stroke();
+  drawMuzzle(z);
   for(const b of booms){const X=sx(b.x*T),Y=sy(b.y*T),u=b.t/30;ctx.fillStyle='rgba(255,'+(170-u*120|0)+',60,'+(1-u)+')';circ(ctx,X,Y,(.5+u*2)*T*z);ctx.fill();}
-  drawPet(z);if(pl&&!pl.dead&&in_(pl.x,pl.y))drawPresident(ctx,sx(pl.x*T),sy(pl.y*T),T*z*.72,tm);
+  drawPet(z);if(pl&&!pl.dead&&in_(pl.x,pl.y)){const PX=sx(IX(pl)*T),PY=sy(IY(pl)*T);drawShield(PX,PY,T*z*.72);drawPresident(ctx,PX,PY,T*z*.72,tm);}
   if(pl&&pl.drawn&&view==='factory'){const X=mouse.x,Y=mouse.y;ctx.strokeStyle='#ffffff';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(X,Y,8,0,7);ctx.moveTo(X-13,Y);ctx.lineTo(X-4,Y);ctx.moveTo(X+4,Y);ctx.lineTo(X+13,Y);ctx.moveTo(X,Y-13);ctx.lineTo(X,Y-4);ctx.moveTo(X,Y+4);ctx.lineTo(X,Y+13);ctx.stroke();}
 }
 function drawMapCombat(){
@@ -4116,7 +4121,7 @@ function drawMapCombat(){
 // ---------- HUD & character panel ----------
 function pboxHTML(){
   if(!pl)return '';const G=GUNS[pl.gun],hp=pl.hp/plMax();
-  return '<div class="prow2"><span class="pav" style="background:'+plColor()+'"></span><div style="flex:1"><div class="row" style="justify-content:space-between"><b>President</b><span class="ct">'+(pl.dead?'<span class="bad">wounded '+Math.ceil(pl.dead/60)+'s</span>':Math.round(pl.hp)+' / '+plMax()+' HP')+'</span></div>'+
+  return (stats.sanct>0?'<div class="sanct">Ceasefire at HQ · '+stats.sanct+' s</div>':'')+'<div class="prow2"><span class="pav" style="background:'+plColor()+'"></span><div style="flex:1"><div class="row" style="justify-content:space-between"><b>President</b><span class="ct">'+(pl.dead?'<span class="bad">wounded '+Math.ceil(pl.dead/60)+'s</span>':Math.round(pl.hp)+' / '+plMax()+' HP')+'</span></div>'+
     '<div class="pb"><i style="width:'+(hp*100).toFixed(0)+'%;background:'+(hp<.35?'var(--red)':'var(--green)')+'"></i></div>'+
     '<div class="row" style="justify-content:space-between;margin-top:3px"><span class="ct">'+(pl.drawn?'<b style="color:var(--amber)">'+G.n+'</b> '+(pl.rl>0?'reloading…':pl.mag+' / '+G.mag):'<kbd>F</kbd> draw '+G.n.toLowerCase())+'</span><button class="small" data-nav="char">Gear</button></div></div></div>';
 }
@@ -4253,21 +4258,6 @@ function goalTiles(t){ // tiles an agent can stand on to reach a target (entity 
   else{const X=Math.floor(t.x),Y=Math.floor(t.y);if(walkTile(X,Y))out.push(Y*W+X);else for(let d=0;d<4;d++)if(walkTile(X+DX[d],Y+DY[d]))out.push((Y+DY[d])*W+X+DX[d]);}
   return out;
 }
-function findPath(x0,y0,target,maxN){
-  pfInit();const goals=goalTiles(target);if(!goals.length)return null;
-  const G=new Set(goals),sx0=Math.floor(x0),sy0=Math.floor(y0),start=sy0*W+sx0,st=++PF.stamp;
-  let gx=0,gy=0;for(const k of goals){gx+=k%W;gy+=k/W|0;}gx/=goals.length;gy/=goals.length;
-  const hN=i=>{const dx=Math.abs(i%W-gx),dy=Math.abs((i/W|0)-gy);return Math.max(dx,dy)+.41*Math.min(dx,dy);};
-  const heap=[],push=(i,f)=>{heap.push([f,i]);let c=heap.length-1;while(c>0){const p=(c-1)>>1;if(heap[p][0]<=heap[c][0])break;[heap[p],heap[c]]=[heap[c],heap[p]];c=p;}},
-    pop=()=>{const top=heap[0],last=heap.pop();if(heap.length){heap[0]=last;let c=0;for(;;){const l=c*2+1,r=l+1;let m=c;if(l<heap.length&&heap[l][0]<heap[m][0])m=l;if(r<heap.length&&heap[r][0]<heap[m][0])m=r;if(m===c)break;[heap[m],heap[c]]=[heap[c],heap[m]];c=m;}}return top;};
-  PF.g[start]=0;PF.seen[start]=st;PF.from[start]=-1;push(start,hN(start));let n=0,end=-1;
-  while(heap.length&&n++<(maxN||9000)){const[,i]=pop();if(PF.closed[i]===st)continue;PF.closed[i]=st;if(G.has(i)){end=i;break;}
-    const x=i%W,y=i/W|0;
-    for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){if(!dx&&!dy)continue;const X=x+dx,Y=y+dy;if(!walkTile(X,Y))continue;
-      if(dx&&dy&&(!walkTile(x+dx,y)||!walkTile(x,y+dy)))continue;const j=Y*W+X,ng=PF.g[i]+(dx&&dy?1.414:1)*(road[j]?.7:1);
-      if(PF.seen[j]!==st||ng<PF.g[j]){PF.seen[j]=st;PF.g[j]=ng;PF.from[j]=i;push(j,ng+hN(j));}}}
-  if(end<0)return null;const path=[];for(let i=end;i!==-1&&i!==start;i=PF.from[i])path.push({x:i%W+.5,y:(i/W|0)+.8});path.reverse();return path;
-}
 
 // ---------- pollution sickness (shared by every walking agent and machine) ----------
 function clinicCover(x,y){for(const c of L.clinic||[])if(c.meds>0&&Math.abs(c.x-x)<=14&&Math.abs(c.y-y)<=14)return c;return null;}
@@ -4376,7 +4366,7 @@ const ConstructionManager={
   finish(s){ // place the real building on the ghost
     siteMark(s,false);const i=sites.indexOf(s);if(i>=0)sites.splice(i,1);
     add(inv,s.t,1);const e=tryPlace(s.x,s.y,s.t,s.dir,true);
-    if(e){if(s.rec&&isMachine(e)&&RECIPES[s.rec]&&RECIPES[s.rec].cat===MACHINE_CAT[e.type])e.rec=s.rec;stats.constructed=(stats.constructed||0)+1;if(settings.vfx>0)ffx.push({x:e.x,y:e.y,w:e.w||1,h:e.h||1,t:0});}
+    if(e){if(s.rec&&isMachine(e)&&RECIPES[s.rec]&&RECIPES[s.rec].cat===MACHINE_CAT[e.type])e.rec=s.rec;stats.constructed=(stats.constructed||0)+1;if(settings.vfx>0)FX.built(e.x,e.y,e.w||1,e.h||1);}
     else toastOnce('A construction site was blocked; its building went back to your inventory.');uiDirty=true;},
 };
 class Builder extends Agent{
@@ -4408,7 +4398,7 @@ const AutoRepairManager={
     const idle=agents.filter(a=>a.role==='engineer'&&a.state==='idle'&&!a.cool);if(!idle.length)return;
     const worn=[...L.drill,...L.furn,...L.asm].filter(m=>m.eff<AutoRepairManager.THRESHOLD&&!m.repBy).sort((a,b)=>a.eff-b.eff);
     for(const m of worn){let best=null,bd=1e9;for(const a of idle){if(a.job)continue;const d=Math.hypot(a.home.x-m.x,a.home.y-m.y);if(d<AutoRepairManager.RANGE&&d<bd){bd=d;best=a;}}
-      if(best)best.assign(m);}},
+      if(best){if(AutoRepairManager.canFix(best.home,m))best.assign(m);else kitMissing(m);}}},
   kit(bay){ // a Repair Kit from the bay, a hub, a chest or your inventory; failing that, pay cash
     if(bay.parts>0){bay.parts--;return 'bay';}const h=LogisticsHub.nearestWith('replacement_parts',bay.x,bay.y,1);if(h){LogisticsHub.take(h,'replacement_parts',1);return 'hub';}
     if(stock('replacement_parts')>0){pay(0,{replacement_parts:1});return 'stock';}return null;},
@@ -4421,8 +4411,8 @@ class Engineer extends Agent{
     if(m&&!ents.includes(m)){this.job=null;this.state='return';this.goTo(this.home);}
     switch(this.state){
       case 'toMachine':if(this.follow()){this.state='repair';this.t=120;const k=AutoRepairManager.kit(this.home);
-          if(!k){const c=repairCost(m)*1.5;if(money>=c){spend(c);this.paid=1;}else{m.repBy=null;this.job=null;this.state='return';this.goTo(this.home);toastOnce('Engineers have no repair kits and you can’t afford a cash repair.');}}}return;
-      case 'repair':if(--this.t>0)return;m.eff=1;m.repBy=null;this.job=null;stats.autoRepairs=(stats.autoRepairs||0)+1;floats.push({x:m.x+.5,y:m.y,s:'repaired',t:0,c:'#6fe27d'});consume('replacement_parts',1);
+          if(!k){const c=repairCost(m)*1.5;if(research.requisitions&&money>=c){spend(c);this.paid=1;}else{m.repBy=null;this.job=null;this.state='return';this.goTo(this.home);kitMissing(m);}}}return;
+      case 'repair':if(--this.t>0)return;m.eff=1;m.repBy=null;this.job=null;stats.autoRepairs=(stats.autoRepairs||0)+1;FX.float(m.x+.5,m.y,'repaired','#6fe27d');consume('replacement_parts',1);
         this.state='return';if(!this.goTo(this.home))this.state='idle';return;
       case 'return':if(this.follow())this.state='idle';return;
     }
@@ -4434,7 +4424,7 @@ function agentsTick(){if(ticks%60===0)syncAgents();AutoRepairManager.scan();for(
 const AGC={courier:['#2aa39a','#1d5a55'],builder:['#e3882a','#f2d23c'],engineer:['#c0502a','#ffc23a']};
 function drawAgents(){
   const z=cam.z;if(z<.35)return;const s=T*z*.62;
-  for(const a of agents){const X=sx(a.x*T),Y=sy(a.y*T);if(X<-30||Y<-30||X>SW+30||Y>SH+30)continue;
+  for(const a of agents){const X=sx(IX(a)*T),Y=sy(IY(a)*T);if(X<-30||Y<-30||X>SW+30||Y>SH+30)continue;
     ROLES[a.role]=ROLES[a.role]||AGC[a.role];drawPerson(ctx,X,Y,s,a.role,a.ph,a.dir,a.moving);
     if(a.carry&&ICON[a.carry.k]){const q=s*.5;ctx.fillStyle='#8a5a2b';ctx.fillRect(X-a.dir*s*.34-q/2,Y-s*.78,q,q*.8);ctx.drawImage(ICON[a.carry.k],X-a.dir*s*.34-q/2,Y-s*.78-q*.1,q,q);}
     if(a.role==='engineer'&&a.state==='repair'||a.role==='builder'&&a.state==='build'){if(settings.vfx&&Math.random()<.5){ctx.fillStyle='#ffe28a';ctx.fillRect(X+(Math.random()-.5)*s,Y-s*.5+(Math.random()-.5)*s*.5,2,2);}}
@@ -4522,6 +4512,7 @@ function warnOf(e){
   const t=probTag(e);if(t)return{t,ic:t[0]==='NO COAL'?'coal':t[0]==='NO WATER'?'water':t[0]==='NO FUEL'?'fuel':t[0]==='DEPLETED'?'ore':t[0]==='OVERHEATING'?'heat':t[0].indexOf('PIPE')>=0||t[0]==='WRONG FLUID'||t[0]==='OUTPUT BLOCKED'?'pipe':t[0]==='OUTPUT FULL'?'out':t[0].startsWith('NO ')?'in':'x',sev:t[0]==='OUTPUT FULL'?1:2};
   if(!WEARS.has(e.type)||e.hw===undefined||e.off)return null;
   if(POW[e.type]&&powSat<.8)return{t:['LOW POWER','Grid at '+Math.round(powSat*100)+'%','Add generators or batteries',null],ic:'power',sev:1};
+  if(e.noKit&&ticks-e.noKit<300&&e.eff<AutoRepairManager.THRESHOLD)return{t:['NO REPAIR KIT','Condition '+Math.round(e.eff*100)+'%','Craft Repair Kits, or research Emergency Requisitions',null],ic:'wear',sev:1};
   if(e.eff<.62)return{t:['WORN OUT','Condition '+Math.round(e.eff*100)+'%','Repair it or add a Maintenance Bay',null],ic:'wear',sev:1};
   if(e.sick>0)return{t:['SICK CREW','Pollution slows it '+Math.round(e.sick*100)+'%','Build a clinic with medical kits',null],ic:'med',sev:1};
   if(e.hs>.65&&isMachine(e)&&e.miss)return{t:['NO INPUT',ITEMS[e.miss].n+' missing','Feed it by belt or inserter',null],ic:'in',item:e.miss,sev:1};
@@ -4577,14 +4568,15 @@ function drawNight(mids,tm){
   const lights=[],add2=(x,y,r,a,c)=>lights.push([x,y,r,a,c]);
   if(d>.25){const a=Math.min(1,(d-.25)/.35);
     for(const e of mids){const cx=sx((e.x+(e.w||1)/2)*T),cy=sy((e.y+(e.h||1)/2)*T),s=T*z*(e.w||1);
-      if(e.type==='furnace'&&e.cur||e.type==='generator'&&e.on)add2(cx,cy,s*1.7,a,'255,140,50');
+      if(e.type==='furnace'&&e.cur||e.type==='generator'&&e.on)add2(cx,cy,s*(1.62+.1*Math.sin(tm*9+e.x*1.7+e.y)),a,'255,140,50');
       else if(e.type==='reactor'&&e.on)add2(cx,cy,s*1.6,a,'150,110,255');
       else if(e.type==='moneygen')add2(cx,cy,s*1.6,a,cos.neon?'70,220,240':'255,205,110');
       else if(isMachine(e)&&e.work)add2(cx,cy,s*1.1,a*.8,cos.neon?'70,220,240':'255,210,130');
       else if(e.type==='hub'||e.type==='station'||e.type==='clinic'||e.type==='maint')add2(cx,cy,s*1.2,a*.8,'255,220,150');}
     for(const b of vb){if(b.t==='farm'||b.t==='smine')continue;const x=sx((b.x+b.w/2)*T),y=sy((b.y+b.h/2)*T);if(x<-80||y<-80||x>SW+80||y>SH+80)continue;add2(x,y,T*z*b.w*1.3,a*.7,'255,200,110');}
     for(const c of camps)add2(sx(c.x*T),sy(c.y*T),T*z*2,a*.8,'255,170,80');
-    if(pl&&!pl.dead)add2(sx(pl.x*T),sy((pl.y-.5)*T),T*z*3,a*.9,'255,240,210');}
+    if(pl&&!pl.dead)add2(sx(IX(pl)*T),sy((IY(pl)-.5)*T),T*z*3,a*.9,'255,240,210');}
+  dynLights(add2,d,z,tm);
   n.globalCompositeOperation='destination-out';for(const[x,y,r,a]of lights){n.globalAlpha=a;n.drawImage(LIGHT,x-r,y-r,r*2,r*2);}n.globalAlpha=1;n.globalCompositeOperation='source-over';
   ctx.drawImage(nightCv,0,0,SW,SH);
   ctx.globalCompositeOperation='lighter';for(const[x,y,r,a,c]of lights){ctx.globalAlpha=a*.28;const q=r*.7;ctx.drawImage(glowOf(c),x-q,y-q,q*2,q*2);}ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';
@@ -4868,8 +4860,8 @@ function drawPetSprite(g,X,Y,s,kind,ph,dir,moving){
 }
 function drawPet(z){
   if(!profile||!profile.pet||!pl||pl.dead)return;if(!pet||pet.k!==profile.pet)pet={k:profile.pet,x:pl.x-1,y:pl.y,ph:0,dir:1,moving:false};
-  const tx=pl.x-pl.dir*.9,ty=pl.y+.15,dx=tx-pet.x,dy=ty-pet.y,d=Math.hypot(dx,dy);
-  if(d>12){pet.x=tx;pet.y=ty;}pet.moving=d>.25;if(pet.moving){const s=Math.min(d,.02+d*.06);pet.x+=dx/d*s;pet.y+=dy/d*s;pet.ph+=.25;if(Math.abs(dx)>.05)pet.dir=dx<0?-1:1;}else pet.ph+=.04;
+  const tx=IX(pl)-pl.dir*.9,ty=IY(pl)+.15,dx=tx-pet.x,dy=ty-pet.y,d=Math.hypot(dx,dy);
+  if(d>12){pet.x=tx;pet.y=ty;}pet.moving=d>.25;if(pet.moving){const s=Math.min(d,(.02+d*.06)*FDT);pet.x+=dx/d*s;pet.y+=dy/d*s;pet.ph+=.25;if(Math.abs(dx)>.05)pet.dir=dx<0?-1:1;}else pet.ph+=.04;
   const X=sx(pet.x*T),Y=sy(pet.y*T);if(X<-40||Y<-40||X>SW+40||Y>SH+40)return;drawPetSprite(ctx,X,Y,T*z*.72,pet.k,pet.ph,pet.dir,pet.moving);
 }
 
@@ -4992,7 +4984,7 @@ const WorkforceManager={
     let best=null,bd=1e9;if(vb)for(const b of vb){if(!b||b.t!=='house'||!world.provs[b.p]||world.provs[b.p].owner!==0)continue;const d=Math.hypot(b.x-x,b.y-y);if(d<bd){bd=d;best=b;}}
     return best&&bd<60?{x:best.x+.5,y:best.y+1.2}:null;},
   draft(Cls,role,home,near){const a=new Cls(home);a.drafted=1;const p=near&&this.spawnAt(near.x,near.y);if(p&&!solidAt(p.x,p.y)){a.x=p.x;a.y=p.y;}
-    agents.push(a);stats.drafted=(stats.drafted||0)+1;if(cam.z>.5)floats.push({x:a.x,y:a.y-.5,s:role==='builder'?'→ builder':'→ engineer',t:0,c:'#f2c14e'});return a;},
+    agents.push(a);stats.drafted=(stats.drafted||0)+1;if(cam.z>.5)FX.float(a.x,a.y-.5,role==='builder'?'→ builder':'→ engineer','#f2c14e');return a;},
   homeFor(m){let best=ents.find(e=>e.hq),bd=best?Math.hypot(best.x-m.x,best.y-m.y):1e9;
     for(const e of[...L.mt,...hubsList()]){const d=Math.hypot(e.x-m.x,e.y-m.y);if(d<bd){bd=d;best=e;}}return best;},
   second(){
@@ -5002,7 +4994,7 @@ const WorkforceManager={
     const open=sites.filter(s=>!s.need&&!s.claimed).length,wantB=Math.min(cap-e,Math.ceil((open+sites.filter(s=>s.claimed).length)/2));
     while(b<wantB&&b+e<cap){const s=sites.find(q=>!q.need&&!q.claimed)||sites[0];this.draft(Builder,'builder',hq,s);b++;}
     // engineers: one per machine below 80% condition that nobody is fixing
-    const worn=[...L.drill,...L.furn,...L.asm].filter(m=>m.eff<AutoRepairManager.THRESHOLD&&!m.repBy&&!(m.repFail>ticks-600)).sort((x,y)=>x.eff-y.eff);
+    const worn=[...L.drill,...L.furn,...L.asm].filter(m=>m.eff<AutoRepairManager.THRESHOLD&&!m.repBy&&!(m.repFail>ticks-600)).filter(m=>{if(AutoRepairManager.canFix(this.homeFor(m),m))return true;kitMissing(m);return false;}).sort((x,y)=>x.eff-y.eff);
     const capE=Math.max(2,Math.ceil(cap/2));
     for(const m of worn){if(b+e>=cap)break;const idle=agents.find(a=>a.role==='engineer'&&a.state==='idle'&&!a.job&&!a.cool);if(idle){idle.home=this.homeFor(m)||idle.home;idle.assign(m);if(idle.state!=='toMachine')m.repFail=ticks;continue;}
       if(e>=capE)continue;const a=this.draft(Engineer,'engineer',this.homeFor(m)||hq,m);a.assign(m);if(a.state!=='toMachine')m.repFail=ticks;e++;}
@@ -5084,6 +5076,280 @@ function ui14Second(){
   if(ctxPop&&!$('ctxpop').hidden)drawCtxPop();
 }
 
+// =====================================================================
+// V16: tech tree, repair gating, HQ population, war-loss sanctuary,
+// object pools, troop spatial grid, render interpolation, smart drag,
+// path smoothing, dynamic lights
+// =====================================================================
+
+// ---------- object pools (floating text, tracers, explosions, build flashes) ----------
+class Pool{
+  constructor(make){this.make=make;this.free=[];this.made=0;}
+  get(){if(this.free.length)return this.free.pop();this.made++;return this.make();}
+  put(o){if(this.free.length<4096)this.free.push(o);}
+}
+// in-place removal: keeps the array, returns dead objects to their pool
+function sweep(arr,alive,pool){let j=0;for(let i=0;i<arr.length;i++){const o=arr[i];if(alive(o))arr[j++]=o;else if(pool)pool.put(o);}arr.length=j;return arr;}
+const FX={
+  pf:new Pool(()=>({x:0,y:0,s:'',t:0,c:''})),
+  ps:new Pool(()=>({x:0,y:0,x0:0,y0:0,vx:0,vy:0,dmg:0,life:0,side:0,splash:0,fromPl:0,boomed:0,age:0})),
+  pb:new Pool(()=>({x:0,y:0,t:0})),
+  pc:new Pool(()=>({x:0,y:0,w:1,h:1,t:0})),
+  aFloat:f=>f.t<70,aShot:s=>s.life>0,aBoom:b=>b.t<30,aBuilt:f=>f.t<24,aWfx:f=>f.t<f.dur,aTroop:t=>t.hp>0||t.deadT>0,aTruck:k=>!k.done,
+  float(x,y,s,c){const o=this.pf.get();o.x=x;o.y=y;o.s=s;o.t=0;o.c=c;floats.push(o);return o;},
+  shot(x,y,vx,vy,dmg,life,side,splash){const o=this.ps.get();o.x=o.x0=x;o.y=o.y0=y;o.vx=vx;o.vy=vy;o.dmg=dmg;o.life=life;o.side=side;o.splash=splash;o.fromPl=0;o.boomed=0;o.age=0;shots.push(o);return o;},
+  boom(x,y){const o=this.pb.get();o.x=x;o.y=y;o.t=0;booms.push(o);return o;},
+  built(x,y,w,h){const o=this.pc.get();o.x=x;o.y=y;o.w=w;o.h=h;o.t=0;ffx.push(o);return o;},
+  info(){return{live:floats.length+shots.length+booms.length+ffx.length,pooled:this.pf.free.length+this.ps.free.length+this.pb.free.length+this.pc.free.length,made:this.pf.made+this.ps.made+this.pb.made+this.pc.made};},
+};
+
+// ---------- troop spatial grid (uniform 4-tile cells, rebuilt per tick, no allocation) ----------
+const TG={CS:4,cw:0,ch:0,head:null,next:new Int32Array(256),
+  build(){const cw=Math.ceil(W/this.CS),ch=Math.ceil(H/this.CS);
+    if(!this.head||this.cw!==cw||this.ch!==ch){this.head=new Int32Array(cw*ch);this.cw=cw;this.ch=ch;}
+    this.head.fill(-1);if(this.next.length<troops.length)this.next=new Int32Array(troops.length*2);
+    for(let i=0;i<troops.length;i++){const t=troops[i];if(t.hp<=0)continue;const c=this.cell(t.x,t.y);this.next[i]=this.head[c];this.head[c]=i;}},
+  cell(x,y){const cx=Math.max(0,Math.min(this.cw-1,Math.floor(x/this.CS))),cy=Math.max(0,Math.min(this.ch-1,Math.floor(y/this.CS)));return cy*this.cw+cx;},
+  each(x,y,r,fn){ // visits troops in cells overlapping the circle's box; fn returns true to stop
+    const S=this.CS,x0=Math.max(0,Math.floor((x-r)/S)),x1=Math.min(this.cw-1,Math.floor((x+r)/S)),y0=Math.max(0,Math.floor((y-r)/S)),y1=Math.min(this.ch-1,Math.floor((y+r)/S));
+    for(let cy=y0;cy<=y1;cy++)for(let cx=x0;cx<=x1;cx++)for(let i=this.head[cy*this.cw+cx];i>=0;i=this.next[i]){const t=troops[i];if(t&&fn(t))return true;}return false;},
+};
+// swept hit tests: a tracer moves up to half a tile per tick, so test the whole segment
+let _t0=0,_t1=1;
+function _clip(p,q){if(p===0)return q>=0;const r=q/p;if(p<0){if(r>_t1)return false;if(r>_t0)_t0=r;}else{if(r<_t0)return false;if(r<_t1)_t1=r;}return true;}
+function segBox(x0,y0,x1,y1,ax,ay,bx,by){_t0=0;_t1=1;const dx=x1-x0,dy=y1-y0;return _clip(-dx,x0-ax)&&_clip(dx,bx-x0)&&_clip(-dy,y0-ay)&&_clip(dy,by-y0);}
+function segCircle(x0,y0,x1,y1,cx,cy,r){const dx=x1-x0,dy=y1-y0,l=dx*dx+dy*dy;let t=l?((cx-x0)*dx+(cy-y0)*dy)/l:0;t=t<0?0:t>1?1:t;const px=x0+dx*t-cx,py=y0+dy*t-cy;return px*px+py*py<r*r;}
+// President hitbox matches the sprite: torso and legs box plus a head circle (feet at pl.y)
+const hitsPl=(x0,y0,x1,y1)=>segBox(x0,y0,x1,y1,pl.x-.17,pl.y-.56,pl.x+.17,pl.y)||segCircle(x0,y0,x1,y1,pl.x,pl.y-.66,.15);
+const hitsTroop=(t,x0,y0,x1,y1)=>segBox(x0,y0,x1,y1,t.x-.4,t.y-1,t.x+.4,t.y);
+function shotsTick(){
+  TG.build();
+  for(const s of shots){const x0=s.x,y0=s.y;s.x+=s.vx/60;s.y+=s.vy/60;s.life--;s.age++;
+    if(!inb(Math.floor(s.x),Math.floor(s.y))){s.life=0;continue;}
+    const mine=s.side===0;
+    if(!mine&&pl&&!pl.dead&&hitsPl(x0,y0,s.x,s.y)){hurtPl(s.dmg);s.life=0;}
+    else TG.each((x0+s.x)/2,(y0+s.y)/2+.5,1.5,t=>{
+      if(t.hp<=0||(t.side===0)===mine||!hitsTroop(t,x0,y0,s.x,s.y))return false;
+      t.hp-=s.dmg;t.hitT=ticks;s.life=0;if(s.splash&&!s.boomed){s.boomed=1;explode(s);}if(t.hp<=0)killTroop(t,mine&&!!s.fromPl);return true;});
+    if(s.life<=0&&s.splash&&!s.boomed){s.boomed=1;explode(s);}}
+  sweep(shots,FX.aShot,FX.ps);for(const b of booms)b.t++;sweep(booms,FX.aBoom,FX.pb);
+}
+function findFoe(t){
+  let best=null,bd=196;const mine=t.side===0;
+  TG.each(t.x,t.y,14,o=>{if(o.hp<=0||(o.side===0)===mine)return false;const dx=o.x-t.x,dy=o.y-t.y,d=dx*dx+dy*dy;if(d<bd){bd=d;best=o;}return false;});
+  if(!mine&&t.kind!=='camp'&&pl&&!pl.dead&&!(pl.invT>ticks)){const dx=pl.x-t.x,dy=pl.y-t.y;if(dx*dx+dy*dy<bd)best=pl;}
+  return best;
+}
+
+// ---------- render interpolation (simulation runs at a fixed 60 Hz, drawing at display rate) ----------
+let ALPHA=1,FDT=1;
+function snapPrev(){
+  if(pl){pl.px=pl.x;pl.py=pl.y;}
+  for(const a of agents){a.px=a.x;a.py=a.y;}for(const t of troops){t.px=t.x;t.py=t.y;}
+  for(const k of trucks){k.px=k.x;k.py=k.y;}for(const f of folk){f.px=f.x;f.py=f.y;}
+}
+const IX=o=>o.px===undefined||Math.abs(o.x-o.px)>2?o.x:o.px+(o.x-o.px)*ALPHA;
+const IY=o=>o.py===undefined||Math.abs(o.y-o.py)>2?o.y:o.py+(o.y-o.py)*ALPHA;
+
+// ---------- pathfinding: typed binary heap + line-of-sight smoothing ----------
+const PFH={f:new Float64Array(4096),i:new Int32Array(4096),n:0};
+function hpush(f,i){
+  if(PFH.n>=PFH.f.length){const nf=new Float64Array(PFH.f.length*2),ni=new Int32Array(PFH.i.length*2);nf.set(PFH.f);ni.set(PFH.i);PFH.f=nf;PFH.i=ni;}
+  const F=PFH.f,I=PFH.i;let c=PFH.n++;while(c>0){const p=(c-1)>>1;if(F[p]<=f)break;F[c]=F[p];I[c]=I[p];c=p;}F[c]=f;I[c]=i;}
+function hpop(){
+  const F=PFH.f,I=PFH.i,top=I[0],n=--PFH.n;
+  if(n>0){const f=F[n],i=I[n];let c=0;for(;;){const l=c*2+1;if(l>=n)break;const m=l+1<n&&F[l+1]<F[l]?l+1:l;if(F[m]>=f)break;F[c]=F[m];I[c]=I[m];c=m;}F[c]=f;I[c]=i;}
+  return top;}
+let PFgoal=null;
+function findPath(x0,y0,target,maxN){
+  pfInit();if(!PFgoal||PFgoal.length!==W*H)PFgoal=new Uint32Array(W*H);
+  const goals=goalTiles(target);if(!goals.length)return null;
+  const sx0=Math.floor(x0),sy0=Math.floor(y0),start=sy0*W+sx0,st=++PF.stamp;
+  let gx=0,gy=0;for(const k of goals){PFgoal[k]=st;gx+=k%W;gy+=k/W|0;}gx/=goals.length;gy/=goals.length;
+  const hN=i=>{const dx=Math.abs(i%W-gx),dy=Math.abs((i/W|0)-gy);return Math.max(dx,dy)+.41*Math.min(dx,dy);};
+  PFH.n=0;PF.g[start]=0;PF.seen[start]=st;PF.from[start]=-1;hpush(hN(start),start);let n=0,end=-1;const lim=maxN||9000;
+  while(PFH.n&&n++<lim){const i=hpop();if(PF.closed[i]===st)continue;PF.closed[i]=st;if(PFgoal[i]===st){end=i;break;}
+    const x=i%W,y=i/W|0;
+    for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){if(!dx&&!dy)continue;const X=x+dx,Y=y+dy;if(!walkTile(X,Y))continue;
+      if(dx&&dy&&(!walkTile(x+dx,y)||!walkTile(x,y+dy)))continue;const j=Y*W+X,ng=PF.g[i]+(dx&&dy?1.414:1)*(road[j]?.7:1);
+      if(PF.seen[j]!==st||ng<PF.g[j]){PF.seen[j]=st;PF.g[j]=ng;PF.from[j]=i;hpush(ng+hN(j),j);}}}
+  if(end<0)return null;
+  const idx=[];for(let i=end;i!==-1;i=PF.from[i])idx.push(i);idx.reverse(); // idx[0] is the start tile
+  return smoothPath(idx).map(i=>({x:i%W+.5,y:(i/W|0)+.8}));
+}
+// clear straight line between two tile centres, with body clearance so agents never clip corners
+function losTiles(a,b){
+  const ax=a%W+.5,ay=(a/W|0)+.5,bx=b%W+.5,by=(b/W|0)+.5,d=Math.hypot(bx-ax,by-ay),n=Math.ceil(d/.25);
+  for(let k=1;k<n;k++){const x=ax+(bx-ax)*k/n,y=ay+(by-ay)*k/n;
+    if(!walkTile(Math.floor(x-.3),Math.floor(y-.3))||!walkTile(Math.floor(x+.3),Math.floor(y-.3))||!walkTile(Math.floor(x-.3),Math.floor(y+.3))||!walkTile(Math.floor(x+.3),Math.floor(y+.3)))return false;}
+  return true;}
+function smoothPath(idx){ // string pulling; stays on roads (never shortcuts across a road/off-road change)
+  if(idx.length<3)return idx.slice(1);
+  const out=[];let k=0;
+  while(k<idx.length-1){let best=k+1;const r0=road[idx[k]];
+    for(let j=k+2;j<idx.length&&j<=k+24;j++){if(road[idx[j]]!==r0||road[idx[j-1]]!==r0)break;if(losTiles(idx[k],idx[j]))best=j;}
+    out.push(idx[best]);k=best;}
+  return out;
+}
+
+// ---------- smart drag-to-build ----------
+const SINKS=new Set(['furnace','assembler','chemplant','fabricator','chest','moneygen','hub','depot','station','generator','clinic','maint','reactor','splitter']);
+function beltAutoConnect(b){ // the last belt of a drag turns into a neighbouring machine if its front is empty
+  if(!b||!isBelt(b))return false;const f=at(b.x+DX[b.dir],b.y+DY[b.dir]);if(f&&f!==b&&(isBelt(f)||SINKS.has(f.type)))return false;
+  for(const d of[(b.dir+1)%4,(b.dir+3)%4]){const e=at(b.x+DX[d],b.y+DY[d]);if(e&&!isBelt(e)&&!e.off&&SINKS.has(e.type)){b.dir=d;FX.float(b.x+.5,b.y,'connected','#6fe27d');stats.autoConn=(stats.autoConn||0)+1;return true;}}
+  return false;
+}
+function dragStart(x,y){ // pressing on the end of an existing belt of the same tier continues that line
+  const e=at(x,y);return e&&isBelt(e)&&e.type===tool&&!e.off?e:null;
+}
+
+// ---------- repairs: engineers need kits unless Emergency Requisitions is researched ----------
+AutoRepairManager.canFix=function(home,m){
+  if(home&&home.parts>0)return true;if(home&&LogisticsHub.nearestWith('replacement_parts',home.x,home.y,1))return true;
+  if(stock('replacement_parts')>0)return true;return !!research.requisitions&&money>=repairCost(m)*1.5;};
+function kitMissing(m){
+  m.noKit=ticks;if(m.kitT&&ticks-m.kitT<600)return;m.kitT=ticks;
+  FX.float(m.x+(m.w||1)/2,m.y-.2,'Missing Repair Kit','#ff7a5c');
+  if(!stats.kitHint){stats.kitHint=1;toast('Engineers need Repair Kits to fix worn machines. Craft them after Maintenance research, or research Emergency Requisitions to let them pay cash.','bad');}
+}
+
+// ---------- HQ baseline population: 4,000 citizens live at HQ before any city exists ----------
+const HQ_POP=4000;
+
+// ---------- war-loss sanctuary: no spawn-killing at HQ ----------
+const Sanctuary={
+  SECS:90,
+  active(){return (stats.sanct||0)>0;},
+  blocks(q){return this.active()&&!!q&&q.id===world.home;},
+  clearNear(r){const h=hqSpot(),hx=h.x+1,hy=h.y+2;let n=0;
+    for(const t of troops)if(t.hp>0&&t.side!==0&&(t.kind==='bandit'||(t.a&&t.a.to===world.home)||Math.hypot(t.x-hx,t.y-hy)<r)){t.hp=0;t.deadT=40;t.gone=1;n++;}
+    for(const a of attacks.slice())if(a.a>0&&a.to===world.home){attacks.splice(attacks.indexOf(a),1);if(a.combat)combatEnd(a);n++;}
+    return n;},
+  trigger(why,secs){const fresh=!this.active();stats.sanct=Math.max(stats.sanct||0,secs||this.SECS);const n=this.clearNear(40);
+    if(pl&&!pl.dead)pl.invT=Math.max(pl.invT||0,ticks+60*12);
+    if(fresh){banner('CEASEFIRE AT HQ',why);report('war',why+' Enemy forces near your headquarters pulled back'+(n?' ('+n+' units)':'')+'. No attacks on your home province for '+stats.sanct+' seconds.');}},
+  respawn(){pl.invT=ticks+60*10;const n=this.clearNear(18);stats.sanct=Math.max(stats.sanct||0,30);if(n)report('war','Hostiles near HQ withdrew while the President recovered.');},
+  second(){if(stats.sanct>0)stats.sanct--;},
+};
+
+// ---------- dynamic lights (muzzle flashes, explosions) and muzzle sprites ----------
+function dynLights(add2,d,z,tm){
+  if(d<.08)return;const a=Math.min(1,d*1.6);
+  for(const s of shots)if(s.age<=2){const X=sx(s.x0*T),Y=sy(s.y0*T);if(X>-60&&Y>-60&&X<SW+60&&Y<SH+60)add2(X,Y,T*z*1.5,a*(1-s.age/3),'255,210,120');}
+  for(const b of booms){const X=sx(b.x*T),Y=sy(b.y*T),u=b.t/30;if(X>-200&&Y>-200&&X<SW+200&&Y<SH+200)add2(X,Y,T*z*(2.5+u*3),a*(1-u),'255,150,60');}
+}
+function drawMuzzle(z){
+  if(!shots.length)return;ctx.fillStyle='#fff3c4';
+  for(const s of shots){if(s.age>1)continue;const X=sx(s.x0*T),Y=sy(s.y0*T),l=Math.hypot(s.vx,s.vy)||1,r=Math.max(2,T*z*.12);
+    ctx.beginPath();ctx.arc(X+s.vx/l*r*.8,Y+s.vy/l*r*.8,r,0,7);ctx.fill();}
+}
+function drawShield(X,Y,s){
+  if(!pl||!(pl.invT>ticks))return;const k=(pl.invT-ticks)/600,p=.5+.5*Math.sin(ticks*.2);
+  ctx.strokeStyle='rgba(120,220,255,'+(.35+.35*p)*Math.min(1,k*3+.3)+')';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(X,Y-s*.55,s*.55,s*.75,0,0,7);ctx.stroke();
+}
+
+// ---------- tech tree ----------
+const TT={NW:190,NH:68,GX:74,GY:20,PAD:28,sel:{},cache:{},scrollTo:true,
+  glyph:{
+    industry:'<circle cx="12" cy="12" r="3.5"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/>',
+    civ:'<path d="M3 21h18M5 21V10l5-3v14M10 21V4h9v17M13 8h3M13 12h3M13 16h3"/>',
+    military:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>',
+    strategic:'<path d="M12 2c3 2 5 6 5 11l-2 4H9l-2-4c0-5 2-9 5-11z"/><circle cx="12" cy="10" r="2"/><path d="M9 17l-3 4M15 17l3 4"/>',
+    naval:'<circle cx="12" cy="5" r="2"/><path d="M12 7v14M5 13a7 7 0 0014 0M8 10h8"/>',
+    exp:'<circle cx="12" cy="12" r="1.6"/><ellipse cx="12" cy="12" rx="9.5" ry="3.6"/><ellipse cx="12" cy="12" rx="9.5" ry="3.6" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9.5" ry="3.6" transform="rotate(-60 12 12)"/>',
+    unknown:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 115 .5c0 1.5-2.5 2-2.5 3.5M12 17h.01"/>'},
+  check:'<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg>',
+  lock:'<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>',
+  tabs:[['industry','Industry'],['civ','Civilization'],['military','Military'],['strategic','Strategic'],['naval','Naval']],
+};
+const techTab=r=>r.tab||'industry';
+function techUnlocks(id){return [...new Set(Object.keys(RECIPES).filter(k=>RECIPES[k].res===id).map(ro).concat(Object.keys(SMELT).filter(k=>SMELT[k].res===id).map(k=>SMELT[k].o)))].filter(k=>ITEMS[k]);}
+function techLayout(tab){
+  const key=tab+':'+RESEARCH.length;if(TT.cache[key])return TT.cache[key];
+  const nodes=RESEARCH.filter(r=>techTab(r)===tab).map(r=>({id:r.id,r,exp:null,un:techUnlocks(r.id)}));
+  if(tab==='industry')for(const x of EXPERIMENTS)nodes.push({id:x.id,r:{id:x.id,n:x.n,req:[x.after],d:x.d,cost:0},exp:x,un:[]});
+  const by={};for(const n of nodes)by[n.id]=n;
+  const depth=n=>{if(n.depth!==undefined)return n.depth;n.depth=0;let d=0;for(const q of n.r.req)if(by[q])d=Math.max(d,depth(by[q])+1);return n.depth=d;};
+  nodes.forEach(depth);
+  const cols=[];for(const n of nodes)(cols[n.depth]=cols[n.depth]||[]).push(n);
+  const step=TT.NH+TT.GY,place=c=>{let y=-1e9;for(const n of c){n.y=Math.max(n.bary,y+step);y=n.y;}};
+  for(const c of cols){c.sort((a,b)=>(a.r.tier||1)-(b.r.tier||1)||(a.r.cost||0)-(b.r.cost||0));c.forEach((n,i)=>{n.y=i*step;n.bary=n.y;});}
+  const kids={};for(const n of nodes)for(const q of n.r.req)if(by[q])(kids[q]=kids[q]||[]).push(n);
+  for(let pass=0;pass<4;pass++){ // barycentric sweeps: children follow parents, then parents centre on children
+    for(let d=1;d<cols.length;d++){for(const n of cols[d]){const ps=n.r.req.filter(q=>by[q]);n.bary=ps.length?ps.reduce((s,q)=>s+by[q].y,0)/ps.length:n.y;}cols[d].sort((a,b)=>a.bary-b.bary);place(cols[d]);}
+    for(let d=cols.length-2;d>=0;d--){for(const n of cols[d]){const k=kids[n.id]||[];n.bary=k.length?k.reduce((s,m)=>s+m.y,0)/k.length:n.y;}cols[d].sort((a,b)=>a.bary-b.bary);place(cols[d]);}}
+  let minY=1e9,maxY=-1e9;for(const n of nodes){minY=Math.min(minY,n.y);maxY=Math.max(maxY,n.y);}
+  for(const n of nodes){n.y=Math.round(n.y-minY+TT.PAD);n.x=TT.PAD+n.depth*(TT.NW+TT.GX);}
+  const L={nodes,by,w:TT.PAD*2+cols.length*(TT.NW+TT.GX)-TT.GX,h:Math.round(maxY-minY)+TT.NH+TT.PAD*2};
+  return TT.cache[key]=L;
+}
+function techState(n){
+  if(n.exp){const x=n.exp;if(research[x.id])return 'done';if(!research[x.after])return 'lock';return 'afford';}
+  const r=n.r;if(research[r.id])return 'done';if(!r.req.every(q=>research[q]))return 'lock';return canPay(resCost(r),r.mat||{})?'afford':'ready';
+}
+const techName=id=>{const r=RESEARCH.find(x=>x.id===id)||EXPERIMENTS.find(x=>x.id===id);return r?r.n:id;};
+function techIcon(n,tab){
+  if(n.exp&&!research[n.exp.after])return '<svg viewBox="0 0 24 24">'+TT.glyph.unknown+'</svg>';
+  if(n.un.length)return img(n.un[0]);return '<svg viewBox="0 0 24 24">'+(n.exp?TT.glyph.exp:TT.glyph[tab]||TT.glyph.industry)+'</svg>';
+}
+function drawRes(){
+  const tabs=TT.tabs.map(([k,l])=>[k,l,k==='industry'?1:k==='civ'?unlockedNav('cities'):unlockedNav(k)]);
+  if(!tabs.find(t=>t[0]===resTab&&t[2]))resTab='industry';
+  setHTML($('resTabs'),tabs.filter(t=>t[2]).map(t=>'<button data-restab="'+t[0]+'" class="'+(resTab===t[0]?'on':'')+'">'+t[1]+'</button>').join('')+'<button data-close="res">Close <kbd>T</kbd></button>');
+  const L=techLayout(resTab),st={};for(const n of L.nodes)st[n.id]=techState(n);
+  let sel=TT.sel[resTab];if(!sel||!L.by[sel]){const pick=L.nodes.find(n=>st[n.id]==='afford')||L.nodes.find(n=>st[n.id]==='ready')||L.nodes.find(n=>st[n.id]!=='done')||L.nodes[0];sel=TT.sel[resTab]=pick&&pick.id;TT.scrollTo=true;}
+  let svg='<svg class="tt-svg" width="'+L.w+'" height="'+L.h+'" aria-hidden="true">';
+  for(const n of L.nodes)for(const q of n.r.req){const p=L.by[q];if(!p)continue;
+    const x1=p.x+TT.NW,y1=p.y+TT.NH/2,x2=n.x,y2=n.y+TT.NH/2,m=TT.GX/2,cl=st[n.id]==='done'?'e-done':st[q]==='done'?'e-ready':'e-lock';
+    svg+='<path class="'+cl+(n.id===sel||q===sel?' e-hl':'')+'" d="M'+x1+' '+y1+'C'+(x1+m)+' '+y1+','+(x2-m)+' '+y2+','+x2+' '+y2+'"/>';}
+  svg+='</svg>';
+  let nodes='';
+  for(const n of L.nodes){const s=st[n.id],r=n.r,hidden=n.exp&&!research[n.exp.after];
+    const cost=n.exp?'<span class="tc">materials</span>':s==='done'?'<span class="tc ok">Researched</span>':'<span class="tc'+(money<resCost(r)?' miss':'')+'">'+$s(resCost(r))+'</span>'+Object.keys(r.mat||{}).slice(0,2).map(k=>'<span class="tc'+(stock(k)<r.mat[k]?' miss':'')+'">'+img(k)+fmt(r.mat[k])+'</span>').join('');
+    const cross=r.req.filter(q=>!L.by[q]&&!research[q]);
+    nodes+='<button class="tn s-'+s+(n.exp?' exp':'')+(n.id===sel?' sel':'')+'" style="left:'+n.x+'px;top:'+n.y+'px" data-tsel="'+n.id+'" aria-label="'+esc(hidden?'Unknown technology':r.n)+'">'+
+      '<span class="ti">'+techIcon(n,resTab)+'</span><span class="tx"><b>'+esc(hidden?'Unknown signal':r.n)+'</b><span class="tcs">'+cost+'</span>'+
+      (cross.length?'<span class="tx2">needs '+cross.map(techName).join(', ')+'</span>':'')+'</span>'+
+      (s==='done'?'<span class="st">'+TT.check+'</span>':s==='lock'?'<span class="st">'+TT.lock+'</span>':'')+'</button>';}
+  const sc=$('resBody').querySelector('.tt-scroll'),keep=sc?[sc.scrollLeft,sc.scrollTop]:null;
+  setHTML($('resBody'),'<div class="tt"><div class="tt-scroll"><div class="tt-canvas" style="width:'+L.w+'px;height:'+L.h+'px">'+svg+nodes+'</div></div><div class="tt-side">'+techSide(L,sel,st)+'</div></div>');
+  const sc2=$('resBody').querySelector('.tt-scroll');
+  if(sc2){if(TT.scrollTo){TT.scrollTo=false;const n=L.by[sel];if(n){sc2.scrollLeft=Math.max(0,n.x-sc2.clientWidth/2+TT.NW/2);sc2.scrollTop=Math.max(0,n.y-sc2.clientHeight/2+TT.NH/2);}}
+    else if(keep){sc2.scrollLeft=keep[0];sc2.scrollTop=keep[1];}}
+}
+function techSide(L,id,st){
+  const n=L.by[id];if(!n)return '<p class="empty">Select a technology.</p>';
+  const r=n.r,s=st[id],pill={done:['ok','Researched'],afford:['go','Ready to research'],ready:['warn','Needs money or materials'],lock:['lock','Locked']}[s];
+  let h='<span class="eyebrow">'+(n.exp?'Experimental':(TT.tabs.find(t=>t[0]===resTab)||['',''])[1]+' · tier '+(r.tier||1))+'</span>';
+  if(n.exp&&!research[n.exp.after])return h+'<h3 class="tt-h">Unknown signal</h3><p class="empty">Research '+techName(n.exp.after)+' to pick up this signal.</p>'+techLegend();
+  h+='<h3 class="tt-h">'+esc(r.n)+'</h3><span class="pill p-'+pill[0]+'">'+pill[1]+'</span><p class="tt-d">'+esc(r.d)+'</p>';
+  if(n.un.length)h+='<div><span class="eyebrow">Unlocks</span><div class="tt-un">'+n.un.map(k=>'<span class="ing" title="'+esc(ITEMS[k].n)+'">'+img(k)+esc(ITEMS[k].n)+'</span>').join('')+'</div></div>';
+  if(r.req.length)h+='<div><span class="eyebrow">Requires</span><div class="tt-req">'+r.req.map(q=>{const other=!L.by[q],t=other&&(RESEARCH.find(x=>x.id===q)||{}).tab;
+    return '<button class="small'+(research[q]?' ok':'')+'" data-tsel="'+(other?(t||'industry')+'>'+q:q)+'">'+(research[q]?'✓ ':'')+esc(techName(q))+(other?' ('+(TT.tabs.find(x=>x[0]===(t||'industry'))||['',''])[1]+')':'')+'</button>';}).join('')+'</div></div>';
+  if(n.exp){const x=n.exp,got=xp[x.id]||{};
+    h+='<div><span class="eyebrow">Contribute materials</span><div class="tt-un">'+Object.keys(x.need).map(k=>'<span class="ing'+((got[k]||0)<xpNeed(x,k)?'':' good')+'">'+img(k)+(got[k]||0)+'/'+xpNeed(x,k)+'</span>').join('')+'</div></div>'+
+      (research[x.id]?'':'<button class="primary" data-co="xp:'+x.id+'">Contribute from inventory</button>');}
+  else if(s!=='done'){h+='<div><span class="eyebrow">Cost</span><div class="tt-un">'+costHTML(resCost(r),r.mat||{})+'</div></div>'+
+    '<button class="money big" data-res="'+r.id+'"'+(s==='afford'?'':' disabled')+'>Research</button>';
+    if(stats.rp>0)h+='<p class="empty">Research credit: '+$$(stats.rp)+' comes off this price.</p>';}
+  return h+techLegend();
+}
+const techLegend=()=>'<div class="tt-leg"><span><i class="lg done"></i>Researched</span><span><i class="lg afford"></i>Ready</span><span><i class="lg ready"></i>Short on money</span><span><i class="lg lock"></i>Locked</span><p class="empty">Materials come from your inventory first, then chests and depots. Drag the tree to pan.</p></div>';
+function techSelect(v){
+  if(v.includes('>')){const[t,id]=v.split('>');if(t==='civ'&&!unlockedNav('cities')||t!=='industry'&&t!=='civ'&&!unlockedNav(t)){toast('That branch is not unlocked yet.');return;}resTab=t;TT.sel[t]=id;}
+  else TT.sel[resTab]=v;TT.scrollTo=v.includes('>');cache.resBody=null;drawRes();
+}
+document.addEventListener('click',ev=>{const b=ev.target.closest('[data-tsel]');if(!b||TT.dragged)return;techSelect(b.dataset.tsel);});
+document.addEventListener('dblclick',ev=>{const b=ev.target.closest('.tn');if(!b)return;const r=RESEARCH.find(x=>x.id===b.dataset.tsel);if(r){const q=document.querySelector('.tt-side [data-res="'+r.id+'"]');if(q&&!q.disabled)q.click();}});
+{let drag=null; // drag the tree to pan
+  document.addEventListener('pointerdown',ev=>{const s=ev.target.closest('.tt-scroll');if(!s||ev.button!==0)return;drag={s,x:ev.clientX,y:ev.clientY,l:s.scrollLeft,t:s.scrollTop,moved:false};TT.dragged=false;});
+  addEventListener('pointermove',ev=>{if(!drag)return;const dx=ev.clientX-drag.x,dy=ev.clientY-drag.y;if(!drag.moved&&Math.abs(dx)+Math.abs(dy)>6){drag.moved=true;drag.s.classList.add('panning');}
+    if(drag.moved){drag.s.scrollLeft=drag.l-dx;drag.s.scrollTop=drag.t-dy;}});
+  addEventListener('pointerup',()=>{if(!drag)return;TT.dragged=drag.moved;drag.s.classList.remove('panning');drag=null;setTimeout(()=>{TT.dragged=false;},0);});}
+
+// ---------- per-second hook ----------
+function ui15Second(){Sanctuary.second();}
+
 // ---------- introduction ----------
 const INTROS=[
   {n:'The Overseer',c:'#e3a52a',kind:'eye',pitch:520,lines:[
@@ -5140,16 +5406,17 @@ let last=0,acc=0,frame=0,gameSpeed=1,paused=false;
 function loop(now){
   if(!gameOn||titleCover){last=now;requestAnimationFrame(loop);return;}
   if(settings.fps&&now-last<1000/settings.fps-2){requestAnimationFrame(loop);return;}
-  const dt=Math.min(.1,(now-last)/1000||0);last=now;
+  const dt=Math.min(.1,(now-last)/1000||0);last=now;FDT=dt*60;
   {const want=cam.z<MAPZ?'world':'factory';if(want!==view)onView(want);}camStep();
   {const pan=700*dt/cam.z;
   const wm=view==='world',mv=(a,b)=>{camGoal=null;camFollow=false;cam.x+=a;cam.y+=b;};
   if(wm&&keys.w||keys.arrowup)mv(0,-pan);if(wm&&keys.s||keys.arrowdown)mv(0,pan);
   if(wm&&keys.a||keys.arrowleft)mv(-pan,0);if(wm&&keys.d||keys.arrowright)mv(pan,0);
-  if(!wm&&pl&&!pl.dead&&camFollow&&(pl.moving||plGoal)&&!camGoal){cam.x+=(pl.x*T-cam.x)*.12;cam.y+=((pl.y-.5)*T-cam.y)*.12;}
+  if(!wm&&pl&&!pl.dead&&camFollow&&(pl.moving||plGoal)&&!camGoal){const k=1-Math.pow(.88,dt*60);cam.x+=(IX(pl)*T-cam.x)*k;cam.y+=((IY(pl)-.5)*T-cam.y)*k;}
   cam.x=Math.max(0,Math.min(W*T,cam.x));cam.y=Math.max(0,Math.min(H*T,cam.y));}
   if(paused)acc=0;else{acc+=dt*gameSpeed;let n=0;const cap=6*gameSpeed;while(acc>=1/60&&n<cap){tick();acc-=1/60;n++;}if(n>=cap)acc=0;}
-  for(const f of floats)f.t++;floats=floats.filter(f=>f.t<70);for(const f of ffx)f.t++;ffx=ffx.filter(f=>f.t<24);
+  ALPHA=paused?1:Math.min(1,acc*60);
+  for(const f of floats)f.t++;sweep(floats,FX.aFloat,FX.pf);for(const f of ffx)f.t++;sweep(ffx,FX.aBuilt,FX.pc);
   ctxFrame();render(ticks/60);
   frame++;
   if(frame%6===0){status();drawHUD();}

@@ -83,7 +83,9 @@ If the site is cancelled while carrying, the building returns to your inventory 
   1. the bay
   2. the nearest hub
   3. your inventory and chests
-  4. otherwise, pay 1.5 × the normal repair cost in cash
+  4. otherwise, pay 1.5 × the normal repair cost in cash, but only after **Emergency Requisitions** is researched
+
+`canFix(home, m)` runs the same checks without spending anything. The manager drafts no engineer for a machine it can't fix. Instead it marks the machine (`noKit`), shows NO REPAIR KIT on it, and floats "Missing Repair Kit" at most every 10 s.
 
 ```
 IDLE ──assign──▶ TO_MACHINE ──arrive, take kit──▶ REPAIR (2 s) ──▶ condition 100% ──▶ RETURN ──▶ IDLE
