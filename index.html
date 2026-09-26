@@ -370,7 +370,7 @@ kbd{font-family:var(--mono);font-size:11px;background:var(--panel2);border:1px s
   <div class="mbody" id="settingsBody"></div>
 </div>
 <div id="wpanel" class="panel modal" hidden>
-  <div class="mhead"><h2 id="wTitle">World</h2><div class="tabs" id="wTabs"><button data-wtab="prov">Province</button><button data-wtab="nations">Nations</button><button data-wtab="news">News</button></div></div>
+  <div class="mhead"><h2 id="wTitle">World</h2><button class="small" data-close="wpanel">Close</button><div class="tabs" id="wTabs"><button data-wtab="prov">Province</button><button data-wtab="nations">Nations</button><button data-wtab="news">News</button></div></div>
   <div class="mbody" id="wBody"></div>
 </div>
 <div id="intro" class="intro" hidden>
@@ -443,7 +443,7 @@ kbd{font-family:var(--mono);font-size:11px;background:var(--panel2);border:1px s
 <script>
 (()=>{
 'use strict';
-const W=160,H=160,T=32,PX=16,CS=16,CW=W/CS,CH=H/CS,PS=32,PN=5;
+const W=256,H=160,T=32,PX=16,CS=16,CW=W/CS,CH=H/CS,PS=32,PN=5;
 const DX=[0,1,0,-1],DY=[-1,0,1,0];
 const GAP=0.25,BELT_SPEED=1.875,DRILL_RATE=0.5,CHEST_CAP=800,TRAIN_CAP=50,TRAIN_SPEED=12;
 const SAVE_KEY='fabrikat-save-v3',BP_KEY='fabrikat-blueprints';
@@ -687,8 +687,8 @@ const chunks=new Array(CW*CH).fill(null);
 
 const inb=(x,y)=>x>=0&&y>=0&&x<W&&y<H;
 const at=(x,y)=>inb(x,y)?grid[y*W+x]:null;
-const plotOf=(x,y)=>((y/PS)|0)*PN+((x/PS)|0);
-const ownedAt=(x,y)=>inb(x,y)&&owned[plotOf(x,y)]===1;
+const plotOf=(x,y)=>provAtTile(x,y);
+const ownedAt=(x,y)=>{const g=provAtTile(x,y);return g>=0&&world.provs[g].owner===0;};
 const BELT_MUL={belt:1,fast_belt:2,express_belt:3,magnetic_belt:5};
 const isBelt=e=>!!e&&!!BELT_MUL[e.type];
 const isIns=e=>!!e&&(e.type==='inserter'||e.type==='fast_inserter');
@@ -711,9 +711,6 @@ const machSpd=()=>(1+.25*upgLv('machine'))*(research.x_over?1.5:1)*indMult()*cre
 const beltSpd=t=>BELT_SPEED*BELT_MUL[t]*(1+.25*upgLv('belt'));
 const chestCap=()=>CHEST_CAP*(1+upgLv('chest'));
 const upgCost=k=>Math.round(UPGRADES[k].base*Math.pow(UPGRADES[k].mul,upgLv(k)));
-const plotRing=p=>Math.max(Math.abs(p%PN-2),Math.abs((p/PN|0)-2));
-function plotPrice(p){const r=plotRing(p);let n=0;for(let i=0;i<PN*PN;i++)if(owned[i]&&plotRing(i)===r)n++;return Math.round([0,400,40000][r]*Math.pow(1.6,n)*(perk('titan')?.8:1));}
-function plotBuyable(p){if(owned[p])return false;const x=p%PN,y=p/PN|0;return [[1,0],[-1,0],[0,1],[0,-1]].some(([a,b])=>{const X=x+a,Y=y+b;return X>=0&&Y>=0&&X<PN&&Y<PN&&owned[Y*PN+X];});}
 const marketPrice=k=>Math.ceil((k==='moneygen'?2500:Math.max(5,VAL[k]*2.5))*(perk('fabrik')?.75:1));
 const footprint=t=>t==='moneygen'||t==='station'||t==='depot'||t==='generator'||t==='geo'||t==='tank'||t==='reactor'?[2,2]:[1,1];
 const repairCost=e=>Math.max(2,Math.ceil(VAL[e.type]*(1-e.eff)*.8));
@@ -723,26 +720,7 @@ const produce=(t,n)=>{prodC[t]=(prodC[t]||0)+n;stats.made[t]=(stats.made[t]||0)+
 const consume=(t,n)=>{consC[t]=(consC[t]||0)+n;};
 
 // ---------- map ----------
-function genMap(s){
-  seed=s;ore.fill(0);amt.fill(0);
-  const r=mulberry(s),cx=W/2,cy=H/2;
-  const put=(o,X,Y,rad,base,k)=>{
-    for(let y=Math.floor(Y-rad-3);y<=Y+rad+3;y++)for(let x=Math.floor(X-rad-3);x<=X+rad+3;x++){
-      if(!inb(x,y)||plotOf(x,y)!==plotOf(Math.round(X),Math.round(Y))||Math.abs(x-cx+.5)<4&&Math.abs(y-cy+.5)<4)continue;
-      const d=Math.hypot(x-X,y-Y)/rad+(vnoise(x*.35,y*.35,s+k*13)-.5)*.9;
-      if(d<1){const i=y*W+x;ore[i]=ORES.indexOf(o)+1;amt[i]=Math.round((1.15-d*.6)*base);}
-    }
-  };
-  let k=0;
-  put('iron_ore',cx-9,cy-8,4.6,700,k++);put('copper_ore',cx+9,cy-8,4.2,700,k++);put('coal',cx-9,cy+9,4,700,k++);put('stone',cx+9,cy+9,3.6,600,k++);
-  PLOTS.forEach(([,,list],p)=>{
-    const px=(p%PN)*PS,py=(p/PN|0)*PS,ring=plotRing(p);
-    list.forEach(o=>{const X=px+7+r()*(PS-14),Y=py+7+r()*(PS-14);put(o,X,Y,3.5+r()*2.5+ring*.5,500+ring*500,k++);});
-  });
-  amt0.set(amt);chunks.fill(null);
-}
-const dirtyChunk=(x,y)=>{chunks[((y/CS)|0)*CW+((x/CS)|0)]=null};
-function mineTile(i){amt[i]--;if(amt[i]<=0){amt[i]=0;ore[i]=0;dirtyChunk(i%W,(i/W)|0);}}
+const dirtyChunk=(x,y)=>{const k=((y/CS)|0)*CW+((x/CS)|0);chunks[k]=null;chunksLo[k]=null;};
 
 // ---------- entities ----------
 function mk(type,x,y,dir){
@@ -772,7 +750,7 @@ function mk(type,x,y,dir){
 }
 function addEnt(e){e.id=nextId++;const w=e.w||1,h=e.h||1;for(let y=0;y<h;y++)for(let x=0;x<w;x++)grid[(e.y+y)*W+e.x+x]=e;ents.push(e);listsDirty=true;}
 function delEnt(e){const w=e.w||1,h=e.h||1;for(let y=0;y<h;y++)for(let x=0;x<w;x++)grid[(e.y+y)*W+e.x+x]=null;ents.splice(ents.indexOf(e),1);listsDirty=true;}
-function rebuild(){syncNets();L={belt:[],ins:[],drill:[],furn:[],asm:[],gen:[],st:[],sp:[],mt:[],pw:[],fl:[]};for(const e of ents){
+function rebuild(){syncNets();L={belt:[],ins:[],drill:[],furn:[],asm:[],gen:[],st:[],sp:[],mt:[],pw:[],fl:[]};for(const e of ents){e.off=!e.hq&&!ownedAt(e.x,e.y);if(e.off)continue;
   if(e.type==='generator'||e.type==='solar'||e.type==='geo'||e.type==='accum'||e.type==='reactor'){L.pw.push(e);continue;}
   if(isFNode(e)){L.fl.push(e);continue;}
   if(isBelt(e))L.belt.push(e);else if(isIns(e))L.ins.push(e);else if(e.type==='drill')L.drill.push(e);else if(e.type==='furnace')L.furn.push(e);
@@ -860,7 +838,7 @@ const nextMilestone=()=>MILESTONES.find(m=>!ms[m.id]);
 function contractFor(t){return contracts.active.find(c=>c.item===t&&(c.kind==='supply'||c.got<c.qty));}
 function producible(){
   const S=new Set(['iron_ore','copper_ore','coal','stone']);
-  for(let p=0;p<PN*PN;p++)if(owned[p])for(const o of PLOTS[p][2])S.add(o);
+  for(const d of depo)if(d.tiles>0&&world.provs[d.p].owner===0)S.add(d.o);
   let more=true;while(more){more=false;
     for(const k in SMELT)if(smeltOk(k)&&S.has(k)&&!S.has(SMELT[k].o)){S.add(SMELT[k].o);more=true;}
     for(const r in RECIPES)if(!S.has(ro(r))&&unlocked(r)&&Object.keys(RECIPES[r].in).every(i=>S.has(i))){S.add(ro(r));more=true;}}
@@ -1060,7 +1038,7 @@ function rollRates(){
 function survey(){
   const M={};machinesN=0;const run=new Set(),miss={};let genRejE=null,worn=0,wornFirst=null,blockFirst=null,fuelFirst=null,emptyFirst=null,nofuel=0;
   for(const e of ents){
-    if(!WEARS.has(e.type))continue;
+    if(!WEARS.has(e.type)||e.off)continue;
     machinesN++;const m=M[e.type]||(M[e.type]={n:0,work:0,starve:0,block:0,idle:0,eff:0});
     m.n++;m.eff+=e.eff;
     const st=e.st==='work'?'work':e.st==='block'||e.st==='byfull'?'block':e.st==='idle'||e.st==='empty'?'idle':'starve';m[st]++;
@@ -1139,7 +1117,7 @@ function placeOk(type,x,y){
 }
 function tryPlace(x,y,type,dir,quiet){
   const why=placeOk(type,x,y);
-  if(why==='land'){if(!quiet)toastOnce('You don’t own this land yet. Buy it in Company > Land.');return null;}
+  if(why==='land'){if(!quiet)toastOnce('This land isn’t yours. Click it to buy it or see who owns it.');return null;}
   if(why==='busy')return null;
   if(why==='ore'){if(!quiet)toastOnce('Drills go on ore.');return null;}
   if(why==='region'){if(!quiet)toastOnce('Geothermal plants only work on volcanic land. Buy a Volcanic plot in Company > Land.');return null;}
@@ -1497,30 +1475,6 @@ function nugget(g,o,x,y,r){
   g.fillStyle='rgb('+c[0]+','+c[1]+','+c[2]+')';circ(g,x,y,r);g.fill();g.strokeStyle='rgba(20,18,16,.6)';g.lineWidth=.8;g.stroke();
   g.fillStyle='rgba(255,255,255,.5)';circ(g,x-r*.35,y-r*.35,r*.34);g.fill();
 }
-function chunk(ci,cj){
-  let c=chunks[cj*CW+ci];if(c)return c;
-  c=document.createElement('canvas');c.width=c.height=CS*PX;
-  const g=c.getContext('2d'),SZ=CS*PX,im=g.createImageData(SZ,SZ),d=im.data;
-  for(let ty=0;ty<CS;ty++)for(let tx=0;tx<CS;tx++){
-    const X=ci*CS+tx,Y=cj*CS+ty,o=ore[Y*W+X],gr=GROUND[PLOTS[plotOf(X,Y)][1]],fc=o?FIELD[ORES[o-1]]:null;
-    const same=(x,y)=>inb(x,y)&&ore[y*W+x]===o,nN=o&&same(X,Y-1),nS=o&&same(X,Y+1),nW=o&&same(X-1,Y),nE=o&&same(X+1,Y);
-    for(let py=0;py<PX;py++)for(let px=0;px<PX;px++){
-      const wx=X*PX+px,wy=Y*PX+py,n=vnoise(wx/70,wy/70,seed)*.6+vnoise(wx/18,wy/18,seed+7)*.3+hash(wx,wy,seed)*.1;
-      let k=.93+n*.12;if(px===0||py===0)k*=.955;
-      let R=gr[0]*k,G=gr[1]*k,B=gr[2]*k;
-      if(o){let dd=99;if(!nN)dd=Math.min(dd,py);if(!nS)dd=Math.min(dd,PX-1-py);if(!nW)dd=Math.min(dd,px);if(!nE)dd=Math.min(dd,PX-1-px);
-        const wob=1+vnoise(wx/4.5,wy/4.5,seed+11)*4.5;
-        if(dd>=wob){const f=dd<wob+1.3?.74:1,v=.95+vnoise(wx/9,wy/9,seed+3)*.1;R=fc[0]*v*f;G=fc[1]*v*f;B=fc[2]*v*f;}}
-      const i=((ty*PX+py)*SZ+tx*PX+px)*4;d[i]=R;d[i+1]=G;d[i+2]=B;d[i+3]=255;
-    }
-  }
-  g.putImageData(im,0,0);
-  for(let ty=0;ty<CS;ty++)for(let tx=0;tx<CS;tx++){const X=ci*CS+tx,Y=cj*CS+ty,o=ore[Y*W+X];if(!o)continue;const on=ORES[o-1];
-    const n=on==='wood'?2:hash(X,Y,91)<.55?(hash(X,Y,92)<.5?2:3):0;
-    for(let k=0;k<n;k++)nugget(g,on,tx*PX+4+hash(X,Y,k*5+1)*8,ty*PX+4+hash(X,Y,k*5+2)*8,on==='wood'?3.2+hash(X,Y,k*5+3)*1.3:1.6+hash(X,Y,k*5+3)*1.2);}
-  chunks[cj*CW+ci]=c;return c;
-}
-
 // ---------- build palette ----------
 const BUILD_CATS=[
   ['mining','Mining','pick',CC.mine,['drill','well']],
@@ -1722,6 +1676,7 @@ function resize(){dpr=Math.min(2,window.devicePixelRatio||1);SW=innerWidth;SH=in
 const sx=wx=>(wx-cam.x)*cam.z+SW/2,sy=wy=>(wy-cam.y)*cam.z+SH/2;
 const mouse={x:0,y:0,tx:0,ty:0,down:-1,lx:0,ly:0,placed:null};
 function render(tm){
+  if(view==='world'){renderMap(tm);return;}
   const z=cam.z;
   ctx.setTransform(dpr,0,0,dpr,0,0);ctx.fillStyle='#2a2622';ctx.fillRect(0,0,SW,SH);
   const x0=Math.max(0,Math.floor((cam.x-SW/2/z)/T)),x1=Math.min(W-1,Math.floor((cam.x+SW/2/z)/T));
@@ -1729,7 +1684,7 @@ function render(tm){
   ctx.imageSmoothingEnabled=true;
   for(let cj=(y0/CS|0);cj<=(y1/CS|0);cj++)for(let ci=(x0/CS|0);ci<=(x1/CS|0);ci++){
     const wx=ci*CS*T,wy=cj*CS*T,a=Math.floor(sx(wx)),b=Math.floor(sy(wy)),c=Math.floor(sx(wx+CS*T)),d=Math.floor(sy(wy+CS*T));
-    ctx.drawImage(chunk(ci,cj),a,b,c-a,d-b);
+    ctx.drawImage(z<.3?chunkLo(ci,cj):chunk(ci,cj),a,b,c-a,d-b);
   }
   ctx.imageSmoothingEnabled=true;
   if(tool&&z>=.6){ctx.strokeStyle='rgba(40,32,20,.16)';ctx.lineWidth=1;ctx.beginPath();
@@ -1759,20 +1714,8 @@ function render(tm){
     ctx.fillStyle=O;ctx.fillRect(-24,-8,48,16);ctx.fillStyle='#5d6870';ctx.fillRect(-23,-7,24,14);ctx.fillStyle='#e3a52a';ctx.fillRect(3,-7,20,14);ctx.fillStyle='#16150f';ctx.fillRect(15,-4,5,8);
     if(s.tr.n){const k=Object.keys(s.tr.cargo)[0];if(k)ctx.drawImage(ICON[k],-18,-6,12,12);}
     ctx.restore();}
-  drawHaze();drawNight(mids,tm);if(overlayOn)drawOverlay(mids,belts);if(polOverlay)drawPolOverlay();drawFocus(tm,drawAt);drawTags(mids);drawHQLabel();
-  const px0=(x0/PS)|0,px1=(x1/PS)|0,py0=(y0/PS)|0,py1=(y1/PS)|0;
-  ctx.textAlign='center';ctx.textBaseline='middle';
-  for(let py=py0;py<=py1;py++)for(let px=px0;px<=px1;px++){
-    const p=py*PN+px;if(owned[p])continue;
-    const a=sx(px*PS*T),b=sy(py*PS*T),s=PS*T*z,k=Math.max(.7,z);
-    ctx.fillStyle='rgba(34,30,26,.55)';ctx.fillRect(a,b,s,s);
-    ctx.fillStyle='rgba(161,156,134,.8)';ctx.font='600 '+Math.max(10,12*z)+'px "Chakra Petch",sans-serif';ctx.fillText(REGIONS[PLOTS[p][1]].n.toUpperCase(),a+s/2,b+s/2-30*k);
-    if(plotBuyable(p)){
-      ctx.strokeStyle='rgba(227,165,42,.55)';ctx.setLineDash([10,8]);ctx.lineWidth=2;ctx.strokeRect(a+3,b+3,s-6,s-6);ctx.setLineDash([]);
-      ctx.fillStyle='rgba(236,230,211,.92)';ctx.font='700 '+Math.max(12,18*z)+'px "Chakra Petch",sans-serif';ctx.fillText(PLOTS[p][0],a+s/2,b+s/2-8*k);
-      ctx.fillStyle='#d9b54a';ctx.font='600 '+Math.max(11,14*z)+'px "JetBrains Mono",monospace';ctx.fillText('Buy '+$s(plotPrice(p)),a+s/2,b+s/2+14*k);
-    }else{ctx.fillStyle='rgba(161,156,134,.6)';ctx.font='600 '+Math.max(11,15*z)+'px "Chakra Petch",sans-serif';ctx.fillText(PLOTS[p][0],a+s/2,b+s/2);}
-  }
+  drawTerritory(x0,x1,y0,y1);drawHaze();drawNight(mids,tm);if(overlayOn)drawOverlay(mids,belts);if(polOverlay)drawPolOverlay();drawFocus(tm,drawAt);drawTags(mids);drawHQLabel();
+  drawProvLabels();drawWorldLayer(tm,false);
   const hx=mouse.tx,hy=mouse.ty;
   if(tool==='bpsel'&&bpSel){const a=Math.min(bpSel.x0,bpSel.x1),b=Math.min(bpSel.y0,bpSel.y1),c=Math.max(bpSel.x0,bpSel.x1),d=Math.max(bpSel.y0,bpSel.y1);
     ctx.fillStyle='rgba(79,143,208,.15)';ctx.fillRect(sx(a*T),sy(b*T),(c-a+1)*T*z,(d-b+1)*T*z);ctx.strokeStyle='#4f8fd0';ctx.setLineDash([6,4]);ctx.lineWidth=2;ctx.strokeRect(sx(a*T),sy(b*T),(c-a+1)*T*z,(d-b+1)*T*z);ctx.setLineDash([]);}
@@ -1824,8 +1767,8 @@ function status(){
   else if(tool==='bpsel')s='<b>Blueprint</b> &middot; drag a box around buildings to save them<br>';
   else if(tool==='bp'&&bps[bpIdx])s='<b>'+esc(bps[bpIdx].name)+'</b> &middot; R rotates &middot; click to place, shift+click buys missing buildings<br>';
   else if(tool&&ITEMS[tool])s='<b>'+ITEMS[tool].n+'</b>'+(toolRec?' making '+ITEMS[toolRec].n:'')+' &middot; facing '+['up','right','down','left'][tdir]+' &middot; R rotates<br>';
-  s+=REGIONS[PLOTS[p][1]].n+' &middot; '+PLOTS[p][0]+'<br>';
-  if(!owned[p])s+=(plotBuyable(p)?'For sale: <span class="v">'+$$(plotPrice(p))+'</span> &middot; click to buy':'Not for sale yet. Buy a neighbouring plot first.')+'<br>';
+  {const g=provAtTile(x,y);if(g<0)s+='Sea<br>';else{const P=world.provs[g];s+=TERR[P.terr].n+' &middot; '+P.name+(P.owner===0?'':' &middot; '+(P.owner>0?NATIONS[P.owner].n:'Neutral'))+'<br>';
+    if(P.owner!==0)s+=(provBuyable(P)?'For sale: <span class="v">'+$$(provPrice(P))+'</span> &middot; click to see':P.owner>0?'Foreign land &middot; click to see':'Neutral. Only land next to yours is for sale.')+'<br>';}}
   if(e){s+='<b>'+(e.hq?'HQ Money Generator':ITEMS[e.type].n)+'</b>';
     if(e.type==='moneygen')s+=' &middot; '+GEN[e.mk].n+', takes '+GEN[e.mk].takes;
     if(e.type==='drill')s+=' &middot; '+(ore[i]?ITEMS[ORES[ore[i]-1]].n+', '+amt[i]+' left':'no ore left');
@@ -1835,7 +1778,7 @@ function status(){
     if(e.net)s+=' &middot; '+netLine(e.net);
     if(overlayOn&&e.hw!==undefined)s+='<br>'+causeOf(e);
     s+=' &middot; click to open';}
-  else if(ore[i]){const t=ORES[ore[i]-1];s+='<b>'+ITEMS[t].n+'</b> &middot; '+amt[i]+' left &middot; sells <span class="v">'+$$(VAL[t])+'</span>'+(tool||!owned[p]?'':' &middot; hold click to mine');}
+  else if(ore[i]){const t=ORES[ore[i]-1];s+='<b>'+ITEMS[t].n+'</b> &middot; '+amt[i]+' left &middot; sells <span class="v">'+$$(VAL[t])+'</span>'+(tool||!ownedAt(x,y)?'':' &middot; hold click to mine');const dp=depGrid[i]?depo[depGrid[i]-1]:null;if(dp)s+='<br>Deposit '+Math.round(dp.left/dp.amt0*100)+'% left &middot; '+fmt(dp.left)+' ore in '+dp.tiles+' tiles';}
   setHTML($('status'),s);
 }
 function drawInv(){
@@ -1884,12 +1827,12 @@ function drawEnt(){
   }else if(isFNode(e)||e.type==='reactor'){h+=fluidPanel(e);
   }else if(e.type==='station'){
     const d=stationDest(e);
-    h+='<div class="kv"><span class="k">Role</span><span>'+(d?'Sends to the station at '+d.x+', '+d.y+' ('+PLOTS[plotOf(d.x,d.y)][0]+')':'Receives. Use inserters to unload it.')+'</span>'+
+    h+='<div class="kv"><span class="k">Role</span><span>'+(d?'Sends to the station at '+d.x+', '+d.y+' ('+provName(d.x,d.y)+')':'Receives. Use inserters to unload it.')+'</span>'+
       '<span class="k">Stored</span><span class="mono">'+total(e.inv)+'</span>'+(d?'<span class="k">Train</span><span>'+({load:'Loading',go:'On its way',back:'Returning'})[e.tr.st]+(e.tr.n?' with '+e.tr.n+' items':'')+'</span><span class="k">Trips</span><span class="mono">'+e.trips+' &middot; avg load '+(e.trips?Math.round(e.moved/e.trips/TRAIN_CAP*100):0)+'%</span>':'')+'</div>';
     h+='<div><h3>Stored</h3>'+cellList(e.inv,d?'none':'take')+'</div>';
     const others=L.st.filter(s=>s!==e);
     h+='<div><h3>Send to</h3><div class="list"><button data-act="dest:none"'+(!d?' disabled':'')+'>Receive only</button>'+
-      others.map(s=>'<button data-act="dest:'+s.x+','+s.y+'"'+(d===s?' disabled':'')+'>'+PLOTS[plotOf(s.x,s.y)][0]+' ('+s.x+', '+s.y+') &middot; '+Math.round(Math.hypot(s.x-e.x,s.y-e.y))+' tiles</button>').join('')+'</div>'+(others.length?'':'<p class="empty">Build a second station to set up a route.</p>')+'</div>';
+      others.map(s=>'<button data-act="dest:'+s.x+','+s.y+'"'+(d===s?' disabled':'')+'>'+provName(s.x,s.y)+' ('+s.x+', '+s.y+') &middot; '+Math.round(Math.hypot(s.x-e.x,s.y-e.y))+' tiles</button>').join('')+'</div>'+(others.length?'':'<p class="empty">Build a second station to set up a route.</p>')+'</div>';
     h+='<p class="empty">A sending station takes items from belts and inserters. Its train carries up to '+TRAIN_CAP+' items and leaves when full, or 5 seconds after the first item arrives.</p>';
   }else if(e.type==='maint'){
     h+='<div class="kv"><span class="k">Parts</span><span class="mono">'+e.parts+' / 20</span><span class="k">Repairs</span><span class="mono">'+e.fixed+'</span><span class="k">Range</span><span>10 tiles in every direction</span></div>'+
@@ -1899,7 +1842,7 @@ function drawEnt(){
   else if(isIns(e)){h+='<p class="empty">Takes items from the tile behind it and drops them in front, where the arrow points. It only picks up what the target can use.</p>';}
   setHTML($('entBody'),h);
 }
-function openEnt(e){focusFor=null;entOpen=e;cache.entBody=null;show('entp',true);drawEnt();}
+function openEnt(e){focusFor=null;entOpen=e;if(view==='factory'){show('wpanel',false);wsel=-1;}cache.entBody=null;show('entp',true);drawEnt();}
 function closeEnt(){entOpen=null;show('entp',false);}
 function entAct(a){
   const e=entOpen;if(!e)return;const i=a.indexOf(':'),k=i<0?a:a.slice(0,i),v=i<0?'':a.slice(i+1);
@@ -1983,10 +1926,7 @@ function drawCo(){
       h+='<div class="item"><span class="t">'+c.n+'</span><span class="d">'+c.d+'</span><div class="a">'+(o?'<button data-co="cos:'+k+'">'+(cos[k]?'On':'Off')+'</button>':c.ms?'<span class="badge">'+c.ms+' milestone</span>':'<button class="money" data-co="cos:'+k+'"'+(money<c.cost?' disabled':'')+'>'+$$(c.cost)+'</button>')+'</div></div>';}
     h+='</div></div><p class="empty">Money Generator upgrades are on each generator. Click one to open it.</p>';
   }else if(coTab==='land'){
-    h+='<p class="empty">Each plot is 32 &times; 32 tiles. Forests have wood, deserts sand and oil, mountains iron and tungsten, volcanic land rare earth and platinum, and the arctic lithium and titanium. You can only buy plots next to land you own.</p><div class="land">';
-    for(let p=0;p<PN*PN;p++){const o=owned[p],b=plotBuyable(p),ores=[...new Set(PLOTS[p][2])];
-      h+='<button class="plot'+(o?' own':b?'':' fog')+(p===coHL?' hl':'')+'" data-co="land:'+p+'"'+(o||!b?' disabled':'')+' title="'+PLOTS[p][0]+'"><span><span class="rg">'+REGIONS[PLOTS[p][1]].n+'</span><br><span class="pn">'+PLOTS[p][0]+'</span></span><span class="icons">'+(p===12?img('iron_ore')+img('copper_ore')+img('coal')+img('stone'):ores.map(img).join(''))+'</span><span class="pp">'+(o?'Owned':b?$s(plotPrice(p)):'')+'</span></button>';}
-    h+='</div>';
+    h+=landHTML();
   }else if(coTab==='market'){
     h+='<p class="empty">Buy buildings with cash instead of crafting them. Click buys 1, shift+click buys 10.'+(perk('fabrik')?' Fabrik Industries discount applied.':'')+'</p><div class="mk">';
     for(const k of Object.keys(ITEMS).filter(k=>ITEMS[k].place)){const ok=unlocked(k);
@@ -2015,7 +1955,8 @@ function coAct(a,shift){
     if(Object.keys(x.need).every(q=>(got[q]||0)>=xpNeed(x,q))){research[v]=1;toast('Discovery: '+x.n+'. '+x.d,'big');}else toast(gave?'Contributed '+gave+' items':'You have none of the materials it needs');}
   else if(k==='upg'){const u=UPGRADES[v];if(upgLv(v)<u.max&&money>=upgCost(v)){spend(upgCost(v));upg[v]=upgLv(v)+1;toast(u.n+' is now level '+upg[v]);}}
   else if(k==='cos'){if(cos[v]!==undefined)cos[v]=!cos[v];else if(!COSMETICS[v].ms&&money>=COSMETICS[v].cost){spend(COSMETICS[v].cost);cos[v]=true;toast('Bought '+COSMETICS[v].n);}}
-  else if(k==='land'){const p=+v;if(plotBuyable(p)&&money>=plotPrice(p)){spend(plotPrice(p));owned[p]=1;toast('Bought '+PLOTS[p][0],'big');}else if(plotBuyable(p))toast('Not enough money for '+PLOTS[p][0]);}
+  else if(k==='land'){buyProv(P_(+v));}
+  else if(k==='landsee'){const p=P_(+v);show('co',false);lookAt(p,.55);openProv(p.id);return;}
   else if(k==='buy'){const n=shift?10:1,cost=marketPrice(v)*n;if(money>=cost){spend(cost);add(inv,v,n);stats.buys=(stats.buys||0)+1;toast('Bought '+n+' '+ITEMS[v].n);}else toast('Not enough money');}
   else if(k==='accept'){const c=contracts.offers.find(q=>q.id==v);if(c&&contracts.active.length<3){contracts.offers.splice(contracts.offers.indexOf(c),1);c.buys=stats.buys||0;contracts.active.push(c);toast('Accepted '+c.code+': '+contractLine(c)+' '+ITEMS[c.item].n);}}
   else if(k==='deliver'){const c=contracts.active.find(q=>q.id==v);if(c){const n=Math.min(inv[c.item]||0,c.kind==='deliver'?c.qty-c.got:1e9);if(n>0){add(inv,c.item,-n);deliver(c,n);}}}
@@ -2094,7 +2035,7 @@ cv.addEventListener('pointerdown',ev=>{
   try{cv.setPointerCapture(ev.pointerId);}catch(_){}
   if(ev.pointerType==='touch'){touches.set(ev.pointerId,{x:ev.clientX,y:ev.clientY});if(touches.size===2){gest=gestInfo();mouse.down=-1;mining=null;wdrag=null;bpSel=null;return;}if(touches.size>2)return;}
   updMouse(ev);
-  if(view==='world'){if(ev.button===0)wdrag={x:ev.clientX,y:ev.clientY,cx:wcam.x,cy:wcam.y,moved:false};return;}const x=mouse.tx,y=mouse.ty;
+  if(view==='world'){if(ev.button===0)wdrag={x:ev.clientX,y:ev.clientY,cx:cam.x,cy:cam.y,moved:false};return;}const x=mouse.tx,y=mouse.ty;
   if(ev.button===2&&(tool==='bp'||tool==='bpsel')){tool=null;bpSel=null;uiDirty=true;return;}
   if(ev.button===2||(ev.button===0&&(tool==='remove'||ev.altKey))){mouse.down=2;removeAt(x,y);uiDirty=true;return;}
   if(ev.button!==0)return;
@@ -2104,17 +2045,17 @@ cv.addEventListener('pointerdown',ev=>{
   if(tool){mouse.placed=tryPlace(x,y,tool,tdir);uiDirty=true;}
   else{const e=at(x,y);
     if(e){openEnt(e);mouse.down=-1;}
-    else if(inb(x,y)&&!ownedAt(x,y)){openCo('land',plotOf(x,y));mouse.down=-1;}
+    else if(inb(x,y)&&!ownedAt(x,y)){openProv(provAtTile(x,y));mouse.down=-1;}
     else if(inb(x,y)&&ore[y*W+x])mining={x,y,p:0};}
 });
 cv.addEventListener('pointermove',ev=>{
   if(ev.pointerType==='touch'&&touches.has(ev.pointerId)){touches.set(ev.pointerId,{x:ev.clientX,y:ev.clientY});
     if(gest&&touches.size===2){const g=gestInfo(),f=g.d/gest.d,dx=g.cx-gest.cx,dy=g.cy-gest.cy;
-      if(view==='world'){const k=wScale();wcam.x-=dx/k;wcam.y-=dy/k;wcam.z=Math.max(1,Math.min(6,wcam.z*f));}
-      else{cam.x-=dx/cam.z;cam.y-=dy/cam.z;zoomAt(f,g.cx,g.cy);}
+      cam.x-=dx/cam.z;cam.y-=dy/cam.z;zoomAt(f,g.cx,g.cy);
       gest=g;return;}}
   updMouse(ev);
-  if(view==='world'){whov=provAt(mouse.x,mouse.y);if(wdrag){const dx=ev.clientX-wdrag.x,dy=ev.clientY-wdrag.y;if(Math.abs(dx)+Math.abs(dy)>5)wdrag.moved=true;if(wdrag.moved){const k=wScale();wcam.x=wdrag.cx-dx/k;wcam.y=wdrag.cy-dy/k;}}return;}const x=mouse.tx,y=mouse.ty;
+  if(view==='world'){whov=provAt(mouse.x,mouse.y);if(wdrag){const dx=ev.clientX-wdrag.x,dy=ev.clientY-wdrag.y;if(Math.abs(dx)+Math.abs(dy)>5)wdrag.moved=true;if(wdrag.moved){camGoal=null;cam.x=wdrag.cx-dx/cam.z;cam.y=wdrag.cy-dy/cam.z;}}return;}
+  {const g=provAtTile(mouse.tx,mouse.ty);whov=g>=0&&world.provs[g].owner!==0?g:-1;}const x=mouse.tx,y=mouse.ty;
   if(tool==='bpsel'&&bpSel&&mouse.down===0){bpSel.x1=Math.max(0,Math.min(W-1,x));bpSel.y1=Math.max(0,Math.min(H-1,y));return;}
   if(mouse.down===2){removeAt(x,y);uiDirty=true;}
   else if(mouse.down===0&&tool&&tool!=='bp'&&tool!=='bpsel'){
@@ -2131,12 +2072,12 @@ cv.addEventListener('pointermove',ev=>{
 });
 const up=ev=>{
   if(ev&&ev.pointerType==='touch'){const was=touches.size;touches.delete(ev.pointerId);if(was>=2||gest){if(touches.size<2)gest=null;mouse.down=-1;wdrag=null;return;}}
-  if(view==='world'){if(wdrag&&!wdrag.moved){wsel=provAt(mouse.x,mouse.y);wtab='prov';wWarArm=-1;cache.wBody=null;drawWPanel();}wdrag=null;return;}
+  if(view==='world'){if(wdrag&&!wdrag.moved){const g=provAt(mouse.x,mouse.y);if(g>=0)openProv(g);}wdrag=null;return;}
   if(tool==='bpsel'&&bpSel&&mouse.down===0){const s=bpSel;bpSel=null;tool=null;captureBp(Math.min(s.x0,s.x1),Math.min(s.y0,s.y1),Math.max(s.x0,s.x1),Math.max(s.y0,s.y1));uiDirty=true;}
   mouse.down=-1;mining=null;mouse.placed=null;};
 cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
-cv.addEventListener('wheel',ev=>{ev.preventDefault();updMouse(ev);if(view==='world'){const f=Math.exp(-ev.deltaY*(ev.deltaMode===1?.05:.0015)),k0=wScale(),wx=(mouse.x-SW/2)/k0+wcam.x,wy=(mouse.y-SH/2)/k0+wcam.y;wcam.z=Math.max(1,Math.min(6,wcam.z*f));const k=wScale();wcam.x=wx-(mouse.x-SW/2)/k;wcam.y=wy-(mouse.y-SH/2)/k;return;}zoomAt(Math.exp(-ev.deltaY*(ev.deltaMode===1?.05:.0015)),mouse.x,mouse.y);},{passive:false});
-function zoomAt(f,px,py){const wx=(px-SW/2)/cam.z+cam.x,wy=(py-SH/2)/cam.z+cam.y;cam.z=Math.max(.25,Math.min(2.5,cam.z*f));cam.x=wx-(px-SW/2)/cam.z;cam.y=wy-(py-SH/2)/cam.z;}
+cv.addEventListener('wheel',ev=>{ev.preventDefault();updMouse(ev);camGoal=null;zoomAt(Math.exp(-ev.deltaY*(ev.deltaMode===1?.05:.0015)),mouse.x,mouse.y);},{passive:false});
+function zoomAt(f,px,py){const wx=(px-SW/2)/cam.z+cam.x,wy=(py-SH/2)/cam.z+cam.y;cam.z=Math.max(unlockedNav('world')?fitZ()*.9:.26,Math.min(2.5,cam.z*f));cam.x=wx-(px-SW/2)/cam.z;cam.y=wy-(py-SH/2)/cam.z;}
 const keys={};
 const anyOpen=()=>!$('help').hidden||!$('menu').hidden||!$('win').hidden||!$('stagecard').hidden;
 function toggleInv(){show('inv',$('inv').hidden);if(!$('inv').hidden){cache.invGrid=cache.recGrid=null;drawInv();}}
@@ -2174,7 +2115,7 @@ addEventListener('keyup',ev=>{keys[ev.key.toLowerCase()]=false;});
 addEventListener('blur',()=>{for(const k in keys)keys[k]=false;touches.clear();gest=null;up();});
 document.addEventListener('click',ev=>{
   const b=ev.target.closest('button');if(!b||b.disabled)return;
-  if(b.dataset.close){const id=b.dataset.close;if(id==='entp')closeEnt();else show(id,false);return;}
+  if(b.dataset.close){const id=b.dataset.close;if(id==='entp')closeEnt();else{show(id,false);if(id==='wpanel')wsel=-1;}return;}
   if(b.dataset.tab){coTab=b.dataset.tab;bpDel=-1;cache.coBody=null;drawCo();return;}
   if(b.dataset.co)return coAct(b.dataset.co,ev.shiftKey);
   if(b.dataset.alert!==undefined){const a=alerts[+b.dataset.alert];if(a){if(a.c)openCo('contracts');else jumpTo(a.e);}return;}
@@ -2220,7 +2161,7 @@ document.addEventListener('click',ev=>{const b=ev.target.closest('button');if(!b
   if(d.restab){resTab=d.restab;cache.resBody=null;drawRes();return;}
   if(d.guide!==undefined){guideSec=+d.guide;cache.guideBody=null;drawGuide();return;}
   if(d.set)return setAct(d.set);
-  if(d.goto!==undefined){setView('world');wsel=+d.goto;const p=P_(wsel);wcam.x=p.cx;wcam.y=p.cy;show('cities',false);wtab='prov';cache.wBody=null;drawWPanel();return;}
+  if(d.goto!==undefined){const p=P_(+d.goto);show('cities',false);lookAt(p,.45);openProv(p.id);return;}
   if(d.cup){const[pid,j]=d.cup.split(':').map(Number);const p=P_(pid),c=p.cities[j],C=CITY[c.mk+1];if(C&&buyWith(C.cost,C.mat,C.n)){c.mk++;c.b=ticks;fxAdd('build',p.cx,p.cy);banner('CITY UPGRADED',C.n+' in '+p.name);}cache.citiesBody=null;drawCities();return;}
 });
 document.addEventListener('input',ev=>{const t=ev.target;
@@ -2242,37 +2183,37 @@ function serialize(){
   const mined={};for(let i=0;i<W*H;i++)if(amt[i]!==amt0[i])mined[i]=amt[i];
   syncNets();
   const E=ents.map(e=>{const o=Object.assign({},e);delete o.net;delete o.fs;delete o.id;delete o.tk;delete o.v;delete o.earned;delete o.jam;delete o.rej;return o;});
-  return {v:4,PM,events,nextEvent,savedAt:Date.now(),rates:{rpm,tax:nat.tax||0,trade:nat.trade||0,up:nat.upkeep||0},world:worldSave(),seed,won,inv,queue,ticks,cam:{x:cam.x,y:cam.y,z:cam.z},mined,E,money,stats,research,upg,cos,ms,ch,owned:Array.from(owned),xp,rep,contracts,revHist,bps};
+  return {v:5,PM,events,nextEvent,savedAt:Date.now(),rates:{rpm,tax:nat.tax||0,trade:nat.trade||0,up:nat.upkeep||0},world:worldSave(),seed,won,inv,queue,ticks,cam:{x:cam.x,y:cam.y,z:cam.z},mined,E,money,stats,research,upg,cos,ms,ch,xp,rep,contracts,revHist,bps};
 }
 function reset(s){
-  genMap(s);genWorld(s);initNation();ents=[];grid.fill(null);ffx=[];nextId=1;queue=[];ticks=0;won=false;inv={};tool=null;mining=null;closeEnt();
+  genWorld(s);genMap(s);initNation();ents=[];grid.fill(null);ffx=[];nextId=1;queue=[];ticks=0;won=false;inv={};tool=null;mining=null;closeEnt();
   money=0;stats={life:0,auto:0,raw:0,maxDepth:0,maxAutoVal:0,beltMoves:0,splitters:0,lastCraft:0,made:{},built:{}};research={};upg={};cos={};ms={};ch={};xp={};rep={};
   contracts={offers:[],active:[],next:1,done:0,cool:5};revHist=[];prodR={};consR={};soldR={};valR={};PM={};events=[];nextEvent=300;powLastDem=0;powSat=1;alerts=[];logi={};mstat={};
-  PG=null;owned=new Uint8Array(PN*PN);owned[12]=1;revBuf.fill(0);spendBuf.fill(0);revCur=0;spendCur=0;rpm=0;epm=0;rebuild();
+  PG=null;revBuf.fill(0);spendBuf.fill(0);revCur=0;spendCur=0;rpm=0;epm=0;rebuild();
 }
 function newGame(){
   reset((Math.random()*1e9)|0);inv=Object.assign({},START_INV);stats.fluidMig=1;
-  const hq=mk('moneygen',W/2-1,H/2-1,0);hq.hq=true;addEnt(hq);
-  cam.x=W/2*T;cam.y=H/2*T;cam.z=1;uiDirty=true;
+  const hp=hqSpot(),hq=mk('moneygen',hp.x,hp.y,0);hq.hq=true;addEnt(hq);placeRuins();
+  cam.x=(hp.x+1)*T;cam.y=(hp.y+1)*T;cam.z=1;uiDirty=true;
   setTimeout(()=>toast('Tip: point a drill’s chute into the Money Generator to start earning. Contract offers show up in Company (C).'),600);
 }
 function load(s){
-  reset(s.seed);
-  for(const i in s.mined){const v=s.mined[i];amt[i]=v;if(v<=0)ore[i]=0;}
+  reset(s.seed);const old=!(s.v>=5);
+  if(!old)for(const i in s.mined){const v=s.mined[i];amt[i]=v;if(v<=0)ore[i]=0;}
   chunks.fill(null);
   won=!!s.won;inv=s.inv||{};queue=(s.queue||[]).filter(q=>RECIPES[q.r]);ticks=s.ticks|0;
   money=+s.money||0;Object.assign(stats,s.stats||{});research=s.research||{};upg=s.upg||{};cos=s.cos||{};ms=s.ms||{};ch=s.ch||{};xp=s.xp||{};rep=s.rep||{};
   PM=s.PM||{};events=s.events||[];nextEvent=s.nextEvent||300;
   if(s.contracts)contracts=Object.assign({offers:[],active:[],next:1,done:0,cool:5},s.contracts);revHist=s.revHist||[];
-  if(s.owned)owned=Uint8Array.from(s.owned);owned[12]=1;
-  if(s.cam){cam.x=s.cam.x;cam.y=s.cam.y;cam.z=s.cam.z;}
-  for(const o of s.E||[]){if(!ITEMS[o.type])continue;const e=Object.assign(mk(o.type,o.x,o.y,o.dir),o);
+  if(s.cam&&!old){cam.x=s.cam.x;cam.y=s.cam.y;cam.z=Math.max(.26,s.cam.z);}
+  if(old)migrateOld(s);
+  for(const o of old?[]:s.E||[]){if(!ITEMS[o.type])continue;const e=Object.assign(mk(o.type,o.x,o.y,o.dir),o);
     const[w,h]=footprint(e.type);let free=true;for(let j=0;j<h;j++)for(let i=0;i<w;i++)if(!inb(e.x+i,e.y+j)||at(e.x+i,e.y+j))free=false;if(free)addEnt(e);}
-  if(!ents.some(e=>e.hq)){const hq=mk('moneygen',W/2-1,H/2-1,0);hq.hq=true;addEnt(hq);}
+  if(!ents.some(e=>e.hq)){const hp=hqSpot(),hq=mk('moneygen',hp.x,hp.y,0);hq.hq=true;addEnt(hq);cam.x=(hp.x+1)*T;cam.y=(hp.y+1)*T;cam.z=1;}
   if(Array.isArray(s.bps)&&!bps.length)bps=s.bps.filter(validBp);
   stats.made=stats.made||{};stats.built=stats.built||{};
   if(s.world)worldLoad(s.world);
-  rebuild();migrateSystems();uiDirty=true;
+  rebuild();migrateSystems();recountDeps();uiDirty=true;
 }
 function offlineGain(s){
   if(!s.savedAt||!s.rates)return;const sec=Math.min(8*3600,(Date.now()-s.savedAt)/1000);if(sec<120)return;
@@ -2406,7 +2347,7 @@ const PORT={n:'Port',cost:15000,mat:{steel:100,concrete:100},res:'ports'};
 const MISSIONS=[
   {n:'Starting a Factory',d:'Get a production line running.',reward:500,obj:[['Mine 10 iron ore',()=>(stats.made.iron_ore||0)>=10],['Build a stone furnace',()=>(stats.built.furnace||0)>=1||ents.some(e=>e.type==='furnace')],['Produce 20 iron plates',()=>(stats.made.iron_plate||0)>=20],['Earn $50 at the Money Generator',()=>stats.life>=50]]},
   {n:'Make Money',d:'Grow the business.',reward:1000,obj:[['Earn $3,000 in total',()=>stats.life>=3000]],unlock:'Cities and the World map'},
-  {n:'Your First City',d:'Found a city in a province you own.',reward:2000,obj:[['Build a city (World map, click your home province)',()=>cityCount()>=1],['Set the worker and soldier split in Cities',()=>!!stats.slider]]},
+  {n:'Your First City',d:'Found a city in a province you own.',reward:2000,obj:[['Build a city (click your home land, or zoom out with M)',()=>cityCount()>=1],['Set the worker and soldier split in Cities',()=>!!stats.slider]]},
   {n:'Industrial Nation',d:'People run factories and fill armies.',reward:3000,obj:[['Reach 10,000 population',()=>nat.pop>=10000]],unlock:'Military'},
   {n:'First Army',d:'Raise your first troops.',reward:5000,obj:[['Recruit 1,000 soldiers (one infantry unit)',()=>(stats.recruitMP||0)>=1000]]},
   {n:'First War',d:'Expand your borders.',reward:10000,obj:[['Capture a neutral province',()=>(stats.captured||0)>=1]]},
@@ -2701,38 +2642,20 @@ function missionCheck(){
 const unlockedNav=k=>unlockAll||({world:2,cities:2,military:4,naval:7,strategic:8}[k]||0)<=missionIdx;
 
 // ---------- world render ----------
-const wScale=()=>Math.min(SW/WW,SH/WH)*wcam.z;
-const wsx=x=>(x-wcam.x)*wScale()+SW/2,wsy=y=>(y-wcam.y)*wScale()+SH/2;
-function worldCanvas(){
-  if(wcv&&!wDirty)return wcv;
-  const S=3,G=world.grid,P=world.provs;wcv=wcv||document.createElement('canvas');wcv.width=WGX*S;wcv.height=WGY*S;
-  const g=wcv.getContext('2d'),im=g.createImageData(WGX*S,WGY*S),d=im.data,oc=NATIONS.map(n=>hexRgb(n.c));
-  for(let cy=0;cy<WGY;cy++)for(let cx=0;cx<WGX;cx++){
-    const i=cy*WGX+cx,id=G[i];let c;
-    if(id<0){const n=vnoise(cx*.15,cy*.15,seed+2);let shallow=false;for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1],[2,0],[-2,0],[0,2],[0,-2]]){const X=cx+dx,Y=cy+dy;if(X>=0&&Y>=0&&X<WGX&&Y<WGY&&G[Y*WGX+X]>=0)shallow=true;}
-      c=shallow?[104+n*8,138+n*10,152+n*10]:[72+n*8,102+n*10,118+n*12];}
-    else{const p=P[id],t=TERR[p.terr].c,nz=.94+hash(cx,cy,seed)*.1;c=[t[0]*nz,t[1]*nz,t[2]*nz];
-      if(p.owner>=0){const o=oc[p.owner];c=[c[0]*.58+o[0]*.42,c[1]*.58+o[1]*.42,c[2]*.58+o[2]*.42];}
-      let nb=false,pb=false;for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){const X=cx+dx,Y=cy+dy;if(X<0||Y<0||X>=WGX||Y>=WGY)continue;const n=G[Y*WGX+X];if(n===id)continue;if(n<0||P[n].owner!==p.owner)nb=true;else pb=true;}
-      if(nb)c=p.owner>=0?oc[p.owner].map(v=>Math.min(255,v*1.25+20)):[c[0]*.55,c[1]*.55,c[2]*.55];else if(pb)c=[c[0]*.78,c[1]*.78,c[2]*.78];}
-    for(let yy=0;yy<S;yy++)for(let xx=0;xx<S;xx++){const o=((cy*S+yy)*WGX*S+cx*S+xx)*4;d[o]=c[0];d[o+1]=c[1];d[o+2]=c[2];d[o+3]=255;}
-  }
-  g.putImageData(im,0,0);wDirty=false;return wcv;
-}
-function provAt(mx,my){const k=wScale(),wx=(mx-SW/2)/k+wcam.x,wy=(my-SH/2)/k+wcam.y,cx=Math.floor(wx/WC),cy=Math.floor(wy/WC);if(cx<0||cy<0||cx>=WGX||cy>=WGY)return -1;return world.grid[cy*WGX+cx];}
+const wScale=()=>cam.z*TPW;
+const wsx=x=>sx(x*TPW),wsy=y=>sy(y*TPW);
+function provAt(mx,my){const tx=Math.floor(((mx-SW/2)/cam.z+cam.x)/T),ty=Math.floor(((my-SH/2)/cam.z+cam.y)/T);return provAtTile(tx,ty);}
 const visible=p=>p.owner<=0||research.recon||(ais[p.owner]&&ais[p.owner].ally)||p.adj.some(j=>P_(j).owner===0);
-function renderWorld(tm){
-  const k=wScale();ctx.setTransform(dpr,0,0,dpr,0,0);ctx.fillStyle='#4c6878';ctx.fillRect(0,0,SW,SH);
-  ctx.imageSmoothingEnabled=false;ctx.drawImage(worldCanvas(),wsx(0),wsy(0),WW*k,WH*k);ctx.imageSmoothingEnabled=true;
-  if(settings.bg&&settings.q!=='low'){ctx.strokeStyle='rgba(235,245,250,.14)';ctx.lineWidth=1;ctx.beginPath();
-    for(let y=0;y<WH;y+=40){const o=(tm*8+y)%80;ctx.moveTo(wsx(o),wsy(y));ctx.lineTo(wsx(o+26),wsy(y));ctx.moveTo(wsx(o+640),wsy(y+20));ctx.lineTo(wsx(o+668),wsy(y+20));}ctx.stroke();}
+function drawWorldLayer(tm,full){
+  const k=wScale();
   const P=world.provs;
-  for(const id of[whov,wsel]){if(id<0)continue;ctx.fillStyle=id===wsel?'rgba(255,255,255,.9)':'rgba(255,255,255,.45)';for(const i of world.bcells[id])ctx.fillRect(wsx((i%WGX)*WC),wsy(((i/WGX)|0)*WC),WC*k+.5,WC*k+.5);}
+  for(const id of[whov,wsel]){if(id<0)continue;ctx.fillStyle=id===wsel?(full?'rgba(255,255,255,.9)':'rgba(255,255,255,.3)'):(full?'rgba(255,255,255,.45)':'rgba(255,255,255,.14)');for(const i of world.bcells[id])ctx.fillRect(wsx((i%WGX)*WC),wsy(((i/WGX)|0)*WC),WC*k+.5,WC*k+.5);}
   const home=P_(world.home);
   for(let i=1;i<ais.length;i++){const A=ais[i];if(!A||!A.trade||A.war||A.dead)continue;const port=P.find(p=>p.owner===0&&p.port);if(!port)continue;const c=P_(A.cap);
     ctx.strokeStyle='rgba(217,181,74,.5)';ctx.setLineDash([6,6]);ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(wsx(port.cx),wsy(port.cy));ctx.lineTo(wsx(c.cx),wsy(c.cy));ctx.stroke();ctx.setLineDash([]);
     const f=(tm*.08+i*.2)%1;ctx.fillStyle='#d9b54a';ctx.beginPath();ctx.arc(wsx(port.cx+(c.cx-port.cx)*f),wsy(port.cy+(c.cy-port.cy)*f),3,0,7);ctx.fill();}
   for(const p of P)if(p.sam&&(p.owner===0||visible(p))){const R=(p.owner===0&&research.iads?300:200)*k;ctx.strokeStyle=p.owner===0?'rgba(121,178,90,.5)':'rgba(210,85,63,.4)';ctx.fillStyle=p.owner===0?'rgba(121,178,90,.05)':'rgba(210,85,63,.04)';ctx.setLineDash([4,5]);ctx.beginPath();ctx.arc(wsx(p.cx),wsy(p.cy),R,0,7);ctx.fill();ctx.stroke();ctx.setLineDash([]);}
+  if(full){
   ctx.textAlign='center';ctx.textBaseline='middle';
   for(const p of P){
     const x=wsx(p.cx),y=wsy(p.cy);
@@ -2755,6 +2678,7 @@ function renderWorld(tm){
     if((k>1.6||p.id===whov)&&p.owner!==0){ctx.font='600 10px "JetBrains Mono",monospace';ctx.fillStyle=p.owner<0||visible(p)?'#ece6d3':'#a19c86';ctx.fillText(visible(p)?Math.round(provDef(p,0))+'':'?',x,y+22);}
   }
   for(let i=1;i<ais.length;i++){const A=ais[i];if(!A||A.dead)continue;const c=P_(A.cap);ctx.font='700 '+Math.round(13*Math.min(1.5,Math.max(.8,k)))+'px "Chakra Petch",sans-serif';ctx.fillStyle='rgba(12,12,9,.55)';ctx.fillText(NATIONS[i].n.toUpperCase(),wsx(c.cx)+1,wsy(c.cy)+34+1);ctx.fillStyle=NATIONS[i].c;ctx.fillText(NATIONS[i].n.toUpperCase(),wsx(c.cx),wsy(c.cy)+34);}
+  }
   for(const a of attacks){const f=P_(a.from),t=P_(a.to),x0=wsx(f.cx),y0=wsy(f.cy),x1=wsx(t.cx),y1=wsy(t.cy),col=NATIONS[a.a].c,pr=a.t/a.dur;
     const mx=(x0+x1)/2-(y1-y0)*.15,my=(y0+y1)/2+(x1-x0)*.15;
     ctx.strokeStyle=col;ctx.lineWidth=Math.min(7,2+Math.log10(a.str+1)*1.6);ctx.setLineDash(a.naval?[8,6]:[]);ctx.beginPath();ctx.moveTo(x0,y0);ctx.quadraticCurveTo(mx,my,x1,y1);ctx.stroke();ctx.setLineDash([]);
@@ -2783,12 +2707,12 @@ function drawWPanel(){
   let h='';
   if(wtab==='prov'){
     const p=wsel>=0?P_(wsel):null;
-    if(!p)h='<p class="empty">Click a province on the map. Your land is amber. Grey land is neutral and free to take. Hold and drag to move the map, scroll to zoom.</p>';
+    if(!p)h='<p class="empty">Click a province. Your land is amber, neutral land is grey. Drag to move the map, scroll to zoom in to your factory.</p>';
     else{
       const own=p.owner===0,T=TERR[p.terr],vis=visible(p);
       $('wTitle').textContent=p.name;
       h+='<div class="kv"><span class="k">Owner</span><span><span class="swatch" style="background:'+(p.owner>=0?NATIONS[p.owner].c:'#6b6856')+'"></span>'+(p.owner>=0?NATIONS[p.owner].n:'Neutral')+'</span>'+
-        '<span class="k">Terrain</span><span>'+T.n+' &middot; defense &times;'+T.def+'</span>'+
+        '<span class="k">Terrain</span><span>'+T.n+' &middot; defense &times;'+T.def+'</span>'+'<span class="k">Land</span><span>'+provAdv(p)+'</span><span class="k">Deposits</span><span>'+depIcons(p)+'</span>'+
         (p.res?'<span class="k">Resource</span><span class="ing">'+img(p.res)+ITEMS[p.res].n+(own?' &middot; '+Math.round(6*10*(1+p.cities.length*.5))+'/min imported':'')+'</span>':'<span class="k">Resource</span><span>Your factory</span>')+
         (p.id!==world.home?'<span class="k">People</span><span class="mono">'+fmt(p.pop)+'</span>':'')+
         '<span class="k">Defense</span><span class="mono">'+(vis?Math.round(provDef(p,own?1:0)):'unknown')+(p.fort?' &middot; '+FORT[p.fort].n:'')+(defList(p).length&&(own||vis)?' &middot; '+defList(p).join(', '):'')+(p.sam?' &middot; SAM Mk. '+p.sam:'')+(p.port?' &middot; port':'')+(p.coast?'':' &middot; inland')+'</span></div>';
@@ -2815,6 +2739,7 @@ function drawWPanel(){
         if(!(nf&&research[nf.res])&&!(ns&&research[ns.res])&&!(p.coast&&!p.port&&research.ports))h+='<p class="empty">Nothing to build here right now. New research unlocks forts, fortresses, SAM sites and ports.</p>';
         h+='</div></div>';
       }else{
+        h+=buyBlockHTML(p);
         const o=attackOrigin(p),A=p.owner>0?ais[p.owner]:null;
         h+='<div><h3>Attack</h3>';
         if(A&&!A.war)h+='<p class="empty">You are at peace with '+NATIONS[p.owner].n+'. Declare war in the Nations tab to attack.</p>';
@@ -2857,6 +2782,7 @@ const giftAmt=()=>Math.max(2000,Math.round(money*.02/1000)*1000);
 function bItem(t,d,cost,mat,act){return '<div class="item"><span class="t">'+t+'</span><span class="d">'+d+'</span><span class="icons">'+costHTML(cost,mat)+'</span><div class="a"><button class="primary small" data-w="'+act+'"'+(canPay(cost,mat)?'':' disabled')+'>Build</button></div></div>';}
 function wAct(a){
   const i=a.indexOf(':'),k=i<0?a:a.slice(0,i),v=i<0?'':a.slice(i+1),p=wsel>=0?P_(wsel):null;
+  if(k==='buyland'&&p){buyProv(p);cache.wBody=null;drawWPanel();return;}
   if(k==='city'&&p){const C=CITY[+v];if(p.cities.length<slots(p)&&buyWith(C.cost,C.mat,C.n)){p.cities.push({mk:+v,pop:0,b:ticks});fxAdd('build',p.cx,p.cy);banner('CITY FOUNDED',C.n+' in '+p.name);report('world','Founded '+C.n+' in '+p.name+'.');}}
   else if(k==='cup'&&p){const c=p.cities[+v],C=CITY[c.mk+1];if(C&&buyWith(C.cost,C.mat,C.n)){c.mk++;c.b=ticks;fxAdd('build',p.cx,p.cy);banner('CITY UPGRADED',C.n+' in '+p.name);}}
   else if(k==='def'&&p){const D=DEFS[v],w=dwOf(p),lv=w[v]||0,j=D.n.length>1?lv:0;if(lv<D.max&&research[D.res[j]]&&buyWith(D.cost[j],D.mat[j],D.n[j])){w[v]=lv+1;fxAdd('build',p.cx,p.cy);banner(D.n[j].toUpperCase()+' BUILT',p.name+' \u00b7 defense '+Math.round(provDef(p,1)));report('world','Built '+D.n[j]+' in '+p.name+'.');}}
@@ -2882,13 +2808,6 @@ function wAct(a){
       else{const lostW=(nat.ships.escort||0)>0?'escort':'warship';nat.ships[lostW]=Math.max(0,(nat.ships[lostW]||0)-1);toast('The raid failed. You lost an '+(lostW==='escort'?'escort ship':'warship')+'.','bad');}}
   }
   cache.wBody=null;drawWPanel();uiDirty=true;
-}
-function setView(v){
-  if(v==='world'&&!unlockedNav('world')){toast('The World map unlocks after mission 2','bad');return;}
-  view=v;tool=null;mining=null;closeEnt();show('wpanel',v==='world');
-  for(const id of['hotbar','queue'])$(id).hidden=v!=='factory';
-  if(v==='world'){cache.wBody=null;drawWPanel();}
-  uiDirty=true;
 }
 
 // ---------- nation panels ----------
@@ -3052,7 +2971,6 @@ const MODS={speed_module:{n:'Speed',sp:1.25,pw:.4,pr:0},eff_module:{n:'Efficienc
 let powSat=1,powDem=0,powLastDem=0,powSup=HQ_POWER,powGen=0,powAccE=0,powAccCap=0,powSatAvg=1;
 const tunable=e=>!!e&&(e.type==='drill'||isMachine(e));
 function modStats(e){let sp=1,pw=1,pr=0;for(const m of e.mods||[]){const M=MODS[m];if(!M)continue;sp*=M.sp;pw+=M.pw;pr+=M.pr;}return{sp,pw:Math.max(.2,pw),pr};}
-const regionAt=(x,y)=>PLOTS[plotOf(x,y)][1];
 function tuneSpeed(e){return (e.oc||1)*(e.mods?modStats(e).sp:1)*powSat*(e.type==='drill'&&regionAt(e.x,e.y)==='mountains'?1.25:1);}
 function drawKW(e,working){const b=POW[e.type]||0;if(!b)return 0;return working?b*Math.pow(e.oc||1,1.6)*(e.mods?modStats(e).pw:1)*(e.surge>0?SURGE:1):b*.1;}
 function powerTick(){
@@ -3613,6 +3531,195 @@ function showStage(s){
   $('stageNum').textContent='Stage '+(s+1)+' of '+STAGES.length;show('stagecard',true);sfx('fanfare');
 }
 
+// ---------- one world: territory, deposits, map mode ----------
+const TPW=T/WC,MAPZ=.24;
+const provAtTile=(x,y)=>inb(x,y)&&world.grid.length===W*H?world.grid[y*W+x]:-1;
+const regionAt=(x,y)=>{const g=provAtTile(x,y);return g<0?'sea':world.provs[g].terr;};
+const provName=(x,y)=>{const g=provAtTile(x,y);return g<0?'the sea':world.provs[g].name;};
+const fitZ=()=>Math.min(SW/(W*T),SH/(H*T))*.96;
+let depo=[],depGrid=new Uint16Array(W*H),camGoal=null,factCam=null;
+const DPOOL={plains:['iron_ore','copper_ore','coal','stone','limestone'],forest:['wood','wood','coal','copper_ore','stone'],desert:['sand','crude_oil','crude_oil','bauxite','copper_ore'],
+  mountains:['iron_ore','iron_ore','coal','tungsten','nickel_ore','stone'],volcanic:['rare_earth','uranium','platinum','cobalt','coal'],arctic:['lithium','titanium_ore','nickel_ore','iron_ore']};
+const RARE=new Set(['uranium','platinum','rare_earth','lithium','cobalt','tungsten','titanium_ore']);
+function genMap(s){
+  seed=s;ore.fill(0);amt.fill(0);depo=[];depGrid=new Uint16Array(W*H);
+  const r=mulberry(s^0x2c1b3c6d),P=world.provs,G=world.grid,tl=P.map(()=>[]);
+  for(let i=0;i<W*H;i++){const g=G[i];if(g>=0)tl[g].push(i);}
+  for(const p of P){p.tiles=tl[p.id].length;let best=tl[p.id][0]||0,bd=1e18;const cx=p.cx/WC,cy=p.cy/WC;
+    for(const i of tl[p.id]){const x=i%W,y=i/W|0;let inner=0;for(const[dx,dy]of[[3,0],[-3,0],[0,3],[0,-3]])if(provAtTile(x+dx,y+dy)===p.id)inner++;const d=(x-cx)**2+(y-cy)**2+(4-inner)*40;if(d<bd){bd=d;best=i;}}
+    p.tx=best%W;p.ty=best/W|0;p.kind=p.kind||null;}
+  const pool=P.filter(p=>p.id!==world.home);for(let i=pool.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+  pool.slice(0,6).forEach(p=>p.kind='industrial');pool.slice(6,11).forEach(p=>{p.kind='city';p.pop=Math.round(p.pop*2.5);});pool.slice(11,17).forEach(p=>p.kind='rare');
+  const edge=(x,y,pid)=>{for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++)if(provAtTile(x+dx,y+dy)!==pid)return true;return false;};
+  const put=(o,X,Y,rad,base,pid)=>{const id=depo.length+1,d={o,p:pid,x:Math.round(X),y:Math.round(Y),tiles:0,amt0:0,left:0};
+    for(let y=Math.floor(Y-rad-2);y<=Y+rad+2;y++)for(let x=Math.floor(X-rad-2);x<=X+rad+2;x++){if(provAtTile(x,y)!==pid)continue;const i=y*W+x;if(ore[i])continue;
+      const dd=Math.hypot(x-X,y-Y)/rad+(vnoise(x*.45,y*.45,s+id*7)-.5)*.8;if(dd>=1)continue;
+      ore[i]=ORES.indexOf(o)+1;const a=Math.round((1.15-dd*.55)*base);amt[i]=a;depGrid[i]=id;d.tiles++;d.amt0+=a;}
+    if(d.tiles){d.left=d.amt0;depo.push(d);}};
+  const H0=P[world.home];
+  for(const p of P){
+    const home=p.id===world.home,far=Math.hypot(p.cx-H0.cx,p.cy-H0.cy)/WW;let list;
+    if(home)list=[['iron_ore',1],['iron_ore',0],['copper_ore',1],['coal',1],['stone',0],['wood',0]];
+    else{const pl=DPOOL[p.terr];const n=Math.max(1,Math.round((2+r()*2.5)*Math.min(1.4,p.tiles/600)));list=[];
+      for(let k=0;k<n;k++){let o=pl[Math.floor(r()*pl.length)];if(r()<.25)o=['iron_ore','copper_ore','coal','stone'][Math.floor(r()*4)];list.push([o,RARE.has(o)?0:r()<.4?1:0]);}
+      if(p.kind==='rare')list.push([['uranium','platinum','rare_earth','cobalt'][Math.floor(r()*4)],1]);}
+    for(const[o,big]of list)for(let tries=0;tries<40;tries++){const t=tl[p.id];if(!t.length)break;const i=t[Math.floor(r()*t.length)],x=i%W,y=i/W|0;
+      if(Math.hypot(x-p.tx,y-p.ty)<(home?7:5)||edge(x,y,p.id)||ore[i])continue;
+      put(o,x,y,RARE.has(o)?1.5+r()*.7:big?2.4+r()*.9:1.7+r()*.7,(RARE.has(o)?350:550)+r()*300+far*500,p.id);break;}
+  }
+  amt0.set(amt);chunks.fill(null);chunksLo.fill(null);
+}
+function recountDeps(){for(const d of depo){d.tiles=0;d.left=0;}for(let i=0;i<W*H;i++){const id=depGrid[i];if(id&&ore[i]){const d=depo[id-1];d.tiles++;d.left+=amt[i];}}for(const d of depo)if(d.left<d.amt0*.15)d.warned=1;}
+function mineTile(i){
+  amt[i]--;const d=depGrid[i]?depo[depGrid[i]-1]:null;
+  if(d){d.left--;const P=world.provs[d.p];if(!d.warned&&d.left<d.amt0*.15&&P.owner===0){d.warned=1;toast('⛏ '+ITEMS[d.o].n+' deposit in '+P.name+' is 85% mined. Find more: buy land, take it, or import.','bad');}}
+  if(amt[i]<=0){amt[i]=0;ore[i]=0;dirtyChunk(i%W,(i/W)|0);
+    if(d&&--d.tiles<=0){const P=world.provs[d.p];if(P.owner===0){toast('⛏ '+ITEMS[d.o].n+' deposit depleted in '+P.name+'. The factory keeps running; move those drills to fresh ore.','big');report('world',ITEMS[d.o].n+' deposit in '+P.name+' ran out.');}}}
+}
+const hqSpot=()=>{const p=world.provs[world.home];return{x:p.tx-1,y:p.ty-1};};
+function placeRuins(){
+  const r=mulberry(seed^0x77);
+  for(const p of world.provs){if(p.kind!=='industrial')continue;
+    const kinds=['furnace','furnace','assembler','chest','drill','furnace','assembler'];let n=0;
+    for(let tries=0;tries<80&&n<6;tries++){const x=p.tx+Math.round((r()-.5)*14),y=p.ty+Math.round((r()-.5)*14);if(provAtTile(x,y)!==p.id||at(x,y)||Math.hypot(x-p.tx,y-p.ty)<3)continue;
+      let t=kinds[n%kinds.length];if(t==='drill'&&!ore[y*W+x])t='furnace';if(t!=='drill'&&ore[y*W+x])continue;
+      const e=mk(t,x,y,Math.floor(r()*4));if(e.eff!==undefined)e.eff=.55+r()*.15;if(t==='chest')e.inv={iron_plate:40+Math.floor(r()*60),gear:Math.floor(r()*30)};addEnt(e);n++;}}
+}
+// ---------- territory ----------
+let maskCv=null,fillCv=null,bordCv=null;
+function hex3(h){const n=parseInt(h.slice(1),16);return[n>>16,n>>8&255,n&255];}
+function buildTerr(){
+  const P=world.provs,G=world.grid,mk=(w,h)=>{const c=document.createElement('canvas');c.width=w;c.height=h;return c;};
+  maskCv=maskCv||mk(W,H);fillCv=fillCv||mk(W,H);bordCv=bordCv||mk(W*2,H*2);
+  const a=maskCv.getContext('2d'),A=a.createImageData(W,H),b=fillCv.getContext('2d'),B=b.createImageData(W,H),NC=NATIONS.map(n=>hex3(n.c));
+  for(let i=0;i<W*H;i++){const g=G[i];if(g<0)continue;const o=P[g].owner,j=i*4;
+    if(o<0){A.data[j]=26;A.data[j+1]=22;A.data[j+2]=18;A.data[j+3]=112;}
+    else if(o>0){const c=NC[o];A.data[j]=c[0]*.35;A.data[j+1]=c[1]*.35;A.data[j+2]=c[2]*.35;A.data[j+3]=120;}
+    if(o>=0){const c=NC[o];B.data[j]=c[0];B.data[j+1]=c[1];B.data[j+2]=c[2];B.data[j+3]=o===0?120:140;}}
+  a.putImageData(A,0,0);b.putImageData(B,0,0);
+  const g=bordCv.getContext('2d');g.clearRect(0,0,W*2,H*2);
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){const p=G[y*W+x];if(p<0)continue;
+    for(const[dx,dy]of[[1,0],[0,1]]){const X=x+dx,Y=y+dy;if(X>=W||Y>=H)continue;const q=G[Y*W+X];if(q===p||q<0)continue;
+      g.fillStyle=P[p].owner!==P[q].owner?'rgba(24,20,16,.95)':'rgba(24,20,16,.4)';if(dx)g.fillRect(X*2-.5,y*2,1,2);else g.fillRect(x*2,Y*2-.5,2,1);}}
+  wDirty=false;listsDirty=true;
+}
+function drawTerritory(x0,x1,y0,y1){
+  if(wDirty||!maskCv)buildTerr();const z=cam.z,G=world.grid,P=world.provs;
+  ctx.imageSmoothingEnabled=false;ctx.drawImage(maskCv,sx(0),sy(0),W*T*z,H*T*z);ctx.imageSmoothingEnabled=true;
+  const mine=new Path2D(),hard=new Path2D(),soft=new Path2D(),t=T*z;
+  for(let y=Math.max(0,y0-1);y<=Math.min(H-1,y1+1);y++)for(let x=Math.max(0,x0-1);x<=Math.min(W-1,x1+1);x++){const p=G[y*W+x];if(p<0)continue;
+    for(const[dx,dy]of[[1,0],[0,1]]){const X=x+dx,Y=y+dy;if(X>=W||Y>=H)continue;const q=G[Y*W+X];if(q===p||q<0)continue;
+      const po=P[p].owner,qo=P[q].owner,path=(po===0)!==(qo===0)?mine:po!==qo?hard:soft;
+      if(dx){path.moveTo(sx(X*T),sy(y*T));path.lineTo(sx(X*T),sy(y*T)+t);}else{path.moveTo(sx(x*T),sy(Y*T));path.lineTo(sx(x*T)+t,sy(Y*T));}}}
+  ctx.lineCap='round';ctx.strokeStyle='rgba(20,16,12,.35)';ctx.lineWidth=Math.max(1,1.5*z);ctx.stroke(soft);
+  ctx.strokeStyle='rgba(20,16,12,.8)';ctx.lineWidth=Math.max(1.5,3*z);ctx.stroke(hard);
+  ctx.strokeStyle='rgba(20,16,12,.7)';ctx.lineWidth=Math.max(3,6*z);ctx.stroke(mine);ctx.strokeStyle='#f0a62e';ctx.lineWidth=Math.max(1.5,3*z);ctx.setLineDash([10*z,6*z]);ctx.stroke(mine);ctx.setLineDash([]);
+}
+function drawProvLabels(){
+  const z=cam.z;if(z>1.7)return;ctx.textAlign='center';ctx.textBaseline='middle';
+  for(const p of world.provs){if(p.owner===0)continue;const x=sx(p.tx*T+T/2),y=sy(p.ty*T);if(x<-160||x>SW+160||y<-70||y>SH+70)continue;
+    const N=p.owner>0?NATIONS[p.owner]:null,b=provBuyable(p),A=p.owner>0?ais[p.owner]:null;
+    const l1=TERR[p.terr].n.toUpperCase()+(p.kind?' · '+({industrial:'OLD FACTORY',city:'TOWN',rare:'RARE DEPOSIT'})[p.kind]:''),l2=p.name,l3=N?N.n+(A&&A.war?' · AT WAR':''):b?'For sale · '+$s(provPrice(p)):'Neutral';
+    ctx.font='700 13px "Chakra Petch",sans-serif';const w=Math.max(ctx.measureText(l2).width,(ctx.font='600 10px "JetBrains Mono",monospace',ctx.measureText(l3).width),ctx.measureText(l1).width)+22;
+    ctx.fillStyle='rgba(30,34,38,.9)';rr(ctx,x-w/2,y-26,w,50,5);ctx.fill();ctx.fillStyle=N?N.c:b?'#f0a62e':'#8b939c';ctx.fillRect(x-w/2,y-26,3,50);
+    ctx.fillStyle='#a3abb4';ctx.font='600 9.5px "Chakra Petch",sans-serif';ctx.fillText(l1,x,y-15);
+    ctx.fillStyle='#f1f3f4';ctx.font='700 13px "Chakra Petch",sans-serif';ctx.fillText(l2,x,y);
+    ctx.fillStyle=N?N.c:b?'#f2c14e':'#a3abb4';ctx.font='600 10px "JetBrains Mono",monospace';ctx.fillText(l3,x,y+14);}
+}
+function renderMap(tm){
+  const z=cam.z;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.fillStyle='#46606e';ctx.fillRect(0,0,SW,SH);
+  for(let cj=0;cj<CH;cj++)for(let ci=0;ci<CW;ci++){const a=Math.floor(sx(ci*CS*T)),b=Math.floor(sy(cj*CS*T)),c=Math.floor(sx((ci+1)*CS*T)),d=Math.floor(sy((cj+1)*CS*T));if(c<0||d<0||a>SW||b>SH)continue;ctx.drawImage(chunkLo(ci,cj),a,b,c-a,d-b);}
+  if(wDirty||!fillCv)buildTerr();
+  ctx.imageSmoothingEnabled=false;ctx.globalAlpha=.5;ctx.drawImage(fillCv,sx(0),sy(0),W*T*z,H*T*z);ctx.globalAlpha=1;ctx.drawImage(bordCv,sx(0),sy(0),W*T*z,H*T*z);ctx.imageSmoothingEnabled=true;
+  for(const e of ents){ctx.fillStyle=e.hq?'#f2c14e':isBelt(e)?'#2b2f34':CATCOL[e.type]||'#5b636b';const s=Math.max(1.3,(e.w||1)*T*z);ctx.fillRect(sx(e.x*T),sy(e.y*T),s,s);}
+  if(typeof drawMapExtras==='function')drawMapExtras(tm);
+  drawWorldLayer(tm,true);
+}
+// ---------- land ----------
+const ownedProvs=()=>world.provs.reduce((a,p)=>a+(p.owner===0?1:0),0);
+const provBuyable=p=>p.owner===-1&&p.adj.some(j=>world.provs[j].owner===0);
+function provPrice(p){let dv=0;for(const d of depo)if(d.p===p.id&&d.left>0)dv+=d.left*VAL[d.o]*.015;
+  return Math.round((250+p.tiles*.4+dv+p.pop*.03)*Math.pow(1.5,Math.max(0,ownedProvs()-1))*({volcanic:1.4,arctic:1.2}[p.terr]||1)*(p.kind==='industrial'?1.5:1)*(perk('titan')?.8:1)/10)*10;}
+function buyProv(p){
+  if(!p||!provBuyable(p))return;const c=provPrice(p);if(money<c){toast('Not enough money for '+p.name+' ('+$$(c)+')');return;}
+  spend(c);p.owner=0;p.gar=Math.max(3,p.gar*.5);wDirty=true;listsDirty=true;stats.bought=(stats.bought||0)+1;sfx('fanfare');
+  banner('LAND ACQUIRED',p.name+' joins your country'+(p.kind==='industrial'?', old factory included':''));report('world','You bought '+p.name+'.');uiDirty=true;
+}
+function provAdv(p){
+  const a=[{plains:'Farmland: villages grow 25% faster',forest:'Timber; water wells pump 25% more',desert:'Strong solar (+80%), oil and sand',mountains:'Drills mine 25% faster; iron and tungsten',volcanic:'Geothermal power; rare metals',arctic:'Machines wear half as fast; lithium and titanium'}[p.terr]];
+  if(p.coast)a.push('Coast: room for a port');if(p.kind==='industrial')a.push('Old factory: abandoned machines come with it');if(p.kind==='city')a.push('Large town: big workforce');if(p.kind==='rare')a.push('Rare deposit');
+  return a.join(' &middot; ');
+}
+function depIcons(p){const m={};for(const d of depo)if(d.p===p.id&&d.tiles>0){m[d.o]=(m[d.o]||0)+1;}const k=Object.keys(m);return k.length?k.map(o=>'<span class="ing">'+img(o)+m[o]+'</span>').join(''):'<span class="ct">no deposits</span>';}
+function buyBlockHTML(p){
+  if(p.owner!==-1)return '';const b=provBuyable(p),c=provPrice(p);
+  return '<div><h3>Buy this land</h3>'+(b?'<p class="empty">Everything in '+p.name+' becomes yours: its deposits, villages and '+fmt(p.pop)+' people.</p><div class="row"><button class="money" data-w="buyland"'+(money<c?' disabled':'')+'>Buy for '+$$(c)+'</button></div>':'<p class="empty">Only land that borders your country is for sale. You can also take it by force.</p>')+'</div>';
+}
+function landHTML(){
+  const own=world.provs.filter(p=>p.owner===0),buy=world.provs.filter(provBuyable).sort((a,b)=>provPrice(a)-provPrice(b));
+  let h='<p class="empty">Your country has '+own.length+' province'+(own.length===1?'':'s')+'. Buy neutral land next to your borders, or take land by force. Each province brings its deposits, villages and people. Click any land on the map to see it.</p>';
+  h+='<div><h3>For sale</h3><div class="list">'+(buy.length?buy.map(p=>'<div class="item"><span class="t">'+p.name+' <span class="ct">'+TERR[p.terr].n+' &middot; '+p.tiles+' tiles</span></span><span class="d">'+provAdv(p)+'</span><span class="icons">'+depIcons(p)+'</span><div class="a"><button class="money" data-co="land:'+p.id+'"'+(money<provPrice(p)?' disabled':'')+'>Buy '+$s(provPrice(p))+'</button><button class="small" data-co="landsee:'+p.id+'">Show on map</button></div></div>').join(''):'<p class="empty">No neutral land borders yours.</p>')+'</div></div>';
+  h+='<div><h3>Your provinces</h3><div class="list">'+own.map(p=>'<div class="item"><span class="t">'+p.name+' <span class="ct">'+TERR[p.terr].n+'</span></span><span class="d">'+provAdv(p)+'</span><span class="icons">'+depIcons(p)+'</span><div class="a"><button class="small" data-co="landsee:'+p.id+'">Show</button></div></div>').join('')+'</div></div>';
+  return h;
+}
+function openProv(g){if(g<0)return;closeEnt();wsel=g;wtab='prov';wWarArm=-1;cache.wBody=null;show('wpanel',true);drawWPanel();}
+function lookAt(p,z){camGoal={x:(p.tx+.5)*T,y:(p.ty+.5)*T,z:z||Math.max(cam.z,.5)};}
+// ---------- view ----------
+function onView(v){
+  view=v;mining=null;if(v==='world'){tool=null;closeEnt();show('wpanel',true);cache.wBody=null;drawWPanel();}else{show('wpanel',wsel>=0);}
+  for(const id of['hotbar','queue'])$(id).hidden=v!=='factory';uiDirty=true;
+}
+function setView(v){
+  if(v==='world'){if(!unlockedNav('world')){toast('The World map unlocks after mission 2','bad');return;}factCam={x:cam.x,y:cam.y,z:Math.max(.5,cam.z)};camGoal={x:W*T/2,y:H*T/2,z:fitZ()};}
+  else{const h=hqSpot();camGoal=factCam||{x:(h.x+1)*T,y:(h.y+1)*T,z:1};factCam=null;}
+}
+function camStep(){
+  if(!camGoal)return;const g=camGoal;cam.x+=(g.x-cam.x)*.2;cam.y+=(g.y-cam.y)*.2;cam.z*=Math.pow(g.z/cam.z,.2);
+  if(Math.abs(g.x-cam.x)<2&&Math.abs(g.y-cam.y)<2&&Math.abs(g.z/cam.z-1)<.01){cam.x=g.x;cam.y=g.y;cam.z=g.z;camGoal=null;}
+}
+function migrateOld(s){
+  let n=0;for(const o of s.E||[]){if(o.hq||!ITEMS[o.type])continue;add(inv,o.type,1);n++;if(o.inv)for(const k in o.inv)if(ITEMS[k])add(inv,k,o.inv[k]);}
+  setTimeout(()=>banner('THE WORLD HAS BEEN REDRAWN','Your factory and your country now share one map. '+n+' buildings are back in your inventory.'),1200);
+}
+// ---------- terrain chunks ----------
+GROUND.plains=[160,144,112];
+const chunksLo=new Array(CW*CH).fill(null),chunkQ=[];
+function seaNear(X,Y){for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++)if(provAtTile(X+dx,Y+dy)>=0)return true;return false;}
+function chunk(ci,cj){
+  let c=chunks[cj*CW+ci];if(c)return c;
+  c=document.createElement('canvas');c.width=c.height=CS*PX;
+  const g=c.getContext('2d'),SZ=CS*PX,im=g.createImageData(SZ,SZ),d=im.data;
+  for(let ty=0;ty<CS;ty++)for(let tx=0;tx<CS;tx++){
+    const X=ci*CS+tx,Y=cj*CS+ty,rg=regionAt(X,Y),o=ore[Y*W+X],fc=o?FIELD[ORES[o-1]]:null;
+    if(rg==='sea'){const sh=seaNear(X,Y),base=sh?[108,150,162]:[74,112,132];
+      for(let py=0;py<PX;py++)for(let px=0;px<PX;px++){const wx=X*PX+px,wy=Y*PX+py,w=vnoise(wx/16,wy/26,seed+19),k=.93+w*.12+(w>.82?.08:0);const i=((ty*PX+py)*SZ+tx*PX+px)*4;d[i]=base[0]*k;d[i+1]=base[1]*k;d[i+2]=base[2]*k;d[i+3]=255;}
+      continue;}
+    const gr=GROUND[rg]||GROUND.plains;
+    const same=(x,y)=>inb(x,y)&&ore[y*W+x]===o,nN=o&&same(X,Y-1),nS=o&&same(X,Y+1),nW=o&&same(X-1,Y),nE=o&&same(X+1,Y);
+    for(let py=0;py<PX;py++)for(let px=0;px<PX;px++){
+      const wx=X*PX+px,wy=Y*PX+py,n=vnoise(wx/70,wy/70,seed)*.6+vnoise(wx/18,wy/18,seed+7)*.3+hash(wx,wy,seed)*.1;
+      let k=.93+n*.12;if(px===0||py===0)k*=.955;let R=gr[0]*k,G=gr[1]*k,B=gr[2]*k;
+      if(o){let dd=99;if(!nN)dd=Math.min(dd,py);if(!nS)dd=Math.min(dd,PX-1-py);if(!nW)dd=Math.min(dd,px);if(!nE)dd=Math.min(dd,PX-1-px);
+        const wob=1+vnoise(wx/4.5,wy/4.5,seed+11)*4.5;if(dd>=wob){const f=dd<wob+1.3?.74:1,v=.95+vnoise(wx/9,wy/9,seed+3)*.1;R=fc[0]*v*f;G=fc[1]*v*f;B=fc[2]*v*f;}}
+      const i=((ty*PX+py)*SZ+tx*PX+px)*4;d[i]=R;d[i+1]=G;d[i+2]=B;d[i+3]=255;}
+  }
+  g.putImageData(im,0,0);
+  for(let ty=0;ty<CS;ty++)for(let tx=0;tx<CS;tx++){const X=ci*CS+tx,Y=cj*CS+ty,o=ore[Y*W+X];if(!o)continue;const on=ORES[o-1];
+    const n=on==='wood'?2:hash(X,Y,91)<.55?(hash(X,Y,92)<.5?2:3):0;
+    for(let k=0;k<n;k++)nugget(g,on,tx*PX+4+hash(X,Y,k*5+1)*8,ty*PX+4+hash(X,Y,k*5+2)*8,on==='wood'?3.2+hash(X,Y,k*5+3)*1.3:1.6+hash(X,Y,k*5+3)*1.2);}
+  const idx=cj*CW+ci;chunks[idx]=c;chunkQ.push(idx);while(chunkQ.length>90){const q=chunkQ.shift();if(!chunkQ.includes(q))chunks[q]=null;}
+  return c;
+}
+function chunkLo(ci,cj){
+  let c=chunksLo[cj*CW+ci];if(c)return c;const S=4;
+  c=document.createElement('canvas');c.width=c.height=CS*S;const g=c.getContext('2d'),im=g.createImageData(CS*S,CS*S),d=im.data;
+  for(let ty=0;ty<CS;ty++)for(let tx=0;tx<CS;tx++){const X=ci*CS+tx,Y=cj*CS+ty,rg=regionAt(X,Y),o=ore[Y*W+X];
+    for(let py=0;py<S;py++)for(let px=0;px<S;px++){const n=hash(X*S+px,Y*S+py,seed)*.08+.95;let c3;
+      if(rg==='sea')c3=seaNear(X,Y)?[108,150,162]:[74,112,132];else if(o)c3=FIELD[ORES[o-1]];else c3=GROUND[rg]||GROUND.plains;
+      const i=((ty*S+py)*CS*S+tx*S+px)*4;d[i]=c3[0]*n;d[i+1]=c3[1]*n;d[i+2]=c3[2]*n;d[i+3]=255;}}
+  g.putImageData(im,0,0);chunksLo[cj*CW+ci]=c;return c;
+}
+
 // ---------- introduction ----------
 const INTROS=[
   {n:'The Overseer',c:'#e3a52a',kind:'eye',pitch:520,lines:[
@@ -3669,15 +3776,14 @@ let last=0,acc=0,frame=0,gameSpeed=1,paused=false;
 function loop(now){
   if(settings.fps&&now-last<1000/settings.fps-2){requestAnimationFrame(loop);return;}
   const dt=Math.min(.1,(now-last)/1000||0);last=now;
-  if(view==='world'){const pan=600*dt/wScale();if(keys.w||keys.arrowup)wcam.y-=pan;if(keys.s||keys.arrowdown)wcam.y+=pan;if(keys.a||keys.arrowleft)wcam.x-=pan;if(keys.d||keys.arrowright)wcam.x+=pan;
-    wcam.x=Math.max(0,Math.min(WW,wcam.x));wcam.y=Math.max(0,Math.min(WH,wcam.y));}
-  else{const pan=700*dt/cam.z;
+  {const want=cam.z<MAPZ?'world':'factory';if(want!==view)onView(want);}camStep();
+  {const pan=700*dt/cam.z;
   if(keys.w||keys.arrowup)cam.y-=pan;if(keys.s||keys.arrowdown)cam.y+=pan;
   if(keys.a||keys.arrowleft)cam.x-=pan;if(keys.d||keys.arrowright)cam.x+=pan;
   cam.x=Math.max(0,Math.min(W*T,cam.x));cam.y=Math.max(0,Math.min(H*T,cam.y));}
   if(paused)acc=0;else{acc+=dt*gameSpeed;let n=0;const cap=6*gameSpeed;while(acc>=1/60&&n<cap){tick();acc-=1/60;n++;}if(n>=cap)acc=0;}
   for(const f of floats)f.t++;floats=floats.filter(f=>f.t<70);for(const f of ffx)f.t++;ffx=ffx.filter(f=>f.t<24);
-  if(view==='world')renderWorld(ticks/60);else render(ticks/60);
+  render(ticks/60);
   frame++;
   if(frame%6===0){status();drawHUD();}
   if(frame%15===0){if(!$('inv').hidden)drawInv();if(!$('co').hidden)drawCo();if(!$('stats').hidden)drawStats();if(!$('cities').hidden)drawCities();if(!$('mil').hidden)drawMil();if(!$('res').hidden)drawRes();if(view==='world')drawWPanel();if(entOpen){if(!ents.includes(entOpen))closeEnt();else drawEnt();}}
