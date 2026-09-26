@@ -210,7 +210,9 @@ h1,h2,h3{margin:0;text-wrap:balance}
 .spd{display:inline-flex;gap:2px}.spd button{padding:3px 8px;font-size:12px;font-family:var(--mono)}.spd button.on{background:var(--amber);color:var(--amber-ink);border-color:var(--amber)}
 .more.on{border-color:var(--amber);color:var(--amber)}
 #tbMore{position:absolute;right:0;top:calc(100% + 6px);width:300px;padding:10px 12px;z-index:7}
-@media (max-width:1500px){#nav kbd{display:none}}
+#nav button{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;line-height:1.1}
+#nav kbd{font-size:10px;line-height:1;padding:1px 5px;min-width:0;opacity:.75;font-weight:600}
+#nav button.active kbd{opacity:1;color:var(--amber);border-color:var(--amber)}
 @media (max-width:1200px){#nav button{padding:4px 7px;font-size:12px}.tbC .pw{display:none}.tbR .tbk{display:none}}
 @media (max-width:1080px){.brand{display:none}.tbC .tbsub{display:none}}
 @media (max-width:900px){#nav button{padding:4px 6px;font-size:11.5px}#nav .sep{display:none}.bcat{font-size:0;gap:0;padding:3px}.bcat img{width:22px;height:22px}
@@ -248,6 +250,7 @@ details.sec summary:hover{color:var(--text)}
 #game.looking{cursor:grabbing}
 #nav .sep{width:1px;background:var(--line);margin:3px 6px}
 #nav .new{box-shadow:0 0 0 2px var(--amber)}
+@media (max-width:1100px){#nav{gap:3px;padding-left:6px;padding-right:6px}#nav button{padding:3px 5px;font-size:11px}#nav kbd{font-size:9px;padding:0 4px}#nav .sep{display:none}}
 #nav .locked{opacity:.5}
 .stat.paused{color:var(--amber);letter-spacing:.1em}
 #wpanel{right:16px;top:76px;width:min(360px,calc(100% - 32px));bottom:64px;max-height:none;z-index:4}
@@ -509,6 +512,7 @@ canvas.petc{width:40px;height:40px;vertical-align:middle;margin-right:8px;backgr
       <span><kbd>Drag</kbd></span><span>Lay belts in a line. They turn corners for you.</span>
       <span><kbd>R</kbd></span><span>Rotate what you're holding, or the building under the cursor</span>
       <span><kbd>X</kbd> / right-click</span><span>Remove a building. On a Chromebook, right-click is a two-finger click.</span>
+      <span><kbd>V</kbd> <kbd>L</kbd> <kbd>U</kbd> <kbd>N</kbd></span><span>Factory view &middot; Cities &middot; Military &middot; Settings. Every nav button shows its key; <kbd>Esc</kbd> closes the open tab, or opens the Menu.</span>
       <span><kbd>Right-drag</kbd></span><span>Look around without moving the President. Release to glide back to them.</span>
       <span><kbd>Alt</kbd> (hold)</span><span>Show machine details: recipe icons, fluid ports, pipe flow and crew labels. Holding a pipe or a building shows the relevant ones.</span>
       <span><kbd>Q</kbd></span><span>Copy the building under the cursor</span>
@@ -1682,7 +1686,7 @@ function drawTop(){
   const openId={char:'charp',cities:'cities',military:'mil',research:'res',company:'co',stats:'stats',inv:'inv',guide:'guide',settings:'settings'};
   setHTML($('nav'),NAV.map(n=>{if(n==='|')return '<span class="sep"></span>';const[k,l,key]=n;if((k==='world'||k==='cities'||k==='military')&&!unlockedNav(k))return '';
     const act=UIManager.activeKey()===k,on=k==='overlay'&&(overlayOn||polOverlay);
-    return '<button id="nav-'+k+'" data-nav="'+k+'" aria-pressed="'+act+'" class="'+(act?'active':'')+(on?' on':'')+(stats['seen_'+k]||!['world','cities','military'].includes(k)?'':' new')+'">'+l+(key?' <kbd>'+key+'</kbd>':'')+'</button>';}).join(''));
+    return '<button id="nav-'+k+'" data-nav="'+k+'" aria-pressed="'+act+'" class="'+(act?'active':'')+(on?' on':'')+(stats['seen_'+k]||!['world','cities','military'].includes(k)?'':' new')+'"'+(key?' title="'+l+' ('+key+')" aria-keyshortcuts="'+key+'"':'')+'><span class="nl">'+l+'</span>'+(key?'<kbd>'+key+'</kbd>':'')+'</button>';}).join(''));
   const m=MISSIONS[missionIdx];let mh;
   if(m){const objs=m.obj.map(o=>[o[0],!!o[1]()]),done=objs.filter(o=>o[1]).length;
     mh='<button class="mcard" data-mission="1" aria-expanded="'+missionOpen+'"><span class="eyebrow">Mission '+(missionIdx+1)+'</span><span class="nm">'+m.n+'</span><span class="ct">'+done+'/'+objs.length+' '+(missionOpen?'▴':'▾')+'</span></button><div class="bar'+(done===objs.length?' done':'')+'"><i style="width:'+(done/objs.length*100).toFixed(0)+'%"></i></div>';
@@ -1924,7 +1928,7 @@ function playTime(){const s=ticks/60|0,h=s/3600|0,m=(s/60|0)%60;return (h?h+'h '
 function jumpTo(e){if(!e)return;cam.x=(e.x+(e.w||1)/2)*T;cam.y=(e.y+(e.h||1)/2)*T;if(!isBelt(e))openEnt(e);}
 
 const contractLine=c=>c.kind==='supply'?'Supply '+c.rate+'/min for '+c.mins+' min':'Deliver '+c.qty.toLocaleString('en-US');
-const NAV=[['factory','Factory'],['world','World','M'],['cities','Cities'],['military','Military'],['research','Research','T'],['company','Company','C'],['stats','Stats','P'],['char','President','K'],'|',['inv','Inventory','E'],['bp','Blueprint','B'],['overlay','Overlay','O'],['guide','Guide','G'],['settings','Settings'],['menu','Menu']];
+const NAV=[['factory','Factory','V'],['world','World','M'],['cities','Cities','L'],['military','Military','U'],['research','Research','T'],['company','Company','C'],['stats','Stats','P'],['char','President','K'],'|',['inv','Inventory','E'],['bp','Blueprint','B'],['overlay','Overlay','O'],['guide','Guide','G'],['settings','Settings','N'],['menu','Menu','Esc']];
 function status(){
   if(view==='world'){const p=whov>=0?P_(whov):null;setHTML($('status'),p?'<b>'+p.name+'</b> &middot; '+(p.owner>=0?NATIONS[p.owner].n:'Neutral')+' &middot; '+TERR[p.terr].n+(p.res?' &middot; '+ITEMS[p.res].n:'')+(visible(p)&&p.owner!==0?' &middot; defense '+Math.round(provDef(p,0)):'')+'<br>Click to open':'World map &middot; drag to move, scroll to zoom, click a province');return;}
   const x=mouse.tx,y=mouse.ty;if(!inb(x,y)){setHTML($('status'),'');return;}
@@ -2253,11 +2257,11 @@ addEventListener('keydown',ev=>{
   if(intro){if(k===' '||k==='enter'){ev.preventDefault();introNext();}else if(k==='escape')introEnd();return;}
   if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))ev.preventDefault();
   if(k===' '&&!anyOpen()){paused=!paused;toast(paused?'Paused. Press Space to continue.':'Running');uiDirty=true;return;}
-  if(k==='escape'){if(anyOpen()){show('help',false);show('menu',false);show('win',false);show('stagecard',false);}else if(UIManager.escape()){}else if(!$('wpanel').hidden){show('wpanel',false);wsel=-1;}else if(entOpen)closeEnt();else{tool=null;bpSel=null;uiDirty=true;}return;}
+  if(k==='escape'){if(anyOpen()){show('help',false);show('menu',false);show('win',false);show('stagecard',false);}else if(UIManager.escape()){}else if(!$('wpanel').hidden){show('wpanel',false);wsel=-1;}else if(entOpen)closeEnt();else if(tool||bpSel){tool=null;bpSel=null;uiDirty=true;}else navAct('menu');return;}
   if(anyOpen()){if(k==='h'||k==='?')show('help',false);return;}
   keys[k]=true;
   if(ev.ctrlKey||ev.metaKey)return;
-  if(view==='world'&&!['m','t','g','c','p','e','h','?','escape'].includes(k))return;
+  if(view==='world'&&!['m','t','g','c','p','e','h','?','escape','v','l','u','n','k'].includes(k))return;
   if(k>='1'&&k<='9')selectTool(HOTBAR[+k-1]);
   else if(k==='0'||k==='x')selectTool('remove');
   else if(k==='r'&&pl&&pl.drawn)reloadGun();
@@ -2271,6 +2275,10 @@ addEventListener('keydown',ev=>{
   else if(k==='t')navAct('research');
   else if(k==='m')navAct('world');
   else if(k==='g')navAct('guide');
+  else if(k==='v')navAct('factory');
+  else if(k==='l'){if(unlockedNav('cities'))navAct('cities');}
+  else if(k==='u'){if(unlockedNav('military'))navAct('military');}
+  else if(k==='n')navAct('settings');
   else if(k==='p')toggleStats();
   else if(k==='b')startBpSel();
   else if(k==='o')cycleOverlay();

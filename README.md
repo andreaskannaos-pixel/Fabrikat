@@ -17,7 +17,8 @@ The game opens on a start screen: **New Game**, **Continue**, **Customization Sh
 | `R` | Rotate |
 | `X` / right-click (two-finger click) | Remove (a right-click without dragging; drag with `X` held as the tool to remove a line) |
 | Right-drag | Free look: pan without moving the President; on release the camera glides back (Settings: glide, snap or stay) |
-| `Esc` | Close the open tab, popup or tool |
+| `Esc` | Close the open tab, popup or tool; with nothing open, opens the Menu |
+| `V` / `L` / `U` / `N` | Factory view / Cities / Military / Settings |
 | Hold `Alt` | Show machine details: recipe icons, fluid ports, pipe flow, crew and camp labels |
 | `Q` | Copy the building under the cursor |
 | Click ore | Mine by hand |
@@ -109,6 +110,7 @@ See `docs/AUTOMATION.md` for the state machines, `docs/UI14.md` for the start sc
 
 ## Interface
 
+- **Hotkeys on the nav bar:** every button shows its key underneath (Factory V, World M, Cities L, Military U, Research T, Company C, Stats P, President K, Inventory E, Blueprint B, Overlay O, Guide G, Settings N, Menu Esc).
 - **One tab at a time:** Factory, World, Cities, Military, Research, Company, Stats, President, Inventory, Blueprint, Overlay, Guide, Settings and Menu are mutually exclusive.
   - Opening one closes the others.
   - The open tab's button gets an orange underline and border.
