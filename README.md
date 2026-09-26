@@ -25,7 +25,10 @@ Progress saves in the browser automatically.
 | `M` | World map |
 | `T` | Research |
 | `G` | Guide |
-| `WASD` / arrows | Move camera |
+| `WASD` | Walk as the President (Shift runs) |
+| Arrows | Move the camera |
+| `F` / `R` / `Q` | Draw weapon / reload / switch weapon |
+| `K` | President: weapons, outfits, armour |
 | Scroll, `+` `-` | Zoom |
 | `O` | Bottleneck overlay |
 | `H` | Help |
@@ -36,7 +39,7 @@ Progress saves in the browser automatically.
 Everything runs on money. The **Money Generator** turns items into cash, and each item's price comes from its recipe: the value of its inputs plus the work that went into it. Processing an item always sells for more than its inputs. Ore sells for about $1, circuit boards for about $90, quantum processors for about $5,000, and dark matter for about $55,000.
 
 - **Generator models:** Mk. I (raw only) → Mk. II (processed) → Mk. III (components) → Industrial Money Converter → Financial Singularity (anything). Each model is faster and pays out more.
-- **Company panel (`C`):** research (13 techs, from Automation to Experimental Physics), factory upgrades, cosmetics, land (a 5×5 grid of plots with rare zones at the edges), and a market to buy buildings.
+- **Company panel (`C`):** research (13 techs, from Automation to Experimental Physics), factory upgrades, cosmetics, land (buy neutral provinces next to yours), and a market to buy buildings.
 - **Goals:** money milestones from First Paycheck ($100) to Industrial Empire ($1B), plus six challenges.
 - **Machines:** Assembler, Chemical Plant and Fabricator, with 17 raw resources and about 50 craftable items.
 
@@ -75,6 +78,17 @@ Everything runs on money. The **Money Generator** turns items into cash, and eac
 - **Stages:** Workshop → Industry → Electronics → Megafactory → Global Industry → Rocket Age → Exotic Industry. Each adds a problem: emissions tax, fabricator batches ruined by brownouts, faster wear, faster market flooding, rocket launches powered from battery banks, and exotic fabrication that needs coolant. The Exotic stage adds the 25 MW Singularity Reactor and transmutation of common ore into rare ore.
 - **Factory milestones:** 1,000 steel/min, 10 MW, 50 machines working, 100,000 goods sold, a contract finished without market purchases and more. Rewards: money, research credit, blueprint slots and cosmetics.
 - **Loans:** Working Capital (small, 10 min), Expansion Loan (large, cheap, 60 min, from the Industry stage) and Emergency Credit (instant, very expensive). Above a 25% debt ratio new loans cost more. A late loan doubles its interest and takes 25% of revenue until it is paid.
+
+## One world
+
+- **One map:** the factory and the country share one procedural map of about 60 provinces with coasts and seas. You start with one province around your HQ. Buy neutral land next to yours, or take land from other nations. Zoom out (scroll, or `M`) for the whole map.
+- **Territory types:** plains (farmland, faster growth), forest (timber, better wells), desert (strong solar, oil), mountains (faster mining), volcanic (geothermal, rare metals), arctic (low wear). Some provinces are coastal (ports), some hold an old factory whose machines come with the land, some a large town, some a rare deposit.
+- **Small deposits:** ore comes in small scattered deposits. You get a warning at 85% mined and a notice when one runs out; the factory keeps running.
+- **Villages:** houses, farms, barns, workshops, markets, wells, temples, town halls, small mines and trading posts joined by roads, with villagers walking between them and your machines. Owning a province makes its people your workers and soldiers. Pollution drives them away.
+- **The President:** walk with `WASD` (Shift runs), click machines to inspect them and villagers to talk. `F` draws a weapon, `R` reloads, `Q` switches weapons, `K` opens weapons, outfits and armour. You have health; if you fall you wake at HQ and pay medical bills.
+- **Combat on the map:** attacks send soldiers walking across the border; your garrison, your army camps and you fight them, and every kill weakens the attack. Bandits raid villages for a bounty. Supply trucks run from HQ to your border camps.
+- **Blueprint market:** My blueprints, a Guild market of tested designs (in-game company, with price, rating, research, output, power and size) and Featured. Placing a blueprint lays out construction sites that are built from your inventory and chests; Order missing buys the rest.
+- **Feedback:** problem tags over machines (for example OUTPUT BLOCKED, with the pipe spot marked in red), a pollution overlay (`O` twice), sunsets and night lights, a power reserve meter, a workforce warning with the output loss, and a card for each stage's new challenge.
 
 ## Nation layer
 
