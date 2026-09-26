@@ -13,7 +13,7 @@ Progress saves in the browser automatically.
 
 | Key | Action |
 | --- | --- |
-| `1`–`9` | Pick a building, click to place. Drag to lay belts (they turn corners). |
+| `1`–`9` | Pick a common building, or use the build palette (Mining, Logistics, Production, Chemistry, Power, Storage & Trade). Click to place; drag to lay belts. |
 | `R` | Rotate |
 | `X` / right-click (two-finger click, Alt+click) | Remove |
 | `Q` | Copy the building under the cursor |
@@ -92,6 +92,16 @@ Your factory pays for cities, cities grow people, and people become workers or s
 - **Guide (`G`), Settings** (quality presets, FPS limit, particle and effect density, animation and map detail, performance mode) and a News feed.
 
 It's single-player: every other nation is computer-controlled, and there is no online chat.
+
+## Look and feel
+
+- **One colour system:** every machine is a coloured body with a dark outline, a simple centre icon and a status light (green working, amber waiting, red problem, grey idle). Mining is ochre, smelting red-orange, production blue, chemistry purple, power yellow, logistics charcoal, storage green and money gold.
+- **Terrain:** warm tan ground with a faint build grid. Ore shows as solid deposits with a few clean nuggets, forests as tree clusters and oil as dark pools.
+- **Belts:** charcoal with coloured edges by tier (orange, red, blue, purple) and moving direction arrows.
+- **HQ:** the Fabrikat Industries building shows its revenue and model above it.
+- **Selection:** clicking a machine dims the rest of the factory and highlights the belts, inserters, machines and pipes connected to it. Its panel leads with input and output percentages, power, wear and the main cause; recipe, modules and diagnostics are in fold-out sections.
+- **HUD:** money on the left, power in the middle, workforce and game speed on the right, with everything else under More. The mission card folds up to one line.
+- **World map:** uses the same warm palette.
 
 ## Quality of life
 
