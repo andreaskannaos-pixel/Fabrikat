@@ -90,6 +90,19 @@ Everything runs on money. The **Money Generator** turns items into cash, and eac
 - **Blueprint market:** My blueprints, a Guild market of tested designs (in-game company, with price, rating, research, output, power and size) and Featured. Placing a blueprint lays out construction sites that are built from your inventory and chests; Order missing buys the rest.
 - **Feedback:** problem tags over machines (for example OUTPUT BLOCKED, with the pipe spot marked in red), a pollution overlay (`O` twice), sunsets and night lights, a power reserve meter, a workforce warning with the output loss, and a card for each stage's new challenge.
 
+## Late-game automation
+
+- **Logistics hubs:** big storage nodes with Requested and Exported items. Couriers pathfind (A*) between hubs and move items from surplus to deficit.
+- **Builders:** blueprints become construction jobs. Builders at HQ claim a job, fetch the building from the nearest hub, chest or your inventory, walk to the site and build it over a few seconds.
+- **Engineers:** each Maintenance Bay has 2. The auto-repair manager sends them to machines below 80% condition; they use a repair kit or pay cash.
+- **Ammunition:** border camps use ammunition trucked from hubs or your stock. A dry camp fights at 35% strength.
+- **Military units:** one soldier or tank sprite per army, with a live troop badge (1.5K), gains and losses, and an ammunition bar.
+- **World generation:** layered-noise biomes with exclusive resources (uranium only in deserts, platinum and rare earth in volcanic land, lithium in the arctic, tungsten and cobalt in mountains), a generated world history, and points of interest in unclaimed land.
+- **Health:** heavy pollution slows villagers and machines. Clinics stocked with medical kits protect a 14-tile radius.
+- **Visuals:** belts autotile (straight, corners, T-junctions, crossings, end caps), warnings are pulsing icons over machines with details on hover, and night is a darkness layer that lights cut through.
+
+See `docs/AUTOMATION.md` for the state machines.
+
 ## Nation layer
 
 Your factory pays for cities, cities grow people, and people become workers or soldiers. Soldiers take territory, and territory sends new resources back to the factory.
