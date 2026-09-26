@@ -200,7 +200,9 @@ h1,h2,h3{margin:0;text-wrap:balance}
 .tbL{justify-self:start}.tbC{justify-self:center}.tbR{justify-self:end}
 .brand{font-weight:700;letter-spacing:.22em;font-size:11px;color:var(--dim)}
 .cash{font-family:var(--mono);font-size:22px;font-weight:600;color:var(--gold);font-variant-numeric:tabular-nums}
-.tbsub{font-family:var(--mono);font-size:12px;color:var(--dim)}.tbsub.good{color:var(--green)}
+.tbsub{font-family:var(--mono);font-size:12px;color:var(--dim)}.tbsub.good{color:var(--green)}.tbsub.bad{color:var(--red)}.tbsub.warnc{color:var(--amber)}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}
+.stagec{text-align:center;width:min(520px,100%)}.stagec h2{font-size:30px;color:var(--amber);letter-spacing:.06em}.stagec .ch{margin:14px 0 6px;font-size:18px;font-weight:700;color:var(--red)}.stagec p{margin-inline:auto}
 .tbk{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:700}
 .tbv{font-family:var(--mono);font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
 .pw{width:90px;height:6px;background:#1a1d21;border-radius:3px;overflow:hidden}.pw i{display:block;height:100%}
@@ -378,6 +380,7 @@ kbd{font-family:var(--mono);font-size:11px;background:var(--panel2);border:1px s
       <div class="row"><span class="ct" id="introStep"></span><span class="ct">Click or press Space to continue</span><button id="introSkip" class="small">Skip intro</button></div></div>
   </div>
 </div>
+<div id="stagecard" class="overlay" hidden><div class="card panel stagec"><div class="hazard"></div><span class="eyebrow" id="stageNum"></span><h2 id="stageTitle"></h2><p class="sub" id="stageSub"></p><div class="ch" id="stageCh"></div><p id="stageTxt"></p><p class="row" style="justify-content:center;margin-top:16px"><button class="primary" data-close="stagecard">Got it</button></p></div></div>
 <div id="banner" aria-live="polite"><div class="b1"></div><div class="b2"></div></div>
 
 <div id="entp" class="panel modal" hidden>
@@ -964,7 +967,7 @@ function updFurn(e){
     if(!s||e.inN<s.n)e.st='starve';
     else if(e.outN>=50||(e.outN>0&&e.outT!==s.o))e.st='block';
     else{
-      if(e.fuel<=0&&e.coal>0){e.coal--;e.fuel+=perk('nordex')?10:5;consume('coal',1);polC+=.3;}
+      if(e.fuel<=0&&e.coal>0){e.coal--;e.fuel+=perk('nordex')?10:5;consume('coal',1);polC+=.3;polAdd(e.x,e.y,3);}
       if(e.fuel>0){e.fuel--;e.inN-=s.n;consume(e.inT,s.n);e.cur=e.inT;e.prog=0;if(e.inN===0)e.inT=null;}
       else e.st='nofuel';
     }
@@ -981,7 +984,7 @@ function updAsm(e){
     if(e.outN>=Math.max(10,r.out*4))e.st='block';
     else if(by&&e.byN>=10)e.st='byfull';
     else{for(const k in r.in)if((e.inv[k]||0)<r.in[k]){e.miss=k;break;}
-      if(e.miss)e.st='starve';else{for(const k in r.in){add(e.inv,k,-r.in[k]);consume(k,r.in[k]);}e.work=true;e.prog=0;if((e.idleT||0)>=60)e.surge=45;}}
+      if(e.miss)e.st='starve';else{for(const k in r.in){add(e.inv,k,-r.in[k]);consume(k,r.in[k]);}e.work=true;e.prog=0;if((e.idleT||0)>=60&&powSat>=.95)e.surge=45;}}
   }
   if(e.work)e.idleT=0;else e.idleT=(e.idleT||0)+1;
   powDem+=drawKW(e,e.work);if(e.surge>0)e.surge--;
@@ -1545,9 +1548,9 @@ function paletteHTML(){
 function drawTop(){
   const cc=crewCap(),sun=daylight(),load=powSup>0?Math.min(1,powLastDem/powSup):0,short=powSat<.95;
   let h='<div class="tb tbL"><span class="brand">FABRIKAT</span><span class="cash">'+$$(money)+'</span><span class="tbsub'+(rpm>0?' good':'')+'">'+(rpm>0?'+'+$s(rpm)+'/min':'')+'</span></div>';
-  h+='<div class="tb tbC" title="Power demand / supply"><span class="tbk">⚡ Power</span><span class="tbv'+(short?' bad':'')+'">'+(powLastDem/1000).toFixed(2)+' / '+(powSup/1000).toFixed(2)+' MW</span><span class="pw"><i style="width:'+(load*100).toFixed(0)+'%;background:'+(short?'var(--red)':load>.85?'var(--amber)':'var(--c-power)')+'"></i></span><span class="tbsub" title="Solar panels only work in daylight">'+(sun>0?'☀':'☾')+' '+clock()+'</span>';
+  h+='<div class="tb tbC" title="Power demand / supply"><span class="tbk">⚡ Power</span><span class="tbv'+(short?' bad':'')+'">'+(powLastDem/1000).toFixed(2)+' / '+(powSup/1000).toFixed(2)+' MW</span><span class="tbsub '+(powSup-powLastDem<0?'bad':powSup-powLastDem<powLastDem*.15?'warnc':'good')+'" title="Spare capacity before a shortage">Reserve '+((powSup-powLastDem)/1000).toFixed(2)+' MW</span><span class="pw"><i style="width:'+(load*100).toFixed(0)+'%;background:'+(short?'var(--red)':load>.85?'var(--amber)':'var(--c-power)')+'"></i></span><span class="tbsub" title="Solar panels only work in daylight">'+(sun>0?'☀':'☾')+' '+clock()+'</span>';
   if(events.length)h+='<div class="evrow">'+events.map(ev=>'<span class="chip" title="'+esc(EVT[ev.id].d)+'">'+EVT[ev.id].n+' '+mmss(ev.left)+'</span>').join('')+'</div>';
-  h+='</div><div class="tb tbR"><span class="tbk">Workforce</span><span class="tbv'+(crewMult<1?' bad':'')+'" title="Crew needed by working machines / crew available">'+Math.round(crewUsed)+' / '+cc+'</span>';
+  h+='</div><div class="tb tbR"><span class="tbk">Workforce</span><i class="dot" style="background:'+(crewMult<1?'var(--red)':crewUsed>cc*.85?'var(--amber)':'var(--green)')+'"></i><span class="tbv'+(crewMult<1?' bad':'')+'" title="Crew needed by working machines / crew available">'+Math.round(crewUsed)+' / '+cc+'</span>'+(crewMult<1?'<span class="tbsub bad" title="Not enough crew: every machine slows down. Grow cities or move the slider toward workers.">Factory output −'+Math.round((1-crewMult)*100)+'%</span>':'');
   h+='<span class="spd">'+[[0,'❚❚'],[1,'1×'],[2,'2×'],[4,'4×']].map(([v,l])=>'<button data-speed="'+v+'" class="'+((v===0?paused:!paused&&gameSpeed===v)?'on':'')+'" title="'+(v?'Game speed '+v+'×':'Pause (Space)')+'">'+l+'</button>').join('')+'</span>';
   h+='<button class="small more'+(topMore?' on':'')+'" data-topmore="1" aria-expanded="'+topMore+'">More ▾</button>';
   if(topMore){const st=stats.stage||0;let k='<div class="kv">';const row=(a,b)=>{k+='<span class="k">'+a+'</span><span>'+b+'</span>';};
@@ -1564,7 +1567,7 @@ function drawTop(){
   setHTML($('topbar'),h);
   const openId={cities:'cities',military:'mil',research:'res',company:'co',stats:'stats',inv:'inv',guide:'guide',settings:'settings'};
   setHTML($('nav'),NAV.map(n=>{if(n==='|')return '<span class="sep"></span>';const[k,l,key]=n;if((k==='world'||k==='cities'||k==='military')&&!unlockedNav(k))return '<button data-locked="'+k+'" class="locked" title="Locked">\u{1F512} '+l+'</button>';
-    const on=k===view||(openId[k]&&!$(openId[k]).hidden)||(k==='bp'&&(tool==='bpsel'||tool==='bp'))||(k==='overlay'&&overlayOn);
+    const on=k===view||(openId[k]&&!$(openId[k]).hidden)||(k==='bp'&&(tool==='bpsel'||tool==='bp'))||(k==='overlay'&&(overlayOn||polOverlay));
     return '<button data-nav="'+k+'" class="'+(on?'on':'')+(stats['seen_'+k]||!['world','cities','military'].includes(k)?'':' new')+'">'+l+(key?' <kbd>'+key+'</kbd>':'')+'</button>';}).join(''));
   const m=MISSIONS[missionIdx];let mh;
   if(m){const objs=m.obj.map(o=>[o[0],!!o[1]()]),done=objs.filter(o=>o[1]).length;
@@ -1576,7 +1579,7 @@ function drawTop(){
 }
 function drawHUD(){
   drawTop();
-  {const ol=$('olegend'),on=overlayOn&&view==='factory';ol.hidden=!on;if(on)setHTML(ol,legendHTML());}
+  {const ol=$('olegend'),on=(overlayOn||polOverlay)&&view==='factory';ol.hidden=!on;if(on)setHTML(ol,polOverlay?polLegendHTML():legendHTML());}
   setHTML($('bankRate'),'Revenue <b>'+$$(rpm)+'/min</b>'+(epm?' &middot; spent '+$s(epm)+'/min':'')+(machinesN?'<br><button class="small" data-nav="stats" style="margin-top:4px">Factory efficiency '+Math.round(effi.overall*100)+'%</button>':''));
   const m=nextMilestone();
   if(m){const have=Math.min(stats[m.stat],m.goal),f=have/m.goal;
@@ -1756,7 +1759,7 @@ function render(tm){
     ctx.fillStyle=O;ctx.fillRect(-24,-8,48,16);ctx.fillStyle='#5d6870';ctx.fillRect(-23,-7,24,14);ctx.fillStyle='#e3a52a';ctx.fillRect(3,-7,20,14);ctx.fillStyle='#16150f';ctx.fillRect(15,-4,5,8);
     if(s.tr.n){const k=Object.keys(s.tr.cargo)[0];if(k)ctx.drawImage(ICON[k],-18,-6,12,12);}
     ctx.restore();}
-  drawNight(mids,tm);if(overlayOn)drawOverlay(mids,belts);drawFocus(tm,drawAt);drawHQLabel();
+  drawHaze();drawNight(mids,tm);if(overlayOn)drawOverlay(mids,belts);if(polOverlay)drawPolOverlay();drawFocus(tm,drawAt);drawTags(mids);drawHQLabel();
   const px0=(x0/PS)|0,px1=(x1/PS)|0,py0=(y0/PS)|0,py1=(y1/PS)|0;
   ctx.textAlign='center';ctx.textBaseline='middle';
   for(let py=py0;py<=py1;py++)for(let px=px0;px<=px1;px++){
@@ -2135,7 +2138,7 @@ cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
 cv.addEventListener('wheel',ev=>{ev.preventDefault();updMouse(ev);if(view==='world'){const f=Math.exp(-ev.deltaY*(ev.deltaMode===1?.05:.0015)),k0=wScale(),wx=(mouse.x-SW/2)/k0+wcam.x,wy=(mouse.y-SH/2)/k0+wcam.y;wcam.z=Math.max(1,Math.min(6,wcam.z*f));const k=wScale();wcam.x=wx-(mouse.x-SW/2)/k;wcam.y=wy-(mouse.y-SH/2)/k;return;}zoomAt(Math.exp(-ev.deltaY*(ev.deltaMode===1?.05:.0015)),mouse.x,mouse.y);},{passive:false});
 function zoomAt(f,px,py){const wx=(px-SW/2)/cam.z+cam.x,wy=(py-SH/2)/cam.z+cam.y;cam.z=Math.max(.25,Math.min(2.5,cam.z*f));cam.x=wx-(px-SW/2)/cam.z;cam.y=wy-(py-SH/2)/cam.z;}
 const keys={};
-const anyOpen=()=>!$('help').hidden||!$('menu').hidden||!$('win').hidden;
+const anyOpen=()=>!$('help').hidden||!$('menu').hidden||!$('win').hidden||!$('stagecard').hidden;
 function toggleInv(){show('inv',$('inv').hidden);if(!$('inv').hidden){cache.invGrid=cache.recGrid=null;drawInv();}}
 function toggleCo(){if($('co').hidden)openCo();else show('co',false);}
 function toggleStats(){show('stats',$('stats').hidden);if(!$('stats').hidden){cache.statsBody=null;drawStats();}}
@@ -2146,7 +2149,7 @@ addEventListener('keydown',ev=>{
   if(intro){if(k===' '||k==='enter'){ev.preventDefault();introNext();}else if(k==='escape')introEnd();return;}
   if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))ev.preventDefault();
   if(k===' '&&!anyOpen()){paused=!paused;toast(paused?'Paused. Press Space to continue.':'Running');uiDirty=true;return;}
-  if(k==='escape'){if(anyOpen()){show('help',false);show('menu',false);show('win',false);}else if(['res','cities','mil','guide','settings'].some(id=>!$(id).hidden)){for(const id of['res','cities','mil','guide','settings'])show(id,false);uiDirty=true;}else if(!$('co').hidden)show('co',false);else if(!$('stats').hidden)show('stats',false);else if(!$('inv').hidden)show('inv',false);else if(entOpen)closeEnt();else{tool=null;bpSel=null;uiDirty=true;}return;}
+  if(k==='escape'){if(anyOpen()){show('help',false);show('menu',false);show('win',false);show('stagecard',false);}else if(['res','cities','mil','guide','settings'].some(id=>!$(id).hidden)){for(const id of['res','cities','mil','guide','settings'])show(id,false);uiDirty=true;}else if(!$('co').hidden)show('co',false);else if(!$('stats').hidden)show('stats',false);else if(!$('inv').hidden)show('inv',false);else if(entOpen)closeEnt();else{tool=null;bpSel=null;uiDirty=true;}return;}
   if(anyOpen()){if(k==='h'||k==='?')show('help',false);return;}
   keys[k]=true;
   if(ev.ctrlKey||ev.metaKey)return;
@@ -2162,7 +2165,7 @@ addEventListener('keydown',ev=>{
   else if(k==='g')navAct('guide');
   else if(k==='p')toggleStats();
   else if(k==='b')startBpSel();
-  else if(k==='o'){overlayOn=!overlayOn;uiDirty=true;}
+  else if(k==='o')cycleOverlay();
   else if(k==='h'||k==='?')show('help',true);
   else if(k==='='||k==='+')zoomAt(1.2,SW/2,SH/2);
   else if(k==='-'||k==='_')zoomAt(1/1.2,SW/2,SH/2);
@@ -2195,7 +2198,7 @@ function navAct(k){
   else if(k==='inv')toggleInv();else if(k==='bp'){if(view!=='factory')setView('factory');startBpSel();}
   else if(k==='guide')toggleModal('guide',drawGuide);else if(k==='settings')toggleModal('settings',drawSettings);
   else if(k==='menu')openMenu();
-  else if(k==='overlay'){overlayOn=!overlayOn;if(view!=='factory')setView('factory');}
+  else if(k==='overlay'){cycleOverlay();if(view!=='factory')setView('factory');}
   uiDirty=true;
 }
 document.addEventListener('click',ev=>{const b=ev.target.closest('button');if(!b||b.disabled)return;const d=b.dataset;
@@ -2245,7 +2248,7 @@ function reset(s){
   genMap(s);genWorld(s);initNation();ents=[];grid.fill(null);ffx=[];nextId=1;queue=[];ticks=0;won=false;inv={};tool=null;mining=null;closeEnt();
   money=0;stats={life:0,auto:0,raw:0,maxDepth:0,maxAutoVal:0,beltMoves:0,splitters:0,lastCraft:0,made:{},built:{}};research={};upg={};cos={};ms={};ch={};xp={};rep={};
   contracts={offers:[],active:[],next:1,done:0,cool:5};revHist=[];prodR={};consR={};soldR={};valR={};PM={};events=[];nextEvent=300;powLastDem=0;powSat=1;alerts=[];logi={};mstat={};
-  owned=new Uint8Array(PN*PN);owned[12]=1;revBuf.fill(0);spendBuf.fill(0);revCur=0;spendCur=0;rpm=0;epm=0;rebuild();
+  PG=null;owned=new Uint8Array(PN*PN);owned[12]=1;revBuf.fill(0);spendBuf.fill(0);revCur=0;spendCur=0;rpm=0;epm=0;rebuild();
 }
 function newGame(){
   reset((Math.random()*1e9)|0);inv=Object.assign({},START_INV);stats.fluidMig=1;
@@ -3066,12 +3069,12 @@ function powerTick(){
   for(const g of gens){
     const share=genCap>0?fromGen*g.spin*GEN_KW/genCap:0;g.spin=need>0?Math.min(1,g.spin+1/300):Math.max(0,g.spin-1/1200);g.on=share>0;
     if(!g.on)continue;
-    if(g.energy<=0){if(g.fuel>0){g.fuel--;g.energy+=45000;consume('fuel',1);polC+=.6;}else if(g.coal>0){g.coal--;g.energy+=18000;consume('coal',1);polC+=1;}else if(g.res>0){g.res--;g.energy+=12000;consume('residue',1);polC+=2;}}
+    if(g.energy<=0){if(g.fuel>0){g.fuel--;g.energy+=45000;consume('fuel',1);polC+=.6;polAdd(g.x,g.y,6);}else if(g.coal>0){g.coal--;g.energy+=18000;consume('coal',1);polC+=1;polAdd(g.x,g.y,10);}else if(g.res>0){g.res--;g.energy+=12000;consume('residue',1);polC+=2;polAdd(g.x,g.y,20);}}
     g.energy-=share/60*burn;g.water=Math.max(0,g.water-share/GEN_KW*WATER_PER_S/60);}
   let supply=base+fromGen,def=dem-supply;
   if(def>0){for(const a of accs){const d=Math.min(ACC_KW,def,a.charge*60);a.charge-=d/60;supply+=d;def-=d;if(def<=0)break;}}
   else{let sur=-def;for(const a of accs){const c=Math.min(ACC_KW,sur,(ACC_KJ-a.charge)*60);a.charge+=c/60;sur-=c;if(sur<=0)break;}}
-  powSat=dem>0?Math.min(1,supply/dem):1;powSup=base+genPot;powGen=genPot;powDem=0;
+  const rawSat=dem>0?Math.min(1,supply/dem):1;powSat=rawSat<powSat?rawSat:Math.min(rawSat,powSat+.02);powSup=base+genPot;powGen=genPot;powDem=0;
   let ce=0;for(const a of accs)ce+=a.charge;powAccE=ce;powAccCap=accs.length*ACC_KJ;
 }
 function tuneRow(e){
@@ -3159,7 +3162,7 @@ const STAGES=[
   ['Exotic Industry','Dark matter and beyond.',()=>(stats.made.dark_matter||0)>0],
 ];
 function stageNow(){let s=0;for(let i=1;i<STAGES.length;i++){if(STAGES[i][2]())s=i;else break;}return s;}
-function stageSecond(){const s=stageNow();if(s>(stats.stage||0)){stats.stage=s;banner('STAGE '+(s+1)+': '+STAGES[s][0].toUpperCase(),STAGES[s][1]+' New problem: '+STAGE_PROB[s]);report('world','Your nation entered stage '+(s+1)+': '+STAGES[s][0]+'.');}}
+function stageSecond(){const s=stageNow();if(s>(stats.stage||0)){stats.stage=s;showStage(s);report('world','Your nation entered stage '+(s+1)+': '+STAGES[s][0]+'.');}}
 
 // ---------- loans ----------
 const LOAN_RATE=.005;
@@ -3321,18 +3324,6 @@ function drawOverlay(mids,belts){
 }
 function overlaySecond(){const c={};for(const list of[L.drill,L.furn,L.asm])for(const e of list){const k=flowClass(e);if(k)c[k]=(c[k]||0)+1;}oCount=c;}
 function legendHTML(){return '<b>Bottleneck overlay</b> <kbd>O</kbd>'+Object.keys(OCOL).map(k=>'<span class="lg"><i style="background:'+OCOL[k]+'"></i>'+ONAME[k]+' '+(oCount[k]||0)+'</span>').join('')+'<span class="ct">Click a machine for its numbers</span>';}
-function drawNight(mids,tm){
-  const d=1-daylight();if(d<.02||!settings.vfx)return;
-  ctx.fillStyle='rgba(8,12,34,'+(d*.36).toFixed(3)+')';ctx.fillRect(0,0,SW,SH);
-  if(!settings.bg)return;const z=cam.z;ctx.globalCompositeOperation='lighter';
-  for(const e of mids){let c=null;
-    if(e.type==='furnace'&&e.cur||e.type==='generator'&&e.on)c='255,150,60';else if(e.type==='reactor'&&e.on)c='150,120,255';
-    else if(cos.neon&&(e.type==='moneygen'||isMachine(e)&&e.work))c='80,220,240';
-    if(!c)continue;const x=sx((e.x+(e.w||1)/2)*T),y=sy((e.y+(e.h||1)/2)*T),r=T*z*(e.w||1)*1.1;
-    const g=ctx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,'rgba('+c+','+(.35*d).toFixed(3)+')');g.addColorStop(1,'rgba('+c+',0)');ctx.fillStyle=g;ctx.fillRect(x-r,y-r,r*2,r*2);}
-  ctx.globalCompositeOperation='source-over';
-}
-
 // ---------- drawing ----------
 function pipeLink(e,d){const q=at(e.x+DX[d],e.y+DY[d]);if(!q)return false;if(isFNode(q)||isMachine(q)||q.type==='generator'||q.type==='reactor')return true;return q.type==='drill'&&q.dir===(d+2)%4;}
 function drawPipe(g,e,tm){
@@ -3500,7 +3491,7 @@ function migrateSystems(){
   if(stats.debt>1&&!stats.loans)stats.loans=[{k:'wc',p:stats.debt,amt:stats.debt,rate:LOAN_RATE,left:600}];
 }
 function systemsSecond2(){
-  fluidSecond();crewSecond();overlaySecond();fmsSecond();
+  fluidSecond();crewSecond();overlaySecond();fmsSecond();polSpread();
   polR=polR*EMA+polC*60*(1-EMA);polC=0;
   peakBuf[ticks/60%60|0]=powPeakS;powPeakS=0;powPeak=Math.max(...peakBuf);
   if(ticks%3600===0){emissionsMinute();scrapLast=scrapMin;scrapMin=0;}
@@ -3523,6 +3514,104 @@ GUIDE.push(
   ['Stages','Each stage adds a new problem. Industry taxes emissions. Electronics makes fabricators ruin their batch in a brownout. Megafactory makes machines wear faster. Global Industry floods markets faster. Rocket Age makes launches draw from battery banks. Exotic Industry makes exotic fabrication need coolant, and unlocks the Singularity Reactor and matter transmutation.'],
   ['Factory milestones','Company > Goals lists factory milestones such as 1,000 steel per minute, 10 MW of power, 50 machines working at once or a contract finished without buying anything. They pay money, research credit (taken off your next research), extra blueprint slots and cosmetics.'],
 );
+
+// ---------- feedback: pollution, lights, tags, stage cards ----------
+let polOverlay=false,PG=null,PGW=0,PGH=0;
+const PCELL=8;
+function polInit(){PGW=Math.ceil(W/PCELL);PGH=Math.ceil(H/PCELL);PG=new Float32Array(PGW*PGH);}
+function polAdd(x,y,a){if(!PG||PG.length!==Math.ceil(W/PCELL)*Math.ceil(H/PCELL))polInit();const i=((y/PCELL)|0)*PGW+((x/PCELL)|0);if(i>=0&&i<PG.length)PG[i]+=a;}
+function polSpread(){
+  if(!PG)polInit();const N=new Float32Array(PG.length);
+  for(let y=0;y<PGH;y++)for(let x=0;x<PGW;x++){const i=y*PGW+x,v=PG[i];if(v<.01)continue;const s=v*.05;let k=0;
+    if(x>0){N[i-1]+=s;k++;}if(x<PGW-1){N[i+1]+=s;k++;}if(y>0){N[i-PGW]+=s;k++;}if(y<PGH-1){N[i+PGW]+=s;k++;}N[i]+=v-s*k;}
+  for(let i=0;i<N.length;i++){const v=N[i]*.985;PG[i]=v<.01?0:v;}
+}
+const polAt=(x,y)=>PG?PG[((y/PCELL)|0)*PGW+((x/PCELL)|0)]||0:0;
+const POLV=[[5,'Low','#5dbb6a'],[20,'Moderate','#e3c02a'],[60,'High','#f08a2e'],[1e9,'Severe','#e05a44']];
+const polLevel=v=>POLV.find(p=>v<p[0]);
+const GLOWC={};
+function glowOf(col){if(GLOWC[col])return GLOWC[col];const c=document.createElement('canvas');c.width=c.height=64;const g=c.getContext('2d'),gr=g.createRadialGradient(32,32,0,32,32,32);
+  gr.addColorStop(0,'rgba('+col+',1)');gr.addColorStop(.35,'rgba('+col+',.4)');gr.addColorStop(1,'rgba('+col+',0)');g.fillStyle=gr;g.fillRect(0,0,64,64);return GLOWC[col]=c;}
+function drawHaze(){
+  if(!PG||!settings.vfx)return;const z=cam.z,cs=PCELL*T*z,spr=glowOf('96,84,64');
+  const x0=Math.max(0,Math.floor((cam.x-SW/2/z)/(PCELL*T))-1),x1=Math.min(PGW-1,Math.floor((cam.x+SW/2/z)/(PCELL*T))+1);
+  const y0=Math.max(0,Math.floor((cam.y-SH/2/z)/(PCELL*T))-1),y1=Math.min(PGH-1,Math.floor((cam.y+SH/2/z)/(PCELL*T))+1);
+  for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){const v=PG[y*PGW+x];if(v<8)continue;ctx.globalAlpha=Math.min(.45,(v-8)/160);
+    const px=sx((x+.5)*PCELL*T),py=sy((y+.5)*PCELL*T);ctx.drawImage(spr,px-cs*1.1,py-cs*1.1,cs*2.2,cs*2.2);}
+  ctx.globalAlpha=1;
+}
+function drawPolOverlay(){
+  if(!PG)return;const z=cam.z,cs=PCELL*T*z;
+  for(let y=0;y<PGH;y++)for(let x=0;x<PGW;x++){const v=PG[y*PGW+x],px=sx(x*PCELL*T),py=sy(y*PCELL*T);if(px>SW||py>SH||px+cs<0||py+cs<0)continue;
+    ctx.globalAlpha=v<1?.08:.34;ctx.fillStyle=polLevel(v)[2];ctx.fillRect(px,py,cs,cs);}
+  ctx.globalAlpha=1;
+}
+function polLegendHTML(){let tot=0,hi=0;if(PG)for(const v of PG){tot+=v;if(v>=20)hi++;}
+  return '<b>Pollution overlay</b> <kbd>O</kbd>'+POLV.map(p=>'<span class="lg"><i style="background:'+p[2]+'"></i>'+p[1]+'</span>').join('')+'<span class="ct">'+hi+' area'+(hi===1?'':'s')+' high or worse &middot; '+fr(polR)+'/min &middot; steam, furnaces and burnt residue pollute</span>';}
+function cycleOverlay(){
+  if(!overlayOn&&!polOverlay){overlayOn=true;toast('Bottleneck overlay. Press O again for pollution.');}
+  else if(overlayOn){overlayOn=false;polOverlay=true;toast('Pollution overlay. Press O again to turn overlays off.');}
+  else polOverlay=false;
+  uiDirty=true;
+}
+function drawNight(mids,tm){
+  if(!settings.vfx)return;const sun=daylight(),warm=sun>0&&sun<1?Math.sin(Math.PI*sun):0;
+  if(warm>.02){ctx.fillStyle='rgba(255,128,48,'+(warm*.13).toFixed(3)+')';ctx.fillRect(0,0,SW,SH);}
+  const d=1-sun;if(d<.02)return;
+  ctx.fillStyle='rgba(12,18,44,'+(d*.34).toFixed(3)+')';ctx.fillRect(0,0,SW,SH);
+  if(d<.3)return;const a=Math.min(1,(d-.3)/.4),z=cam.z;
+  ctx.globalCompositeOperation='lighter';
+  for(const e of mids){let c=null,r=1;
+    if(e.type==='furnace'&&e.cur||e.type==='generator'&&e.on)c='255,140,50';else if(e.type==='reactor'&&e.on)c='150,110,255';
+    else if(e.type==='moneygen'){c=cos.neon?'70,220,240':'255,200,110';r=1.3;}else if(isMachine(e)&&e.work){c=cos.neon?'70,220,240':'255,205,120';r=.75;}
+    else if(e.type==='station'||e.type==='depot')c='255,205,120';
+    if(!c)continue;const s=T*z*(e.w||1)*2.4*r,x=sx((e.x+(e.w||1)/2)*T),y=sy((e.y+(e.h||1)/2)*T);ctx.globalAlpha=a*.55;ctx.drawImage(glowOf(c),x-s/2,y-s/2,s,s);}
+  if(typeof drawVillageLights==='function')drawVillageLights(a);
+  ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';
+}
+const ARW=['↑','→','↓','←'];
+function probTag(e){
+  if(e.ghost)return null;
+  if(e.type==='generator'){if(e.st==='nowater')return['NO WATER','Steam generator','Place a water well touching it',null];if(e.st==='nofuel'&&powLastDem>HQ_POWER)return['NO FUEL','Steam generator','Feed coal, fuel or residue',null];return null;}
+  if(e.type==='reactor')return e.st==='nocool'?['NO COOLANT','Reactor shut down','Pipe coolant in',null]:null;
+  if(e.type==='furnace')return e.st==='nofuel'?['NO COAL','Furnace stopped','Feed coal by inserter',null]:null;
+  if(e.type==='drill')return e.st==='empty'?['DEPLETED','Ore used up here','Move this drill to fresh ore',null]:null;
+  if(!isMachine(e)||!e.rec)return null;
+  const R=RECIPES[e.rec],back=(e.dir+2)%4;
+  if(e.st==='byfull')return['OUTPUT BLOCKED',ITEMS[R.by[0]].n,'Connect pipe '+ARW[back],back];
+  if(e.flRej){const side=e.flRej[0]===ro(e.rec)?e.dir:back;return['WRONG FLUID','Pipe holds '+ITEMS[e.flRej[1]].n,'Use a separate pipe '+ARW[side],side];}
+  if(e.st==='starve'&&e.miss&&FL.has(e.miss)&&e.fs){const f=e.fs[e.dir];
+    if(f&&f.fl===e.miss)return['PIPE ON OUTPUT SIDE',ITEMS[e.miss].n,'Rotate the machine (R)',e.dir];
+    if(!e.fs.some((n,d)=>n&&n.fl===e.miss&&d!==e.dir)&&!(e.inv[e.miss]>0)&&e.hs>.5)return['NO '+ITEMS[e.miss].n.toUpperCase(),'No pipe or barrels bring it','Connect a pipe to a side',null];}
+  if(e.hot)return['OVERHEATING','Needs coolant','Pipe coolant in',null];
+  if(overlayOn&&e.hb>.6)return['OUTPUT FULL',ITEMS[ro(e.rec)].n,'Nothing takes it away',null];
+  return null;
+}
+function drawTags(mids){
+  if(cam.z<.55)return;const z=cam.z;let n=0;
+  for(const e of mids){if(n>=40)break;const t=probTag(e);if(!t)continue;n++;
+    const cx=sx((e.x+(e.w||1)/2)*T),top=sy(e.y*T);
+    if(t[3]!==null){const hx=e.x+DX[t[3]],hy=e.y+DY[t[3]],X=sx(hx*T),Y=sy(hy*T);ctx.fillStyle='rgba(255,90,68,.2)';ctx.fillRect(X+2,Y+2,T*z-4,T*z-4);ctx.strokeStyle='#ff5a44';ctx.lineWidth=2.5;ctx.setLineDash([5,3]);ctx.strokeRect(X+2,Y+2,T*z-4,T*z-4);ctx.setLineDash([]);}
+    ctx.font='700 10px "Chakra Petch",sans-serif';const w0=ctx.measureText(t[0]).width+20;ctx.font='600 10px "JetBrains Mono",monospace';
+    const w=Math.max(w0,ctx.measureText(t[1]).width,ctx.measureText(t[2]).width)+14,h=40,x=cx-w/2,y=top-h-7;
+    ctx.fillStyle='rgba(24,27,31,.95)';rr(ctx,x,y,w,h,4);ctx.fill();ctx.beginPath();ctx.moveTo(cx-5,y+h);ctx.lineTo(cx+5,y+h);ctx.lineTo(cx,y+h+5);ctx.closePath();ctx.fill();
+    ctx.fillStyle='#e05a44';ctx.fillRect(x,y,3,h);
+    ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillStyle='#ff5a44';circ(ctx,x+11,y+9.5,3.5);ctx.fill();
+    ctx.font='700 10px "Chakra Petch",sans-serif';ctx.fillStyle='#ffffff';ctx.fillText(t[0],x+18,y+10);
+    ctx.font='600 10px "JetBrains Mono",monospace';ctx.fillStyle='#d8dde2';ctx.fillText(t[1],x+8,y+21.5);ctx.fillStyle='#ffc23a';ctx.fillText(t[2],x+8,y+32.5);}
+}
+const STAGE_CH=[['Fuel and water','Furnaces burn coal, and steam generators need both fuel and water. Keep them fed.'],
+  ['Emissions','Your factories now produce pollution. Steam generators, furnaces and burnt residue pollute; solar and geothermal don’t. Pollution over 40 units a minute is taxed, and it spreads around your industrial areas. Press O twice to see it.'],
+  ['Power quality','Fabricators now ruin their batch whenever power drops below 90%. Battery banks absorb spikes and keep the grid steady.'],
+  ['Machine wear','Machines wear 50% faster. Maintenance bays and replacement parts become part of the factory.'],
+  ['Market saturation','Markets flood twice as fast when you sell. Contracts don’t flood the market, so they matter more now.'],
+  ['Launch loads','Every rocket launch draws 20 MJ from your battery banks. Build storage before you launch.'],
+  ['Containment','Exotic fabrication needs coolant piped in or runs at half speed. In return you can build Singularity Reactors and transmute common ore into rare ore.']];
+function showStage(s){
+  $('stageTitle').textContent=STAGES[s][0].toUpperCase()+' UNLOCKED';$('stageSub').textContent=STAGES[s][1];
+  $('stageCh').textContent='⚠ New challenge: '+STAGE_CH[s][0];$('stageTxt').textContent=STAGE_CH[s][1];
+  $('stageNum').textContent='Stage '+(s+1)+' of '+STAGES.length;show('stagecard',true);sfx('fanfare');
+}
 
 // ---------- introduction ----------
 const INTROS=[
