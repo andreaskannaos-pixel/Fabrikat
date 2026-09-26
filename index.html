@@ -91,7 +91,7 @@ h1,h2,h3{margin:0;text-wrap:balance}
 .toast.bad{border-left-color:var(--red)}
 
 .modal{position:fixed;z-index:5;display:flex;flex-direction:column;max-height:calc(100% - 32px);box-sizing:border-box}
-#inv,#co,#stats,#res,#cities,#mil,#guide,#settings,#charp{left:50%;top:50%;transform:translate(-50%,-50%);width:min(820px,calc(100% - 32px))}
+#inv,#co,#stats,#res,#cities,#mil,#guide,#settings,#charp{left:50%;top:calc(50% - var(--navh,48px)/2);transform:translate(-50%,-50%);width:min(820px,calc(100% - 32px));max-height:calc(100% - var(--navh,48px) - 24px)}
 #co,#stats,#res,#cities,#mil,#charp{height:min(640px,calc(100% - 32px))}
 #guide,#settings{max-height:min(620px,calc(100% - 32px))}
 #entp{right:16px;top:112px;width:min(360px,calc(100% - 32px));max-height:calc(100% - 220px)}
@@ -244,6 +244,8 @@ details.sec summary:hover{color:var(--text)}
 #nav{position:absolute;left:0;right:0;bottom:0;display:flex;gap:4px;justify-content:center;flex-wrap:wrap;padding:6px 16px calc(6px + env(safe-area-inset-bottom,0px));background:rgba(29,32,36,.97);border-top:1px solid var(--line)}
 #nav button{padding:5px 9px;font-size:12.5px}
 #nav button.on{border-color:var(--amber);color:var(--amber)}
+#nav button.active{border-color:var(--amber);color:var(--amber);background:rgba(240,166,46,.14);box-shadow:inset 0 -3px 0 var(--amber)}
+#game.looking{cursor:grabbing}
 #nav .sep{width:1px;background:var(--line);margin:3px 6px}
 #nav .new{box-shadow:0 0 0 2px var(--amber)}
 #nav .locked{opacity:.5}
@@ -475,7 +477,7 @@ canvas.petc{width:40px;height:40px;vertical-align:middle;margin-right:8px;backgr
   <div class="mbody" id="settingsBody"></div>
 </div>
 <div id="charp" class="panel modal" hidden>
-  <div class="mhead"><h2>The President</h2><button data-close="charp">Close <kbd>K</kbd></button></div>
+  <div class="mhead"><h2>The President</h2><div class="row"><button class="small" data-pl="editor">Character Editor</button><button data-close="charp">Close <kbd>K</kbd></button></div></div>
   <div class="mbody" id="charBody"></div>
 </div>
 <div id="wpanel" class="panel modal" hidden>
@@ -507,6 +509,7 @@ canvas.petc{width:40px;height:40px;vertical-align:middle;margin-right:8px;backgr
       <span><kbd>Drag</kbd></span><span>Lay belts in a line. They turn corners for you.</span>
       <span><kbd>R</kbd></span><span>Rotate what you're holding, or the building under the cursor</span>
       <span><kbd>X</kbd> / right-click</span><span>Remove a building. On a Chromebook, right-click is a two-finger click.</span>
+      <span><kbd>Right-drag</kbd></span><span>Look around without moving the President. Release to glide back to them.</span>
       <span><kbd>Alt</kbd> (hold)</span><span>Show machine details: recipe icons, fluid ports, pipe flow and crew labels. Holding a pipe or a building shows the relevant ones.</span>
       <span><kbd>Q</kbd></span><span>Copy the building under the cursor</span>
       <span><kbd>B</kbd></span><span>Blueprint: drag a box around buildings to save them, then place copies from Company &gt; Blueprints</span>
@@ -1101,8 +1104,8 @@ function updIns(e){
 }
 const wear=e=>{e.eff=Math.max(.5,e.eff-WEAR*((stats.stage||0)>=3?1.5:1)*(1-.2*upgLv('durability'))*Math.pow(e.oc||1,2)*(regionAt(e.x,e.y)==='arctic'?.5:1)*(evActive('heatwave')?2:1));};
 function updDrill(e){
-  const i=e.y*W+e.x;
-  if(!ore[i]&&!e.buf){e.st='empty';return;}
+  let i=drillTile(e);
+  if(!ore[i]&&!e.buf){i=retarget(e);if(i<0){e.st='empty';return;}}
   if(!e.buf&&e.extra>0&&e.lastOre){e.buf=e.lastOre;e.extra--;produce(e.buf,1);}
   if(!e.buf){e.st='work';wear(e);powDem+=drawKW(e,true);e.prog+=drillRate()*e.eff*tuneSpeed(e)/60;if(e.prog>=1){e.prog=0;e.buf=e.lastOre=ORES[ore[i]-1];mineTile(i);produce(e.buf,1);const pr=modStats(e).pr;if(pr){e.pb=(e.pb||0)+pr;if(e.pb>=1){e.pb--;e.extra=(e.extra||0)+1;}}}}
   else powDem+=drawKW(e,false);
@@ -1292,6 +1295,7 @@ function placeOk(type,x,y){
 }
 function tryPlace(x,y,type,dir,quiet){
   const why=placeOk(type,x,y);
+  if(why&&why!=='busy'&&!quiet)sfx('error');
   if(why==='land'){if(!quiet)toastOnce('This land isn’t yours. Click it to buy it or see who owns it.');return null;}
   if(why==='busy')return null;
   if(why==='village'){if(!quiet)toastOnce('A village building stands here. Remove it first (X or right-click); people who lived there move away.');return null;}
@@ -1305,7 +1309,7 @@ function tryPlace(x,y,type,dir,quiet){
     if(!inv[type])return null;
     add(inv,type,-1);add(inv,ex.type,1);ex.type=type;ex.dir=dir;listsDirty=true;return ex;
   }
-  if(!inv[type]){if(!quiet)toastOnce('You have no '+ITEMS[type].n+' left. Craft it (E) or buy it (C > Market).');return null;}
+  if(!inv[type]){if(!quiet)sfx('error');if(!quiet)toastOnce('You have no '+ITEMS[type].n+' left. Craft it (E) or buy it (C > Market).');return null;}
   add(inv,type,-1);const e=mk(type,x,y,dir);addEnt(e);stats.built[type]=(stats.built[type]||0)+1;if(!quiet)sfx('place');if(toolRec&&isMachine(e)&&RECIPES[toolRec]&&RECIPES[toolRec].cat===MACHINE_CAT[type]&&unlocked(toolRec))e.rec=toolRec;if(settings.vfx>0)FX.built(x,y,e.w||1,e.h||1);
   if(type==='splitter')stats.splitters=1;
   return e;
@@ -1677,8 +1681,8 @@ function drawTop(){
   setHTML($('topbar'),h);
   const openId={char:'charp',cities:'cities',military:'mil',research:'res',company:'co',stats:'stats',inv:'inv',guide:'guide',settings:'settings'};
   setHTML($('nav'),NAV.map(n=>{if(n==='|')return '<span class="sep"></span>';const[k,l,key]=n;if((k==='world'||k==='cities'||k==='military')&&!unlockedNav(k))return '';
-    const on=k===view||(openId[k]&&!$(openId[k]).hidden)||(k==='bp'&&(tool==='bpsel'||tool==='bp'))||(k==='overlay'&&(overlayOn||polOverlay));
-    return '<button data-nav="'+k+'" class="'+(on?'on':'')+(stats['seen_'+k]||!['world','cities','military'].includes(k)?'':' new')+'">'+l+(key?' <kbd>'+key+'</kbd>':'')+'</button>';}).join(''));
+    const act=UIManager.activeKey()===k,on=k==='overlay'&&(overlayOn||polOverlay);
+    return '<button id="nav-'+k+'" data-nav="'+k+'" aria-pressed="'+act+'" class="'+(act?'active':'')+(on?' on':'')+(stats['seen_'+k]||!['world','cities','military'].includes(k)?'':' new')+'">'+l+(key?' <kbd>'+key+'</kbd>':'')+'</button>';}).join(''));
   const m=MISSIONS[missionIdx];let mh;
   if(m){const objs=m.obj.map(o=>[o[0],!!o[1]()]),done=objs.filter(o=>o[1]).length;
     mh='<button class="mcard" data-mission="1" aria-expanded="'+missionOpen+'"><span class="eyebrow">Mission '+(missionIdx+1)+'</span><span class="nm">'+m.n+'</span><span class="ct">'+done+'/'+objs.length+' '+(missionOpen?'▴':'▾')+'</span></button><div class="bar'+(done===objs.length?' done':'')+'"><i style="width:'+(done/objs.length*100).toFixed(0)+'%"></i></div>';
@@ -1706,7 +1710,7 @@ function drawHUD(){
   if(queue.length>8)q+='<div class="qi mono">+'+(queue.length-8)+'</div>';
   setHTML($('queue'),q);
   setHTML($('alerts'),alerts.map((a,i)=>'<button class="alert '+a.s+'" data-alert="'+i+'"><span class="sev">'+(a.s==='crit'?'ALERT':a.s==='warn'?'ISSUE':'NOTE')+'</span><span>'+esc(a.t)+'</span></button>').join(''));
-  {setHTML($('pbox'),pboxHTML());const nh=$('nav').offsetHeight,hb=view==='factory'?$('hotbar').offsetHeight:0,bb=nh+hb+22,b=bb+'px',ph=$('pbox').offsetHeight;$('hotbar').style.bottom=(nh+8)+'px';$('pbox').style.bottom=b;$('status').style.bottom=(bb+ph+8)+'px';$('alerts').style.bottom=b;$('olegend').style.bottom=b;}
+  {setHTML($('pbox'),pboxHTML());{const nh=$('nav').offsetHeight;if(nh!==navHpx){navHpx=nh;document.documentElement.style.setProperty('--navh',nh+'px');}}const nh=$('nav').offsetHeight,hb=view==='factory'?$('hotbar').offsetHeight:0,bb=nh+hb+22,b=bb+'px',ph=$('pbox').offsetHeight;$('hotbar').style.bottom=(nh+8)+'px';$('pbox').style.bottom=b;$('status').style.bottom=(bb+ph+8)+'px';$('alerts').style.bottom=b;$('olegend').style.bottom=b;}
 }
 
 // ---------- selection focus ----------
@@ -1782,7 +1786,7 @@ function machPanel(e){
     h+=secBlock('tune','Clock &amp; modules',tuneRow(e),false);
     h+=secBlock('diag','Diagnostics',perfRow(e)+condRow(e),false);
   }else{
-    const i=e.y*W+e.x,o=ore[i]?ORES[ore[i]-1]:e.lastOre||null;
+    const i=drillTile(e),o=ore[i]?ORES[ore[i]-1]:e.lastOre||null;
     h+=machSummary(e,o,ore[i]?ITEMS[o].n+' <span class="ct">'+amt[i]+' left</span>':'Patch used up',[],e.buf?1:0,'<div class="mstat"><span>'+(drillRate()*e.eff*tuneSpeed(e)).toFixed(2)+' ore/s</span><span>'+(e.st==='block'?'<span class="bad">chute blocked</span>':'chute flowing')+'</span></div>');
     if(ore[i]&&ORES[ore[i]-1]==='crude_oil')h+='<p class="empty">Point its chute at a pipe and it pumps '+OIL_PIPE+' units of oil per cycle instead of one barrel.</p>';
     h+=secBlock('tune','Clock &amp; modules',tuneRow(e),false);
@@ -1876,7 +1880,7 @@ function render(tm){
     ctx.fillStyle=O;ctx.fillRect(-24,-8,48,16);ctx.fillStyle='#5d6870';ctx.fillRect(-23,-7,24,14);ctx.fillStyle='#e3a52a';ctx.fillRect(3,-7,20,14);ctx.fillStyle='#16150f';ctx.fillRect(15,-4,5,8);
     if(s.tr.n){const k=Object.keys(s.tr.cargo)[0];if(k)ctx.drawImage(ICON[k],-18,-6,12,12);}
     ctx.restore();}
-  drawFolk(tm);drawAgents();drawTerritory(x0,x1,y0,y1);drawHaze();drawNight(mids,tm);if(overlayOn)drawOverlay(mids,belts);if(polOverlay)drawPolOverlay();drawV17World(tm);drawCombat(tm);drawUnits();drawFocus(tm,drawAt);drawWarnings(mids,tm);drawHQLabel();
+  drawFolk(tm);drawAgents();drawTerritory(x0,x1,y0,y1);drawHaze();drawNight(mids,tm);if(overlayOn)drawOverlay(mids,belts);if(polOverlay)drawPolOverlay();drawV17World(tm);drawDrillTargets();drawCombat(tm);drawUnits();drawFocus(tm,drawAt);drawWarnings(mids,tm);drawHQLabel();
   drawProvLabels();drawWorldLayer(tm,false);
   const hx=mouse.tx,hy=mouse.ty;
   if(tool==='bpsel'&&bpSel){const a=Math.min(bpSel.x0,bpSel.x1),b=Math.min(bpSel.y0,bpSel.y1),c=Math.max(bpSel.x0,bpSel.x1),d=Math.max(bpSel.y0,bpSel.y1);
@@ -2122,7 +2126,7 @@ function coAct(a,shift){
   else if(k==='import'){const b=bpDecode($('bpImport').value);if(b&&myCount()>=bpCap())toast('All '+bpCap()+' blueprint slots are full. Delete one first.','bad');else if(b){bps.push(b);bpPrev.length=0;saveBps();toast('Imported '+b.name,'big');}else toast('That code isn’t a valid Fabrikat blueprint','bad');}
   cache.coBody=null;drawCo();uiDirty=true;
 }
-function openCo(tab,hl){if(tab)coTab=tab;coHL=hl===undefined?-1:hl;cache.coBody=null;show('co',true);drawCo();}
+function openCo(tab,hl){if(tab)coTab=tab;coHL=hl===undefined?-1:hl;cache.coBody=null;if($('co').hidden){UIManager.closeAll('company');sfx('ui_open');}show('co',true);drawCo();}
 
 // ---------- statistics view ----------
 const SCOL={work:'#79b25a',starve:'#e3a52a',block:'#d2553f',idle:'#6b6856'};
@@ -2186,9 +2190,10 @@ cv.addEventListener('pointerdown',ev=>{
   try{cv.setPointerCapture(ev.pointerId);}catch(_){}
   if(ev.pointerType==='touch'){touches.set(ev.pointerId,{x:ev.clientX,y:ev.clientY});if(touches.size===2){gest=gestInfo();mouse.down=-1;mining=null;wdrag=null;bpSel=null;return;}if(touches.size>2)return;}
   updMouse(ev);closeCtxPop();
+  if(ev.button===2&&ev.pointerType!=='touch'&&!(view==='factory'&&(tool==='bp'||tool==='bpsel'))){FreeLook.down(ev);return;}
   if(view==='world'){if(ev.button===0)wdrag={x:ev.clientX,y:ev.clientY,cx:cam.x,cy:cam.y,moved:false};return;}if(pl&&pl.drawn&&ev.button===0){firing=true;return;}const x=mouse.tx,y=mouse.ty;
   if(ev.button===2&&(tool==='bp'||tool==='bpsel')){tool=null;bpSel=null;uiDirty=true;return;}
-  if(ev.button===2||(ev.button===0&&tool==='remove')){mouse.down=2;mouse.vdem=0;removeAt(x,y);uiDirty=true;return;}
+  if(ev.button===0&&tool==='remove'){mouse.down=2;mouse.vdem=0;removeAt(x,y);uiDirty=true;return;}
   if(ev.button!==0)return;
   mouse.down=0;mouse.lx=x;mouse.ly=y;mouse.placed=null;
   if(tool==='bpsel'){bpSel={x0:x,y0:y,x1:x,y1:y};return;}
@@ -2206,6 +2211,7 @@ cv.addEventListener('pointermove',ev=>{
       cam.x-=dx/cam.z;cam.y-=dy/cam.z;zoomAt(f,g.cx,g.cy);
       gest=g;return;}}
   updMouse(ev);
+  if(FreeLook.move(ev))return;
   if(view==='world'){whov=provAt(mouse.x,mouse.y);if(wdrag){const dx=ev.clientX-wdrag.x,dy=ev.clientY-wdrag.y;if(Math.abs(dx)+Math.abs(dy)>5)wdrag.moved=true;if(wdrag.moved){camGoal=null;cam.x=wdrag.cx-dx/cam.z;cam.y=wdrag.cy-dy/cam.z;}}return;}
   {const g=provAtTile(mouse.tx,mouse.ty);whov=g>=0&&world.provs[g].owner!==0?g:-1;}const x=mouse.tx,y=mouse.ty;
   if(tool==='bpsel'&&bpSel&&mouse.down===0){bpSel.x1=Math.max(0,Math.min(W-1,x));bpSel.y1=Math.max(0,Math.min(H-1,y));return;}
@@ -2224,6 +2230,7 @@ cv.addEventListener('pointermove',ev=>{
 });
 const up=ev=>{firing=false;
   if(ev&&ev.pointerType==='touch'){const was=touches.size;touches.delete(ev.pointerId);if(was>=2||gest){if(touches.size<2)gest=null;mouse.down=-1;wdrag=null;return;}}
+  if(FreeLook.up())return;
   if(view==='world'){if(wdrag&&!wdrag.moved){const g=provAt(mouse.x,mouse.y);if(!ctxPointer(mouse.x,mouse.y,g)&&g>=0)openProv(g);}wdrag=null;return;}
   if(tool==='bpsel'&&bpSel&&mouse.down===0){const s=bpSel;bpSel=null;tool=null;captureBp(Math.min(s.x0,s.x1),Math.min(s.y0,s.y1),Math.max(s.x0,s.x1),Math.max(s.y0,s.y1));uiDirty=true;}
   if(mouse.down===0&&mouse.dragN>0&&isBelt(mouse.placed))beltAutoConnect(mouse.placed);mouse.dragN=0;
@@ -2233,9 +2240,9 @@ cv.addEventListener('wheel',ev=>{ev.preventDefault();updMouse(ev);camGoal=null;z
 function zoomAt(f,px,py){const wx=(px-SW/2)/cam.z+cam.x,wy=(py-SH/2)/cam.z+cam.y;cam.z=Math.max(unlockedNav('world')?fitZ()*.9:.26,Math.min(2.5,cam.z*f));cam.x=wx-(px-SW/2)/cam.z;cam.y=wy-(py-SH/2)/cam.z;}
 const keys={};
 const anyOpen=()=>!$('editor').hidden||!$('shop').hidden||!$('help').hidden||!$('menu').hidden||!$('win').hidden||!$('stagecard').hidden;
-function toggleInv(){show('inv',$('inv').hidden);if(!$('inv').hidden){cache.invGrid=cache.recGrid=null;drawInv();}}
-function toggleCo(){if($('co').hidden)openCo();else show('co',false);}
-function toggleStats(){show('stats',$('stats').hidden);if(!$('stats').hidden){cache.statsBody=null;drawStats();}}
+function toggleInv(){UIManager.togglePanel('inv');}
+function toggleCo(){UIManager.togglePanel('company');}
+function toggleStats(){UIManager.togglePanel('stats');}
 function startBpSel(){tool=tool==='bpsel'?null:'bpsel';bpSel=null;uiDirty=true;if(tool)toast('Drag a box around the buildings you want to save');}
 addEventListener('keydown',ev=>{
   if(ev.target&&(ev.target.tagName==='INPUT'||ev.target.tagName==='TEXTAREA'))return;
@@ -2246,7 +2253,7 @@ addEventListener('keydown',ev=>{
   if(intro){if(k===' '||k==='enter'){ev.preventDefault();introNext();}else if(k==='escape')introEnd();return;}
   if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))ev.preventDefault();
   if(k===' '&&!anyOpen()){paused=!paused;toast(paused?'Paused. Press Space to continue.':'Running');uiDirty=true;return;}
-  if(k==='escape'){if(anyOpen()){show('help',false);show('menu',false);show('win',false);show('stagecard',false);}else if(['res','cities','mil','guide','settings'].some(id=>!$(id).hidden)){for(const id of['res','cities','mil','guide','settings'])show(id,false);uiDirty=true;}else if(!$('co').hidden)show('co',false);else if(!$('stats').hidden)show('stats',false);else if(!$('inv').hidden)show('inv',false);else if(entOpen)closeEnt();else{tool=null;bpSel=null;uiDirty=true;}return;}
+  if(k==='escape'){if(anyOpen()){show('help',false);show('menu',false);show('win',false);show('stagecard',false);}else if(UIManager.escape()){}else if(!$('wpanel').hidden){show('wpanel',false);wsel=-1;}else if(entOpen)closeEnt();else{tool=null;bpSel=null;uiDirty=true;}return;}
   if(anyOpen()){if(k==='h'||k==='?')show('help',false);return;}
   keys[k]=true;
   if(ev.ctrlKey||ev.metaKey)return;
@@ -2262,7 +2269,7 @@ addEventListener('keydown',ev=>{
   else if(k==='e')toggleInv();
   else if(k==='c')toggleCo();
   else if(k==='t')navAct('research');
-  else if(k==='m')setView(view==='world'?'factory':'world');
+  else if(k==='m')navAct('world');
   else if(k==='g')navAct('guide');
   else if(k==='p')toggleStats();
   else if(k==='b')startBpSel();
@@ -2290,18 +2297,10 @@ $('entBody').addEventListener('toggle',ev=>{const d=ev.target;if(d&&d.dataset&&d
 $('statsBody').addEventListener('mousemove',ev=>{const s=ev.target.closest('#spark');if(!s)return;const svg=s.querySelector('svg'),r=svg.getBoundingClientRect(),vals=s.dataset.hist.split(',').map(Number),n=vals.length;if(n<2)return;
   const i=Math.max(0,Math.min(n-1,Math.round((ev.clientX-r.left)/r.width*(n-1))));$('sparkTip').textContent=(i===n-1?'Now':(n-1-i)+' min ago')+': '+$$(vals[i])+'/min';});
 $('recGrid').addEventListener('mouseover',ev=>{const b=ev.target.closest('[data-rec]');if(b)recInfo(b.dataset.rec);});
-function toggleModal(id,draw){show(id,$(id).hidden);if(!$(id).hidden){cache[id+'Body']=null;draw();}uiDirty=true;}
+function toggleModal(id,draw){const k=UIManager.byId(id);if(k)return UIManager.togglePanel(k);show(id,$(id).hidden);if(!$(id).hidden){cache[id+'Body']=null;draw();}uiDirty=true;}
 function navAct(k){
   if(k==='world'||k==='cities'||k==='military'||k==='research')stats['seen_'+k]=1;
-  if(k==='factory')setView('factory');else if(k==='world')setView(view==='world'?'factory':'world');
-  else if(k==='cities')toggleModal('cities',drawCities);else if(k==='military')toggleModal('mil',drawMil);
-  else if(k==='research')toggleModal('res',drawRes);else if(k==='company')toggleCo();else if(k==='stats')toggleStats();
-  else if(k==='inv')toggleInv();else if(k==='bp'){if(view!=='factory')setView('factory');startBpSel();}
-  else if(k==='guide')toggleModal('guide',drawGuide);else if(k==='settings')toggleModal('settings',drawSettings);
-  else if(k==='menu')openMenu();
-  else if(k==='char')toggleModal('charp',drawChar);
-  else if(k==='overlay'){cycleOverlay();if(view!=='factory')setView('factory');}
-  uiDirty=true;
+  UIManager.togglePanel(k);
 }
 document.addEventListener('click',ev=>{const b=ev.target.closest('button');if(!b||b.disabled)return;const d=b.dataset;
   if(d.locked){const need={world:2,cities:2,military:4}[d.locked];toast((d.locked==='world'?'The World map':d.locked==='cities'?'Cities':'The Military')+' unlocks when you finish mission '+need+' ('+MISSIONS[need-1].n+'). Or unlock everything now in Settings.');return;}
@@ -2332,7 +2331,7 @@ document.addEventListener('input',ev=>{const t=ev.target;
   else if(t.id==='setVol'){settings.vol=+t.value/100;saveSettings();sfx('coin');}
 });
 document.addEventListener('change',ev=>{if(ev.target.id==='atkRange'||ev.target.id==='shareRange'){cache.wBody=null;cache.citiesBody=null;ev.target.blur();}});
-function openMenu(){$('menuStats').textContent='Played '+playTime()+' · '+(ents.length-1)+' buildings · '+$$(stats.life)+' earned · '+contracts.done+' contracts';show('menuConfirm',false);show('menuIO',false);show('menuMain',true);show('menu',true);}
+function openMenu(){UIManager.closeAll('menu');$('menuStats').textContent='Played '+playTime()+' · '+(ents.length-1)+' buildings · '+$$(stats.life)+' earned · '+contracts.done+' contracts';show('menuConfirm',false);show('menuIO',false);show('menuMain',true);show('menu',true);}
 $('mSave').onclick=()=>{save();toast('Game saved');show('menu',false);};
 $('mNew').onclick=()=>{show('menuMain',false);show('menuConfirm',true);};
 $('mNewNo').onclick=()=>{show('menuConfirm',false);show('menuMain',true);};
@@ -2420,6 +2419,7 @@ RESEARCH.push(
   {id:'city5',tab:'civ',tier:5,n:'City Mk. V',cost:1e7,mat:{computer:50,titanium:200},req:['city4'],d:'The largest cities in the world.'},
   {id:'megacity',tab:'civ',tier:5,n:'Megacity Infrastructure',cost:2.5e7,mat:{industrial_robot:20},req:['city5'],d:'+50% city capacity.'},
   {id:'requisitions',tab:'industry',tier:1,n:'Emergency Requisitions',cost:1500,mat:{iron_plate:50},req:['automation'],d:'Engineers may pay 1.5× the repair price in cash when no Repair Kit is available. Without it, worn machines wait for kits.'},
+  {id:'drill_targeting',tab:'industry',tier:1,n:'Advanced Drill Targeting',cost:1200,mat:{iron_plate:40,gear:20},req:['automation'],d:'When the ore under a drill runs out, it reaches for the same ore on a neighbouring tile by itself. No more demolishing and re-placing drills.'},
   {id:'ballistics',tab:'industry',tier:1,n:'Basic Ballistics',cost:2500,mat:{iron_plate:80},req:[],d:'Gun barrels and powder charges. Unlocks the Military tab.'},
   {id:'infantry',tab:'military',tier:1,n:'Infantry',cost:3000,mat:{iron_plate:100},req:['ballistics'],d:'Recruit infantry.'},
   {id:'training',tab:'military',tier:1,n:'Basic Military Training',cost:10000,mat:{},req:['infantry'],d:'+20% strength for every unit.'},
@@ -3041,6 +3041,8 @@ const GUIDE=[
   ['Pipes and pressure','Every pipe network shows its pressure (from 20 kPa empty to 300 kPa full, plus 25 per pump). When machines wait for a fluid while its pipes are nearly empty, the pipes pulse red and the machines show LOW PRESSURE.'],
   ['Sea ports','Maritime Trade research unlocks sea ports on coastal land you own. Fill a port with belts or inserters and set up to three export deals with overseas partners. Ships leave with 20 or more items above what you keep, and bring back cash or rare resources. Flooding one partner with one item lowers its price for a while.'],
   ['Rivers','New worlds have rivers. Only rails, belts, pipes and water wells go on river tiles. A well on a river pumps twice as much water, and 50% more within two tiles of one.'],
+  ['Camera','Hold the right mouse button and drag to look around without moving the President. Release and the camera glides back to them (Settings can make it snap or stay). A right-click without dragging still removes a building.'],
+  ['Drill targeting','Advanced Drill Targeting (Industry, early) lets a drill whose tile runs dry keep mining the same ore on any of the 8 tiles around it. A dashed green line shows where it reaches.'],
   ['Tech tree','Research (T) is a branching tree per branch. Lines show prerequisites: green is done, amber is ready, dashed grey is locked. Click a technology to see what it unlocks and what it costs, double-click or press Research to buy it, and drag to pan.'],
   ['Repairs','Engineers fix machines below 80% condition with Repair Kits from a Maintenance Bay, a hub or your stock. Until you research Emergency Requisitions they never spend cash; a machine with no kit shows a Missing Repair Kit warning. You can always repair by hand from the machine panel.'],
   ['Ceasefire','If you lose a province or your headquarters is raided, enemies near HQ pull back and your home province cannot be attacked for 90 seconds. The President respawns with 10 seconds of protection, so you are never spawn-killed.'],
@@ -3056,32 +3058,11 @@ function drawGuide(){setHTML($('guideBody'),'<div class="guide"><nav>'+GUIDE.map
 
 // ---------- sound ----------
 let actx=null;const sfxT={};
-function sfx(k,pitch){
-  if(!settings.sound||!settings.vol)return;const now=performance.now();if(sfxT[k]&&now-sfxT[k]<({blip:45,coin:400,place:45,remove:45,boom:150,alert:700,fanfare:500,shot:45,hit:80,reload:300}[k]||80))return;sfxT[k]=now;
-  try{actx=actx||new(window.AudioContext||window.webkitAudioContext)();if(actx.state==='suspended')actx.resume();}catch(_){return;}
-  const t=actx.currentTime,V=settings.vol*.3;
-  const tone=(f,d,type,at,f2)=>{const o=actx.createOscillator(),g=actx.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,t+at);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+at+d);
-    g.gain.setValueAtTime(.0001,t+at);g.gain.exponentialRampToValueAtTime(V,t+at+.01);g.gain.exponentialRampToValueAtTime(.0001,t+at+d);o.connect(g);g.connect(actx.destination);o.start(t+at);o.stop(t+at+d+.03);};
-  const noise=(d,freq,f2)=>{const n=actx.sampleRate*d|0,b=actx.createBuffer(1,n,actx.sampleRate),c=b.getChannelData(0);for(let i=0;i<n;i++)c[i]=(Math.random()*2-1)*Math.pow(1-i/n,2);
-    const src=actx.createBufferSource(),f=actx.createBiquadFilter(),g=actx.createGain();src.buffer=b;f.type='lowpass';f.frequency.setValueAtTime(freq,t);if(f2)f.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.value=V*1.6;src.connect(f);f.connect(g);g.connect(actx.destination);src.start(t);};
-  switch(k){
-    case 'place':tone(340,.06,'square',0,190);break;
-    case 'remove':tone(210,.08,'square',0,90);break;
-    case 'coin':tone(988,.06,'sine',0);tone(1319,.12,'sine',.055);break;
-    case 'boom':noise(.7,700,120);tone(90,.45,'sine',0,35);break;
-    case 'launch':noise(.9,400,2400);break;
-    case 'fanfare':tone(523,.13,'triangle',0);tone(659,.13,'triangle',.11);tone(784,.3,'triangle',.22);break;
-    case 'alert':tone(660,.12,'square',0);tone(440,.2,'square',.14);break;
-    case 'shot':noise(.09,3200,500);break;
-    case 'hit':tone(180,.07,'square',0,90);break;
-    case 'reload':tone(900,.03,'square',0);tone(1200,.03,'square',.12);break;
-    case 'blip':tone((pitch||500)*(.92+Math.random()*.16),.04,'triangle',0);break;
-  }
-}
 
 // ---------- settings ----------
 const SET_KEY='fabrikat-settings';
-let settings={q:'med',fps:60,particles:.6,vfx:.7,anim:'high',detail:'high',bg:1,sound:1,vol:.5,diff:'normal',events:1};
+let navHpx=0;
+let settings={camSnap:'smooth',q:'med',fps:60,particles:.6,vfx:.7,anim:'high',detail:'high',bg:1,sound:1,vol:.5,diff:'normal',events:1};
 const QPRESET={low:{particles:0,vfx:.3,anim:'low',detail:'low',bg:0},med:{particles:.6,vfx:.7,anim:'high',detail:'high',bg:1},high:{particles:1,vfx:1,anim:'high',detail:'high',bg:1}};
 function loadSettings(){try{const s=JSON.parse(localStorage.getItem(SET_KEY)||'null');if(s)Object.assign(settings,s);}catch(_){}}
 function saveSettings(){try{localStorage.setItem(SET_KEY,JSON.stringify(settings));}catch(_){}}
@@ -3091,7 +3072,7 @@ function drawSettings(){
     '<p class="empty" style="margin-top:6px">Low turns off smoke, glows and city lights and freezes belt animation. High adds full particles, lights and sea effects.</p></div>'+
     '<div><h3>Performance</h3><div class="kv"><span class="k">FPS limit</span>'+seg('fps',[[30,'30'],[60,'60'],[0,'Unlimited']])+
     '<span class="k">Animation</span>'+seg('anim',[['low','Low'],['high','High']])+
-    '<span class="k">Map detail</span>'+seg('detail',[['low','Low'],['high','High']])+'<span class="k">Machine details</span>'+seg('details',[[0,'Hold Alt'],[1,'Always']])+
+    '<span class="k">Map detail</span>'+seg('detail',[['low','Low'],['high','High']])+'<span class="k">Machine details</span>'+seg('details',[[0,'Hold Alt'],[1,'Always']])+'<span class="k">After right-drag look</span>'+seg('camSnap',[['smooth','Glide back'],['instant','Snap back'],['off','Stay']])+
     '<span class="k">Background effects</span>'+seg('bg',[[0,'Off'],[1,'On']])+
     '<label class="k" for="setPart">Particle density</label><input type="range" id="setPart" min="0" max="100" step="10" value="'+Math.round(settings.particles*100)+'">'+
     '<label class="k" for="setVfx">Effects density</label><input type="range" id="setVfx" min="0" max="100" step="10" value="'+Math.round(settings.vfx*100)+'"></div>'+
@@ -3702,6 +3683,7 @@ const fitZ=()=>Math.min(SW/(W*T),SH/(H*T))*.96;
 let depo=[],depGrid=new Uint16Array(W*H),camGoal=null,factCam=null;
 const DPOOL={plains:['iron_ore','copper_ore','coal','stone','limestone'],forest:['wood','wood','coal','copper_ore','stone'],desert:['sand','crude_oil','crude_oil','bauxite','copper_ore'],
   mountains:['iron_ore','iron_ore','coal','tungsten','nickel_ore','stone'],volcanic:['rare_earth','uranium','platinum','cobalt','coal'],arctic:['lithium','titanium_ore','nickel_ore','iron_ore']};
+const HOME_ORE=4; // starting-province deposits hold 4x more ore per tile, so a new player can't run dry before automating
 const RARE=new Set(['uranium','platinum','rare_earth','lithium','cobalt','tungsten','titanium_ore']);
 function genMap(s){
   seed=s;ore.fill(0);amt.fill(0);depo=[];depGrid=new Uint16Array(W*H);genRivers(s);
@@ -3727,7 +3709,7 @@ function genMap(s){
       if(p.kind==='rare'){const ex=GENV>=2?Object.keys(EXCLUSIVE).filter(k=>EXCLUSIVE[k]===p.terr):['uranium','platinum','rare_earth','cobalt'];list.push([ex.length?ex[Math.floor(r()*ex.length)]:'copper_ore',1]);}}
     for(const[o,big]of list)for(let tries=0;tries<40;tries++){const t=tl[p.id];if(!t.length)break;const i=t[Math.floor(r()*t.length)],x=i%W,y=i/W|0;
       if(Math.hypot(x-p.tx,y-p.ty)<(home?7:5)||edge(x,y,p.id)||ore[i])continue;
-      put(o,x,y,RARE.has(o)?1.5+r()*.7:big?2.4+r()*.9:1.7+r()*.7,(RARE.has(o)?350:550)+r()*300+far*500,p.id);break;}
+      put(o,x,y,RARE.has(o)?1.5+r()*.7:big?2.4+r()*.9:1.7+r()*.7,((RARE.has(o)?350:550)+r()*300+far*500)*(home?HOME_ORE:1),p.id);break;}
   }
   amt0.set(amt);chunks.fill(null);chunksLo.fill(null);genVillages();genPOIs();
 }
@@ -5801,6 +5783,127 @@ RESEARCH.push(
   {id:'exotic',tab:'industry',tier:5,n:'Exotic Industry',cost:0,infinite:1,sci:{sp_auto:1,sp_log:1,sp_mil:1,sp_chem:1},units:200,time:15,req:['rocketry'],d:'Repeatable after your first rocket launch. Every level makes every machine 10% faster; each level costs 50% more.'},
 );
 
+// =====================================================================
+// V18: UIManager (mutually exclusive tabs), right-drag free look,
+// synthesized audio set, drill auto-targeting
+// =====================================================================
+
+// ---------- UIManager: one main panel at a time ----------
+const UIManager={
+  // nav key -> panel element and its renderer
+  PANELS:{
+    cities:{id:'cities',draw:()=>drawCities()},military:{id:'mil',draw:()=>drawMil()},research:{id:'res',draw:()=>drawRes()},
+    company:{id:'co',draw:()=>{cache.coBody=null;drawCo();}},stats:{id:'stats',draw:()=>{cache.statsBody=null;drawStats();}},
+    char:{id:'charp',draw:()=>{cache.charBody=null;drawChar();}},inv:{id:'inv',draw:()=>{cache.invGrid=cache.recGrid=null;drawInv();}},
+    guide:{id:'guide',draw:()=>drawGuide()},settings:{id:'settings',draw:()=>{cache.settingsBody=null;drawSettings();}},
+  },
+  // every main navigation entry is exclusive with every other one
+  MAIN:['factory','world','cities','military','research','company','stats','char','inv','bp','overlay','guide','settings','menu'],
+  byId(id){for(const k in this.PANELS)if(this.PANELS[k].id===id)return k;return null;},
+  openKey(){for(const k in this.PANELS)if(!$(this.PANELS[k].id).hidden)return k;return null;},
+  closeAll(except){
+    closeCtxPop();
+    for(const k in this.PANELS){if(k===except)continue;const id=this.PANELS[k].id;if(!$(id).hidden)show(id,false);}
+    if(except!=='menu'&&!$('menu').hidden)show('menu',false);
+    if(except!=='bp'&&(tool==='bp'||tool==='bpsel')){tool=null;bpSel=null;}
+    uiDirty=true;
+  },
+  open(k){const P=this.PANELS[k];if(!P)return;this.closeAll(k);show(P.id,true);cache[P.id+'Body']=null;P.draw();sfx('ui_open');uiDirty=true;},
+  close(k){const P=this.PANELS[k||this.openKey()];if(P&&!$(P.id).hidden){show(P.id,false);sfx('ui_close');}uiDirty=true;},
+  togglePanel(k){
+    closeCtxPop();
+    if(this.PANELS[k]){if(this.openKey()===k)this.close(k);else this.open(k);return;}
+    const wasMenu=!$('menu').hidden;this.closeAll(k);
+    if(k==='factory')setView('factory');
+    else if(k==='world')setView(view==='world'?'factory':'world');
+    else if(k==='bp'){if(view!=='factory')setView('factory');startBpSel();}
+    else if(k==='overlay'){cycleOverlay();if(view!=='factory')setView('factory');}
+    else if(k==='menu'){if(wasMenu){show('menu',false);sfx('ui_close');uiDirty=true;return;}openMenu();}
+    sfx('ui_open');uiDirty=true;
+  },
+  // the one nav key drawn as active: an open panel, else the menu or blueprint tool, else the current view
+  activeKey(){const o=this.openKey();if(o)return o;if(!$('menu').hidden)return 'menu';if(tool==='bpsel'||tool==='bp')return 'bp';return view;},
+  // Escape: close the active tab and fall back to the Factory or World view underneath
+  escape(){const o=this.openKey();if(o){this.close(o);return true;}if(tool==='bp'||tool==='bpsel'){tool=null;bpSel=null;uiDirty=true;return true;}return false;},
+};
+function initUIBindings(){
+  const nav=$('nav');
+  // any press on the nav bar clears floating popups first
+  nav.addEventListener('pointerdown',()=>closeCtxPop());
+  // delegated: buttons are re-rendered, so bind once on the bar and stop the global handler from toggling twice
+  nav.addEventListener('click',ev=>{const b=ev.target.closest('[data-nav]');if(!b||b.disabled)return;ev.stopPropagation();navAct(b.dataset.nav);});
+}
+
+// ---------- right-drag free look ----------
+const FreeLook={drag:null,snap:false,
+  down(ev){this.drag={x:ev.clientX,y:ev.clientY,cx:cam.x,cy:cam.y,moved:false,tx:mouse.tx,ty:mouse.ty,world:view==='world'};},
+  move(ev){const d=this.drag;if(!d)return false;const dx=ev.clientX-d.x,dy=ev.clientY-d.y;
+    if(!d.moved&&Math.abs(dx)+Math.abs(dy)>5){d.moved=true;camGoal=null;camFollow=false;this.snap=false;cv.classList.add('looking');}
+    if(d.moved){cam.x=Math.max(0,Math.min(W*T,d.cx-dx/cam.z));cam.y=Math.max(0,Math.min(H*T,d.cy-dy/cam.z));}
+    return true;},
+  up(){const d=this.drag;if(!d)return false;this.drag=null;cv.classList.remove('looking');
+    if(!d.moved){if(!d.world){mouse.vdem=0;removeAt(d.tx,d.ty);uiDirty=true;}return true;} // a plain right-click still removes
+    if(d.world||!pl||pl.dead)return true;
+    if(settings.camSnap==='instant'){cam.x=IX(pl)*T;cam.y=(IY(pl)-.5)*T;camFollow=true;}
+    else if(settings.camSnap!=='off'){this.snap=true;camFollow=true;}
+    return true;},
+  step(dt){ // smooth return to the President after a free look
+    if(!this.snap||this.drag)return;if(!pl||pl.dead||view!=='factory'||camGoal){this.snap=false;return;}
+    const k=1-Math.pow(.84,dt*60),tx=IX(pl)*T,ty=(IY(pl)-.5)*T;cam.x+=(tx-cam.x)*k;cam.y+=(ty-cam.y)*k;
+    if(Math.hypot(tx-cam.x,ty-cam.y)<1.5){cam.x=tx;cam.y=ty;this.snap=false;}},
+};
+
+// ---------- audio: small synthesized set through one compressor ----------
+let sfxOut=null;
+function sfx(k,pitch){
+  if(!settings.sound||!settings.vol)return;const now=performance.now();
+  if(sfxT[k]&&now-sfxT[k]<({blip:45,coin:900,place:45,remove:60,boom:150,alert:700,fanfare:500,shot:45,hit:80,reload:300,ui_open:60,ui_close:60,error:160}[k]||80))return;sfxT[k]=now;
+  try{actx=actx||new(window.AudioContext||window.webkitAudioContext)();if(actx.state==='suspended')actx.resume();
+    if(!sfxOut){sfxOut=actx.createDynamicsCompressor();sfxOut.threshold.value=-14;sfxOut.ratio.value=4;sfxOut.connect(actx.destination);}}catch(_){return;}
+  const t=actx.currentTime,V=settings.vol*.3;
+  const tone=(f,d,type,at,f2,vol)=>{const o=actx.createOscillator(),g=actx.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,t+at);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+at+d);
+    g.gain.setValueAtTime(.0001,t+at);g.gain.exponentialRampToValueAtTime(V*(vol||1),t+at+.008);g.gain.exponentialRampToValueAtTime(.0001,t+at+d);o.connect(g);g.connect(sfxOut);o.start(t+at);o.stop(t+at+d+.03);};
+  const noise=(d,freq,f2,vol,at,type)=>{const n=actx.sampleRate*d|0,b=actx.createBuffer(1,n,actx.sampleRate),c=b.getChannelData(0);for(let i=0;i<n;i++)c[i]=(Math.random()*2-1)*Math.pow(1-i/n,2);
+    const src=actx.createBufferSource(),f=actx.createBiquadFilter(),g=actx.createGain();src.buffer=b;f.type=type||'lowpass';f.frequency.setValueAtTime(freq,t+(at||0));if(f2)f.frequency.exponentialRampToValueAtTime(f2,t+(at||0)+d);g.gain.value=V*1.6*(vol||1);src.connect(f);f.connect(g);g.connect(sfxOut);src.start(t+(at||0));};
+  const bell=(f,at,d,vol)=>{tone(f,d,'sine',at,0,vol);tone(f*2.76,d*.45,'sine',at,0,vol*.35);tone(f*5.4,d*.2,'sine',at,0,vol*.15);};
+  switch(k){
+    case 'coin': // tycoon cash register: drawer clack, then a two-note bell and a coin shimmer
+      noise(.035,6000,1800,.5,0,'bandpass');tone(140,.05,'square',0,90,.35);
+      bell(1568,.05,.5,.55);bell(2093,.12,.7,.6);tone(3136,.18,'sine',.2,0,.12);tone(3520,.14,'sine',.26,0,.08);break;
+    case 'place':noise(.06,900,180,.8);tone(220,.08,'triangle',0,120,.8);break;
+    case 'remove':noise(.13,2400,260,.9);tone(180,.1,'square',0,70,.45);break;
+    case 'ui_open':tone(620,.05,'triangle',0,880,.55);tone(1175,.06,'sine',.035,0,.3);break;
+    case 'ui_close':tone(780,.05,'triangle',0,470,.45);break;
+    case 'error':tone(170,.08,'square',0,150,.45);tone(128,.12,'square',.085,110,.45);break;
+    case 'boom':noise(.7,700,120);tone(90,.45,'sine',0,35);break;
+    case 'launch':noise(.9,400,2400);break;
+    case 'fanfare':tone(523,.13,'triangle',0);tone(659,.13,'triangle',.11);tone(784,.3,'triangle',.22);break;
+    case 'alert':tone(660,.12,'square',0,0,.7);tone(440,.2,'square',.14,0,.7);break;
+    case 'shot':noise(.09,3200,500);break;
+    case 'hit':tone(180,.07,'square',0,90);break;
+    case 'reload':tone(900,.03,'square',0);tone(1200,.03,'square',.12);break;
+    case 'blip':tone((pitch||500)*(.92+Math.random()*.16),.04,'triangle',0);break;
+  }
+}
+
+// ---------- Advanced Drill Targeting ----------
+const drillTile=e=>e.mt>=0?e.mt:e.y*W+e.x;
+function retarget(e){ // after the tile under (or targeted by) a drill runs dry, reach for the same ore within 1 tile
+  if(!research.drill_targeting||!e.lastOre)return -1;
+  const want=ORES.indexOf(e.lastOre)+1,taken=new Set();for(const d of L.drill)if(d!==e&&d.mt>=0)taken.add(d.mt);
+  let best=-1,ba=0;
+  for(let j=-1;j<=1;j++)for(let i=-1;i<=1;i++){const X=e.x+i,Y=e.y+j;if(!inb(X,Y)||!ownedAt(X,Y))continue;const q=Y*W+X;
+    if(ore[q]!==want||amt[q]<=0||taken.has(q))continue;const o=at(X,Y);if(o&&o!==e&&o.type==='drill')continue;if(amt[q]>ba){ba=amt[q];best=q;}}
+  if(best<0)return -1;e.mt=best===e.y*W+e.x?-1:best;stats.retargets=(stats.retargets||0)+1;
+  if(cam.z>.5)FX.float(e.x+.5,e.y,'retargeted','#6fe27d');return best;
+}
+function drawDrillTargets(){
+  const z=cam.z;if(z<.45)return;ctx.save();ctx.setLineDash([4,3]);ctx.lineWidth=Math.max(1,1.5*z);ctx.strokeStyle='rgba(111,226,125,.85)';
+  for(const e of L.drill){if(!(e.mt>=0))continue;const X=sx((e.x+.5)*T),Y=sy((e.y+.5)*T);if(X<-60||Y<-60||X>SW+60||Y>SH+60)continue;
+    const tx=sx(((e.mt%W)+.5)*T),ty=sy((((e.mt/W)|0)+.5)*T);ctx.beginPath();ctx.moveTo(X,Y);ctx.lineTo(tx,ty);ctx.stroke();ctx.strokeRect(tx-T*z*.4,ty-T*z*.4,T*z*.8,T*z*.8);}
+  ctx.restore();
+}
+
 // ---------- introduction ----------
 const INTROS=[
   {n:'The Overseer',c:'#e3a52a',kind:'eye',pitch:520,lines:[
@@ -5860,10 +5963,11 @@ function loop(now){
   const dt=Math.min(.1,(now-last)/1000||0);last=now;FDT=dt*60;
   {const want=cam.z<MAPZ?'world':'factory';if(want!==view)onView(want);}camStep();
   {const pan=700*dt/cam.z;
-  const wm=view==='world',mv=(a,b)=>{camGoal=null;camFollow=false;cam.x+=a;cam.y+=b;};
+  const wm=view==='world',mv=(a,b)=>{camGoal=null;camFollow=false;FreeLook.snap=false;cam.x+=a;cam.y+=b;};
   if(wm&&keys.w||keys.arrowup)mv(0,-pan);if(wm&&keys.s||keys.arrowdown)mv(0,pan);
   if(wm&&keys.a||keys.arrowleft)mv(-pan,0);if(wm&&keys.d||keys.arrowright)mv(pan,0);
-  if(!wm&&pl&&!pl.dead&&camFollow&&(pl.moving||plGoal)&&!camGoal){const k=1-Math.pow(.88,dt*60);cam.x+=(IX(pl)*T-cam.x)*k;cam.y+=((IY(pl)-.5)*T-cam.y)*k;}
+  if(!wm&&pl&&!pl.dead&&camFollow&&!FreeLook.drag&&!FreeLook.snap&&(pl.moving||plGoal)&&!camGoal){const k=1-Math.pow(.88,dt*60);cam.x+=(IX(pl)*T-cam.x)*k;cam.y+=((IY(pl)-.5)*T-cam.y)*k;}
+  FreeLook.step(dt);
   cam.x=Math.max(0,Math.min(W*T,cam.x));cam.y=Math.max(0,Math.min(H*T,cam.y));}
   if(paused)acc=0;else{acc+=dt*gameSpeed;let n=0;const cap=6*gameSpeed;while(acc>=1/60&&n<cap){tick();acc-=1/60;n++;}if(n>=cap)acc=0;}
   ALPHA=paused?1:Math.min(1,acc*60);
@@ -5877,6 +5981,7 @@ function loop(now){
   requestAnimationFrame(loop);
 }
 function start(data){
+  initUIBindings();
   resize();Profile.load();Profile.apply();loadBps();loadSettings();SaveManager.migrate();
   addEventListener('resize',resize);addEventListener('beforeunload',save);
   document.addEventListener('visibilitychange',()=>{if(document.hidden)save();});

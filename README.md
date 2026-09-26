@@ -15,7 +15,9 @@ The game opens on a start screen: **New Game**, **Continue**, **Customization Sh
 | --- | --- |
 | `1`–`9` | Pick a common building, or use the build palette (Mining, Logistics, Production, Chemistry, Power, Storage & Trade). Click to place. Drag to lay belts and pipes: belts turn corners, pressing on the end of an existing belt continues it, and the last belt of a drag turns into an adjacent machine. |
 | `R` | Rotate |
-| `X` / right-click (two-finger click) | Remove |
+| `X` / right-click (two-finger click) | Remove (a right-click without dragging; drag with `X` held as the tool to remove a line) |
+| Right-drag | Free look: pan without moving the President; on release the camera glides back (Settings: glide, snap or stay) |
+| `Esc` | Close the open tab, popup or tool |
 | Hold `Alt` | Show machine details: recipe icons, fluid ports, pipe flow, crew and camp labels |
 | `Q` | Copy the building under the cursor |
 | Click ore | Mine by hand |
@@ -103,7 +105,20 @@ Everything runs on money. The **Money Generator** turns items into cash, and eac
 - **Health:** heavy pollution slows villagers and machines. Clinics stocked with medical kits protect a 14-tile radius.
 - **Visuals:** belts autotile (straight, corners, T-junctions, crossings, end caps), warnings are pulsing icons over machines with details on hover, and night is a darkness layer that lights cut through: flickering furnaces, muzzle flashes and explosions light the dark.
 
-See `docs/AUTOMATION.md` for the state machines, `docs/UI14.md` for the start screen, saves, unlocks, overlays and attack popup, and `docs/ENGINE.md` for the tech tree, ceasefire, object pools, spatial grid, interpolation and pathfinding.
+See `docs/AUTOMATION.md` for the state machines, `docs/UI14.md` for the start screen, saves, unlocks, overlays and attack popup, and `docs/V18.md` for the tab manager, free look, audio and drill targeting, `docs/ENGINE.md` for the tech tree, ceasefire, object pools, spatial grid, interpolation and pathfinding.
+
+## Interface
+
+- **One tab at a time:** Factory, World, Cities, Military, Research, Company, Stats, President, Inventory, Blueprint, Overlay, Guide, Settings and Menu are mutually exclusive.
+  - Opening one closes the others.
+  - The open tab's button gets an orange underline and border.
+  - Pressing the nav bar clears attack and buy popups.
+- **President:** the President tab opens the President's stats, weapons and armour, with a Character Editor button in its header.
+- **Layout:** panels never cover the nav bar.
+- **Sound:** a cash-register chime for revenue, plus sounds for opening and closing tabs, placing and removing buildings, and failed placements.
+- **Early game:**
+  - Ore tiles in your starting province hold 4× more ore.
+  - **Advanced Drill Targeting** (early Industry research): a drill whose tile runs dry keeps mining the same ore on one of the 8 tiles around it, shown by a dashed green line.
 
 ## Endgame and logistics
 
