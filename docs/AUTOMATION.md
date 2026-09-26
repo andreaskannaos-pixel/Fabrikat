@@ -14,11 +14,21 @@ All code lives in `index.html`. Search for the names below.
   - Holds position, a path and one carried stack.
   - `goTo(target)` finds a path and `follow()` walks it.
   - Walking speed drops in heavy pollution unless a stocked clinic is nearby (`sickness()`).
-- **`syncAgents()`**: runs every second and keeps these crews:
-  - 2 couriers per hub
-  - 2 engineers per Maintenance Bay
-  - 3 builders at HQ, plus 1 per hub up to 6
-  - Agents whose home building is gone are removed, and anything they carried returns to your inventory.
+- **`syncAgents()`**: runs every second. It keeps 2 couriers per hub and removes agents whose home building is gone. Anything they carried returns to your inventory.
+- **`WorkforceManager.second()`**: drafts builders and engineers on demand (see below).
+
+## WorkforceManager
+
+Villagers are factory workers by default. The manager runs every second:
+
+| Step | Rule |
+| --- | --- |
+| Cap | `3 + hubs + owned houses ÷ 3 + workers ÷ 8,000`, at most 16. Engineers take at most half. |
+| Builders | Wanted = active sites ÷ 2 (rounded up). Each draft spawns at the village house nearest the site, homed at HQ. |
+| Engineers | One per machine below 80% condition that nobody is fixing. Idle engineers are reused first. Home = nearest Maintenance Bay, hub or HQ. A machine whose path fails is skipped for 10 s. |
+| Revert | A drafted agent that is idle, carries nothing and has no work left for 3 s goes back to factory work (it is removed). |
+
+Soldiers work the same way: `nat.share = mpUsed ÷ population`, capped by mobilization, and `mpFree = population × max share − mpUsed`.
 
 ## LogisticsHub
 

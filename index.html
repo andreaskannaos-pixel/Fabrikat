@@ -309,6 +309,58 @@ kbd{font-family:var(--mono);font-size:11px;background:var(--panel2);border:1px s
 .flow{border-top:1px solid var(--line);padding-top:12px;margin-top:4px;font-size:13px;color:var(--dim);line-height:1.55}
 .flow b{color:var(--text)}
 .hazard{height:6px;background:repeating-linear-gradient(-45deg,var(--amber) 0 8px,var(--panel) 8px 16px);margin:-20px -22px 16px}
+
+/* ---------- V14: title screen, editor, shop, contextual popup, themes ---------- */
+body.pre #game,body.pre #hud{opacity:0}
+#game,#hud{transition:opacity .5s ease}
+.title{position:fixed;inset:0;z-index:30;display:grid;place-items:center;padding:16px;overflow:auto;background:radial-gradient(ellipse at 50% 30%,#2e3339 0%,#16181b 70%);transition:opacity .45s ease}
+.title.fade{opacity:0;pointer-events:none}
+.title .tbg{position:fixed;inset:0;background-image:linear-gradient(rgba(240,166,46,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(240,166,46,.05) 1px,transparent 1px);background-size:32px 32px;animation:tgrid 18s linear infinite;pointer-events:none}
+@keyframes tgrid{to{background-position:32px 32px,32px 32px}}
+@media (prefers-reduced-motion:reduce){.title .tbg{animation:none}}
+.tcard{position:relative;width:min(560px,100%);display:flex;flex-direction:column;gap:14px;padding:26px 24px 18px;box-sizing:border-box}
+.tlogo{font-size:clamp(40px,9vw,64px);font-weight:700;letter-spacing:.14em;color:var(--amber);line-height:1;text-shadow:0 3px 0 #7a4a0a}
+.ttag{color:var(--dim);margin-top:-6px}
+.tbtns{display:flex;flex-direction:column;gap:8px}
+.tbtns button{font-size:16px;padding:12px 14px;text-align:left;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.tbtns button small{font-family:var(--mono);font-size:11px;font-weight:400;opacity:.8}
+.tfoot{display:flex;justify-content:space-between;color:var(--dim);font-family:var(--mono);font-size:12px}
+.tfoot b{color:var(--gold)}
+.slots{display:flex;flex-direction:column;gap:6px;max-height:min(52vh,420px);overflow:auto}
+.slot{display:grid;grid-template-columns:1fr auto auto auto;gap:12px;align-items:center;background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:9px 10px}
+.slot.cur{border-color:var(--amber)}
+.slot .sm{display:flex;flex-direction:column;min-width:0}.slot .sm b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.slot .sm span{font-size:11px;color:var(--dim);font-family:var(--mono)}
+.slot .sv{display:flex;flex-direction:column;font-size:12px}.slot .sa{display:flex;gap:4px}
+@media (max-width:520px){.slot{grid-template-columns:1fr 1fr}.slot .sm{grid-column:1/-1}.slot .sa{grid-column:1/-1}}
+.tload{display:flex;align-items:center;gap:12px;padding:22px 0;font-size:16px}
+.spin{width:22px;height:22px;border:3px solid var(--line);border-top-color:var(--amber);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#editor,#shop{z-index:40}
+.edwrap{display:grid;grid-template-columns:200px 1fr;gap:16px;align-items:start}
+@media (max-width:560px){.edwrap{grid-template-columns:1fr}}
+#edPrev{width:200px;height:240px;background:#1d2024;border:1px solid var(--line);border-radius:6px;justify-self:center}
+button.sw{width:24px;height:24px;padding:0;border-radius:50%;border:2px solid var(--line)}
+button.sw.on{border-color:#fff;box-shadow:0 0 0 2px var(--amber)}
+input[type=color]{width:40px;height:28px;padding:0 2px;cursor:pointer}
+.chips{display:inline-flex;gap:2px;margin-right:8px;vertical-align:-2px}.chips i{width:10px;height:14px;border-radius:2px;display:inline-block;border:1px solid rgba(0,0,0,.4)}
+.th-std i:nth-child(1){background:#24282d}.th-std i:nth-child(2){background:#2e3339}.th-std i:nth-child(3){background:#f0a62e}
+.th-dark i:nth-child(1){background:#0c0d0f}.th-dark i:nth-child(2){background:#1b1e22}.th-dark i:nth-child(3){background:#f0a62e}
+.th-blueprint i:nth-child(1){background:#0f3160}.th-blueprint i:nth-child(2){background:#18477a}.th-blueprint i:nth-child(3){background:#ffd166}
+canvas.petc{width:40px;height:40px;vertical-align:middle;margin-right:8px;background:#1d2024;border-radius:4px}
+.shophead{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.ctxpop{position:fixed;z-index:12;min-width:220px;max-width:min(320px,calc(100vw - 16px));padding:10px;display:flex;flex-direction:column;gap:7px}
+.ctxpop .ch{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.ctxpop .ch span{color:var(--dim);font-size:12px}
+.ctxpop .dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.ctxpop .cs{display:flex;gap:12px;font-size:12px;color:var(--dim)}.ctxpop .cs b{color:var(--text);font-family:var(--mono)}
+.ctxpop .cb{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.ctxpop em.bad{color:var(--red);font-style:normal;font-weight:700}
+:root[data-skin="dark"]{--void:#0b0c0e;--panel:#121417;--panel2:#1a1d21;--line:#2b3036;--dim:#8f98a2}
+:root[data-skin="dark"] .panel{background:rgba(16,18,21,.97)}
+:root[data-skin="blueprint"]{--void:#0b2547;--panel:#0f3160;--panel2:#18477a;--line:#3d6fa6;--text:#eaf2ff;--dim:#a4c0e4;--amber:#ffd166;--amber-ink:#1c1400;--gold:#ffd166}
+:root[data-skin="blueprint"] .panel{background-color:rgba(15,49,96,.97);background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:16px 16px}
+:root[data-skin="blueprint"] input,:root[data-skin="blueprint"] textarea{background:#0b2547}
+:root[data-skin="blueprint"] .title{background:radial-gradient(ellipse at 50% 30%,#18477a 0%,#0b2547 70%)}
+:root[data-skin="dark"] .title{background:radial-gradient(ellipse at 50% 30%,#1a1d21 0%,#060708 70%)}
 </style>
 
 <canvas id="game"></canvas>
@@ -405,7 +457,8 @@ kbd{font-family:var(--mono);font-size:11px;background:var(--panel2);border:1px s
       <span><kbd>1</kbd>&ndash;<kbd>9</kbd></span><span>Pick a building from the hotbar, then click to place it</span>
       <span><kbd>Drag</kbd></span><span>Lay belts in a line. They turn corners for you.</span>
       <span><kbd>R</kbd></span><span>Rotate what you're holding, or the building under the cursor</span>
-      <span><kbd>X</kbd> / right-click</span><span>Remove a building. On a Chromebook, right-click is a two-finger click or Alt+click.</span>
+      <span><kbd>X</kbd> / right-click</span><span>Remove a building. On a Chromebook, right-click is a two-finger click.</span>
+      <span><kbd>Alt</kbd> (hold)</span><span>Show machine details: recipe icons, fluid ports, pipe flow and crew labels. Holding a pipe or a building shows the relevant ones.</span>
       <span><kbd>Q</kbd></span><span>Copy the building under the cursor</span>
       <span><kbd>B</kbd></span><span>Blueprint: drag a box around buildings to save them, then place copies from Company &gt; Blueprints</span>
       <span><kbd>Click</kbd> ore</span><span>Mine by hand (hold the button down)</span>
@@ -432,7 +485,7 @@ kbd{font-family:var(--mono);font-size:11px;background:var(--panel2);border:1px s
     <div class="hazard"></div>
     <h2>Menu</h2>
     <p class="sub" id="menuStats"></p>
-    <div class="row" id="menuMain"><button class="primary" data-close="menu">Resume</button><button id="mSave">Save now</button><button id="mNew">New game</button><button id="mIntro">Replay intro</button><button id="mExport">Export save code</button><button id="mImport">Import save code</button></div>
+    <div class="row" id="menuMain"><button class="primary" data-close="menu">Resume</button><button id="mSave">Save now</button><button id="mTitle">Main menu</button><button id="mNew">New game</button><button id="mIntro">Replay intro</button><button id="mExport">Export save code</button><button id="mImport">Import save code</button></div>
     <div id="menuIO" hidden style="margin-top:12px"><p class="sub" id="ioMsg" style="margin:0 0 6px"></p><textarea id="ioText" rows="4" aria-label="Save code"></textarea>
       <div class="row" style="margin-top:6px"><button id="ioCopy">Copy code</button><button id="ioLoad" class="danger">Load this save (replaces your current game)</button><button id="ioClose">Done</button></div></div>
     <div class="row" id="menuConfirm" hidden><span>Erase this factory and start a new map? Blueprints are kept.</span><button class="danger" id="mNewYes">Erase and restart</button><button id="mNewNo">Keep playing</button></div>
@@ -449,6 +502,37 @@ kbd{font-family:var(--mono);font-size:11px;background:var(--panel2);border:1px s
   </div>
 </div>
 
+<div id="title" class="title" hidden>
+  <div class="tbg"></div>
+  <div class="tcard panel">
+    <div class="hazard"></div>
+    <div class="tlogo">FABRIKAT</div>
+    <div class="ttag">Build the factory. Run the nation.</div>
+    <div id="tMain" class="tbtns">
+      <button id="tResume" class="primary" hidden>Resume</button>
+      <button id="tNew" class="primary">New Game<small>new procedural world</small></button>
+      <button id="tCont">Continue</button>
+      <button id="tShop">Customization Shop<small>paint, themes, pets</small></button>
+      <button id="tEdit">Character Editor<small>your President</small></button>
+    </div>
+    <div id="tSlots" hidden>
+      <div class="shophead"><h2 style="margin:0">Continue</h2><span class="ct" id="tSlotHint"></span></div>
+      <div class="slots" id="tSlotList"></div>
+      <div class="row" style="margin-top:10px"><button id="tBack">Back</button></div>
+    </div>
+    <div id="tLoad" hidden><div class="tload"><div class="spin"></div><span id="tLoadMsg">Generating world…</span></div></div>
+    <div class="tfoot"><b id="tCred"></b><span>Saves stay in this browser</span></div>
+  </div>
+</div>
+<div id="editor" class="overlay" hidden><div class="card panel" style="width:min(640px,100%)"><div class="hazard"></div><h2>Character Editor</h2>
+  <div class="edwrap"><canvas id="edPrev" width="200" height="240" aria-label="President preview"></canvas><div id="edCtl"></div></div>
+  <div class="row" style="margin-top:12px"><button class="primary" id="edDone">Done</button></div></div></div>
+<div id="shop" class="overlay" hidden><div class="card panel" style="width:min(620px,100%)"><div class="hazard"></div>
+  <div class="shophead"><h2 style="margin:0">Customization Shop</h2><b id="shopCred" style="color:var(--gold)"></b></div>
+  <p class="sub">Spend credits earned from stages, missions and milestones. Everything here is cosmetic and carries over to every save.</p>
+  <div id="shopBody"></div>
+  <div class="row" style="margin-top:12px"><button class="primary" id="shopDone">Done</button></div></div></div>
+<div id="ctxpop" class="ctxpop panel" hidden></div>
 <script>
 (()=>{
 'use strict';
@@ -838,7 +922,7 @@ function sell(t,auto,mkLv,gen){
 function checkGoals(){
   for(const m of MILESTONES){
     if(ms[m.id])continue;
-    if(stats[m.stat]>=m.goal){ms[m.id]=1;money+=m.reward;
+    if(stats[m.stat]>=m.goal){ms[m.id]=1;money+=m.reward;Bus.emit('milestone',m.id);
       toast('Milestone: '+m.n+(m.reward?'. Bonus '+$$(m.reward):''),'big');if(m.goal>=1e6)banner($$(m.goal).toUpperCase()+' GENERATED',m.n);
       if(m.id==='empire'&&!won){won=true;$('winStats').textContent='Earned '+$$(stats.life)+' in '+playTime()+'.';show('win',true);}
       uiDirty=true;}
@@ -1089,7 +1173,7 @@ function survey(){
   fluidAlerts(A);siteAlert(A);extraAlerts(A);
   alerts=trimLocal(A).slice(0,5);
 }
-function perSecond(){
+function perSecond(){ui14Second();
   revBuf[revIdx]=revCur;spendBuf[revIdx]=spendCur;revCur=0;spendCur=0;revIdx=(revIdx+1)%60;
   rpm=revBuf.reduce((a,b)=>a+b,0);epm=spendBuf.reduce((a,b)=>a+b,0);
   if(ticks%3600===0){revHist.push(rpm);if(revHist.length>30)revHist.shift();}
@@ -1382,13 +1466,13 @@ function drawFurn(g,e,tm){
   mbody(g,32,32,CC.smelt);const on=!!e.cur;
   plate(g,15,15,8.5);
   if(on){const f=.75+.25*Math.sin(tm*12+e.x*3);glyph(g,'flame',15,15.5,5.5*f+1,'#ffd27a');glow(g,15,15,20,'rgba(255,150,40,.35)');}else glyph(g,'flame',15,15.5,5.5,'#8d7a70');
-  const o=e.outT||(e.cur&&SMELT[e.cur].o)||(e.inT&&SMELT[e.inT]&&SMELT[e.inT].o);badge(g,o,19,19,9);
+  const o=e.outT||(e.cur&&SMELT[e.cur].o)||(e.inT&&SMELT[e.inT]&&SMELT[e.inT].o);if(showBadge(e))badge(g,o,19,19,9);
   light(g,26.5,6.5,e);wearMark(g,e);
 }
 function drawMachine(g,e,tm,col,gl,spin){
   mbody(g,32,32,col);plate(g,15,15,8.5);
   glyph(g,gl,15,15,5.6,e.work?'#ffffff':'#c9ced3',spin&&e.work&&settings.anim!=='low'?tm*2.5:0);
-  if(e.rec)badge(g,ro(e.rec),19,19,9);
+  if(e.rec&&showBadge(e))badge(g,ro(e.rec),19,19,9);
   if(e.work)progBar(g,5,26.5,12,e.prog);
   light(g,26.5,6.5,e);wearMark(g,e);
 }
@@ -1491,7 +1575,7 @@ function drawTop(){
   let h='<div class="tb tbL"><span class="brand">FABRIKAT</span><span class="cash">'+$$(money)+'</span><span class="tbsub'+(rpm>0?' good':'')+'">'+(rpm>0?'+'+$s(rpm)+'/min':'')+'</span></div>';
   h+='<div class="tb tbC" title="Power demand / supply"><span class="tbk">⚡ Power</span><span class="tbv'+(short?' bad':'')+'">'+(powLastDem/1000).toFixed(2)+' / '+(powSup/1000).toFixed(2)+' MW</span><span class="tbsub '+(powSup-powLastDem<0?'bad':powSup-powLastDem<powLastDem*.15?'warnc':'good')+'" title="Spare capacity before a shortage">Reserve '+((powSup-powLastDem)/1000).toFixed(2)+' MW</span><span class="pw"><i style="width:'+(load*100).toFixed(0)+'%;background:'+(short?'var(--red)':load>.85?'var(--amber)':'var(--c-power)')+'"></i></span><span class="tbsub" title="Solar panels only work in daylight">'+(sun>0?'☀':'☾')+' '+clock()+'</span>';
   if(events.length)h+='<div class="evrow">'+events.map(ev=>'<span class="chip" title="'+esc(EVT[ev.id].d)+'">'+EVT[ev.id].n+' '+mmss(ev.left)+'</span>').join('')+'</div>';
-  h+='</div><div class="tb tbR"><span class="tbk">Workforce</span><i class="dot" style="background:'+(crewMult<1?'var(--red)':crewUsed>cc*.85?'var(--amber)':'var(--green)')+'"></i><span class="tbv'+(crewMult<1?' bad':'')+'" title="Crew needed by working machines / crew available">'+Math.round(crewUsed)+' / '+cc+'</span>'+(crewMult<1?'<span class="tbsub bad" title="Not enough crew: every machine slows down. Grow cities or move the slider toward workers.">Factory output −'+Math.round((1-crewMult)*100)+'%</span>':'');
+  h+='</div><div class="tb tbR"><span class="tbk">Workforce</span><i class="dot" style="background:'+(crewMult<1?'var(--red)':crewUsed>cc*.85?'var(--amber)':'var(--green)')+'"></i><span class="tbv'+(crewMult<1?' bad':'')+'" title="Crew needed by working machines / crew available">'+Math.round(crewUsed)+' / '+cc+'</span>'+(crewMult<1?'<span class="tbsub bad" title="Not enough crew: every machine slows down. Grow cities or build more housing; every soldier you recruit leaves the factory.">Factory output −'+Math.round((1-crewMult)*100)+'%</span>':'');
   h+='<span class="spd">'+[[0,'❚❚'],[1,'1×'],[2,'2×'],[4,'4×']].map(([v,l])=>'<button data-speed="'+v+'" class="'+((v===0?paused:!paused&&gameSpeed===v)?'on':'')+'" title="'+(v?'Game speed '+v+'×':'Pause (Space)')+'">'+l+'</button>').join('')+'</span>';
   h+='<button class="small more'+(topMore?' on':'')+'" data-topmore="1" aria-expanded="'+topMore+'">More ▾</button>';
   if(topMore){const st=stats.stage||0;let k='<div class="kv">';const row=(a,b)=>{k+='<span class="k">'+a+'</span><span>'+b+'</span>';};
@@ -1507,7 +1591,7 @@ function drawTop(){
   h+='</div>';
   setHTML($('topbar'),h);
   const openId={char:'charp',cities:'cities',military:'mil',research:'res',company:'co',stats:'stats',inv:'inv',guide:'guide',settings:'settings'};
-  setHTML($('nav'),NAV.map(n=>{if(n==='|')return '<span class="sep"></span>';const[k,l,key]=n;if((k==='world'||k==='cities'||k==='military')&&!unlockedNav(k))return '<button data-locked="'+k+'" class="locked" title="Locked">\u{1F512} '+l+'</button>';
+  setHTML($('nav'),NAV.map(n=>{if(n==='|')return '<span class="sep"></span>';const[k,l,key]=n;if((k==='world'||k==='cities'||k==='military')&&!unlockedNav(k))return '';
     const on=k===view||(openId[k]&&!$(openId[k]).hidden)||(k==='bp'&&(tool==='bpsel'||tool==='bp'))||(k==='overlay'&&(overlayOn||polOverlay));
     return '<button data-nav="'+k+'" class="'+(on?'on':'')+(stats['seen_'+k]||!['world','cities','military'].includes(k)?'':' new')+'">'+l+(key?' <kbd>'+key+'</kbd>':'')+'</button>';}).join(''));
   const m=MISSIONS[missionIdx];let mh;
@@ -1647,7 +1731,7 @@ function drawEntity(g,e,tm){
     case 'well':drawWell(g,e,tm);break;
     case 'reactor':drawReactor(g,e,tm);break;
   }
-  if(isMachine(e)&&e.rec)drawPorts(g,e);
+  if(isMachine(e)&&e.rec&&showPorts(e))drawPorts(g,e);
 }
 const ICON={},ICONURL={};
 function makeIcons(){
@@ -2027,18 +2111,18 @@ function gestInfo(){const a=[...touches.values()],cx=(a[0].x+a[1].x)/2,cy=(a[0].
 cv.addEventListener('pointerdown',ev=>{
   try{cv.setPointerCapture(ev.pointerId);}catch(_){}
   if(ev.pointerType==='touch'){touches.set(ev.pointerId,{x:ev.clientX,y:ev.clientY});if(touches.size===2){gest=gestInfo();mouse.down=-1;mining=null;wdrag=null;bpSel=null;return;}if(touches.size>2)return;}
-  updMouse(ev);
+  updMouse(ev);closeCtxPop();
   if(view==='world'){if(ev.button===0)wdrag={x:ev.clientX,y:ev.clientY,cx:cam.x,cy:cam.y,moved:false};return;}if(pl&&pl.drawn&&ev.button===0){firing=true;return;}const x=mouse.tx,y=mouse.ty;
   if(ev.button===2&&(tool==='bp'||tool==='bpsel')){tool=null;bpSel=null;uiDirty=true;return;}
-  if(ev.button===2||(ev.button===0&&(tool==='remove'||ev.altKey))){mouse.down=2;mouse.vdem=0;removeAt(x,y);uiDirty=true;return;}
+  if(ev.button===2||(ev.button===0&&tool==='remove')){mouse.down=2;mouse.vdem=0;removeAt(x,y);uiDirty=true;return;}
   if(ev.button!==0)return;
   mouse.down=0;mouse.lx=x;mouse.ly=y;mouse.placed=null;
   if(tool==='bpsel'){bpSel={x0:x,y0:y,x1:x,y1:y};return;}
   if(tool==='bp'){if(bps[bpIdx]&&placeBp(bps[bpIdx],x,y,bpRot,ev.shiftKey)){toast('Placed '+bps[bpIdx].name);uiDirty=true;}mouse.down=-1;return;}
   if(tool){mouse.placed=tryPlace(x,y,tool,tdir);uiDirty=true;}
-  else{const fk=folkAt(((mouse.x-SW/2)/cam.z+cam.x)/T,((mouse.y-SH/2)/cam.z+cam.y)/T);if(fk&&!at(x,y)){if(pl&&!pl.dead&&Math.hypot(pl.x-fk.x,pl.y-fk.y)>3)walkTo(fk.x,fk.y,1.6,()=>say(fk,folkLine(fk)));else say(fk,folkLine(fk));mouse.down=-1;return;}const e=at(x,y);
+  else{if(ctxPointer(mouse.x,mouse.y,-1)){mouse.down=-1;return;}const fk=folkAt(((mouse.x-SW/2)/cam.z+cam.x)/T,((mouse.y-SH/2)/cam.z+cam.y)/T);if(fk&&!at(x,y)){if(pl&&!pl.dead&&Math.hypot(pl.x-fk.x,pl.y-fk.y)>3)walkTo(fk.x,fk.y,1.6,()=>say(fk,folkLine(fk)));else say(fk,folkLine(fk));mouse.down=-1;return;}const e=at(x,y);
     if(e&&!e.off){openEnt(e);walkTo(e.x+(e.w||1)/2,e.y+(e.h||1)+.7,1.3);mouse.down=-1;}
-    else if(inb(x,y)&&!ownedAt(x,y)){openProv(provAtTile(x,y));mouse.down=-1;}
+    else if(inb(x,y)&&!ownedAt(x,y)){openCtxPop(provAtTile(x,y),mouse.x,mouse.y,null);mouse.down=-1;}
     else if(inb(x,y)&&vgrid[y*W+x]){const b=vb[vgrid[y*W+x]-1];toastOnce(VBN[b.t]+' in '+world.provs[b.p].name+'. Remove it with X or right-click to build here.');mouse.down=-1;}
     else if(inb(x,y)&&ore[y*W+x])mining={x,y,p:0};}
 });
@@ -2066,21 +2150,24 @@ cv.addEventListener('pointermove',ev=>{
 });
 const up=ev=>{firing=false;
   if(ev&&ev.pointerType==='touch'){const was=touches.size;touches.delete(ev.pointerId);if(was>=2||gest){if(touches.size<2)gest=null;mouse.down=-1;wdrag=null;return;}}
-  if(view==='world'){if(wdrag&&!wdrag.moved){const g=provAt(mouse.x,mouse.y);if(g>=0)openProv(g);}wdrag=null;return;}
+  if(view==='world'){if(wdrag&&!wdrag.moved){const g=provAt(mouse.x,mouse.y);if(!ctxPointer(mouse.x,mouse.y,g)&&g>=0)openProv(g);}wdrag=null;return;}
   if(tool==='bpsel'&&bpSel&&mouse.down===0){const s=bpSel;bpSel=null;tool=null;captureBp(Math.min(s.x0,s.x1),Math.min(s.y0,s.y1),Math.max(s.x0,s.x1),Math.max(s.y0,s.y1));uiDirty=true;}
   mouse.down=-1;mining=null;mouse.placed=null;};
 cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
 cv.addEventListener('wheel',ev=>{ev.preventDefault();updMouse(ev);camGoal=null;zoomAt(Math.exp(-ev.deltaY*(ev.deltaMode===1?.05:.0015)),mouse.x,mouse.y);},{passive:false});
 function zoomAt(f,px,py){const wx=(px-SW/2)/cam.z+cam.x,wy=(py-SH/2)/cam.z+cam.y;cam.z=Math.max(unlockedNav('world')?fitZ()*.9:.26,Math.min(2.5,cam.z*f));cam.x=wx-(px-SW/2)/cam.z;cam.y=wy-(py-SH/2)/cam.z;}
 const keys={};
-const anyOpen=()=>!$('help').hidden||!$('menu').hidden||!$('win').hidden||!$('stagecard').hidden;
+const anyOpen=()=>!$('editor').hidden||!$('shop').hidden||!$('help').hidden||!$('menu').hidden||!$('win').hidden||!$('stagecard').hidden;
 function toggleInv(){show('inv',$('inv').hidden);if(!$('inv').hidden){cache.invGrid=cache.recGrid=null;drawInv();}}
 function toggleCo(){if($('co').hidden)openCo();else show('co',false);}
 function toggleStats(){show('stats',$('stats').hidden);if(!$('stats').hidden){cache.statsBody=null;drawStats();}}
 function startBpSel(){tool=tool==='bpsel'?null:'bpsel';bpSel=null;uiDirty=true;if(tool)toast('Drag a box around the buildings you want to save');}
 addEventListener('keydown',ev=>{
   if(ev.target&&(ev.target.tagName==='INPUT'||ev.target.tagName==='TEXTAREA'))return;
+  if(ev.key==='Alt'){keys.alt=true;ev.preventDefault();return;}
+  if(titleOn)return;
   const k=ev.key.toLowerCase();
+  if(k==='escape'&&(ctxPop||!$('editor').hidden||!$('shop').hidden)){closeCtxPop();if(!$('editor').hidden)Editor.close();show('shop',false);return;}
   if(intro){if(k===' '||k==='enter'){ev.preventDefault();introNext();}else if(k==='escape')introEnd();return;}
   if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))ev.preventDefault();
   if(k===' '&&!anyOpen()){paused=!paused;toast(paused?'Paused. Press Space to continue.':'Running');uiDirty=true;return;}
@@ -2109,7 +2196,7 @@ addEventListener('keydown',ev=>{
   else if(k==='='||k==='+')zoomAt(1.2,SW/2,SH/2);
   else if(k==='-'||k==='_')zoomAt(1/1.2,SW/2,SH/2);
 });
-addEventListener('keyup',ev=>{keys[ev.key.toLowerCase()]=false;});
+addEventListener('keyup',ev=>{keys[ev.key.toLowerCase()]=false;if(ev.key==='Alt')ev.preventDefault();});
 addEventListener('blur',()=>{for(const k in keys)keys[k]=false;touches.clear();gest=null;up();});
 document.addEventListener('click',ev=>{
   const b=ev.target.closest('button');if(!b||b.disabled)return;
@@ -2153,7 +2240,7 @@ document.addEventListener('click',ev=>{const b=ev.target.closest('button');if(!b
   if(d.wtab){wtab=d.wtab;cache.wBody=null;drawWPanel();return;}
   if(d.newstab){newsTab=d.newstab;cache.wBody=null;drawWPanel();return;}
   if(d.mob){nat.mob=+d.mob;nat.share=Math.min(nat.share,mobState().max);report('world','Your nation is now on '+MOB[nat.mob].n+' footing.');cache.milBody=null;drawMil();return;}
-  if(d.recU){const U=UNITS[d.recU];if(mpFree()<U.mp)toast('Not enough free soldiers. Raise the soldier share in Cities or build more cities.','bad');else if(buyWith(U.cost,U.mat,U.n)){nat.units[d.recU]=(nat.units[d.recU]||0)+1;stats.recruitMP=(stats.recruitMP||0)+U.mp;toast('Recruited '+U.n);}cache.milBody=null;drawMil();return;}
+  if(d.recU){const U=UNITS[d.recU];if(mpFree()<U.mp)toast('Not enough people to enlist. Grow your cities or raise mobilization.','bad');else if(buyWith(U.cost,U.mat,U.n)){nat.units[d.recU]=(nat.units[d.recU]||0)+1;stats.recruitMP=(stats.recruitMP||0)+U.mp;toast('Recruited '+U.n);}cache.milBody=null;drawMil();return;}
   if(d.ship){const S=SHIPS[d.ship];if(buyWith(S.cost,S.mat,S.n)){nat.ships[d.ship]=(nat.ships[d.ship]||0)+1;toast('Built '+S.n);}cache.milBody=null;drawMil();return;}
   if(d.rk){const R=ROCKETS[d.rk],c=Math.round(R.cost*(research.missile_infra?.8:1));if(buyWith(c,R.mat,R.n)){nat.rockets[d.rk]=(nat.rockets[d.rk]||0)+1;toast('Built '+R.n);}cache.milBody=null;drawMil();return;}
   if(d.res){const r=RESEARCH.find(x=>x.id===d.res);if(r&&!research[r.id]&&r.req.every(q=>research[q])&&buyWith(resCost(r),r.mat||{},r.n)){stats.rp=Math.max(0,(stats.rp||0)-Math.round(r.cost*(evActive('breakthrough')?.75:1)));if(evActive('breakthrough'))events=events.filter(x=>x.id!=='breakthrough');research[r.id]=1;toast('Researched '+r.n,'big');}cache.resBody=null;drawRes();return;}
@@ -2164,8 +2251,7 @@ document.addEventListener('click',ev=>{const b=ev.target.closest('button');if(!b
   if(d.cup){const[pid,j]=d.cup.split(':').map(Number);const p=P_(pid),c=p.cities[j],C=CITY[c.mk+1];if(C&&buyWith(C.cost,C.mat,C.n)){c.mk++;c.b=ticks;fxAdd('build',p.cx,p.cy);banner('CITY UPGRADED',C.n+' in '+p.name);}cache.citiesBody=null;drawCities();return;}
 });
 document.addEventListener('input',ev=>{const t=ev.target;
-  if(t.id==='shareRange'){nat.share=Math.min(mobState().max,+t.value/100);stats.slider=1;nat.soldiers=nat.pop*nat.share;nat.workers=nat.pop-nat.soldiers;uiDirty=true;}
-  else if(t.id==='atkRange'){wAtk=+t.value;}
+  if(t.id==='atkRange'){wAtk=+t.value;}
   else if(t.id==='setPart'){settings.particles=+t.value/100;saveSettings();}
   else if(t.id==='setVfx'){settings.vfx=+t.value/100;saveSettings();}
   else if(t.id==='setVol'){settings.vol=+t.value/100;saveSettings();sfx('coin');}
@@ -2175,14 +2261,14 @@ function openMenu(){$('menuStats').textContent='Played '+playTime()+' · '+(ents
 $('mSave').onclick=()=>{save();toast('Game saved');show('menu',false);};
 $('mNew').onclick=()=>{show('menuMain',false);show('menuConfirm',true);};
 $('mNewNo').onclick=()=>{show('menuConfirm',false);show('menuMain',true);};
-$('mNewYes').onclick=()=>{newGame();save();show('menu',false);playIntro(()=>show('help',true));};
+$('mNewYes').onclick=()=>{show('menu',false);Title.open();Title.launch(null);};
 
 // ---------- save / load ----------
 function serialize(){
   const mined={};for(let i=0;i<W*H;i++)if(amt[i]!==amt0[i])mined[i]=amt[i];
   syncNets();
   const E=ents.map(e=>{const o=Object.assign({},e);delete o.net;delete o.fs;delete o.inc;delete o.out;delete o.repBy;delete o._conn;delete o.id;delete o.tk;delete o.v;delete o.earned;delete o.jam;delete o.rej;return o;});
-  return {v:5,gen:GENV,carry:agents.reduce((o,a)=>{if(a.carry)o[a.carry.k]=(o[a.carry.k]||0)+a.carry.n;return o;},{}),sites:sites.map(s=>[s.t,s.x,s.y,s.dir,s.rec]),vb:vbSave(),pl:pl?{x:pl.x,y:pl.y,hp:pl.hp,gun:pl.gun,guns:pl.guns,outfit:pl.outfit,outfits:pl.outfits,armor:pl.armor,kills:pl.kills}:null,PM,events,nextEvent,savedAt:Date.now(),rates:{rpm,tax:nat.tax||0,trade:nat.trade||0,up:nat.upkeep||0},world:worldSave(),seed,won,inv,queue,ticks,cam:{x:cam.x,y:cam.y,z:cam.z},mined,E,money,stats,research,upg,cos,ms,ch,xp,rep,contracts,revHist,bps};
+  return {v:5,gen:GENV,carry:agents.reduce((o,a)=>{if(a.carry)o[a.carry.k]=(o[a.carry.k]||0)+a.carry.n;return o;},{}),sites:sites.map(s=>[s.t,s.x,s.y,s.dir,s.rec]),vb:vbSave(),pl:pl?{x:pl.x,y:pl.y,look:pl.look,hp:pl.hp,gun:pl.gun,guns:pl.guns,outfit:pl.outfit,outfits:pl.outfits,armor:pl.armor,kills:pl.kills}:null,PM,events,nextEvent,savedAt:Date.now(),rates:{rpm,tax:nat.tax||0,trade:nat.trade||0,up:nat.upkeep||0},world:worldSave(),seed,won,inv,queue,ticks,cam:{x:cam.x,y:cam.y,z:cam.z},mined,E,money,stats,research,upg,cos,ms,ch,xp,rep,contracts,revHist,bps};
 }
 function reset(s){
   genWorld(s);genMap(s);initNation();ents=[];grid.fill(null);ffx=[];nextId=1;queue=[];ticks=0;won=false;inv={};tool=null;mining=null;closeEnt();
@@ -2239,7 +2325,7 @@ $('mImport').onclick=()=>{show('menuIO',true);$('ioText').value='';$('ioText').p
 $('ioCopy').onclick=()=>{const t=$('ioText'),fb=()=>{t.select();toast('Press Ctrl+C to copy');};try{navigator.clipboard.writeText(t.value).then(()=>toast('Save code copied'),fb);}catch(_){fb();}};
 $('ioClose').onclick=()=>show('menuIO',false);
 $('ioLoad').onclick=async()=>{try{const s=await decSave($('ioText').value);if(!s||!(s.v>=3))throw 0;load(s);save();show('menuIO',false);show('menu',false);setView('factory');toast('Save loaded','big');}catch(_){$('ioMsg').textContent='That code isn\u2019t a valid Fabrikat save. Check that you copied all of it.';}};
-function save(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(serialize()));}catch(_){}saveBps();}
+function save(){if(!gameOn||!SaveManager.cur)return;SaveManager.write(SaveManager.cur,serialize());saveBps();}
 
 // ---------- research tree (5 tabs) ----------
 {const RMETA={automation:[1],steel:[1],logistics:[1],oil:[2,{steel:50}],maintenance:[2,{steel:50}],machinery:[2,{steel:100}],railways:[2,{steel:200,concrete:100}],electronics:[3,{plastic:100}],metals:[3,{motor:20}],fabrication:[3,{circuit_board:100,steel:200}],energy:[4,{aluminium:100}],computing:[4,{adv_circuit:100}],materials:[4,{processor:30}],quantum:[5,{computer:20}],experimental:[5,{quantum_processor:10}]};
@@ -2258,7 +2344,8 @@ RESEARCH.push(
   {id:'metro',tab:'civ',tier:4,n:'Metropolitan Infrastructure',cost:3e6,mat:{electric_motor:100},req:['city4'],d:'+25% capacity and +25% tax.'},
   {id:'city5',tab:'civ',tier:5,n:'City Mk. V',cost:1e7,mat:{computer:50,titanium:200},req:['city4'],d:'The largest cities in the world.'},
   {id:'megacity',tab:'civ',tier:5,n:'Megacity Infrastructure',cost:2.5e7,mat:{industrial_robot:20},req:['city5'],d:'+50% city capacity.'},
-  {id:'infantry',tab:'military',tier:1,n:'Infantry',cost:3000,mat:{iron_plate:100},req:[],d:'Recruit infantry.'},
+  {id:'ballistics',tab:'industry',tier:1,n:'Basic Ballistics',cost:2500,mat:{iron_plate:80},req:[],d:'Gun barrels and powder charges. Unlocks the Military tab.'},
+  {id:'infantry',tab:'military',tier:1,n:'Infantry',cost:3000,mat:{iron_plate:100},req:['ballistics'],d:'Recruit infantry.'},
   {id:'training',tab:'military',tier:1,n:'Basic Military Training',cost:10000,mat:{},req:['infantry'],d:'+20% strength for every unit.'},
   {id:'defenses',tab:'military',tier:1,n:'Defensive Structures',cost:8000,mat:{brick:200},req:['infantry'],d:'Build forts in your provinces.'},
   {id:'mechanized',tab:'military',tier:2,n:'Mechanized Units',cost:40000,mat:{steel:100,motor:10},req:['training'],d:'Recruit mechanized units.'},
@@ -2348,8 +2435,8 @@ const PORT={n:'Port',cost:15000,mat:{steel:100,concrete:100},res:'ports'};
 const MISSIONS=[
   {n:'Starting a Factory',d:'Get a production line running.',reward:500,obj:[['Mine 10 iron ore',()=>(stats.made.iron_ore||0)>=10],['Build a stone furnace',()=>(stats.built.furnace||0)>=1||ents.some(e=>e.type==='furnace')],['Produce 20 iron plates',()=>(stats.made.iron_plate||0)>=20],['Earn $50 at the Money Generator',()=>stats.life>=50]]},
   {n:'Make Money',d:'Grow the business.',reward:1000,obj:[['Earn $3,000 in total',()=>stats.life>=3000]],unlock:'Cities and the World map'},
-  {n:'Your First City',d:'Found a city in a province you own.',reward:2000,obj:[['Build a city (click your home land, or zoom out with M)',()=>cityCount()>=1],['Set the worker and soldier split in Cities',()=>!!stats.slider]]},
-  {n:'Industrial Nation',d:'People run factories and fill armies.',reward:3000,obj:[['Reach 10,000 population',()=>nat.pop>=10000]],unlock:'Military'},
+  {n:'Your First City',d:'Found a city in a province you own.',reward:2000,obj:[['Build a city (click your home land, or zoom out with M)',()=>cityCount()>=1],['Check your workforce in the new Cities tab',()=>!!stats.seen_cities]]},
+  {n:'Industrial Nation',d:'People run factories and fill armies.',reward:3000,obj:[['Reach 10,000 population',()=>nat.pop>=10000]],unlock:'Military (Basic Ballistics)'},
   {n:'First Army',d:'Raise your first troops.',reward:5000,obj:[['Recruit 1,000 soldiers (one infantry unit)',()=>(stats.recruitMP||0)>=1000]]},
   {n:'First War',d:'Expand your borders.',reward:10000,obj:[['Capture a neutral province',()=>(stats.captured||0)>=1]]},
   {n:'Defend Your Nation',d:'Protect what you hold.',reward:10000,obj:[['Research Defensive Structures',()=>!!research.defenses],['Build a fort in one of your provinces',()=>world.provs.some(p=>p.owner===0&&p.fort>0)]]},
@@ -2425,7 +2512,7 @@ const strMult=()=>(research.training?1.2:1)*(research.adv_weapons?1.25:1);
 function armyStr(){let s=0;for(const k in UNITS)s+=(nat.units[k]||0)*UNITS[k].str;return s*strMult()*supplyMult()*ammoMult();}
 const availStr=()=>Math.max(0,armyStr()-nat.committed);
 const mpUsed=()=>{let s=0;for(const k in UNITS)s+=(nat.units[k]||0)*UNITS[k].mp;return s;};
-const mpFree=()=>Math.max(0,nat.soldiers-mpUsed());
+const mpFree=()=>Math.max(0,(nat.pop||0)*mobState().max-mpUsed());
 const navalStr=()=>(nat.ships.escort||0)*10+(nat.ships.warship||0)*40*(research.adv_warships?1.5:1);
 const transportCap=()=>(nat.ships.transport||0)*50*(research.cargo?1.5:1);
 function indMult(){
@@ -2560,7 +2647,7 @@ function nationSecond(){
     for(const c of p.cities){const cc=cityCap(c);if(ticks-c.b<180)continue;c.pop=Math.min(cc,c.pop+(grow?Math.max(15,(cc-c.pop)*.015)*grow*(p.terr==='plains'?1.25:1):0));pop+=c.pop;cap+=cc;taxBase+=c.pop*CITY[c.mk].tax;
       if(c.pop>=cc*.995&&c.full!==c.mk){c.full=c.mk;banner('POPULATION CAPACITY REACHED',CITY[c.mk].n+' in '+p.name+' is full');}}
     if(p.id!==world.home){pop+=p.pop*.5;cap+=p.pop*.5;taxBase+=p.pop*.25;}}
-  const M=mobState();nat.share=Math.min(nat.share,M.max);
+  const M=mobState();nat.share=pop>0?Math.min(M.max,mpUsed()/pop):0;
   nat.pop=pop;nat.cap=cap;nat.soldiers=pop*nat.share;nat.workers=pop-nat.soldiers;
   const tm=(research.roads?1.15:1)*(research.commercial?1.25:1)*(research.metro?1.25:1);
   const tax=taxBase*(1-nat.share)*.06/60*tm;money+=tax;stats.life+=tax;nat.tax=tax*60;
@@ -2630,17 +2717,16 @@ function missionStart(i){
 function missionCheck(){
   const m=MISSIONS[missionIdx];if(!m)return;
   if(m.obj.every(o=>o[1]())){
-    money+=m.reward;missionIdx++;
+    money+=m.reward;missionIdx++;Bus.emit('mission',missionIdx);
     if(missionIdx===2)research.city1=1;
-    if(missionIdx===4)research.infantry=1;
+    if(missionIdx===4){research.ballistics=1;research.infantry=1;}
     banner(missionIdx>=MISSIONS.length?'YOU ARE READY':'MISSION COMPLETE',missionIdx>=MISSIONS.length?'The campaign is over. The world is yours to shape.':m.n+' · +'+$$(m.reward)+(m.unlock?' · unlocked '+m.unlock:''));
     report('world','Mission complete: '+m.n+'.');
-    if(missionIdx===2)setTimeout(()=>toast('Cities unlocked! Press M for the World map, click your home province (the star) and build a City Mk. I.','big'),1500);
-    if(missionIdx===4)setTimeout(()=>toast('Military unlocked! Open Military to recruit infantry from your soldiers.','big'),1500);
+    if(missionIdx===2)setTimeout(()=>toast('Press M for the World map, click your home province (the star) and build a City Mk. I.','big'),1500);
     missionStart(missionIdx);uiDirty=true;
   }
 }
-const unlockedNav=k=>unlockAll||({world:2,cities:2,military:4,naval:7,strategic:8}[k]||0)<=missionIdx;
+const unlockedNav=k=>Unlocks.has(k);
 
 // ---------- world render ----------
 const wScale=()=>cam.z*TPW;
@@ -2819,10 +2905,7 @@ function drawCities(){
     '<div class="tile"><span class="eyebrow">Workers</span><span class="v">'+fmt(Math.round(nat.workers))+'</span><span class="ct">factories &times;'+indMult().toFixed(2)+'</span></div>'+
     '<div class="tile"><span class="eyebrow">Soldiers</span><span class="v">'+fmt(Math.round(nat.soldiers))+'</span><span class="ct">'+fmt(Math.round(mpFree()))+' free to recruit</span></div>'+
     '<div class="tile"><span class="eyebrow">Tax income</span><span class="v good">'+$s(nat.tax)+'/min</span><span class="ct">'+$s(nat.trade||0)+'/min trade &middot; '+fmt(nat.imports||0)+' imports/min</span></div></div>';
-  h+='<div><h3>Workers and soldiers <span class="hint">'+M.n+' allows up to '+Math.round(M.max*100)+'% soldiers</span></h3>'+
-    '<div class="row" style="justify-content:space-between"><span class="ct">WORKERS '+Math.round((1-nat.share)*100)+'%</span><span class="ct">SOLDIERS '+Math.round(nat.share*100)+'%</span></div>'+
-    '<input type="range" id="shareRange" min="0" max="'+Math.round(M.max*100)+'" step="5" value="'+Math.round(nat.share*100)+'" aria-label="Soldier share">'+
-    '<p class="empty" style="margin-top:6px">Workers pay taxes and speed up your factories, up to '+(research.industrial_districts?'+100%':'+50%')+' when you have 150 workers per machine. Soldiers are the manpower for units. Raise the limit with mobilization in Military.</p></div>';
+  h+=WorkforceManager.html();
   h+='<div><h3>Cities</h3><div class="list">';
   let any=false;
   for(const p of world.provs)if(p.owner===0)p.cities.forEach((c,j)=>{any=true;const cc=cityCap(c),nx=CITY[c.mk+1];
@@ -2885,8 +2968,11 @@ const GUIDE=[
   ['Factories','Drills mine, furnaces smelt, and assemblers, chemical plants and fabricators craft. Belts carry items into whatever they point at. Inserters lift items out of one building into the next. Machines wear down as they work, so keep them repaired.'],
   ['Money','Every item has a value based on how much work went into it. Sell raw ore for a little, or turn it into circuits for a lot. Contracts from companies pay extra for specific goods. Taxes from your cities and trade routes add steady income.'],
   ['Cities','Cities are bought with money and materials and built on provinces you own. Each province has a few city slots. Cheap Mk. I cities stay useful: many small cities can match a few big ones.'],
-  ['Population','Cities determine how many people your nation can support. People either work or serve. More workers mean more taxes and faster factories. More soldiers mean a bigger army. Use the slider in Cities to find your balance.'],
-  ['Military','Recruit units with soldiers, money and materials. Click a province on the World map to attack it. Your chance depends on their defense, which grows with terrain and forts. Captured provinces send their resource to your factory every 10 seconds, into an Import Depot if you have one.'],
+  ['Population','Cities determine how many people your nation can support. The workforce is automatic: everyone works in your factories until a job needs them. Placing a blueprint drafts builders, a machine below 80% condition drafts an engineer, and recruiting a unit drafts soldiers. More workers mean more taxes and faster factories; raise mobilization in Military to allow a bigger army.'],
+  ['Military','Research Basic Ballistics (Industry tab) to unlock the Military tab. Recruit units with soldiers, money and materials. Click enemy or neutral land, or an army badge, anywhere on the map: a small popup offers Declare war, Attack with half or all of your force, Buy, or Details. Your chance depends on their defense, which grows with terrain and forts. Captured provinces send their resource to your factory every 10 seconds, into an Import Depot if you have one.'],
+  ['Main menu and saves','The start screen has New Game, Continue, the Customization Shop and the Character Editor. Every game has its own save slot (up to 6), saved automatically; Continue lists them with date, stage and money. Menu > Main menu returns there.'],
+  ['Customization','Credits are earned by reaching stages, completing missions and milestones, and they carry over to every save. Spend them in the Customization Shop on machine paint jobs, UI themes (Dark Mode, Blueprint Blue) and pets that follow your President. The Character Editor sets head, body and clothes colour.'],
+  ['Clean screen','Menus appear as you need them: World and Diplomacy as your nation grows, Cities with your first city, Military after Basic Ballistics. Recipe icons, fluid ports and crew labels stay hidden until you hold Alt or a relevant building (a pipe shows fluid connections). Settings > Machine details can show them always.'],
   ['Research','Research is split into five tabs: Industry, Civilization, Military, Strategic and Naval. Advanced research costs materials as well as money, so your factory feeds your whole nation.'],
   ['Diplomacy','Every nation has relations from -100 to +100 with you. Gifts and trade raise them. Allies join your wars and can send troops. Nations with bad relations and an aggressive streak may declare war.'],
   ['Trade','Build a port in a coastal province, then open a trade route with a nation at peace with you. Routes pay every minute. Enemy warships can raid your routes unless your own navy is stronger.'],
@@ -2934,7 +3020,7 @@ function drawSettings(){
     '<p class="empty" style="margin-top:6px">Low turns off smoke, glows and city lights and freezes belt animation. High adds full particles, lights and sea effects.</p></div>'+
     '<div><h3>Performance</h3><div class="kv"><span class="k">FPS limit</span>'+seg('fps',[[30,'30'],[60,'60'],[0,'Unlimited']])+
     '<span class="k">Animation</span>'+seg('anim',[['low','Low'],['high','High']])+
-    '<span class="k">Map detail</span>'+seg('detail',[['low','Low'],['high','High']])+
+    '<span class="k">Map detail</span>'+seg('detail',[['low','Low'],['high','High']])+'<span class="k">Machine details</span>'+seg('details',[[0,'Hold Alt'],[1,'Always']])+
     '<span class="k">Background effects</span>'+seg('bg',[[0,'Off'],[1,'On']])+
     '<label class="k" for="setPart">Particle density</label><input type="range" id="setPart" min="0" max="100" step="10" value="'+Math.round(settings.particles*100)+'">'+
     '<label class="k" for="setVfx">Effects density</label><input type="range" id="setVfx" min="0" max="100" step="10" value="'+Math.round(settings.vfx*100)+'"></div>'+
@@ -2948,8 +3034,8 @@ function setAct(a){
   const[k,v]=a.split(':');
   if(k==='q'){settings.q=v;Object.assign(settings,QPRESET[v]);}
   else if(k==='perf'){settings.q='low';Object.assign(settings,QPRESET.low);settings.fps=30;toast('Performance mode on');}
-  else if(k==='skip'){unlockAll=true;research.city1=1;research.infantry=1;toast('Every menu is unlocked. Missions stay available for rewards.');}
-  else if(k==='fps'||k==='bg'||k==='sound'||k==='events')settings[k]=+v;
+  else if(k==='skip'){unlockAll=true;research.ballistics=1;research.city1=1;research.infantry=1;toast('Every menu is unlocked. Missions stay available for rewards.');}
+  else if(k==='fps'||k==='bg'||k==='sound'||k==='events'||k==='details')settings[k]=+v;
   else settings[k]=v;
   saveSettings();cache.settingsBody=null;drawSettings();uiDirty=true;
 }
@@ -3085,7 +3171,7 @@ const STAGES=[
   ['Exotic Industry','Dark matter and beyond.',()=>(stats.made.dark_matter||0)>0],
 ];
 function stageNow(){let s=0;for(let i=1;i<STAGES.length;i++){if(STAGES[i][2]())s=i;else break;}return s;}
-function stageSecond(){const s=stageNow();if(s>(stats.stage||0)){stats.stage=s;showStage(s);report('world','Your nation entered stage '+(s+1)+': '+STAGES[s][0]+'.');}}
+function stageSecond(){const s=stageNow();if(s>(stats.stage||0)){stats.stage=s;showStage(s);Bus.emit('stage',s);report('world','Your nation entered stage '+(s+1)+': '+STAGES[s][0]+'.');}}
 
 // ---------- loans ----------
 const LOAN_RATE=.005;
@@ -3257,7 +3343,7 @@ function drawPipe(g,e,tm){
   g.fillStyle=cos.cobalt?'#6d94d0':'#8f9aa0';for(let d=0;d<4;d++)if(links[d])arm(d,2);
   if(n&&n.fl&&n.amt>=1){const ga=g.globalAlpha,f=Math.min(1,n.amt/n.cap);g.globalAlpha=ga*(.45+.55*f);g.fillStyle=ITEMS[n.fl].c;for(let d=0;d<4;d++)if(links[d])arm(d,5);g.fillRect(13.5,13.5,5,5);g.globalAlpha=ga;
     const u=n.flowCap?n.flowR/n.flowCap:0;
-    if(u>.01&&settings.anim!=='low'){g.fillStyle='rgba(255,255,255,.7)';const p=((tm*(.8+u*2.5)+(e.x+e.y)*.25)%1)*16;for(let d=0;d<4;d++)if(links[d])g.fillRect(16+DX[d]*p-1.5,16+DY[d]*p-1.5,3,3);}}
+    if(u>.01&&settings.anim!=='low'&&CTX.fluid){g.fillStyle='rgba(255,255,255,.7)';const p=((tm*(.8+u*2.5)+(e.x+e.y)*.25)%1)*16;for(let d=0;d<4;d++)if(links[d])g.fillRect(16+DX[d]*p-1.5,16+DY[d]*p-1.5,3,3);}}
   if(e.type==='fpump'){g.fillStyle='#1b1d1e';g.fillRect(6,6,20,20);g.fillStyle='#4f8fd0';g.fillRect(8,8,16,16);g.save();g.translate(16,16);g.rotate(n&&n.flowR>.5&&settings.anim!=='low'?tm*8:0);g.fillStyle='#16150f';g.fillRect(-6,-1.5,12,3);g.fillRect(-1.5,-6,3,12);g.restore();}
 }
 function drawPorts(g,e){
@@ -3399,7 +3485,7 @@ function fluidAlerts(A){
   for(const e of L.asm){if(e.st==='byfull'){bf++;if(!bfF)bfF=e;}if(e.flRej&&!rej)rej=e;if(e.hot){cool++;if(!coolF)coolF=e;}}
   if(nw)A.unshift({s:'crit',t:nw+' steam generator'+(nw>1?'s have':' has')+' no water. Place a water well touching '+(nw>1?'each':'it')+', or pipe water in.',e:nwF});
   if(rx)A.unshift({s:'crit',t:'The singularity reactor has no coolant and shut down.',e:rx});
-  if(crewMult<1)A.unshift({s:'crit',t:'Crew shortage: '+Math.round(crewUsed)+' crew needed, '+crewCap()+' available. Every machine runs at '+Math.round(crewMult*100)+'%. Grow cities or move the slider toward workers.'});
+  if(crewMult<1)A.unshift({s:'crit',t:'Crew shortage: '+Math.round(crewUsed)+' crew needed, '+crewCap()+' available. Every machine runs at '+Math.round(crewMult*100)+'%. Grow cities or build more housing; every soldier you recruit leaves the factory.'});
   if(overdue())A.unshift({s:'crit',t:'A loan is overdue: interest doubled and 25% of revenue goes to the bank. Repay it in Company > Bank.'});
   if(bf)A.push({s:'warn',t:'Heavy residue is backing up in '+bf+' machine'+(bf>1?'s':'')+'. Pipe it out the back, burn it in steam generators, crack it into fuel or sell it.',e:bfF});
   if(rej)A.push({s:'warn',t:'A pipe holds '+ITEMS[rej.flRej[1]].n.toLowerCase()+', so '+ITEMS[rej.flRej[0]].n.toLowerCase()+' can’t go in. Give each fluid its own pipe, or flush it.',e:rej});
@@ -3444,7 +3530,7 @@ GUIDE.push(
   ['Alternative recipes','Many items have more than one recipe, marked ALT in a machine’s recipe list. Steel can be smelted from 5 plates, or made from 3 plates and fuel in a chemical plant. Fuel comes from oil (with residue), from coal and chemicals, or from cracked residue. Processors can be silicon-heavy or copper-heavy. The machine panel lists every way to make its item, so you can pick the one that fits the resources you have.'],
   ['Bottleneck overlay','Press O. Red machines are bottlenecks: they run flat out and something downstream still waits for them. Yellow ones wait for input, blue ones have nowhere to put their output, white ones are idle and green ones are balanced. Click any machine for its input, output, power and idle percentages and the main cause.'],
   ['Power puzzle','Steam generators are cheap but need water and fuel, pollute, and take 5 seconds to spin up. Solar is free but follows a 12-minute day and makes nothing at night. Geothermal is steady but only on volcanic land. Machines draw 3 times their power for a moment when they start, so a line starting at once can cause a brownout. Battery banks cover those spikes and the night.'],
-  ['Crew','Every working machine needs crew: half a person for a drill or furnace, 1 for an assembler, 1.5 for a chemical plant and 2 for a fabricator. Your HQ provides 50. Every 100 workers in your cities adds 1 more. If you need more crew than you have, every machine slows down. Soldiers don’t count, so the population slider trades army size against factory capacity.'],
+  ['Crew','Every working machine needs crew: half a person for a drill or furnace, 1 for an assembler, 1.5 for a chemical plant and 2 for a fabricator. Your HQ provides 50. Every 100 workers in your cities adds 1 more. If you need more crew than you have, every machine slows down. Soldiers don’t count, so every unit you recruit trades factory capacity for army size.'],
   ['Loans','Working Capital is small and due in 10 minutes. Expansion Loans are large and cheap, due in an hour, and open at the Industry stage. Emergency Credit is instant but very expensive. Your debt ratio compares debt with an hour of income; above 25%, new loans cost more. A late loan doubles its interest and takes a quarter of your revenue until it is paid.'],
   ['Stages','Each stage adds a new problem. Industry taxes emissions. Electronics makes fabricators ruin their batch in a brownout. Megafactory makes machines wear faster. Global Industry floods markets faster. Rocket Age makes launches draw from battery banks. Exotic Industry makes exotic fabrication need coolant, and unlocks the Singularity Reactor and matter transmutation.'],
   ['Factory milestones','Company > Goals lists factory milestones such as 1,000 steel per minute, 10 MW of power, 50 machines working at once or a contract finished without buying anything. They pay money, research credit (taken off your next research), extra blueprint slots and cosmetics.'],
@@ -3884,7 +3970,7 @@ const OUTFITS={worker:{n:'Work clothes',c:['#3f6fb0','#2b2f34'],cost:0},hardhat:
   mining:{n:'Mining gear',c:['#8a5a2a','#f0a62e'],cost:2500},scientist:{n:'Lab coat',c:['#e8ecee','#8fb8d8'],cost:5000,res:'electronics'},military:{n:'Military uniform',c:['#5d6b3a','#3d4526'],cost:5000,res:'infantry'},
   executive:{n:'Executive suit',c:['#23262b','#d9b54a'],cost:25000}};
 let pl=null,troops=[],shots=[],booms=[],firing=false,camFollow=true,plGoal=null,camps=[],trucks=[],tid=0,banditT=900;
-function plReset(){const h=hqSpot();pl={x:h.x+1,y:h.y+2.7,hp:100,dir:1,ph:0,gun:'pistol',guns:{pistol:1},outfit:'worker',outfits:{worker:1},armor:0,mag:GUNS.pistol.mag,rl:0,cd:0,dead:0,drawn:false,kills:0};}
+function plReset(){const h=hqSpot();pl={x:h.x+1,y:h.y+2.7,hp:100,dir:1,ph:0,gun:'pistol',guns:{pistol:1},outfit:'worker',outfits:{worker:1},look:profile?Profile.look():null,armor:0,mag:GUNS.pistol.mag,rl:0,cd:0,dead:0,drawn:false,kills:0};}
 const plMax=()=>100+(pl&&pl.armor?60:0);
 function solidAt(x,y){const X=Math.floor(x),Y=Math.floor(y);if(!inb(X,Y)||regionAt(X,Y)==='sea')return true;const e=at(X,Y);
   if(e&&!isBelt(e)&&!isIns(e)&&e.type!=='fpipe'&&e.type!=='fpump'&&e.type!=='splitter')return true;const v=vgrid[Y*W+X];return !!v&&vb[v-1]&&vb[v-1].t!=='farm'&&vb[v-1].t!=='vwell';}
@@ -4008,30 +4094,18 @@ function drawTroop(g,t,X,Y,s){
   g.globalAlpha=1;
   if(t.hp>0&&t.hp<t.max){g.fillStyle='rgba(0,0,0,.6)';g.fillRect(X-s*.3,Y-s*1.22,s*.6,3);g.fillStyle=t.side===0?'#6fe27d':'#ff5a44';g.fillRect(X-s*.3,Y-s*1.22,s*.6*t.hp/t.max,3);}
 }
-function drawPresident(g,X,Y,s,tm){
-  const O=OUTFITS[pl.outfit]||OUTFITS.worker,sw=pl.moving?Math.sin(pl.ph)*s*.18:0;
-  g.fillStyle='rgba(0,0,0,.3)';g.beginPath();g.ellipse(X,Y,s*.34,s*.11,0,0,7);g.fill();
-  g.strokeStyle='#23201d';g.lineWidth=s*.14;g.lineCap='round';g.beginPath();g.moveTo(X-s*.09,Y-s*.36);g.lineTo(X-s*.09+sw,Y);g.moveTo(X+s*.09,Y-s*.36);g.lineTo(X+s*.09-sw,Y);g.stroke();
-  g.fillStyle=O.c[0];rr(g,X-s*.2,Y-s*.76,s*.4,s*.46,s*.09);g.fill();g.strokeStyle=OL;g.lineWidth=Math.max(.8,s*.05);g.stroke();
-  g.fillStyle='#f2c14e';g.beginPath();g.moveTo(X-s*.2,Y-s*.74);g.lineTo(X+s*.2,Y-s*.4);g.lineTo(X+s*.2,Y-s*.5);g.lineTo(X-s*.12,Y-s*.76);g.fill();
-  g.fillStyle='#e8bf98';circ(g,X,Y-s*.92,s*.17);g.fill();g.stroke();
-  if(O.c[1]){g.fillStyle=O.c[1];g.beginPath();g.arc(X,Y-s*.97,s*.18,Math.PI,0);g.fill();}
-  if(pl.drawn){const a=Math.atan2(aimY()-(pl.y-.55),aimX()-pl.x);g.save();g.translate(X,Y-s*.55);g.rotate(a);g.fillStyle='#1d1f22';g.fillRect(s*.05,-s*.05,s*(pl.gun==='pistol'?.35:.6),s*.1);g.restore();}
-  g.fillStyle='rgba(20,22,25,.85)';g.font='700 10px "Chakra Petch",sans-serif';const tw=g.measureText('PRESIDENT').width+8;rr(g,X-tw/2,Y-s*1.42-10,tw,13,3);g.fill();g.fillStyle='#f2c14e';g.textAlign='center';g.textBaseline='middle';g.fillText('PRESIDENT',X,Y-s*1.42-3.5);
-  if(pl.hp<plMax()){g.fillStyle='rgba(0,0,0,.6)';g.fillRect(X-s*.4,Y-s*1.2,s*.8,4);g.fillStyle=pl.hp<35?'#ff5a44':'#6fe27d';g.fillRect(X-s*.4,Y-s*1.2,s*.8*pl.hp/plMax(),4);}
-}
 function drawCombat(tm){
   const z=cam.z;if(z<.3)return;const s=T*z*.62,in_=(x,y)=>{const X=sx(x*T),Y=sy(y*T);return X>-40&&Y>-40&&X<SW+40&&Y<SH+40;};
   for(const c of camps){if(!in_(c.x,c.y))continue;const X=sx(c.x*T),Y=sy(c.y*T),k=T*z;
     ctx.fillStyle='rgba(0,0,0,.25)';ctx.beginPath();ctx.ellipse(X,Y+k*.1,k*.8,k*.2,0,0,7);ctx.fill();ctx.fillStyle='#6b7445';poly(ctx,[[X-k*.7,Y+k*.1],[X,Y-k*.7],[X+k*.7,Y+k*.1]]);ctx.fill();ctx.strokeStyle=OL;ctx.lineWidth=1.5;ctx.stroke();
     ctx.fillStyle='#3d4526';poly(ctx,[[X-k*.15,Y+k*.1],[X,Y-k*.35],[X+k*.15,Y+k*.1]]);ctx.fill();ctx.strokeStyle='#2a2522';ctx.beginPath();ctx.moveTo(X+k*.9,Y+k*.1);ctx.lineTo(X+k*.9,Y-k*1.1);ctx.stroke();ctx.fillStyle='#f0a62e';ctx.fillRect(X+k*.9,Y-k*1.1,k*.5,k*.3);
-    if(z>.45){const sup=nat.supply===undefined?1:nat.supply,t='ARMY CAMP · '+Math.round(c.str||0)+' str · supply '+Math.round(sup*100)+'%';ctx.font='600 10px "JetBrains Mono",monospace';const w=ctx.measureText(t).width+12;ctx.fillStyle='rgba(30,34,38,.9)';rr(ctx,X-w/2,Y-k*1.7-12,w,16,3);ctx.fill();ctx.fillStyle=sup<.7?'#ff5a44':'#f2c14e';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(t,X,Y-k*1.7-4);}}
+    if(z>.45&&CTX.stats){const sup=nat.supply===undefined?1:nat.supply,t='ARMY CAMP · '+Math.round(c.str||0)+' str · supply '+Math.round(sup*100)+'%';ctx.font='600 10px "JetBrains Mono",monospace';const w=ctx.measureText(t).width+12;ctx.fillStyle='rgba(30,34,38,.9)';rr(ctx,X-w/2,Y-k*1.7-12,w,16,3);ctx.fill();ctx.fillStyle=sup<.7?'#ff5a44':'#f2c14e';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(t,X,Y-k*1.7-4);}}
   for(const k of trucks){if(!in_(k.x,k.y))continue;const X=sx(k.x*T),Y=sy(k.y*T),q=T*z*.5;ctx.fillStyle='rgba(0,0,0,.3)';ctx.fillRect(X-q*.9,Y-q*.1,q*1.9,q*.25);ctx.fillStyle=OL;ctx.fillRect(X-q,Y-q*.8,q*2,q*.75);ctx.fillStyle=k.ok?'#5d6b3a':'#a0402c';ctx.fillRect(X-q*.9,Y-q*.72,q*1.3,q*.6);ctx.fillStyle='#c9ced3';ctx.fillRect(X+q*(k.dir<0?-.95:.45),Y-q*.72,q*.5,q*.45);ctx.fillStyle='#1d1f22';circ(ctx,X-q*.55,Y,q*.2);ctx.fill();circ(ctx,X+q*.55,Y,q*.2);ctx.fill();}
   for(const t of troops){if(in_(t.x,t.y))drawTroop(ctx,t,sx(t.x*T),sy(t.y*T),s);}
   ctx.strokeStyle='#ffe28a';ctx.lineWidth=Math.max(1.5,2.2*z);ctx.lineCap='round';ctx.beginPath();
   for(const b of shots){const X=sx(b.x*T),Y=sy(b.y*T),l=Math.hypot(b.vx,b.vy)||1;ctx.moveTo(X,Y);ctx.lineTo(X-b.vx/l*T*z*.45,Y-b.vy/l*T*z*.45);}ctx.stroke();
   for(const b of booms){const X=sx(b.x*T),Y=sy(b.y*T),u=b.t/30;ctx.fillStyle='rgba(255,'+(170-u*120|0)+',60,'+(1-u)+')';circ(ctx,X,Y,(.5+u*2)*T*z);ctx.fill();}
-  if(pl&&!pl.dead&&in_(pl.x,pl.y))drawPresident(ctx,sx(pl.x*T),sy(pl.y*T),T*z*.72,tm);
+  drawPet(z);if(pl&&!pl.dead&&in_(pl.x,pl.y))drawPresident(ctx,sx(pl.x*T),sy(pl.y*T),T*z*.72,tm);
   if(pl&&pl.drawn&&view==='factory'){const X=mouse.x,Y=mouse.y;ctx.strokeStyle='#ffffff';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(X,Y,8,0,7);ctx.moveTo(X-13,Y);ctx.lineTo(X-4,Y);ctx.moveTo(X+4,Y);ctx.lineTo(X+13,Y);ctx.moveTo(X,Y-13);ctx.lineTo(X,Y-4);ctx.moveTo(X,Y+4);ctx.lineTo(X,Y+13);ctx.stroke();}
 }
 function drawMapCombat(){
@@ -4042,7 +4116,7 @@ function drawMapCombat(){
 // ---------- HUD & character panel ----------
 function pboxHTML(){
   if(!pl)return '';const G=GUNS[pl.gun],hp=pl.hp/plMax();
-  return '<div class="prow2"><span class="pav" style="background:'+(OUTFITS[pl.outfit]||OUTFITS.worker).c[0]+'"></span><div style="flex:1"><div class="row" style="justify-content:space-between"><b>President</b><span class="ct">'+(pl.dead?'<span class="bad">wounded '+Math.ceil(pl.dead/60)+'s</span>':Math.round(pl.hp)+' / '+plMax()+' HP')+'</span></div>'+
+  return '<div class="prow2"><span class="pav" style="background:'+plColor()+'"></span><div style="flex:1"><div class="row" style="justify-content:space-between"><b>President</b><span class="ct">'+(pl.dead?'<span class="bad">wounded '+Math.ceil(pl.dead/60)+'s</span>':Math.round(pl.hp)+' / '+plMax()+' HP')+'</span></div>'+
     '<div class="pb"><i style="width:'+(hp*100).toFixed(0)+'%;background:'+(hp<.35?'var(--red)':'var(--green)')+'"></i></div>'+
     '<div class="row" style="justify-content:space-between;margin-top:3px"><span class="ct">'+(pl.drawn?'<b style="color:var(--amber)">'+G.n+'</b> '+(pl.rl>0?'reloading…':pl.mag+' / '+G.mag):'<kbd>F</kbd> draw '+G.n.toLowerCase())+'</span><button class="small" data-nav="char">Gear</button></div></div></div>';
 }
@@ -4053,9 +4127,7 @@ function drawChar(){
   for(const k in GUNS){const G=GUNS[k],own=!!pl.guns[k],lock=G.res&&!research[G.res],rs=G.res&&RESEARCH.find(r=>r.id===G.res);
     h+='<div class="item'+(pl.gun===k?' hot':'')+'"><span class="t">'+G.n+'</span><span class="d">'+G.d+' Damage '+G.dmg+(G.splash?' (area)':'')+', '+G.rate+' shots/s, range '+G.range+', magazine '+G.mag+'.'+(lock?' Needs '+(rs?rs.n:G.res)+'.':'')+'</span><div class="a">'+
       (own?(pl.gun===k?'<span class="badge ok">Equipped</span>':'<button class="small" data-pl="gun:'+k+'">Equip</button>'):'<button class="money small" data-pl="buygun:'+k+'"'+(lock||!canPay(G.cost,G.mat||{})?' disabled':'')+'>'+$$(G.cost)+'</button><span class="icons">'+costHTML(G.cost,G.mat||{})+'</span>')+'</div></div>';}
-  h+='</div></div><div><h3>Outfits</h3><div class="list">';
-  for(const k in OUTFITS){const O=OUTFITS[k],own=!!pl.outfits[k],lock=O.res&&!research[O.res];
-    h+='<div class="item'+(pl.outfit===k?' hot':'')+'"><span class="t"><span class="swatch" style="background:'+O.c[0]+'"></span>'+O.n+'</span><span class="d">'+(lock?'Needs research.':'Cosmetic.')+'</span><div class="a">'+(own?(pl.outfit===k?'<span class="badge ok">Wearing</span>':'<button class="small" data-pl="wear:'+k+'">Wear</button>'):'<button class="money small" data-pl="buyfit:'+k+'"'+(lock||money<O.cost?' disabled':'')+'>'+$$(O.cost)+'</button>')+'</div></div>';}
+  {const lk=lookOf(pl);h+='</div></div><div><h3>Appearance <span class="hint">cosmetic, shared by every save</span></h3><div class="list"><div class="item"><span class="t"><span class="swatch" style="background:'+lk.color+'"></span>'+HEADS[lk.head]+' &middot; '+BODIES[lk.body]+(profile&&profile.pet?' &middot; '+PETS[profile.pet].n:'')+'</span><span class="d">Change your head, body, clothes colour and pet in the Character Editor. More pets, paint jobs and themes are in the Customization Shop on the main menu.</span><div class="a"><button class="small" data-pl="editor">Character Editor</button></div></div>';}
   h+='</div></div><div><h3>Protection</h3><div class="list"><div class="item"><span class="t">Body armour</span><span class="d">+60 health and 20% less damage.'+(research.training?'':' Needs Training.')+'</span><div class="a">'+(pl.armor?'<span class="badge ok">Worn</span>':'<button class="money small" data-pl="armor"'+(!research.training||!canPay(3000,{steel:20})?' disabled':'')+'>'+$$(3000)+' + 20 steel</button>')+'</div></div></div></div>';
   setHTML($('charBody'),h);
 }
@@ -4063,8 +4135,7 @@ function plAct(a){
   const[k,v]=a.split(':');
   if(k==='gun'){pl.gun=v;pl.mag=GUNS[v].mag;pl.rl=0;}
   else if(k==='buygun'){const G=GUNS[v];if(buyWith(G.cost,G.mat||{},G.n)){pl.guns[v]=1;pl.gun=v;pl.mag=G.mag;toast('Bought a '+G.n.toLowerCase());}}
-  else if(k==='wear')pl.outfit=v;
-  else if(k==='buyfit'){const O=OUTFITS[v];if(money>=O.cost){spend(O.cost);pl.outfits[v]=1;pl.outfit=v;toast('New outfit: '+O.n);}}
+  else if(k==='editor'){Editor.open();return;}
   else if(k==='armor'){if(buyWith(3000,{steel:20},'Body armour')){pl.armor=1;pl.hp=plMax();}}
   cache.charBody=null;drawChar();uiDirty=true;
 }
@@ -4217,15 +4288,13 @@ class Agent{
 let agents=[];
 const hubsList=()=>L.hub||[];
 function agentsFor(home,role){return agents.filter(a=>a.home===home&&a.role===role);}
-function syncAgents(){ // keep 2 couriers per hub, 2 engineers per maintenance bay, builders at HQ
+function syncAgents(){ // keep 2 couriers per hub
   const hq=ents.find(e=>e.hq);
   for(const a of agents)if(!a.alive())a.dead=1;
   for(const a of agents)if(a.dead&&a.carry)add(inv,a.carry.k,a.carry.n);
   agents=agents.filter(a=>!a.dead);
   const need=(home,role,n,Cls)=>{let have=agentsFor(home,role).length;while(have<n){agents.push(new Cls(home));have++;}};
-  for(const h of hubsList())need(h,'courier',2,Courier);
-  for(const m of L.mt)need(m,'engineer',2,Engineer);
-  if(hq)need(hq,'builder',3+Math.min(3,hubsList().length),Builder);
+  for(const h of hubsList())need(h,'courier',2,Courier); // builders and engineers are drafted by WorkforceManager
 }
 
 // =====================================================================
@@ -4369,7 +4438,7 @@ function drawAgents(){
     ROLES[a.role]=ROLES[a.role]||AGC[a.role];drawPerson(ctx,X,Y,s,a.role,a.ph,a.dir,a.moving);
     if(a.carry&&ICON[a.carry.k]){const q=s*.5;ctx.fillStyle='#8a5a2b';ctx.fillRect(X-a.dir*s*.34-q/2,Y-s*.78,q,q*.8);ctx.drawImage(ICON[a.carry.k],X-a.dir*s*.34-q/2,Y-s*.78-q*.1,q,q);}
     if(a.role==='engineer'&&a.state==='repair'||a.role==='builder'&&a.state==='build'){if(settings.vfx&&Math.random()<.5){ctx.fillStyle='#ffe28a';ctx.fillRect(X+(Math.random()-.5)*s,Y-s*.5+(Math.random()-.5)*s*.5,2,2);}}
-    if(z>.8&&(a.state!=='idle')){ctx.font='600 9px "JetBrains Mono",monospace';ctx.textAlign='center';ctx.fillStyle='rgba(20,22,25,.8)';const t=({toPickup:'to pickup',pickup:'loading',toDropoff:'delivering',dropoff:'unloading',toSource:'fetching',toSite:'to site',build:'building',toMachine:'to repair',repair:'repairing',return:'returning'})[a.state]||a.state;
+    if(z>.8&&CTX.stats&&(a.state!=='idle')){ctx.font='600 9px "JetBrains Mono",monospace';ctx.textAlign='center';ctx.fillStyle='rgba(20,22,25,.8)';const t=({toPickup:'to pickup',pickup:'loading',toDropoff:'delivering',dropoff:'unloading',toSource:'fetching',toSite:'to site',build:'building',toMachine:'to repair',repair:'repairing',return:'returning'})[a.state]||a.state;
       const w=ctx.measureText(t).width+6;ctx.fillRect(X-w/2,Y-s*1.28-6,w,11);ctx.fillStyle='#eef0f1';ctx.textBaseline='middle';ctx.fillText(t,X,Y-s*1.28);}}
 }
 
@@ -4559,16 +4628,16 @@ class MilitaryUnit{
     if(mp>0){if(camps.length)for(const c of camps)up('camp'+c.p,{side:0,x:c.x,y:c.y,type,ammo:c.ammoMax?c.ammo/c.ammoMax:1,camp:c},mp/camps.length*supplyMult()*ammoMult());
       else{const h=hqSpot();up('hq',{side:0,x:h.x+1,y:h.y+4,type,ammo:1},mp);}}
     for(const a of attacks){const f=P_(a.from),t=P_(a.to);if(a.str0===undefined)a.str0=a.str;const k=Math.min(1,a.t/(a.combat?900:a.dur));
-      up('atk'+(a.id||(a.id=++tid)),{side:a.a,x:(f.cx+(t.cx-f.cx)*k)/WC,y:(f.cy+(t.cy-f.cy)*k)/WC,type:a.a===0?type:'infantry',ammo:a.a===0?ammoMult():1,moving:true},(a.troops||a.str*100)*(a.str0?a.str/a.str0:1));}
+      up('atk'+(a.id||(a.id=++tid)),{side:a.a,x:(f.cx+(t.cx-f.cx)*k)/WC,y:(f.cy+(t.cy-f.cy)*k)/WC,type:a.a===0?type:'infantry',ammo:a.a===0?ammoMult():1,moving:true,to:a.a===0?a.to:a.from},(a.troops||a.str*100)*(a.str0?a.str/a.str0:1));}
     for(let i=1;i<ais.length;i++){const A=ais[i];if(!A||A.dead||A.str<=0)continue;
       const own=world.provs.filter(p=>p.owner===i),front=own.filter(p=>p.adj.some(j=>P_(j).owner===0));const p=(front[0]||P_(A.cap));
-      up('ai'+i,{side:i,x:p.tx+.5,y:p.ty-1.5,type:A.str>250?'armor':'infantry',ammo:1},A.str*100);}
+      up('ai'+i,{side:i,x:p.tx+.5,y:p.ty-1.5,type:A.str>250?'armor':'infantry',ammo:1,prov:p.id},A.str*100);}
     for(const k of MilitaryUnit.units.keys())if(!seen.has(k))MilitaryUnit.units.delete(k);
   }
   draw(z){
     const X=sx(this.x*T),Y=sy(this.y*T);if(X<-60||Y<-80||X>SW+60||Y>SH+40)return;
     const col=this.side===0?'#f0a62e':this.side>0?NATIONS[this.side].c:'#8b939c',S=Math.round(Math.max(40,Math.min(64,48*Math.sqrt(z/.3))));
-    ctx.drawImage(unitSprite(this.type,col),X-S/2,Y-S*.88,S,S);
+    ctx.drawImage(unitSprite(this.type,col),X-S/2,Y-S*.88,S,S);this.hit={x:X-S/2,y:Y-S*.95-10,w:S,h:S*.95+10,t:performance.now()};
     const t=fmtK(this.troops);ctx.font='700 12px "JetBrains Mono",monospace';const w=ctx.measureText(t).width+14,by=Y-S*.95;
     ctx.fillStyle='rgba(24,27,31,.94)';rr(ctx,X-w/2,by-10,w,18,9);ctx.fill();ctx.strokeStyle=col;ctx.lineWidth=2;ctx.stroke();
     ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(t,X,by);
@@ -4683,6 +4752,338 @@ function extraAlerts(A){
   if(stats.sickN>0)A.push({s:'warn',t:'Pollution is making workers sick: '+stats.sickN+' machine'+(stats.sickN===1?'':'s')+' slowed. Build a clinic and keep it stocked with medical kits.',e:stats.sickFirst});
   const dry=camps.filter(c=>c.ammo<=0&&mpUsed()>0);if(dry.length)A.unshift({s:'crit',t:dry.length+' border camp'+(dry.length>1?'s are':' is')+' out of ammunition: army strength \u2212'+Math.round((1-ammoMult())*100)+'%. Make ammunition and keep it in a logistics hub or your stock.'});
 }
+// =====================================================================
+// V14 UI: event bus, save slots, title screen, profile (editor + shop),
+// progressive unlocks, workforce auto-allocation, contextual overlays,
+// contextual attack popup
+// =====================================================================
+const Bus={h:{},on(ev,f){(this.h[ev]=this.h[ev]||[]).push(f);},emit(ev,d){for(const f of this.h[ev]||[])try{f(d);}catch(err){console.error(err);}}};
+let gameOn=false,titleOn=false,titleCover=false;
+
+// ---------- SaveManager: several save slots in localStorage ----------
+const SaveManager={
+  IDX:'fabrikat-slots',PRE:'fabrikat-slot-',CUR:'fabrikat-cur',MAX:6,cur:null,
+  ls(k,v){try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v);return true;}catch(_){return v===undefined?null:false;}},
+  list(){try{return JSON.parse(this.ls(this.IDX))||[];}catch(_){return [];}},
+  setList(a){this.ls(this.IDX,JSON.stringify(a));},
+  meta(id,s,name){const st=s.stats||{};return{id,name:name||'Factory',date:Date.now(),stage:st.stage||0,money:+s.money||0,life:st.life||0,mission:s.missionIdx||0};},
+  migrate(){ // the single v3 save becomes the first slot
+    if(this.ls(this.IDX)!==null)return;const raw=this.ls(SAVE_KEY);if(!raw){this.setList([]);return;}
+    try{const s=JSON.parse(raw),id='s'+Date.now().toString(36);if(!this.ls(this.PRE+id,raw))return;const m=this.meta(id,s,'Your first factory');m.date=s.t||s.time||Date.now();
+      this.setList([m]);this.ls(SAVE_KEY,null);this.ls(this.CUR,id);}catch(_){this.setList([]);}},
+  read(id){try{return JSON.parse(this.ls(this.PRE+id));}catch(_){return null;}},
+  write(id,s){
+    if(!this.ls(this.PRE+id,JSON.stringify(s))){toastOnce('Could not save: browser storage is full. Delete an old save from the main menu.');return false;}
+    const a=this.list(),i=a.findIndex(m=>m.id===id),home=world.provs[world.home];
+    const m=this.meta(id,s,i>=0?a[i].name:(home?home.name:'Factory '+(a.length+1)));if(i>=0)a[i]=m;else a.push(m);
+    a.sort((x,y)=>y.date-x.date);this.setList(a);return true;},
+  create(){if(this.list().length>=this.MAX)return null;const id='s'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);this.use(id);return id;},
+  remove(id){this.ls(this.PRE+id,null);this.setList(this.list().filter(m=>m.id!==id));if(this.cur===id)this.cur=null;},
+  use(id){this.cur=id;this.ls(this.CUR,id);},
+  last(){return this.ls(this.CUR);},
+};
+
+// ---------- Profile: meta progression that lives outside any save ----------
+const PROFILE_KEY='fabrikat-profile';
+const HEADS={hardhat:'Hard hat',cap:'Military cap',bare:'Bare'},BODIES={uniform:'Factory uniform',suit:'Executive suit',armor:'Tactical armor'};
+const SWATCHES=['#3f6fb0','#2f8f6a','#b0413a','#5d6b3a','#23262b','#e3882a','#7a4fb0','#d8dde2'];
+const PAINTS={
+  std:{n:'Factory Standard',cost:0,d:'The colours every factory starts with.',cc:{}},
+  crimson:{n:'Crimson Works',cost:120,d:'Deep reds across every building.',cc:{mine:'#a8533a',smelt:'#c23a2e',prod:'#9c2f45',fab:'#7a2336',chem:'#a0386a',power:'#d9632e',log:'#4a3a3c',store:'#8f5a3a',maint:'#7a4a4a'}},
+  arctic:{n:'Arctic Steel',cost:150,d:'Cold blue-grey plating.',cc:{mine:'#7f8f9c',smelt:'#8aa0b2',prod:'#5f86a8',fab:'#4d6f8f',chem:'#7d7fae',power:'#b3a86a',log:'#4d565f',store:'#6f9a86',maint:'#6f8793'}},
+  olive:{n:'Military Olive',cost:150,d:'Olive drab, like the army depots.',cc:{mine:'#8a7a45',smelt:'#8f5a2e',prod:'#5d6b3a',fab:'#48552c',chem:'#6a5a3a',power:'#b39a2e',log:'#3f4533',store:'#5a7a3a',maint:'#5f6b50'}},
+  neon:{n:'Synthwave',cost:250,d:'Glowing pinks and cyans.',cc:{mine:'#d0509e',smelt:'#e03d74',prod:'#2aa6e0',fab:'#6a4fe0',chem:'#a64de0',power:'#e0c030',log:'#3a2f5a',store:'#2ec4a0',maint:'#4f7de0'}},
+};
+const THEMES={std:{n:'Workshop',cost:0,d:'Warm graphite panels with amber accents.'},dark:{n:'Dark Mode',cost:100,d:'Near-black panels for night sessions.'},blueprint:{n:'Blueprint Blue',cost:150,d:'Drafting-table blue with a grid.'}};
+const PETS={dog:{n:'Factory dog',cost:80,d:'Trots behind you everywhere.'},cat:{n:'Workshop cat',cost:80,d:'Pretends not to follow you.'},parrot:{n:'Parrot',cost:120,d:'Flaps along at shoulder height.'},drone:{n:'Helper drone',cost:180,d:'Hovers with a blinking light.'}};
+const CC0=Object.assign({},CC);
+let profile=null;
+const Profile={
+  def(){return{head:'hardhat',body:'uniform',color:'#3f6fb0',pet:null,theme:'std',paint:'std',own:{std:1,'t:std':1},credits:150,earned:150};},
+  load(){try{profile=Object.assign(this.def(),JSON.parse(localStorage.getItem(PROFILE_KEY))||{});}catch(_){profile=this.def();}},
+  save(){try{localStorage.setItem(PROFILE_KEY,JSON.stringify(profile));}catch(_){}},
+  look(){return{head:profile.head,body:profile.body,color:profile.color};},
+  earn(n,why){if(!profile||n<=0)return;profile.credits+=n;profile.earned+=n;this.save();if(gameOn&&n>=40)floatsUI('+'+n+' credits · '+why);},
+  apply(){ // theme + paint job
+    document.documentElement.dataset.skin=profile.theme==='std'?'':profile.theme;
+    const P=PAINTS[profile.paint]||PAINTS.std;for(const k in CC0)CC[k]=P.cc[k]||CC0[k];
+    try{makeIcons();}catch(_){}for(const k in GPREV)delete GPREV[k];uiDirty=true;},
+  owns(key){return !!profile.own[key];},
+  buy(key,cost){if(this.owns(key))return true;if(profile.credits<cost){toast('Not enough credits. Earn them by reaching stages, missions and milestones.','bad');return false;}
+    profile.credits-=cost;profile.own[key]=1;this.save();sfx('fanfare');return true;},
+};
+function floatsUI(t){if(settings.vfx>0)toast('★ '+t);}
+Bus.on('stage',s=>Profile.earn(40*(s+1),'stage '+(s+1)));
+Bus.on('mission',()=>Profile.earn(15,'mission'));
+Bus.on('milestone',()=>Profile.earn(10,'milestone'));
+
+// ---------- President appearance ----------
+function lookOf(p){ // saves from before V14 only have an outfit
+  if(p&&p.look)return p.look;const o=p&&p.outfit||'worker',O=OUTFITS[o]||OUTFITS.worker;
+  return{head:o==='hardhat'||o==='mining'?'hardhat':o==='military'?'cap':'bare',body:o==='executive'?'suit':o==='military'?'armor':'uniform',color:O.c[0]};}
+const plColor=()=>lookOf(pl).color;
+function drawAvatar(g,X,Y,s,look,st){
+  const c=look.color||'#3f6fb0',sw=st.moving?Math.sin(st.ph||0)*s*.18:0,lw=Math.max(.8,s*.05);
+  g.fillStyle='rgba(0,0,0,.3)';g.beginPath();g.ellipse(X,Y,s*.34,s*.11,0,0,7);g.fill();
+  g.strokeStyle=look.body==='suit'?'#1d1f22':'#23201d';g.lineWidth=s*.14;g.lineCap='round';g.beginPath();g.moveTo(X-s*.09,Y-s*.36);g.lineTo(X-s*.09+sw,Y);g.moveTo(X+s*.09,Y-s*.36);g.lineTo(X+s*.09-sw,Y);g.stroke();
+  g.fillStyle=c;rr(g,X-s*.2,Y-s*.76,s*.4,s*.46,s*.09);g.fill();g.strokeStyle=OL;g.lineWidth=lw;g.stroke();
+  if(look.body==='suit'){g.fillStyle='#eef0f1';poly(g,[[X-s*.08,Y-s*.76],[X+s*.08,Y-s*.76],[X,Y-s*.55]]);g.fill();g.fillStyle='#c0392b';poly(g,[[X-s*.025,Y-s*.72],[X+s*.025,Y-s*.72],[X+s*.035,Y-s*.5],[X,Y-s*.46],[X-s*.035,Y-s*.5]]);g.fill();
+    g.strokeStyle=shade(c,.6);g.lineWidth=lw;g.beginPath();g.moveTo(X-s*.08,Y-s*.76);g.lineTo(X-s*.02,Y-s*.4);g.moveTo(X+s*.08,Y-s*.76);g.lineTo(X+s*.02,Y-s*.4);g.stroke();}
+  else if(look.body==='armor'){g.fillStyle=shade(c,.62);rr(g,X-s*.14,Y-s*.72,s*.28,s*.26,s*.04);g.fill();g.strokeStyle=OL;g.lineWidth=lw*.8;g.stroke();
+    g.fillStyle='#2b2f34';for(const dx of[-.13,-.03,.07])g.fillRect(X+dx*s,Y-s*.42,s*.07,s*.08);g.fillStyle=shade(c,.8);circ(g,X-s*.2,Y-s*.7,s*.08);g.fill();circ(g,X+s*.2,Y-s*.7,s*.08);g.fill();}
+  else{g.fillStyle='#f2c14e';poly(g,[[X-s*.2,Y-s*.74],[X+s*.2,Y-s*.4],[X+s*.2,Y-s*.5],[X-s*.12,Y-s*.76]]);g.fill();g.fillStyle=shade(c,.7);g.fillRect(X+s*.05,Y-s*.68,s*.09,s*.07);}
+  g.fillStyle='#e8bf98';circ(g,X,Y-s*.92,s*.17);g.fill();g.strokeStyle=OL;g.lineWidth=lw;g.stroke();
+  g.fillStyle='#2a2522';circ(g,X+s*.06*(st.dir||1),Y-s*.93,s*.025);g.fill();
+  if(look.head==='hardhat'){g.fillStyle='#f2d23c';g.beginPath();g.arc(X,Y-s*.97,s*.19,Math.PI,0);g.fill();g.stroke();g.fillRect(X-s*.25,Y-s*.99,s*.5,s*.05);g.strokeRect(X-s*.25,Y-s*.99,s*.5,s*.05);g.fillStyle='#e3882a';g.fillRect(X-s*.03,Y-s*1.15,s*.06,s*.16);}
+  else if(look.head==='cap'){const cc=shade(c,.55);g.fillStyle=cc;g.beginPath();g.arc(X,Y-s*.98,s*.18,Math.PI,0);g.fill();g.stroke();g.fillRect(X-s*.2,Y-s*1.02,s*.4,s*.06);g.fillStyle='#1d1f22';g.beginPath();g.ellipse(X+s*.12*(st.dir||1),Y-s*.97,s*.14,s*.035,0,0,7);g.fill();g.fillStyle='#f2c14e';circ(g,X,Y-s*1.06,s*.03);g.fill();}
+  else{g.fillStyle='#3b2a1e';g.beginPath();g.arc(X,Y-s*.96,s*.18,Math.PI*1.05,-.05);g.fill();}
+}
+function drawPresident(g,X,Y,s,tm){
+  drawAvatar(g,X,Y,s,lookOf(pl),pl);
+  if(pl.drawn){const a=Math.atan2(aimY()-(pl.y-.55),aimX()-pl.x);g.save();g.translate(X,Y-s*.55);g.rotate(a);g.fillStyle='#1d1f22';g.fillRect(s*.05,-s*.05,s*(pl.gun==='pistol'?.35:.6),s*.1);g.restore();}
+  if(CTX.stats||cam.z>.9){g.fillStyle='rgba(20,22,25,.85)';g.font='700 10px "Chakra Petch",sans-serif';const tw=g.measureText('PRESIDENT').width+8;rr(g,X-tw/2,Y-s*1.42-10,tw,13,3);g.fill();g.fillStyle='#f2c14e';g.textAlign='center';g.textBaseline='middle';g.fillText('PRESIDENT',X,Y-s*1.42-3.5);}
+  if(pl.hp<plMax()){g.fillStyle='rgba(0,0,0,.6)';g.fillRect(X-s*.4,Y-s*1.2,s*.8,4);g.fillStyle=pl.hp<35?'#ff5a44':'#6fe27d';g.fillRect(X-s*.4,Y-s*1.2,s*.8*pl.hp/plMax(),4);}
+}
+// ---------- pets ----------
+let pet=null;
+function drawPetSprite(g,X,Y,s,kind,ph,dir,moving){
+  const b=moving?Math.abs(Math.sin(ph))*s*.05:0;g.lineWidth=Math.max(.8,s*.04);g.strokeStyle=OL;
+  g.fillStyle='rgba(0,0,0,.25)';g.beginPath();g.ellipse(X,Y,s*.2,s*.06,0,0,7);g.fill();
+  g.save();g.translate(X,Y);g.scale(dir<0?-1:1,1);
+  if(kind==='dog'||kind==='cat'){const c=kind==='dog'?'#b07a45':'#6f7478';
+    g.fillStyle=c;rr(g,-s*.2,-s*.26-b,s*.36,s*.16,s*.06);g.fill();g.stroke();
+    g.fillRect(-s*.17,-s*.12-b,s*.05,s*.12);g.fillRect(s*.08,-s*.12-b,s*.05,s*.12);
+    circ(g,s*.2,-s*.32-b,s*.1);g.fill();g.stroke();
+    if(kind==='dog'){g.fillStyle=shade(c,.6);g.beginPath();g.ellipse(s*.15,-s*.36-b,s*.04,s*.08,.4,0,7);g.fill();}
+    else{g.fillStyle=c;poly(g,[[s*.13,-s*.38-b],[s*.16,-s*.47-b],[s*.2,-s*.4-b]]);g.fill();poly(g,[[s*.22,-s*.4-b],[s*.26,-s*.48-b],[s*.28,-s*.38-b]]);g.fill();}
+    g.strokeStyle=c;g.lineWidth=s*.05;g.beginPath();g.moveTo(-s*.2,-s*.22-b);g.quadraticCurveTo(-s*.32,-s*.3,-s*.3,-s*.42+(kind==='dog'?Math.sin(ph*2)*s*.05:0));g.stroke();
+    g.fillStyle='#1d1f22';circ(g,s*.24,-s*.34-b,s*.018);g.fill();}
+  else if(kind==='parrot'){const y=-s*.75-Math.sin(ph*.7)*s*.08,f=Math.sin(ph*3)*s*.12;
+    g.fillStyle='#d9412e';g.beginPath();g.ellipse(0,y,s*.1,s*.14,.3,0,7);g.fill();g.stroke();g.fillStyle='#2e7fd9';poly(g,[[-s*.02,y],[-s*.22,y-f],[-s*.08,y+s*.06]]);g.fill();
+    g.fillStyle='#f2c14e';poly(g,[[s*.08,y-s*.1],[s*.16,y-s*.07],[s*.08,y-s*.04]]);g.fill();g.fillStyle='#1d1f22';circ(g,s*.05,y-s*.09,s*.015);g.fill();}
+  else{const y=-s*.8-Math.sin(ph*.8)*s*.06;g.fillStyle='#8f9aa0';rr(g,-s*.13,y-s*.06,s*.26,s*.12,s*.04);g.fill();g.stroke();
+    g.fillStyle='#454b53';g.fillRect(-s*.22,y-s*.1,s*.14,s*.025);g.fillRect(s*.08,y-s*.1,s*.14,s*.025);
+    g.fillStyle=(ph*2|0)%2?'#6fe27d':'#2a5a30';circ(g,0,y,s*.025);g.fill();}
+  g.restore();
+}
+function drawPet(z){
+  if(!profile||!profile.pet||!pl||pl.dead)return;if(!pet||pet.k!==profile.pet)pet={k:profile.pet,x:pl.x-1,y:pl.y,ph:0,dir:1,moving:false};
+  const tx=pl.x-pl.dir*.9,ty=pl.y+.15,dx=tx-pet.x,dy=ty-pet.y,d=Math.hypot(dx,dy);
+  if(d>12){pet.x=tx;pet.y=ty;}pet.moving=d>.25;if(pet.moving){const s=Math.min(d,.02+d*.06);pet.x+=dx/d*s;pet.y+=dy/d*s;pet.ph+=.25;if(Math.abs(dx)>.05)pet.dir=dx<0?-1:1;}else pet.ph+=.04;
+  const X=sx(pet.x*T),Y=sy(pet.y*T);if(X<-40||Y<-40||X>SW+40||Y>SH+40)return;drawPetSprite(ctx,X,Y,T*z*.72,pet.k,pet.ph,pet.dir,pet.moving);
+}
+
+// ---------- Character Editor & Customization Shop (overlays) ----------
+let edAnim=0,shopTab='paint';
+const Editor={
+  open(){show('editor',true);Editor.draw();if(!edAnim){const f=()=>{if($('editor').hidden){edAnim=0;return;}Editor.preview();edAnim=requestAnimationFrame(f);};edAnim=requestAnimationFrame(f);}},
+  close(){show('editor',false);if(pl&&gameOn){pl.look=Profile.look();}uiDirty=true;cache.charBody=null;},
+  draw(){
+    const seg=(key,opts)=>'<div class="seg">'+Object.entries(opts).map(([v,l])=>'<button data-pf="'+key+':'+v+'" class="'+(profile[key]===v?'on':'')+'">'+l+'</button>').join('')+'</div>';
+    $('edCtl').innerHTML='<div class="kv"><span class="k">Head</span>'+seg('head',HEADS)+'<span class="k">Body</span>'+seg('body',BODIES)+
+      '<label class="k" for="edColor">Clothes</label><div class="row"><input type="color" id="edColor" value="'+profile.color+'" aria-label="Clothes colour">'+SWATCHES.map(c=>'<button class="sw'+(profile.color===c?' on':'')+'" data-pf="color:'+c+'" style="background:'+c+'" aria-label="Colour '+c+'"></button>').join('')+'</div>'+
+      '<span class="k">Pet</span><div class="seg"><button data-pf="pet:" class="'+(profile.pet?'':'on')+'">None</button>'+Object.keys(PETS).filter(k=>Profile.owns('p:'+k)).map(k=>'<button data-pf="pet:'+k+'" class="'+(profile.pet===k?'on':'')+'">'+PETS[k].n+'</button>').join('')+'</div></div>'+
+      '<p class="empty">'+(gameOn?'Changes apply to your President right away.':'Your President wears this in every new world.')+' Buy pets in the Customization Shop.</p>';},
+  preview(){const c=$('edPrev'),g=c.getContext('2d'),t=performance.now()/1000;g.clearRect(0,0,c.width,c.height);
+    g.fillStyle='#2a2f35';g.fillRect(0,c.height-46,c.width,46);g.fillStyle='#343a41';for(let x=0;x<c.width;x+=24)g.fillRect(x,c.height-46,1,46);
+    drawAvatar(g,c.width/2-10,c.height-30,150,Profile.look(),{moving:false,ph:0,dir:1});
+    if(profile.pet)drawPetSprite(g,c.width/2+62,c.height-26,90,profile.pet,t*4,-1,true);},
+};
+const Shop={
+  open(){show('shop',true);Shop.draw();},
+  draw(){
+    const tabs=[['paint','Machine paint'],['theme','UI themes'],['pet','Pets']];
+    let h='<div class="tabs">'+tabs.map(t=>'<button data-shoptab="'+t[0]+'" class="'+(shopTab===t[0]?'on':'')+'">'+t[1]+'</button>').join('')+'</div><div class="list">';
+    const row=(key,it,on,swatch,act)=>{const own=Profile.owns(key);return '<div class="item'+(on?' hot':'')+'"><span class="t">'+swatch+it.n+'</span><span class="d">'+it.d+'</span><div class="a">'+
+      (own?(on?'<span class="badge ok">In use</span>':'<button class="small" data-pf="'+act+'">Use</button>'):'<button class="money small" data-buy="'+key+'"'+(profile.credits<it.cost?' disabled':'')+'>★ '+it.cost+'</button>')+'</div></div>';};
+    if(shopTab==='paint')for(const k in PAINTS){const P=PAINTS[k],cs=['prod','smelt','chem','power'].map(q=>P.cc[q]||CC0[q]);h+=row(k==='std'?'std':'c:'+k,P,profile.paint===k,'<span class="chips">'+cs.map(c=>'<i style="background:'+c+'"></i>').join('')+'</span>','paint:'+k);}
+    if(shopTab==='theme')for(const k in THEMES)h+=row('t:'+k,THEMES[k],profile.theme===k,'<span class="chips th-'+k+'"><i></i><i></i><i></i></span>','theme:'+k);
+    if(shopTab==='pet')for(const k in PETS)h+=row('p:'+k,PETS[k],profile.pet===k,'<canvas class="petc" data-pet="'+k+'" width="40" height="40"></canvas>','pet:'+k);
+    $('shopBody').innerHTML=h+'</div>';$('shopCred').textContent='★ '+profile.credits+' credits';
+    for(const c of $('shopBody').querySelectorAll('canvas[data-pet]')){const g=c.getContext('2d');drawPetSprite(g,20,36,44,c.dataset.pet,1,1,false);}
+    Title.credits();},
+};
+function pfAct(a){
+  const i=a.indexOf(':'),k=a.slice(0,i),v=a.slice(i+1);
+  if(k==='head'||k==='body'||k==='color')profile[k]=v;
+  else if(k==='pet'){profile.pet=v||null;pet=null;}
+  else if(k==='paint'){profile.paint=v;Profile.apply();}
+  else if(k==='theme'){profile.theme=v;Profile.apply();}
+  Profile.save();if(pl&&gameOn&&(k==='head'||k==='body'||k==='color'))pl.look=Profile.look();
+  if(!$('editor').hidden)Editor.draw();if(!$('shop').hidden)Shop.draw();cache.charBody=null;
+}
+document.addEventListener('click',ev=>{
+  const t=ev.target.closest('[data-pf],[data-buy],[data-shoptab],[data-save],[data-ctx]');if(!t)return;const d=t.dataset;
+  if(d.pf!==undefined)pfAct(d.pf);
+  else if(d.buy){const key=d.buy,[kind,id]=key.includes(':')?key.split(':'):['c','std'],it=kind==='t'?THEMES[id]:kind==='p'?PETS[id]:PAINTS[id];
+    if(Profile.buy(key,it.cost)){toast('Unlocked '+it.n);pfAct((kind==='t'?'theme':kind==='p'?'pet':'paint')+':'+id);}}
+  else if(d.shoptab){shopTab=d.shoptab;Shop.draw();}
+  else if(d.save)Title.slotAct(d.save);
+  else if(d.ctx)ctxAct(d.ctx);
+});
+document.addEventListener('input',ev=>{if(ev.target.id==='edColor'){profile.color=ev.target.value;Profile.save();if(pl&&gameOn)pl.look=Profile.look();}});
+document.addEventListener('change',ev=>{if(ev.target.id==='edColor')Editor.draw();});
+
+// ---------- Title screen & session transitions ----------
+const Title={
+  open(){titleOn=true;titleCover=true;const t=$('title');t.hidden=false;t.classList.remove('fade');show('menu',false);closeCtxPop();document.body.classList.add('pre');Title.page('main');},
+  page(p){for(const id of['tMain','tSlots','tLoad'])$(id).hidden=id!=='t'+p[0].toUpperCase()+p.slice(1);if(p==='slots')Title.slots();Title.credits();
+    const a=SaveManager.list();$('tCont').disabled=!a.length;$('tCont').innerHTML='Continue'+(a.length?'<small>'+esc(a[0].name)+' · '+ago(a[0].date)+'</small>':'<small>No saves yet</small>');
+    $('tResume').hidden=!gameOn;},
+  credits(){$('tCred').textContent='★ '+(profile?profile.credits:0)+' credits';},
+  slots(){const a=SaveManager.list();
+    $('tSlotList').innerHTML=a.length?a.map(m=>'<div class="slot'+(m.id===SaveManager.cur&&gameOn?' cur':'')+'"><div class="sm"><b>'+esc(m.name)+'</b><span>'+new Date(m.date).toLocaleString([], {dateStyle:'medium',timeStyle:'short'})+'</span></div>'+
+      '<div class="sv"><span class="eyebrow">Stage</span><b>'+((m.stage||0)+1)+' · '+(STAGES[m.stage||0]||['?'])[0]+'</b></div><div class="sv"><span class="eyebrow">Money</span><b>'+$s(m.money)+'</b></div>'+
+      '<div class="sa"><button class="primary small" data-save="load:'+m.id+'">Load</button><button class="small" data-save="del:'+m.id+'" aria-label="Delete '+esc(m.name)+'">Delete</button></div></div>').join(''):'<p class="empty">No saved factories yet.</p>';
+    $('tSlotHint').textContent=a.length+' of '+SaveManager.MAX+' slots used';},
+  slotAct(a){const[k,id]=a.split(':');
+    if(k==='load')Title.launch(id);
+    else if(k==='del'){const b=$('tSlotList').querySelector('[data-save="del:'+id+'"]');if(b&&!b.dataset.arm){b.dataset.arm=1;b.textContent='Really delete?';b.classList.add('danger');return;}
+      if(gameOn&&id===SaveManager.cur){gameOn=false;$('tResume').hidden=true;}SaveManager.remove(id);Title.slots();Title.page('slots');}},
+  launch(id){ // id = slot to load, or null for a new world
+    if(gameOn&&SaveManager.cur)save();
+    let slot=id;if(!slot){slot=SaveManager.create();if(!slot){toast('All '+SaveManager.MAX+' save slots are full. Delete one under Continue first.','bad');Title.page('slots');return;}}
+    Title.page('load');$('tLoadMsg').textContent=id?'Loading your factory…':'Generating world…';
+    requestAnimationFrame(()=>setTimeout(()=>{ // let the loading card paint before the heavy work
+      let fresh=!id;
+      if(id){const s=SaveManager.read(id);if(!s){toast('That save could not be read.','bad');Title.page('slots');return;}
+        try{load(s);offlineGain(s);SaveManager.use(id);}catch(err){console.error(err);toast('That save is damaged. Starting a new world in its slot.','bad');fresh=true;SaveManager.use(id);}}
+      else SaveManager.use(slot);
+      if(fresh){newGame();}
+      gameOn=true;Unlocks.check(true);save();drawHUD();titleCover=false;pet=null;
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{document.body.classList.remove('pre');$('title').classList.add('fade');
+        setTimeout(()=>{$('title').hidden=true;titleOn=false;if(fresh)playIntro(()=>show('help',true));},480);}));
+    },30));},
+  resume(){titleCover=false;document.body.classList.remove('pre');$('title').classList.add('fade');setTimeout(()=>{$('title').hidden=true;titleOn=false;},480);},
+};
+function ago(t){const s=(Date.now()-t)/1000;return s<90?'just now':s<5400?Math.round(s/60)+' min ago':s<129600?Math.round(s/3600)+' h ago':Math.round(s/86400)+' days ago';}
+$('tNew').onclick=()=>Title.launch(null);
+$('tCont').onclick=()=>Title.page('slots');
+$('tShop').onclick=()=>Shop.open();
+$('tEdit').onclick=()=>Editor.open();
+$('tBack').onclick=()=>Title.page('main');
+$('tResume').onclick=()=>Title.resume();
+$('edDone').onclick=()=>Editor.close();
+$('shopDone').onclick=()=>show('shop',false);
+$('mTitle').onclick=()=>{save();show('menu',false);Title.open();};
+
+// ---------- Progressive unlocking ----------
+const UNLOCKS={
+  world:{n:'World Map',when:()=>missionIdx>=2,d:'Press M or zoom out to see every nation.'},
+  cities:{n:'Population',when:()=>missionIdx>=2&&cityCount()>=1||missionIdx>=3,d:'See your people, cities and taxes.'},
+  military:{n:'Military',when:()=>!!(research.ballistics||research.infantry),d:'Recruit units. Click enemy land to attack it.'},
+  nations:{n:'Diplomacy',when:()=>missionIdx>=5||(world.provs.length&&ownedProvs()>=2)||ais.some(a=>a&&a.war),d:'Alliances, trade and gifts in the World panel.'},
+  naval:{n:'Naval',when:()=>missionIdx>=7},strategic:{n:'Strategic',when:()=>missionIdx>=8},
+};
+const Unlocks={
+  has(k){return unlockAll||!!(stats.unl&&stats.unl[k]);},
+  check(quiet){const u=stats.unl||(stats.unl={});
+    for(const k in UNLOCKS)if(!u[k]&&UNLOCKS[k].when()){u[k]=1;if(!quiet)Bus.emit('unlock',k);}},
+};
+Bus.on('unlock',k=>{const U=UNLOCKS[k];if(!U.d)return;banner(U.n.toUpperCase()+' UNLOCKED',U.d);toast('New: '+U.n+'. '+U.d,'big');uiDirty=true;cache.wBody=null;});
+function applyWTabs(){const b=$('wTabs')&&$('wTabs').querySelector('[data-wtab="nations"]');if(b)b.hidden=!unlockedNav('nations');if(wtab==='nations'&&!unlockedNav('nations'))wtab='prov';}
+
+// ---------- WorkforceManager: villagers are factory workers until a job needs them ----------
+const WorkforceManager={
+  // crew size: a few hands at the start, more with hubs, villages and population
+  cap(){const vil=vb?vb.filter(b=>b&&world.provs[b.p]&&world.provs[b.p].owner===0&&b.t==='house').length:0;return Math.min(16,3+hubsList().length+Math.floor(vil/3)+Math.floor((nat.workers||0)/8000));},
+  count(role){let n=0;for(const a of agents)if(a.role===role&&a.drafted)n++;return n;},
+  spawnAt(x,y){ // the closest owned village house, or HQ
+    let best=null,bd=1e9;if(vb)for(const b of vb){if(!b||b.t!=='house'||!world.provs[b.p]||world.provs[b.p].owner!==0)continue;const d=Math.hypot(b.x-x,b.y-y);if(d<bd){bd=d;best=b;}}
+    return best&&bd<60?{x:best.x+.5,y:best.y+1.2}:null;},
+  draft(Cls,role,home,near){const a=new Cls(home);a.drafted=1;const p=near&&this.spawnAt(near.x,near.y);if(p&&!solidAt(p.x,p.y)){a.x=p.x;a.y=p.y;}
+    agents.push(a);stats.drafted=(stats.drafted||0)+1;if(cam.z>.5)floats.push({x:a.x,y:a.y-.5,s:role==='builder'?'→ builder':'→ engineer',t:0,c:'#f2c14e'});return a;},
+  homeFor(m){let best=ents.find(e=>e.hq),bd=best?Math.hypot(best.x-m.x,best.y-m.y):1e9;
+    for(const e of[...L.mt,...hubsList()]){const d=Math.hypot(e.x-m.x,e.y-m.y);if(d<bd){bd=d;best=e;}}return best;},
+  second(){
+    const hq=ents.find(e=>e.hq);if(!hq)return;const cap=this.cap();
+    let b=this.count('builder'),e=this.count('engineer');
+    // builders: one per two open sites that have materials
+    const open=sites.filter(s=>!s.need&&!s.claimed).length,wantB=Math.min(cap-e,Math.ceil((open+sites.filter(s=>s.claimed).length)/2));
+    while(b<wantB&&b+e<cap){const s=sites.find(q=>!q.need&&!q.claimed)||sites[0];this.draft(Builder,'builder',hq,s);b++;}
+    // engineers: one per machine below 80% condition that nobody is fixing
+    const worn=[...L.drill,...L.furn,...L.asm].filter(m=>m.eff<AutoRepairManager.THRESHOLD&&!m.repBy&&!(m.repFail>ticks-600)).sort((x,y)=>x.eff-y.eff);
+    const capE=Math.max(2,Math.ceil(cap/2));
+    for(const m of worn){if(b+e>=cap)break;const idle=agents.find(a=>a.role==='engineer'&&a.state==='idle'&&!a.job&&!a.cool);if(idle){idle.home=this.homeFor(m)||idle.home;idle.assign(m);if(idle.state!=='toMachine')m.repFail=ticks;continue;}
+      if(e>=capE)continue;const a=this.draft(Engineer,'engineer',this.homeFor(m)||hq,m);a.assign(m);if(a.state!=='toMachine')m.repFail=ticks;e++;}
+    // revert: idle crew with nothing left goes back to factory work
+    for(const a of agents){if(!a.drafted||a.carry||a.job)continue;
+      const busy=a.role==='builder'?sites.some(s=>!s.need&&!s.claimed):worn.length>0;
+      if(a.state==='idle'&&!busy){a.idleS=(a.idleS||0)+1;if(a.idleS>=3){a.dead=1;stats.reverted=(stats.reverted||0)+1;}}else a.idleS=0;}
+    agents=agents.filter(a=>!a.dead);
+    stats.crewB=b;stats.crewE=e;
+  },
+  html(){const b=this.count('builder'),e=this.count('engineer'),cap=this.cap();
+    return '<div><h3>Workforce <span class="hint">automatic</span></h3><div class="tiles"><div class="tile"><span class="eyebrow">Factory workers</span><span class="v">'+fmt(Math.max(0,Math.round(nat.workers)))+'</span><span class="ct">'+(cap-b-e)+' of '+cap+' crew on the lines</span></div>'+
+      '<div class="tile"><span class="eyebrow">Builders</span><span class="v">'+b+'</span><span class="ct">'+sites.length+' sites waiting</span></div><div class="tile"><span class="eyebrow">Engineers</span><span class="v">'+e+'</span><span class="ct">fix machines below 80%</span></div>'+
+      (unlockedNav('military')?'<div class="tile"><span class="eyebrow">Soldiers</span><span class="v">'+fmt(Math.round(nat.soldiers))+'</span><span class="ct">'+fmt(Math.round(mpFree()))+' more can enlist</span></div>':'')+'</div>'+
+      '<p class="empty" style="margin-top:6px">Everyone works in your factories by default. Placing a blueprint pulls idle villagers off the lines to build; a machine below 80% condition gets an engineer. They go back to work when the job is done. Soldiers are exactly the people serving in your units; recruiting drafts them.</p></div>';},
+};
+
+// ---------- Contextual overlays ----------
+const FLUIDT=new Set(['fpipe','fpump','tank','well','chemplant','reactor','generator','geo']);
+const CTX={alt:false,fluid:false,recipe:false,stats:false,hov:null};
+function ctxFrame(){
+  const alt=!!keys.alt,always=!!settings.details,t=tool&&ITEMS[tool]?tool:null;
+  CTX.alt=alt;CTX.stats=alt||always;CTX.fluid=alt||always||(t&&FLUIDT.has(t))||(entOpen&&FLUIDT.has(entOpen.type));
+  CTX.recipe=alt||always||!!(t&&ITEMS[t].place&&!isBelt({type:t}));CTX.hov=view==='factory'&&inb(mouse.tx,mouse.ty)?at(mouse.tx,mouse.ty):null;
+}
+const showBadge=e=>e.ghost||CTX.recipe||e===CTX.hov||e===entOpen;
+const showPorts=e=>e.ghost||CTX.fluid||e===CTX.hov||e===entOpen;
+addEventListener('blur',()=>{keys.alt=false;});
+
+// ---------- Contextual attack popup (no menus) ----------
+let ctxPop=null;
+function unitAt(mx,my){const now=performance.now();for(const u of MilitaryUnit.units.values()){const h=u.hit;if(h&&now-h.t<120&&mx>=h.x&&mx<=h.x+h.w&&my>=h.y&&my<=h.y+h.h)return u;}return null;}
+function openCtxPop(pid,mx,my,u){
+  if(pid<0&&!u)return;const p=pid>=0?P_(pid):null;if(p&&p.owner===0&&!u){openProv(pid);return;}
+  ctxPop={p:pid,u:u?u.key:null,arm:false,x:mx,y:my};drawCtxPop();sfx('blip');
+}
+function closeCtxPop(){ctxPop=null;const d=$('ctxpop');if(d)d.hidden=true;}
+function drawCtxPop(){
+  const d=$('ctxpop');if(!ctxPop){d.hidden=true;return;}
+  const u=ctxPop.u&&MilitaryUnit.units.get(ctxPop.u),p=ctxPop.p>=0?P_(ctxPop.p):null;let h='';
+  if(u&&u.side===0){h='<div class="ch"><b>Your army</b><span>'+fmtK(u.troops)+' troops'+(u.ammo!==undefined?' · ammo '+Math.round(u.ammo*100)+'%':'')+'</span></div><div class="cb"><button class="small" data-ctx="mil">Open Military</button><button class="small" data-ctx="close">Close</button></div>';}
+  else if(p){const own=p.owner,N=own>0?NATIONS[own]:null,A=own>0?ais[own]:null,mil=unlockedNav('military'),o=attackOrigin(p),str=availStr(),def=provDef(p,0);
+    h='<div class="ch"><span class="dot" style="background:'+(N?N.c:provBuyable(p)?'#f0a62e':'#8b939c')+'"></span><b>'+esc(p.name)+'</b><span>'+(N?esc(N.n)+(A&&A.war?' · <em class="bad">at war</em>':' · at peace'):'Neutral land')+'</span></div>';
+    h+='<div class="cs"><span>Defense <b>'+Math.round(def)+'</b></span>'+(mil?'<span>Your force <b>'+Math.round(str)+'</b></span>':'')+(u?'<span>Army <b>'+fmtK(u.troops)+'</b></span>':'')+'</div><div class="cb">';
+    const atk=mil&&(own<0||A&&A.war);
+    if(atk){if(!o)h+='<span class="ct">Not next to your land'+(p.coast?' (a port and transports can reach it)':'')+'</span>';
+      else if(str<1)h+='<span class="ct">No free troops. Recruit in Military.</span>';
+      else h+='<button class="danger small" data-ctx="atk:.5">Attack · half</button><button class="danger small" data-ctx="atk:1">Attack · all</button>';}
+    if(mil&&A&&!A.war)h+=ctxPop.arm?'<button class="danger small" data-ctx="waryes">Confirm war on '+esc(N.n)+'</button><button class="small" data-ctx="warno">Cancel</button>':'<button class="danger small" data-ctx="war">Declare war</button>';
+    if(!mil&&own!==0)h+='<span class="ct">Research Basic Ballistics to raise an army.</span>';
+    if(provBuyable(p))h+='<button class="money small" data-ctx="buy"'+(money<provPrice(p)?' disabled':'')+'>Buy '+$s(provPrice(p))+'</button>';
+    h+='<button class="small" data-ctx="info">Details</button></div>';}
+  else{closeCtxPop();return;}
+  d.innerHTML=h;d.hidden=false;const r=d.getBoundingClientRect();
+  d.style.left=Math.max(8,Math.min(innerWidth-r.width-8,ctxPop.x+12))+'px';d.style.top=Math.max(8,Math.min(innerHeight-r.height-8,ctxPop.y-r.height/2))+'px';
+}
+function ctxAct(a){
+  if(!ctxPop)return;const[k,v]=a.split(':'),p=ctxPop.p>=0?P_(ctxPop.p):null;
+  if(k==='close')return closeCtxPop();
+  if(k==='mil'){closeCtxPop();navAct('military');return;}
+  if(!p)return closeCtxPop();
+  if(k==='atk'){const n=attacks.length;playerAttack(p,+v);if(attacks.length>n){stats.ctxAttacks=(stats.ctxAttacks||0)+1;closeCtxPop();}else drawCtxPop();}
+  else if(k==='war'){ctxPop.arm=true;drawCtxPop();}
+  else if(k==='warno'){ctxPop.arm=false;drawCtxPop();}
+  else if(k==='waryes'){declareWar(p.owner,'player');ctxPop.arm=false;drawCtxPop();}
+  else if(k==='buy'){buyProv(p);closeCtxPop();}
+  else if(k==='info'){const id=ctxPop.p;closeCtxPop();openProv(id);}
+  uiDirty=true;
+}
+function ctxPointer(mx,my,pid){ // canvas click with no tool: unit sprite first, then land
+  const u=unitAt(mx,my);if(u){const t=u.to!==undefined?u.to:u.prov!==undefined?u.prov:-1;if(u.side===0&&u.to===undefined){openCtxPop(-1,mx,my,u);return true;}openCtxPop(t,mx,my,u);return true;}
+  if(pid>=0&&P_(pid).owner!==0){openCtxPop(pid,mx,my,null);return true;}
+  return false;
+}
+
+// ---------- per-second hook ----------
+function ui14Second(){
+  Unlocks.check(false);applyWTabs();WorkforceManager.second();
+  if(ctxPop&&!$('ctxpop').hidden)drawCtxPop();
+}
+
 // ---------- introduction ----------
 const INTROS=[
   {n:'The Overseer',c:'#e3a52a',kind:'eye',pitch:520,lines:[
@@ -4737,6 +5138,7 @@ $('mIntro').onclick=()=>{show('menu',false);playIntro();};
 // ---------- loop ----------
 let last=0,acc=0,frame=0,gameSpeed=1,paused=false;
 function loop(now){
+  if(!gameOn||titleCover){last=now;requestAnimationFrame(loop);return;}
   if(settings.fps&&now-last<1000/settings.fps-2){requestAnimationFrame(loop);return;}
   const dt=Math.min(.1,(now-last)/1000||0);last=now;
   {const want=cam.z<MAPZ?'world':'factory';if(want!==view)onView(want);}camStep();
@@ -4748,7 +5150,7 @@ function loop(now){
   cam.x=Math.max(0,Math.min(W*T,cam.x));cam.y=Math.max(0,Math.min(H*T,cam.y));}
   if(paused)acc=0;else{acc+=dt*gameSpeed;let n=0;const cap=6*gameSpeed;while(acc>=1/60&&n<cap){tick();acc-=1/60;n++;}if(n>=cap)acc=0;}
   for(const f of floats)f.t++;floats=floats.filter(f=>f.t<70);for(const f of ffx)f.t++;ffx=ffx.filter(f=>f.t<24);
-  render(ticks/60);
+  ctxFrame();render(ticks/60);
   frame++;
   if(frame%6===0){status();drawHUD();}
   if(frame%15===0){if(!$('inv').hidden)drawInv();if(!$('co').hidden)drawCo();if(!$('stats').hidden)drawStats();if(!$('cities').hidden)drawCities();if(!$('mil').hidden)drawMil();if(!$('res').hidden)drawRes();if(!$('charp').hidden)drawChar();if(view==='world')drawWPanel();if(entOpen){if(!ents.includes(entOpen))closeEnt();else drawEnt();}}
@@ -4757,20 +5159,17 @@ function loop(now){
   requestAnimationFrame(loop);
 }
 function start(data){
-  resize();makeIcons();loadBps();loadSettings();
-  let s=data&&data.v>=3?data:null;
-  if(!s){try{const raw=localStorage.getItem(SAVE_KEY);if(raw)s=JSON.parse(raw);}catch(_){s=null;}}
-  let fresh=!s;
-  if(s){try{load(s);offlineGain(s);}catch(_){fresh=true;}}
-  if(fresh){newGame();playIntro(()=>show('help',true));}
-  drawHUD();
-  addEventListener('resize',resize);
-  addEventListener('beforeunload',save);
+  resize();Profile.load();Profile.apply();loadBps();loadSettings();SaveManager.migrate();
+  addEventListener('resize',resize);addEventListener('beforeunload',save);
   document.addEventListener('visibilitychange',()=>{if(document.hidden)save();});
+  const s=data&&data.v>=3?data:null;let ok=false;
+  if(s){try{load(s);SaveManager.use(SaveManager.last()||SaveManager.create()||'hot');ok=true;}catch(err){console.error(err);}}
+  if(ok){gameOn=true;Unlocks.check(true);document.body.classList.remove('pre');drawHUD();}
+  else Title.open();
   requestAnimationFrame(t=>{last=t;loop(t);});
 }
 const hot=window.claude&&window.claude.hot;
-if(hot&&hot.snapshot)hot.snapshot(()=>serialize());
+if(hot&&hot.snapshot)hot.snapshot(()=>gameOn?serialize():{});
 if(hot&&hot.ready)hot.ready(start);else start(hot&&hot.data||{});
 })();
 </script>

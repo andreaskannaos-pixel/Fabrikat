@@ -7,7 +7,7 @@ A small Factorio-style factory game in one HTML file. It runs in Chrome with no 
 - **From the repo:** download `index.html`, open the Files app, and double-click it (it opens in Chrome). Works offline.
 - **GitHub Pages:** repo Settings → Pages → deploy from branch, folder `/ (root)`. Then open the Pages URL.
 
-Progress saves in the browser automatically.
+The game opens on a start screen: **New Game**, **Continue**, **Customization Shop** and **Character Editor**. Each game has its own save slot (up to 6), saved automatically in the browser. Continue lists them with date, stage and money. An old single save becomes the first slot. Menu → Main menu goes back to the start screen.
 
 ## Controls
 
@@ -15,7 +15,8 @@ Progress saves in the browser automatically.
 | --- | --- |
 | `1`–`9` | Pick a common building, or use the build palette (Mining, Logistics, Production, Chemistry, Power, Storage & Trade). Click to place; drag to lay belts. |
 | `R` | Rotate |
-| `X` / right-click (two-finger click, Alt+click) | Remove |
+| `X` / right-click (two-finger click) | Remove |
+| Hold `Alt` | Show machine details: recipe icons, fluid ports, pipe flow, crew and camp labels |
 | `Q` | Copy the building under the cursor |
 | Click ore | Mine by hand |
 | `E` | Inventory and crafting |
@@ -28,7 +29,7 @@ Progress saves in the browser automatically.
 | `WASD` | Walk as the President (Shift runs) |
 | Arrows | Move the camera |
 | `F` / `R` / `Q` | Draw weapon / reload / switch weapon |
-| `K` | President: weapons, outfits, armour |
+| `K` | President: weapons, armour, Character Editor |
 | Scroll, `+` `-` | Zoom |
 | `O` | Bottleneck overlay |
 | `H` | Help |
@@ -67,7 +68,7 @@ Everything runs on money. The **Money Generator** turns items into cash, and eac
 - **Alternative recipes** (ALT in a machine's recipe list): steel smelted from 5 plates or made from 3 plates and fuel; fuel from oil, from coal and chemicals, or from cracked residue; silicon-heavy or copper-heavy processors; cast-iron pipe before steel. Each machine panel lists every way to make its item.
 - **Bottleneck overlay (`O`):** red = bottleneck, yellow = under-supplied, blue = over-supplied, white = idle, green = balanced. A machine's panel shows its input, output, power and idle percentages and the main cause.
 - **Power grid:** the HQ supplies 750 kW. Steam generators are cheap but need water and fuel, pollute, and take 5 s to spin up. Solar follows a 12-minute day/night cycle. Geothermal is steady but volcanic-only. Machines draw 3× power for a moment when they start, so battery banks matter for spikes and the night. The Stats panel shows peak demand, sunlight, stored energy and pollution.
-- **Crew:** working machines need crew (0.5 for drills and furnaces up to 2 for fabricators). The HQ gives 50, plus 1 per 100 city workers. Too little crew slows every machine, so the worker/soldier slider trades army size against factory capacity.
+- **Crew:** working machines need crew (0.5 for drills and furnaces up to 2 for fabricators). The HQ gives 50, plus 1 per 100 city workers. Too little crew slows every machine, and every soldier you recruit leaves the factory.
 - **Overclocking:** run a drill or machine at 150% or 200%, paying much more power and faster wear.
 - **Modules:** two slots per drill or machine for speed, efficiency and productivity modules. Productivity sometimes makes a free extra batch.
 - **Regional bonuses:** mountains mine 25% faster, the arctic halves machine wear, deserts boost solar, and volcanic land allows geothermal power.
@@ -93,25 +94,26 @@ Everything runs on money. The **Money Generator** turns items into cash, and eac
 ## Late-game automation
 
 - **Logistics hubs:** big storage nodes with Requested and Exported items. Couriers pathfind (A*) between hubs and move items from surplus to deficit.
-- **Builders:** blueprints become construction jobs. Builders at HQ claim a job, fetch the building from the nearest hub, chest or your inventory, walk to the site and build it over a few seconds.
-- **Engineers:** each Maintenance Bay has 2. The auto-repair manager sends them to machines below 80% condition; they use a repair kit or pay cash.
+- **Workforce manager:** there are no fixed crews. Villagers work in the factory until a job needs them: placing a blueprint drafts builders from the nearest village, a machine below 80% condition drafts an engineer, and both go back to work 3 seconds after their job ends. Crew size is 3 + 1 per hub + villages and population (up to 16, half of it engineers).
+- **Builders:** blueprints become construction jobs. Drafted builders claim a job, fetch the building from the nearest hub, chest or your inventory, walk to the site and build it over a few seconds.
+- **Engineers:** drafted per worn machine and based at the nearest Maintenance Bay, hub or HQ. They use a repair kit (bay, hub, then stock) or pay cash.
 - **Ammunition:** border camps use ammunition trucked from hubs or your stock. A dry camp fights at 35% strength.
 - **Military units:** one soldier or tank sprite per army, with a live troop badge (1.5K), gains and losses, and an ammunition bar.
 - **World generation:** layered-noise biomes with exclusive resources (uranium only in deserts, platinum and rare earth in volcanic land, lithium in the arctic, tungsten and cobalt in mountains), a generated world history, and points of interest in unclaimed land.
 - **Health:** heavy pollution slows villagers and machines. Clinics stocked with medical kits protect a 14-tile radius.
 - **Visuals:** belts autotile (straight, corners, T-junctions, crossings, end caps), warnings are pulsing icons over machines with details on hover, and night is a darkness layer that lights cut through.
 
-See `docs/AUTOMATION.md` for the state machines.
+See `docs/AUTOMATION.md` for the state machines and `docs/UI14.md` for the start screen, saves, unlocks, overlays and attack popup.
 
 ## Nation layer
 
 Your factory pays for cities, cities grow people, and people become workers or soldiers. Soldiers take territory, and territory sends new resources back to the factory.
 
-- **Campaign:** 10 missions teach the loop, from your first furnace to surviving an invasion. Locked menus (World, Cities, Military) show a lock and say which mission opens them; Settings can skip ahead.
+- **Campaign:** 10 missions teach the loop, from your first furnace to surviving an invasion. Menus stay hidden until you need them and then appear with a banner: World after mission 2, Cities with your first city, Military after the **Basic Ballistics** research (Industry tab, or free at mission 4), Diplomacy once you own two provinces or are at war. Settings can unlock everything.
 - **World map (`M`):** 61 provinces across plains, forest, desert, mountains, volcanic land and arctic, shared with 5 computer-run nations. Captured provinces send their resource to your factory every 10 seconds, into an Import Depot if you build one.
 - **Cities:** Mk. I to Mk. V, bought with money and materials. Each province has a few city slots.
-- **Population:** one slider splits people between workers (taxes, plus up to +100% factory speed) and soldiers. Peacetime, Mobilized and War Economy set how far you can push it and what it costs.
-- **Military:** infantry, mechanized, artillery, armor, air wings and special forces. Attack any neighbouring province, or land from a port with transport ships. Forts and terrain strengthen defense.
+- **Population:** automatic. Soldiers are exactly the people serving in your units, everyone else works (taxes, plus up to +100% factory speed). Peacetime, Mobilized and War Economy set how much of the population can enlist and what it costs.
+- **Military:** infantry, mechanized, artillery, armor, air wings and special forces. Click enemy or neutral land, or an army badge, on the map: a small popup offers Declare war, Attack with half or all of your force, Buy (neutral land) or Details, with no need to open the Nations tab. Attack any neighbouring province, or land from a port with transport ships. Forts and terrain strengthen defense.
 - **Diplomacy:** relations from -100 to +100; alliances, peace, war, gifts, trade routes, requests for allied troops and shipping raids.
 - **Town defenses:** walls (wooden palisade, stone, concrete), watchtowers (early warning), up to 3 bunkers, tank traps and minefields, built per province on the World map. They stack with forts and terrain, and computer nations fortify their own towns over time.
 - **Strategic:** five rocket types and SAM sites with visible coverage circles and interception.
@@ -119,6 +121,15 @@ Your factory pays for cities, cities grow people, and people become workers or s
 - **Guide (`G`), Settings** (quality presets, FPS limit, particle and effect density, animation and map detail, performance mode) and a News feed.
 
 It's single-player: every other nation is computer-controlled, and there is no online chat.
+
+## Customization
+
+- **Credits** carry over between saves. You earn 40 × stage number for each new stage, 15 per mission and 10 per milestone.
+- **Character Editor:** head (hard hat, military cap, bare), body (factory uniform, executive suit, tactical armor), a clothes colour picker and your pet. New worlds use this look, and changes made in-game apply at once.
+- **Customization Shop:**
+  - machine paint jobs (Crimson Works, Arctic Steel, Military Olive, Synthwave)
+  - UI themes (Dark Mode, Blueprint Blue)
+  - pets that follow the President (dog, cat, parrot, helper drone)
 
 ## Look and feel
 
