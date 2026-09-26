@@ -27,6 +27,7 @@ Progress saves in the browser automatically.
 | `G` | Guide |
 | `WASD` / arrows | Move camera |
 | Scroll, `+` `-` | Zoom |
+| `O` | Bottleneck overlay |
 | `H` | Help |
 | `Space` | Pause (speed 1×/2×/4× in the top bar) |
 
@@ -58,16 +59,22 @@ Everything runs on money. The **Money Generator** turns items into cash, and eac
 
 ## Factory decisions
 
-- **Power grid:** the HQ supplies 750 kW. Drills, assemblers, chemical plants, fabricators, inserters, maintenance bays and train stations draw power; when demand beats supply, everything slows down. Add steam generators (coal or fuel), solar panels (+80% on desert land), geothermal plants (volcanic land only) and battery banks.
+- **Fluids and pipes:** water, crude oil, fuel, chemicals, lubricant, polymer, heavy residue and coolant move in barrels on belts or through pipes. A pipe network holds one fluid. Short networks move 20 units/s; past 20 pipes the flow drops, and each pipeline pump adds 15/s. Machines take fluids in from their sides and push fluid output out of the front (the arrow). Oil drills facing a pipe pump 3 units per cycle instead of one barrel. Storage tanks buffer fluid and swap it with barrels via inserters. Water wells need no power.
+- **Byproducts:** refining fuel and polymer also makes heavy residue, which leaves the back of the chemical plant. If nothing takes it, the plant stops. Store it, burn it in steam generators, crack it into fuel or carbon, or sell it cheaply.
+- **Alternative recipes** (ALT in a machine's recipe list): steel smelted from 5 plates or made from 3 plates and fuel; fuel from oil, from coal and chemicals, or from cracked residue; silicon-heavy or copper-heavy processors; cast-iron pipe before steel. Each machine panel lists every way to make its item.
+- **Bottleneck overlay (`O`):** red = bottleneck, yellow = under-supplied, blue = over-supplied, white = idle, green = balanced. A machine's panel shows its input, output, power and idle percentages and the main cause.
+- **Power grid:** the HQ supplies 750 kW. Steam generators are cheap but need water and fuel, pollute, and take 5 s to spin up. Solar follows a 12-minute day/night cycle. Geothermal is steady but volcanic-only. Machines draw 3× power for a moment when they start, so battery banks matter for spikes and the night. The Stats panel shows peak demand, sunlight, stored energy and pollution.
+- **Crew:** working machines need crew (0.5 for drills and furnaces up to 2 for fabricators). The HQ gives 50, plus 1 per 100 city workers. Too little crew slows every machine, so the worker/soldier slider trades army size against factory capacity.
 - **Overclocking:** run a drill or machine at 150% or 200%, paying much more power and faster wear.
 - **Modules:** two slots per drill or machine for speed, efficiency and productivity modules. Productivity sometimes makes a free extra batch.
 - **Regional bonuses:** mountains mine 25% faster, the arctic halves machine wear, deserts boost solar, and volcanic land allows geothermal power.
-- **Dynamic prices:** selling a lot of one item floods the market and lowers its price, which recovers over a few minutes.
+- **Dynamic prices:** selling a lot of one item floods the market and lowers its price, which recovers over a few minutes. Booms raise prices and make contracts for those goods pay 35% more, ask for twice as much and come twice as often.
 - **World events:** booms, shortages, an energy crisis, dock strikes, droughts, heatwaves, breakthroughs and windfalls, every few minutes (can be turned off in Settings).
 - **Military supply:** units use factory goods every minute (iron plates, steel, fuel, chemicals, aluminium, sensors). Short supply weakens the whole army.
 - **Factory efficiency score:** Mining, Smelting, Assembly, Logistics and Power percentages in Stats. Click a row to jump to the worst spot.
-- **Stages:** Workshop → Industry → Electronics → Megafactory → Global Industry → Rocket Age → Exotic Industry.
-- **Loans:** borrow up to half of your lifetime earnings in Company → Bank. Interest is 0.5% per minute.
+- **Stages:** Workshop → Industry → Electronics → Megafactory → Global Industry → Rocket Age → Exotic Industry. Each adds a problem: emissions tax, fabricator batches ruined by brownouts, faster wear, faster market flooding, rocket launches powered from battery banks, and exotic fabrication that needs coolant. The Exotic stage adds the 25 MW Singularity Reactor and transmutation of common ore into rare ore.
+- **Factory milestones:** 1,000 steel/min, 10 MW, 50 machines working, 100,000 goods sold, a contract finished without market purchases and more. Rewards: money, research credit, blueprint slots and cosmetics.
+- **Loans:** Working Capital (small, 10 min), Expansion Loan (large, cheap, 60 min, from the Industry stage) and Emergency Credit (instant, very expensive). Above a 25% debt ratio new loans cost more. A late loan doubles its interest and takes 25% of revenue until it is paid.
 
 ## Nation layer
 
