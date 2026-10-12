@@ -9,6 +9,10 @@ A small Factorio-style factory game in one HTML file. It runs in Chrome with no 
 
 The game opens on a start screen: **New Game**, **Continue**, **Customization Shop** and **Character Editor**. Each game has its own save slot (up to 6), saved automatically in the browser. Continue lists them with date, stage and money. An old single save becomes the first slot. Menu → Main menu goes back to the start screen.
 
+## Bonus: VECTOR
+
+`vector.html` is a competitive tower defense duel in one file. You play against an AI on the same waves with the same money. It has 5 geometric maps (Serpentine, Loop, Split, Spiral, Divide) and 18 structures in 6 classes (Offense, Control, Support, Economy, Specialist, Defense), each with two 3-tier upgrade paths (at most 4 tiers in total). Two modes: Classic Duel, and Battle Duel, where sending enemy formations to your opponent raises your income. Match credits unlock structures and skins for good in the Armory. Loadouts take 6 structures (2 Offense, 1 Control, 1 Support, 1 Economy, 1 Flex). Progress is saved in the browser.
+
 ## Bonus: Neon Siege
 
 `tower-defense.html` is a separate tower defense game in one file (open it in Chrome). It has 6 towers, endless waves with a boss every 10, combo chains, crits, a pick-a-power card every 3 waves, and upgrades with no level cap. Keys: `1`–`6` build, `Space` wave, `U`/`S` upgrade/sell, `T` targeting, `F` speed, `A` auto, `P` pause, `M` mute.
