@@ -9,6 +9,10 @@ A small Factorio-style factory game in one HTML file. It runs in Chrome with no 
 
 The game opens on a start screen: **New Game**, **Continue**, **Customization Shop** and **Character Editor**. Each game has its own save slot (up to 6), saved automatically in the browser. Continue lists them with date, stage and money. An old single save becomes the first slot. Menu → Main menu goes back to the start screen.
 
+## Bonus: Neon Siege
+
+`tower-defense.html` is a separate tower defense game in one file (open it in Chrome). It has 6 towers, endless waves with a boss every 10, combo chains, crits, a pick-a-power card every 3 waves, and upgrades with no level cap. Keys: `1`–`6` build, `Space` wave, `U`/`S` upgrade/sell, `T` targeting, `F` speed, `A` auto, `P` pause, `M` mute.
+
 ## Controls
 
 | Key | Action |
