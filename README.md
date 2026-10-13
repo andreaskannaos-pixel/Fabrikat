@@ -11,7 +11,7 @@ The game opens on a start screen: **New Game**, **Continue**, **Customization Sh
 
 ## Bonus: VECTOR
 
-`vector.html` is a competitive tower defense duel in one file. You play against an AI on the same waves with the same money. It has 5 geometric maps (Serpentine, Loop, Split, Spiral, Divide) and 18 structures in 6 classes (Offense, Control, Support, Economy, Specialist, Defense), each with two 3-tier upgrade paths (at most 4 tiers in total). Two modes: Classic Duel, and Battle Duel, where sending enemy formations to your opponent raises your income. Match credits unlock structures and skins for good in the Armory. Loadouts take 6 structures (2 Offense, 1 Control, 1 Support, 1 Economy, 1 Flex). Progress is saved in the browser.
+`vector.html` is a competitive tower defense duel in one file. You play against an AI on the same waves with the same money. It has 5 geometric maps (Serpentine, Loop, Split, Spiral, Divide) and 18 structures in 6 classes (Offense, Control, Support, Economy, Specialist, Defense), each with two 3-tier upgrade paths (at most 4 tiers in total). Two modes: Classic Duel, and Battle Duel, where sending enemy formations to your opponent raises your income. Match credits unlock structures and skins for good in the Armory. The **Campaign** has 5 solo boss stages (The Warden, Phantom, Hydra, Aegis and the final boss The Singularity), each on Normal, Hard and Nightmare. Beating the final boss unlocks the **Forge**, where you design your own tower: name, color, attack type, stat points and a trait. Harder clears unlock more traits but no extra power, and the custom tower goes in the Flex slot. Loadouts take 6 structures (2 Offense, 1 Control, 1 Support, 1 Economy, 1 Flex). Progress is saved in the browser.
 
 ## Bonus: Neon Siege
 
