@@ -4,10 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>VECTOR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#080a14;--p1:#10132a;--p2:#161a36;--line:#262c55;--txt:#e8ecff;--dim:#8a91b8;--cr:#ffd23e;--off:#ff5d73;--ctl:#4dd9ff;--sup:#7cff6b;--eco:#ffd23e;--spc:#c77dff;--def:#a8b0d0;--ac:#3ef0ff}
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;user-select:none;-webkit-user-select:none}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--txt);font-family:Rajdhani,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-weight:600;user-select:none;-webkit-user-select:none}
 button{font:inherit;color:inherit;cursor:pointer}
 section{display:none;max-width:1240px;margin:0 auto;padding:14px}
 section.on{display:block}
@@ -20,18 +22,74 @@ section.on{display:block}
 .btn:hover{border-color:#4a5296}
 .btn.pri{background:linear-gradient(135deg,#3ef0ff,#7a6bff);border:none;color:#06101c}
 .btn:disabled{opacity:.4;cursor:default}
-.logo{font-size:clamp(56px,11vw,120px);font-weight:900;letter-spacing:clamp(8px,2vw,22px);margin:30px 0 4px;background:linear-gradient(90deg,#3ef0ff,#7a6bff,#ff5d73,#3ef0ff);background-size:300%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:hue 6s linear infinite}
-@keyframes hue{to{background-position:300%}}
-.tag{color:var(--dim);letter-spacing:4px;font-size:13px;margin-bottom:26px}
-.menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;max-width:860px}
-.mcard{padding:18px;border-radius:14px;background:var(--p1);border:2px solid var(--line);text-align:left}
-.mcard:hover{border-color:var(--ac);transform:translateY(-2px)}
-.mcard b{display:block;font-size:20px;margin-bottom:4px}
-.mcard span{color:var(--dim);font-size:13px}
-.box{background:var(--p1);border:2px solid var(--line);border-radius:14px;padding:14px;margin-top:14px;max-width:860px}
+:root{--fd:Orbitron,system-ui,sans-serif}
+.box{background:#0c0f23d0;border:2px solid var(--line);border-radius:14px;padding:14px;margin-top:14px;max-width:860px}
 .box h3{margin:0 0 8px;font-size:14px;letter-spacing:2px;color:var(--dim)}
-.daily{display:flex;justify-content:space-between;padding:4px 0;font-size:14px}
-.daily.done{color:var(--sup)}
+.top h2,#ov h1{font-family:var(--fd)}
+body{background:transparent}
+#bgcv{position:fixed;inset:0;width:100vw;height:100vh;z-index:-2;display:block;opacity:.9;transition:opacity .6s}
+body.sub #bgcv{opacity:.22}
+body.inmatch #bgcv,body.inmatch .vign{display:none}
+.vign{position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(90deg,#080a14e6 0,#080a14a0 38%,#080a1430 62%,#080a1470 100%),radial-gradient(ellipse at 60% 50%,#0000 40%,#080a14cc 100%),repeating-linear-gradient(0deg,#0000 0 2px,#00000030 2px 3px)}
+body.sub .vign{background:#080a14b0}
+#home{max-width:1240px;min-height:100vh;display:none;flex-direction:column}
+#home.on{display:flex}
+.hwrap{display:flex;gap:44px;flex-wrap:wrap;align-items:flex-start;flex:1;padding-top:5vh}
+.hl{flex:1 1 480px}.hr{flex:0 1 360px;display:flex;flex-direction:column;gap:12px;min-width:280px;width:100%}
+.logo{position:relative;display:inline-block;font-family:var(--fd);font-weight:900;font-size:clamp(54px,10vw,124px);letter-spacing:.08em;line-height:1;color:#fff;text-shadow:0 0 28px #3ef0ffaa,0 0 60px #7a6bff55;animation:lgin .8s cubic-bezier(.2,1.4,.4,1)}
+.logo::before,.logo::after{content:attr(data-t);position:absolute;left:0;top:0;mix-blend-mode:screen;text-shadow:none}
+.logo::before{color:#ff2d75;animation:gl1 3.1s infinite steps(1)}
+.logo::after{color:#3ef0ff;animation:gl2 4.3s infinite steps(1)}
+@keyframes gl1{0%,84%,100%{transform:none;clip-path:inset(0 0 100% 0)}86%{transform:translate(-7px,-2px);clip-path:inset(8% 0 62% 0)}88%{transform:translate(6px,1px);clip-path:inset(44% 0 28% 0)}90%{transform:translate(-3px,0);clip-path:inset(72% 0 4% 0)}92%{clip-path:inset(0 0 100% 0)}}
+@keyframes gl2{0%,78%,100%{transform:none;clip-path:inset(100% 0 0 0)}80%{transform:translate(7px,2px);clip-path:inset(60% 0 12% 0)}82%{transform:translate(-5px,0);clip-path:inset(20% 0 55% 0)}84%{clip-path:inset(100% 0 0 0)}}
+@keyframes lgin{from{opacity:0;letter-spacing:.6em;filter:blur(10px)}to{opacity:1}}
+.tag{font-family:var(--fd);letter-spacing:.45em;color:var(--ac);font-size:12px;margin:10px 0 36px;opacity:.85}
+.tag i{display:inline-block;width:9px;height:14px;background:var(--ac);vertical-align:-2px;margin-left:6px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.hmenu{display:flex;flex-direction:column;gap:10px;max-width:540px}
+.hb{position:relative;display:grid;grid-template-columns:52px 1fr;align-items:center;text-align:left;padding:13px 60px 13px 22px;border:none;background:linear-gradient(90deg,#121733e6,#12173355);clip-path:polygon(0 0,100% 0,calc(100% - 20px) 100%,0 100%);color:var(--txt);opacity:0;animation:slin .55s cubic-bezier(.2,1.3,.4,1) forwards;transition:transform .18s cubic-bezier(.2,1.5,.4,1),background .2s}
+.hb::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--hc);box-shadow:0 0 16px var(--hc)}
+.hb::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,#ffffff22 45%,transparent 60%);transform:translateX(-100%);transition:transform .5s}
+.hb:hover{transform:translateX(14px);background:linear-gradient(90deg,color-mix(in srgb,var(--hc) 28%,#121733),#12173366)}
+.hb:hover::after{transform:translateX(100%)}
+.hb .k{font-family:var(--fd);font-size:13px;color:var(--hc);grid-row:span 2}
+.hb .t{font-family:var(--fd);font-weight:900;font-size:23px;letter-spacing:.08em}
+.hb .s{color:#9aa2cc;font-size:15px}
+.hb .ar{position:absolute;right:42px;top:50%;transform:translateY(-50%);font-family:var(--fd);font-size:22px;color:var(--hc);opacity:0;transition:.2s}
+.hb:hover .ar{opacity:1;right:32px}
+.hb.main{padding:22px 60px 22px 24px;background:linear-gradient(90deg,#3ef0ff38,#7a6bff26 55%,#12173355)}
+.hb.main .t{font-size:36px;text-shadow:0 0 18px #3ef0ff88}
+.hb.main::before{width:6px}
+.hb.lock .t{color:#646a94}
+.hb:nth-child(1){animation-delay:.15s}.hb:nth-child(2){animation-delay:.22s}.hb:nth-child(3){animation-delay:.29s}.hb:nth-child(4){animation-delay:.36s}.hb:nth-child(5){animation-delay:.43s}
+@keyframes slin{from{opacity:0;transform:translateX(-50px)}to{opacity:1;transform:none}}
+.pcard{background:#0c0f23d0;border:1px solid #2a3166;border-radius:14px;padding:14px 16px;backdrop-filter:blur(6px);opacity:0;animation:slr .55s cubic-bezier(.2,1.3,.4,1) forwards}
+.pcard:nth-child(1){animation-delay:.3s}.pcard:nth-child(2){animation-delay:.4s}.pcard:nth-child(3){animation-delay:.5s}
+@keyframes slr{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
+.pcard h3{font-family:var(--fd);font-size:10px;letter-spacing:.3em;color:var(--dim);margin:0 0 10px;display:flex;justify-content:space-between}
+.bigcr{font-family:var(--fd);font-weight:900;font-size:34px;color:var(--cr);text-shadow:0 0 18px #ffd23e66;line-height:1}
+.bigcr::before{content:"◆ ";font-size:22px;vertical-align:4px}
+.prog{display:flex;gap:5px;margin-top:12px}.prog i{flex:1;height:7px;border-radius:2px;background:#1d2246}
+.recl{display:flex;gap:16px;margin-top:10px;font-size:15px;color:var(--dim)}.recl b{color:var(--txt);font-family:var(--fd);font-size:14px}
+.daily{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:16px;border-bottom:1px solid #1b2046}
+.daily:last-child{border:none}
+.daily .bx{width:16px;height:16px;border:2px solid #3a4280;border-radius:4px;flex:none;display:grid;place-items:center;font-size:11px}
+.daily.done{color:var(--sup)}.daily.done .bx{background:var(--sup);border-color:var(--sup);color:#06101c}
+.daily .rw2{margin-left:auto;color:var(--cr);font-family:var(--fd);font-size:13px}
+.daily.done .rw2{text-decoration:line-through;opacity:.6}
+.feat{display:flex;gap:14px;align-items:center;cursor:pointer}
+.feat .fi{width:84px;height:84px;flex:none;border-radius:14px;background:radial-gradient(circle,color-mix(in srgb,var(--fc) 30%,transparent),transparent 70%);display:grid;place-items:center}
+.feat .fi canvas{width:64px;height:64px;animation:fpop .5s cubic-bezier(.2,1.6,.4,1)}
+@keyframes fpop{from{transform:scale(.3) rotate(-30deg);opacity:0}}
+.feat .fn{font-family:var(--fd);font-weight:900;font-size:17px}
+.feat .fc{font-size:12px;letter-spacing:.2em;font-weight:700}
+.feat .fd{font-size:14px;color:#b8bfe6;margin-top:2px}
+.feat .fp{margin-top:4px;font-family:var(--fd);font-size:12px}
+.ticker{overflow:hidden;white-space:nowrap;border-top:1px solid #262c5588;margin-top:26px;padding:10px 0;color:#8a91b8;font-size:15px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.ticker div{display:inline-block;padding-left:100%;animation:tick 70s linear infinite}
+.ticker b{color:var(--ac);font-family:var(--fd);font-size:11px;letter-spacing:.2em;margin:0 8px 0 40px}
+@keyframes tick{to{transform:translateX(-100%)}}
+.hfoot{font-size:12px;color:#5d6390;margin-top:6px}
 .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
 .tab{padding:7px 14px;border-radius:20px;border:2px solid var(--line);background:var(--p1);font-weight:700;font-size:13px}
 .tab.on{border-color:var(--ac);color:var(--ac)}
@@ -134,20 +192,28 @@ select{background:var(--p1);color:var(--txt);border:2px solid var(--line);border
 </style>
 </head>
 <body>
+<canvas id="bgcv"></canvas><div class="vign"></div>
 <section id="home" class="on">
-  <div class="logo">VECTOR</div>
-  <div class="tag">COMPETITIVE TOWER DEFENSE</div>
-  <div class="menu">
-    <button class="mcard" data-go="campaign"><b>⚑ Campaign</b><span>5 boss stages. Beat the final boss to unlock the Forge</span></button>
-    <button class="mcard" data-go="setup"><b>▶ Duel</b><span>Duel an opponent on a geometric map</span></button>
-    <button class="mcard" data-go="armory"><b>Armory</b><span>Unlock structures and skins for good</span></button>
-    <button class="mcard" data-go="loadout"><b>Loadouts</b><span>Pick your 6 structures for each match</span></button>
-    <button class="mcard" data-go="forge" id="forgeCard"><b>Forge</b><span id="forgeSub"></span></button>
+  <div class="hwrap">
+    <div class="hl">
+      <div class="logo" data-t="VECTOR">VECTOR</div>
+      <div class="tag">COMPETITIVE TOWER DEFENSE<i></i></div>
+      <nav class="hmenu">
+        <button class="hb main" data-go="campaign" style="--hc:#3ef0ff"><span class="k">01</span><span class="t">CAMPAIGN</span><span class="s" id="hCamp"></span><span class="ar">▶</span></button>
+        <button class="hb" data-go="setup" style="--hc:#ff5d73"><span class="k">02</span><span class="t">DUEL</span><span class="s">1v1 against the AI • Classic or Battle</span><span class="ar">▶</span></button>
+        <button class="hb" data-go="armory" style="--hc:#ffd23e"><span class="k">03</span><span class="t">ARMORY</span><span class="s" id="hOwn"></span><span class="ar">▶</span></button>
+        <button class="hb" data-go="loadout" style="--hc:#7cff6b"><span class="k">04</span><span class="t">LOADOUTS</span><span class="s" id="hLo"></span><span class="ar">▶</span></button>
+        <button class="hb" data-go="forge" id="forgeCard" style="--hc:#c77dff"><span class="k">05</span><span class="t">FORGE</span><span class="s" id="forgeSub"></span><span class="ar">▶</span></button>
+      </nav>
+    </div>
+    <div class="hr">
+      <div class="pcard"><h3><span>CREDITS</span><span id="hRank"></span></h3><div class="bigcr" id="hCr">0</div><div class="prog" id="hProg"></div><div class="recl" id="rec"></div></div>
+      <div class="pcard"><h3><span>DAILY MISSIONS</span><span id="hDl"></span></h3><div id="dailies"></div></div>
+      <div class="pcard"><h3><span>STRUCTURE SPOTLIGHT</span><span id="fIdx"></span></h3><div class="feat" id="feat"></div></div>
+    </div>
   </div>
-  <div class="box"><h3>WALLET</h3><span class="cr" id="hCr"></span> <span style="color:var(--dim);font-size:13px;margin-left:10px" id="hOwn"></span></div>
-  <div class="box"><h3>DAILY OBJECTIVES</h3><div id="dailies"></div></div>
-  <div class="box"><h3>RECORD</h3><div id="rec" style="font-size:14px"></div></div>
-  <p class="note">The opponent is an AI that plays by the same rules as you: same waves, same money, same loadout limits. Your progress is saved in this browser.</p>
+  <div class="ticker"><div id="tick"></div></div>
+  <div class="hfoot">Keys 1–5 to navigate • Progress saves in this browser • The opponent is an AI that plays by your rules</div>
 </section>
 
 <section id="armory">
@@ -590,8 +656,8 @@ class Match{
 // ================= rendering =================
 const cv=$('cv'),ctx=cv.getContext('2d'),ocv=$('ocv'),octx=ocv.getContext('2d');
 cv.width=BW*DPR;cv.height=BH*DPR;ocv.width=BW/2*DPR;ocv.height=BH/2*DPR;
-function drawBoard(g,b,sc,time,isP){
-  g.setTransform(DPR*sc,0,0,DPR*sc,0,0);g.drawImage(b.map.bg,0,0,BW,BH);
+function drawBoard(g,b,sc,time,isP,ox=0,oy=0,dpr=DPR){
+  g.setTransform(dpr*sc,0,0,dpr*sc,ox*dpr,oy*dpr);g.drawImage(b.map.bg,0,0,BW,BH);
   const skin=SKINS[b.skin]||SKINS.std;
   if(isP&&hover&&build){const ok=b.canPlace(build,hover.c,hover.r)&&b.cash>=S[build].cost,x=hover.c*T+T/2,y=hover.r*T+T/2;
     g.fillStyle=ok?'#7cff6b22':'#ff5d7322';g.strokeStyle=ok?'#7cff6b':'#ff5d73';g.lineWidth=2;rr(g,x-T/2+2,y-T/2+2,T-4,T-4,5);g.fill();g.stroke();
@@ -658,15 +724,38 @@ function icon(id,size=44){const c=document.createElement('canvas');c.width=c.hei
   const t={id,x:22,y:22,tiers:[0,0],ang:-0.6,age:1,recoil:0,hp:S[id].hp||0,broken:false};drawTower(g,t,SKINS[SV.skin]||SKINS.std,0.4);return c}
 
 // ================= screens =================
-function go(id){document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===id));if(SCREENS[id])SCREENS[id]();window.scrollTo(0,0)}
+function go(id){document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===id));document.body.classList.toggle('inmatch',id==='match');document.body.classList.toggle('sub',id!=='home');if(SCREENS[id])SCREENS[id]();window.scrollTo(0,0)}
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{audioInit();SFX.click();go(b.dataset.go)});
 const SCREENS={
-  home(){$('hCr').textContent=SV.credits.toLocaleString();$('hOwn').textContent=`${SV.owned.length}/${SIDS.length} structures unlocked`;
-    $('dailies').innerHTML=DAILY.map(d=>`<div class="daily ${SV.daily.done.includes(d.id)?'done':''}"><span>${SV.daily.done.includes(d.id)?'✔':'○'} ${d.n}</span><span class="cr">${d.r}</span></div>`).join('');
-    $('forgeSub').textContent=SV.forge?'Design your custom tower':'🔒 Beat the final campaign boss';
-    $('rec').innerHTML=`Wins <b>${SV.rec.w}</b> • Losses <b>${SV.rec.l}</b> • Best round <b>${SV.rec.best}</b>`},
+  home(){renderHome()},
   armory(){renderArmory()},loadout(){renderLoadout()},setup(){renderSetup()},campaign(){renderCampaign()},forge(){renderForge()}
 };
+const TIPS=['Cryo Emitter next to a Burst Cannon keeps enemies inside the blast','Relay buffs every structure in range, so build it in the middle of a cluster','Battle Duel: every formation you send raises your income for good','Disruptor strips armor, which makes Repeaters useful again','Loop map: towers at the central crossing cover two lanes','Split map: the short route is where the pressure comes from','Aegis regenerates its shield whenever it is not being hit, so keep up the pressure','The Warden ignores slows. Bring raw damage','Beat The Singularity to unlock the Forge','Each structure can take 4 upgrade tiers, and only one path can reach tier 3','Extractors pay off slowly. Build them early or not at all'];
+let featI=Math.floor(Math.random()*18),featTimer=null;
+function countUp(el,to){const t0=performance.now(),from=0;const st=()=>{const k=Math.min(1,(performance.now()-t0)/900),e=1-Math.pow(1-k,3);el.textContent=Math.round(from+(to-from)*e).toLocaleString();if(k<1)requestAnimationFrame(st)};st()}
+function renderHome(){
+  countUp($('hCr'),SV.credits);
+  const best=SV.camp.map(r=>r[2]?3:r[1]?2:r[0]?1:0),cleared=best.filter(x=>x).length,nxt=best.findIndex(x=>!x);
+  $('hProg').innerHTML=best.map(b=>`<i style="background:${b?CDIFF[b-1].c:'#1d2246'};box-shadow:${b?'0 0 8px '+CDIFF[b-1].c:'none'}"></i>`).join('');
+  $('hCamp').innerHTML=nxt<0?'All bosses down ✔ Try a harder difficulty':`Stage ${nxt+1}: ${MAPS[CAMP[nxt].map].n} • Boss: <span style="color:#ff5d73">${EN[CAMP[nxt].boss].n}</span>`;
+  $('hRank').textContent=cleared+'/5 BOSSES';
+  $('hOwn').textContent=`${SV.owned.filter(x=>x!=='custom').length}/${SIDS.length} structures unlocked`;
+  $('hLo').textContent='Active: '+SV.los[SV.lo].n+' ('+SV.los[SV.lo].s.filter(Boolean).length+'/6)';
+  $('forgeSub').innerHTML=SV.forge?'Design your custom tower':'🔒 Beat the final boss to unlock';$('forgeCard').classList.toggle('lock',!SV.forge);
+  $('rec').innerHTML=`<span>WINS <b>${SV.rec.w}</b></span><span>LOSSES <b>${SV.rec.l}</b></span><span>BEST <b>R${SV.rec.best}</b></span>`;
+  const dd=SV.daily.done.length;$('hDl').textContent=dd+'/'+DAILY.length;
+  $('dailies').innerHTML=DAILY.map(d=>{const ok=SV.daily.done.includes(d.id);return`<div class="daily ${ok?'done':''}"><span class="bx">${ok?'✔':''}</span><span>${d.n}</span><span class="rw2">◆${d.r}</span></div>`}).join('');
+  $('tick').innerHTML=TIPS.map(t=>`<b>TIP</b>${t}`).join('');
+  showFeat();clearInterval(featTimer);featTimer=setInterval(()=>{if($('home').classList.contains('on')){featI++;showFeat()}},4000);
+  document.querySelectorAll('.hb').forEach((b,i)=>b.onmouseenter=()=>tone(520+i*90,0.05,'triangle',0.035,null,'hov',0.04));
+}
+function showFeat(){
+  const id=SIDS[featI%SIDS.length],d=S[id],c=CLS[d.cls],own=SV.owned.includes(id),f=$('feat');
+  f.style.setProperty('--fc',d.col);
+  f.innerHTML=`<div class="fi"></div><div><div class="fc" style="color:${c.c}">${c.n.toUpperCase()}</div><div class="fn">${d.n}</div><div class="fd">${d.desc}</div><div class="fp">${own?'<span style="color:#7cff6b">✔ OWNED</span>':`<span style="color:#ffd23e">◆ ${d.price}</span> <span style="color:var(--dim)">to unlock</span>`}</div></div>`;
+  f.querySelector('.fi').appendChild(icon(id,64));$('fIdx').textContent=(featI%SIDS.length+1)+'/'+SIDS.length;
+  f.onclick=()=>{aTab=d.cls;go('armory')};
+}
 let aTab='all';
 function renderArmory(){
   $('aCr').textContent=SV.credits.toLocaleString();
@@ -808,6 +897,7 @@ cv.addEventListener('pointerdown',ev=>{
   sel=null;hidePanel();
 });
 addEventListener('keydown',ev=>{
+  if($('home').classList.contains('on')&&$('ov').hidden){const i='12345'.indexOf(ev.key);if(i>=0){audioInit();SFX.click();go(['campaign','setup','armory','loadout','forge'][i])}return}
   if(!M||!$('match').classList.contains('on'))return;const k=ev.key.toLowerCase(),P=M.boards[0];
   if(k>='1'&&k<='6'){const id=P.loadout[+k-1];if(id)setBuild(id)}
   else if(k==='escape'){build=null;sel=null;hidePanel();uiTick()}
@@ -869,11 +959,25 @@ function drawBoss(time){
   if(M.banner){const b=M.banner,a=b.t>1.7?(2.2-b.t)/0.5:1,s=b.t<0.2?0.6+b.t*2:1;g.save();g.globalAlpha=Math.max(0,a);g.translate(BW/2,BH*0.4);g.scale(s,s);g.font='900 44px system-ui';g.textAlign='center';g.textBaseline='middle';g.lineWidth=7;g.strokeStyle='#000';g.strokeText(b.s,0,0);g.fillStyle='#ff5d73';g.fillText(b.s,0,0);g.restore()}
 }
 
+// ================= menu background (live AI match) =================
+const bgcv=$('bgcv'),bgx=bgcv.getContext('2d');let DEMO=null,demoN=Math.floor(Math.random()*5);
+function bgSize(){bgcv.width=innerWidth;bgcv.height=innerHeight}bgSize();addEventListener('resize',bgSize);
+function newDemo(){const st=demoN++%CAMP.length;DEMO=new Match(CAMP[st].map,'campaign','normal',AI_LO[demoN%AI_LO.length],{stage:st,d:0});const b=DEMO.boards[0];b.ai={cfg:DIFF.hard,t:0.3};b.cash+=2500;b.lives=1e9;DEMO.round=4;DEMO.nextT=0.5;DEMO.finish=function(){this.over=true};DEMO.age=0}
+function bgTick(dt,time){
+  if(!DEMO||DEMO.over||DEMO.age>75)newDemo();
+  DEMO.age+=dt;const sdt=dt*1.6,n=Math.ceil(sdt/0.02);for(let i=0;i<n;i++)DEMO.update(sdt/n);
+  const W=innerWidth,H=innerHeight,sc=Math.max(W/BW,H/BH)*1.1,ox=(W-BW*sc)/2+Math.sin(time*0.07)*W*0.03,oy=(H-BH*sc)/2+Math.cos(time*0.05)*H*0.03;
+  bgx.setTransform(1,0,0,1,0,0);bgx.fillStyle='#080a14';bgx.fillRect(0,0,W,H);
+  drawBoard(bgx,DEMO.boards[0],sc,time,false,ox,oy,1);
+  const a=DEMO.age<1?1-DEMO.age:DEMO.age>74?DEMO.age-74:0;if(a>0){bgx.setTransform(1,0,0,1,0,0);bgx.fillStyle=`rgba(8,10,20,${a})`;bgx.fillRect(0,0,W,H)}
+}
+
 // ================= loop =================
 let last=performance.now(),uiT=0;
 function frame(now){
   requestAnimationFrame(frame);const dt=Math.min(0.05,(now-last)/1000);last=now;
-  if(!M||!$('match').classList.contains('on'))return;
+  if(!$('match').classList.contains('on')){bgTick(dt,now/1000);return}
+  if(!M)return;
   if(!M.paused&&!M.over){const sdt=dt*M.speed,n=Math.ceil(sdt/0.02);for(let i=0;i<n;i++)M.update(sdt/n)}
   drawBoard(ctx,M.boards[0],1,now/1000,true);if(M.boards[1])drawBoard(octx,M.boards[1],0.5,now/1000,false);
   if(M.camp)drawBoss(now/1000);
