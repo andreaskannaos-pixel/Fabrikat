@@ -1,0 +1,19 @@
+{
+	"schemaVersion": 1,
+	"id": "svenskacraft",
+	"version": "${version}",
+	"name": "SvenskaCraft",
+	"description": "Learn Swedish while you play: hear and read the Swedish word for items you pick up, and survive a quiz every 10 minutes.",
+	"authors": ["andreaskannaos-pixel"],
+	"license": "MIT",
+	"icon": "assets/svenskacraft/icon.png",
+	"environment": "client",
+	"entrypoints": { "client": ["svenskacraft.SvenskaCraft"] },
+	"mixins": ["svenskacraft.mixins.json"],
+	"depends": {
+		"fabricloader": ">=0.20.1",
+		"minecraft": "~26.3",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}
