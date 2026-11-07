@@ -15,8 +15,8 @@ public record Concept(String id, String category, String en, String icon,
 		events = events == null ? List.of() : List.copyOf(events);
 	}
 
-	/** Verbs and phrases have no picture that clearly means them. */
+	/** Verbs, phrases and weather/places have no picture that clearly means them. */
 	public boolean abstractMeaning() {
-		return category.equals("verbs") || category.equals("phrases");
+		return category.equals("verbs") || category.equals("phrases") || category.equals("world");
 	}
 }

@@ -56,7 +56,7 @@ public class JournalScreen extends Screen {
 	private static String formsLine(Entry e) {
 		var m = Forms.all(e.text());
 		List<String> parts = new ArrayList<>();
-		for (Forms.Type t : new Forms.Type[] {Forms.Type.DEFINITE, Forms.Type.PLURAL, Forms.Type.PRESENT, Forms.Type.PAST, Forms.Type.SUPINE, Forms.Type.ORDINAL}) {
+		for (Forms.Type t : new Forms.Type[] {Forms.Type.DEFINITE, Forms.Type.NEUTER, Forms.Type.PLURAL, Forms.Type.PRESENT, Forms.Type.PAST, Forms.Type.SUPINE, Forms.Type.ORDINAL}) {
 			if (m.containsKey(t)) parts.add(Forms.first(m.get(t)));
 		}
 		return String.join(" · ", parts);
@@ -324,5 +324,5 @@ public class JournalScreen extends Screen {
 	}
 
 	@Override
-	public boolean isPauseScreen() { return false; }
+	public boolean isPauseScreen() { return true; } // singleplayer: the world waits while you read or answer
 }

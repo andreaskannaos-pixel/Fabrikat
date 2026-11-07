@@ -16,7 +16,7 @@ class VocabularyTest {
 	@Test
 	void everyConceptHasSwedishText() {
 		assertTrue(vocab.missing().isEmpty(), "missing: " + vocab.missing());
-		assertEquals(116, vocab.entries().size());
+		assertEquals(196, vocab.entries().size());
 	}
 
 	@Test
@@ -37,7 +37,7 @@ class VocabularyTest {
 
 	@Test
 	void everyCategoryCanFillAFourOptionQuiz() {
-		assertEquals(9, vocab.categories().size());
+		assertEquals(12, vocab.categories().size());
 		for (Category c : vocab.categories()) {
 			assertTrue(vocab.inCategory(c.id()).size() >= 4, c.id());
 			assertNotEquals(c.id(), sv.category(c.id()), "no Swedish name for " + c.id());
@@ -56,10 +56,8 @@ class VocabularyTest {
 
 	@Test
 	void everyEventInDataIsSupportedByDiscovery() {
-		Set<String> supported = Set.of("join", "walk", "sprint", "jump", "swim", "eat", "dig", "build", "sleep",
-			"night", "morning", "trade", "hurt", "low_health");
 		for (Vocabulary.Entry e : vocab.entries()) {
-			for (String ev : e.concept().events()) assertTrue(supported.contains(ev), e.id() + " uses unknown event " + ev);
+			for (String ev : e.concept().events()) assertTrue(svenskacraft.vocab.Hints.knownEvent(ev), e.id() + " uses unknown event " + ev);
 		}
 	}
 

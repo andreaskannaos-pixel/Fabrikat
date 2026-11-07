@@ -11,7 +11,10 @@
   "materials": "Material",
   "numbers": "Siffror",
   "verbs": "Verb",
-  "phrases": "Vardagsfraser"
+  "phrases": "Vardagsfraser",
+  "creatures": "Varelser",
+  "colors": "Färger",
+  "world": "Väder & platser"
  },
  "ui": {
   "quizTitle": "SVENSKA-QUIZ",
@@ -42,7 +45,9 @@
   "cloze": "Fyll i ordet:",
   "whatIsIt": "Vad är det?",
   "forms": "Former",
-  "definition": "Förklaring"
+  "definition": "Förklaring",
+  "form.neuter": "Ett-ord – ett hus är …",
+  "form.adj_plural": "Plural – husen är …"
  },
  "reactions": {
   "correct": [

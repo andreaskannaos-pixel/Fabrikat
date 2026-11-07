@@ -30,6 +30,12 @@ class FormsTest {
 				assertNotNull(w.supine(), e.id());
 			} else if (c.equals("numbers")) {
 				assertNotNull(w.ordinal(), e.id());
+			} else if (c.equals("colors")) {
+				// rosa, lila, orange never change; the others have an ett-form and a plural
+				if (!List.of("orange", "pink", "purple").contains(e.id())) {
+					assertNotNull(w.neuter(), e.id());
+					assertNotNull(w.plural(), e.id());
+				}
 			} else if (!c.equals("phrases")) {
 				assertNotNull(w.definite(), e.id() + " has no definite form");
 			}
@@ -99,7 +105,23 @@ class FormsTest {
 		assertEquals("bläck", Forms.cloze(t("ink")).answer(), "whole words only, not inside bläckfisken");
 		int found = 0;
 		for (Vocabulary.Entry e : vocab.entries()) if (Forms.cloze(e.text()) != null) found++;
-		assertTrue(found >= 110, "gap sentences for " + found + "/116 words");
+		assertTrue(found >= vocab.entries().size() * 95 / 100, "gap sentences for " + found + "/" + vocab.entries().size() + " words");
+	}
+
+	@Test
+	void adjectivesAgreeWithTheNoun() {
+		assertEquals(List.of(Forms.Type.NEUTER, Forms.Type.PLURAL), Forms.askable(t("red"), Level.INTERMEDIATE));
+		List<String> neuter = Forms.distractors(t("red"), Forms.Type.NEUTER);   // rött
+		assertTrue(neuter.contains("rödt"), "classic mistake: " + neuter);
+		assertFalse(neuter.contains("rött"));
+		List<String> plural = Forms.distractors(t("red"), Forms.Type.PLURAL);   // röda
+		assertFalse(plural.contains("röda"));
+		assertFalse(plural.contains("rödar") && plural.contains("rödor"), "no noun endings for adjectives: " + plural);
+		assertTrue(Forms.askable(t("pink"), Level.ADVANCED).isEmpty(), "rosa never changes");
+		Forms.Cloze c = Forms.cloze(t("red"));
+		assertEquals("rött", c.answer());
+		assertEquals(Forms.Type.NEUTER, c.type());
+		assertEquals(AnswerCheck.Verdict.CORRECT, AnswerCheck.check("blåa", Forms.all(t("blue")).get(Forms.Type.PLURAL)).verdict());
 	}
 
 	@Test

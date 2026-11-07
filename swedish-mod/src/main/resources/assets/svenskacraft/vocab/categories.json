@@ -43,5 +43,20 @@
   "id": "phrases",
   "icon": "player_head",
   "en": "Everyday phrases"
+ },
+ {
+  "id": "creatures",
+  "icon": "zombie_head",
+  "en": "Creatures"
+ },
+ {
+  "id": "colors",
+  "icon": "red_dye",
+  "en": "Colors"
+ },
+ {
+  "id": "world",
+  "icon": "grass_block",
+  "en": "Weather & places"
  }
 ]

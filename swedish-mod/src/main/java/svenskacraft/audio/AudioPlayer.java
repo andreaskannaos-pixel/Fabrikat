@@ -94,7 +94,11 @@ public final class AudioPlayer {
 		float volume = SvenskaCraft.settings.voiceVolume / 100f;
 		if (volume <= 0) return;
 		Identifier id = Identifier.fromNamespaceAndPath(SvenskaCraft.MOD_ID, soundName);
-		current = new SimpleSoundInstance(id, SoundSource.VOICE, volume, 1.0f, random, false, 0,
+		// While a pausing screen is open (singleplayer quiz/journal) Minecraft pauses every sound except
+		// music and UI, so the voice uses the UI channel then; otherwise the Voice/Speech channel.
+		Minecraft mc = Minecraft.getInstance();
+		boolean paused = mc.isPaused() || (mc.gui.screen() != null && mc.gui.screen().isPauseScreen() && mc.hasSingleplayerServer());
+		current = new SimpleSoundInstance(id, paused ? SoundSource.UI : SoundSource.VOICE, volume, 1.0f, random, false, 0,
 			SoundInstance.Attenuation.NONE, 0, 0, 0, true);
 		startedAt = ticks;
 		Minecraft.getInstance().getSoundManager().play(current);

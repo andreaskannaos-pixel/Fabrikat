@@ -16,7 +16,8 @@ public final class LanguagePack {
 	 * a field may list accepted alternatives separated by "|" (first one is shown).
 	 */
 	public record WordText(String word, String example, String exampleEn,
-						   String definite, String plural,               // nouns
+						   String definite, String plural,               // nouns (plural also for adjectives)
+						   String neuter,                                // adjectives: ett-form (rött)
 						   String present, String past, String supine,   // verbs
 						   String ordinal,                               // numbers
 						   String definition) {}                        // short explanation in the language itself

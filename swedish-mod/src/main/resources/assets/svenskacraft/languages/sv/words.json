@@ -881,5 +881,621 @@
   "example": "Hjälp! En zombie jagar mig!",
   "exampleEn": "Help! A zombie is chasing me!",
   "definition": "Det man ropar när man är i fara."
+ },
+ "rabbit": {
+  "word": "en kanin",
+  "example": "Kaninen hoppar i gräset.",
+  "exampleEn": "The rabbit is hopping in the grass.",
+  "definition": "Ett litet djur med långa öron som hoppar.",
+  "definite": "kaninen",
+  "plural": "kaniner"
+ },
+ "fox": {
+  "word": "en räv",
+  "example": "En räv sover i snön.",
+  "exampleEn": "A fox is sleeping in the snow.",
+  "definition": "Ett orange djur med en lång, yvig svans.",
+  "definite": "räven",
+  "plural": "rävar"
+ },
+ "polar_bear": {
+  "word": "en isbjörn",
+  "example": "Isbjörnen bor där det är kallt.",
+  "exampleEn": "The polar bear lives where it is cold.",
+  "definition": "En stor vit björn som bor där det är kallt.",
+  "definite": "isbjörnen",
+  "plural": "isbjörnar"
+ },
+ "frog": {
+  "word": "en groda",
+  "example": "Grodan sitter i träsket.",
+  "exampleEn": "The frog is sitting in the swamp.",
+  "definition": "Ett litet djur som hoppar och säger kvack.",
+  "definite": "grodan",
+  "plural": "grodor"
+ },
+ "turtle": {
+  "word": "en sköldpadda",
+  "example": "En sköldpadda går långsamt på stranden.",
+  "exampleEn": "A turtle walks slowly on the beach.",
+  "definition": "Ett långsamt djur med ett hårt skal.",
+  "definite": "sköldpaddan",
+  "plural": "sköldpaddor"
+ },
+ "squid": {
+  "word": "en bläckfisk",
+  "example": "Bläckfisken simmar i havet.",
+  "exampleEn": "The squid swims in the sea.",
+  "definition": "Ett djur i havet med många långa armar.",
+  "definite": "bläckfisken",
+  "plural": "bläckfiskar"
+ },
+ "dolphin": {
+  "word": "en delfin",
+  "example": "Delfinen hoppar ur vattnet.",
+  "exampleEn": "The dolphin jumps out of the water.",
+  "definition": "Ett smart djur som simmar fort i havet.",
+  "definite": "delfinen",
+  "plural": "delfiner"
+ },
+ "goat": {
+  "word": "en get",
+  "example": "Geten klättrar på berget.",
+  "exampleEn": "The goat climbs on the mountain.",
+  "definition": "Ett djur med horn som klättrar högt upp.",
+  "definite": "geten",
+  "plural": "getter"
+ },
+ "parrot": {
+  "word": "en papegoja",
+  "example": "Papegojan sitter på min axel.",
+  "exampleEn": "The parrot sits on my shoulder.",
+  "definition": "En färgglad fågel som kan härma ljud.",
+  "definite": "papegojan",
+  "plural": "papegojor"
+ },
+ "bat": {
+  "word": "en fladdermus",
+  "example": "En fladdermus flyger i grottan.",
+  "exampleEn": "A bat flies in the cave.",
+  "definition": "Ett litet djur som flyger på natten och sover upp och ner.",
+  "definite": "fladdermusen",
+  "plural": "fladdermöss"
+ },
+ "zombie": {
+  "word": "en zombie",
+  "example": "En zombie kommer på natten.",
+  "exampleEn": "A zombie comes at night.",
+  "definition": "Ett monster som går långsamt och brinner i solen.",
+  "definite": "zombien",
+  "plural": "zombier"
+ },
+ "skeleton": {
+  "word": "ett skelett",
+  "example": "Skelettet skjuter pilar.",
+  "exampleEn": "The skeleton shoots arrows.",
+  "definition": "Ett monster av ben som skjuter med pilbåge.",
+  "definite": "skelettet",
+  "plural": "skelett"
+ },
+ "spider": {
+  "word": "en spindel",
+  "example": "Spindeln klättrar på väggen.",
+  "exampleEn": "The spider climbs on the wall.",
+  "definition": "Ett djur med åtta ben som gör nät.",
+  "definite": "spindeln",
+  "plural": "spindlar"
+ },
+ "witch": {
+  "word": "en häxa",
+  "example": "Häxan bor i en stuga i träsket.",
+  "exampleEn": "The witch lives in a hut in the swamp.",
+  "definition": "En kvinna som kastar trolldrycker.",
+  "definite": "häxan",
+  "plural": "häxor"
+ },
+ "villager": {
+  "word": "en bybo",
+  "example": "Bybon vill handla med mig.",
+  "exampleEn": "The villager wants to trade with me.",
+  "definition": "En person som bor i en by.",
+  "definite": "bybon",
+  "plural": "bybor"
+ },
+ "silverfish": {
+  "word": "en silverfisk",
+  "example": "En silverfisk gömmer sig i stenen.",
+  "exampleEn": "A silverfish hides in the stone.",
+  "definition": "Ett litet grått kryp som gömmer sig i sten.",
+  "definite": "silverfisken",
+  "plural": "silverfiskar"
+ },
+ "red": {
+  "word": "röd",
+  "example": "Äpplet är rött.",
+  "exampleEn": "The apple is red.",
+  "definition": "Samma färg som blod.",
+  "neuter": "rött",
+  "plural": "röda"
+ },
+ "blue": {
+  "word": "blå",
+  "example": "Himlen är blå.",
+  "exampleEn": "The sky is blue.",
+  "definition": "Samma färg som himlen en solig dag.",
+  "neuter": "blått",
+  "plural": "blå|blåa"
+ },
+ "green": {
+  "word": "grön",
+  "example": "Gräset är grönt.",
+  "exampleEn": "The grass is green.",
+  "definition": "Samma färg som gräs och löv.",
+  "neuter": "grönt",
+  "plural": "gröna"
+ },
+ "yellow": {
+  "word": "gul",
+  "example": "Solen är gul.",
+  "exampleEn": "The sun is yellow.",
+  "definition": "Samma färg som solen och citroner.",
+  "neuter": "gult",
+  "plural": "gula"
+ },
+ "black": {
+  "word": "svart",
+  "example": "Natten är svart.",
+  "exampleEn": "The night is black.",
+  "definition": "Samma färg som kol.",
+  "neuter": "svart",
+  "plural": "svarta"
+ },
+ "white": {
+  "word": "vit",
+  "example": "Snön är vit.",
+  "exampleEn": "The snow is white.",
+  "definition": "Samma färg som snö.",
+  "neuter": "vitt",
+  "plural": "vita"
+ },
+ "brown": {
+  "word": "brun",
+  "example": "Hunden är brun.",
+  "exampleEn": "The dog is brown.",
+  "definition": "Samma färg som jord och choklad.",
+  "neuter": "brunt",
+  "plural": "bruna"
+ },
+ "orange": {
+  "word": "orange",
+  "example": "Räven är orange.",
+  "exampleEn": "The fox is orange.",
+  "definition": "Samma färg som en apelsin."
+ },
+ "pink": {
+  "word": "rosa",
+  "example": "Grisen är rosa.",
+  "exampleEn": "The pig is pink.",
+  "definition": "Samma färg som en gris."
+ },
+ "purple": {
+  "word": "lila",
+  "example": "Blomman är lila.",
+  "exampleEn": "The flower is purple.",
+  "definition": "En blandning av rött och blått."
+ },
+ "gray": {
+  "word": "grå",
+  "example": "Vargen är grå.",
+  "exampleEn": "The wolf is gray.",
+  "definition": "Samma färg som sten och moln när det regnar.",
+  "neuter": "grått",
+  "plural": "grå|gråa"
+ },
+ "rain": {
+  "word": "regn",
+  "example": "Det kommer regn i dag.",
+  "exampleEn": "Rain is coming today.",
+  "definition": "Vatten som faller från himlen.",
+  "definite": "regnet"
+ },
+ "thunder": {
+  "word": "åska",
+  "example": "Åskan mullrar på himlen.",
+  "exampleEn": "The thunder rumbles in the sky.",
+  "definition": "Ett högt ljud på himlen när det blixtrar.",
+  "definite": "åskan"
+ },
+ "snow": {
+  "word": "snö",
+  "example": "Snön är vit och kall.",
+  "exampleEn": "The snow is white and cold.",
+  "definition": "Det är vitt och kallt, och det faller på vintern.",
+  "definite": "snön"
+ },
+ "sun": {
+  "word": "en sol",
+  "example": "Solen skiner.",
+  "exampleEn": "The sun is shining.",
+  "definition": "Den lyser på himlen på dagen.",
+  "definite": "solen",
+  "plural": "solar"
+ },
+ "moon": {
+  "word": "en måne",
+  "example": "Månen lyser på natten.",
+  "exampleEn": "The moon shines at night.",
+  "definition": "Den lyser på himlen på natten.",
+  "definite": "månen",
+  "plural": "månar"
+ },
+ "forest": {
+  "word": "en skog",
+  "example": "Vi går in i skogen.",
+  "exampleEn": "We walk into the forest.",
+  "definition": "Ett ställe med väldigt många träd.",
+  "definite": "skogen",
+  "plural": "skogar"
+ },
+ "desert": {
+  "word": "en öken",
+  "example": "Det är varmt i öknen.",
+  "exampleEn": "It is hot in the desert.",
+  "definition": "Ett varmt och torrt ställe med mycket sand.",
+  "definite": "öknen",
+  "plural": "öknar"
+ },
+ "sea": {
+  "word": "ett hav",
+  "example": "Havet är stort och blått.",
+  "exampleEn": "The sea is big and blue.",
+  "definition": "Mycket stort och salt vatten.",
+  "definite": "havet",
+  "plural": "hav"
+ },
+ "mountain": {
+  "word": "ett berg",
+  "example": "Berget är högt.",
+  "exampleEn": "The mountain is high.",
+  "definition": "Det är mycket högt och gjort av sten.",
+  "definite": "berget",
+  "plural": "berg"
+ },
+ "swamp": {
+  "word": "ett träsk",
+  "example": "Det är blött i träsket.",
+  "exampleEn": "It is wet in the swamp.",
+  "definition": "Ett blött ställe där grodor bor.",
+  "definite": "träsket",
+  "plural": "träsk"
+ },
+ "jungle": {
+  "word": "en djungel",
+  "example": "Det växer många träd i djungeln.",
+  "exampleEn": "Many trees grow in the jungle.",
+  "definition": "Ett varmt ställe med höga träd, lianer och papegojor.",
+  "definite": "djungeln",
+  "plural": "djungler"
+ },
+ "beach": {
+  "word": "en strand",
+  "example": "Vi leker på stranden.",
+  "exampleEn": "We play on the beach.",
+  "definition": "Där sanden möter havet.",
+  "definite": "stranden",
+  "plural": "stränder"
+ },
+ "cave": {
+  "word": "en grotta",
+  "example": "Grottan är mörk.",
+  "exampleEn": "The cave is dark.",
+  "definition": "Ett mörkt hål inne i ett berg.",
+  "definite": "grottan",
+  "plural": "grottor"
+ },
+ "ladder": {
+  "word": "en stege",
+  "example": "Jag klättrar upp på en stege.",
+  "exampleEn": "I climb up a ladder.",
+  "definition": "Man klättrar upp och ner på den.",
+  "definite": "stegen",
+  "plural": "stegar"
+ },
+ "fence": {
+  "word": "ett staket",
+  "example": "Fåren står bakom staketet.",
+  "exampleEn": "The sheep stand behind the fence.",
+  "definition": "Det står runt en hage så att djuren inte springer iväg.",
+  "definite": "staketet",
+  "plural": "staket"
+ },
+ "stairs": {
+  "word": "en trappa",
+  "example": "Trappan går upp till tornet.",
+  "exampleEn": "The stairs go up to the tower.",
+  "definition": "Steg som man går upp och ner för.",
+  "definite": "trappan",
+  "plural": "trappor"
+ },
+ "sign": {
+  "word": "en skylt",
+  "example": "Skylten visar vägen till byn.",
+  "exampleEn": "The sign shows the way to the village.",
+  "definition": "Man skriver text på den så att andra kan läsa.",
+  "definite": "skylten",
+  "plural": "skyltar"
+ },
+ "painting": {
+  "word": "en tavla",
+  "example": "En tavla hänger på väggen.",
+  "exampleEn": "A painting hangs on the wall.",
+  "definition": "En bild som hänger på väggen.",
+  "definite": "tavlan",
+  "plural": "tavlor"
+ },
+ "lantern": {
+  "word": "en lykta",
+  "example": "Jag hänger en lykta i taket.",
+  "exampleEn": "I hang a lantern from the ceiling.",
+  "definition": "En lampa som man kan hänga upp.",
+  "definite": "lyktan",
+  "plural": "lyktor"
+ },
+ "barrel": {
+  "word": "en tunna",
+  "example": "Fisken ligger i tunnan.",
+  "exampleEn": "The fish is in the barrel.",
+  "definition": "En rund behållare av trä.",
+  "definite": "tunnan",
+  "plural": "tunnor"
+ },
+ "candle": {
+  "word": "ett ljus",
+  "example": "Ljuset brinner på bordet.",
+  "exampleEn": "The candle is burning on the table.",
+  "definition": "Det brinner med en liten låga.",
+  "definite": "ljuset",
+  "plural": "ljus"
+ },
+ "honey": {
+  "word": "honung",
+  "example": "Bina gör honung.",
+  "exampleEn": "The bees make honey.",
+  "definition": "Söt och gul mat som bin gör.",
+  "definite": "honungen"
+ },
+ "soup": {
+  "word": "soppa",
+  "example": "Soppan är varm.",
+  "exampleEn": "The soup is hot.",
+  "definition": "Varm mat som man äter med sked.",
+  "definite": "soppan"
+ },
+ "beetroot": {
+  "word": "en rödbeta",
+  "example": "En rödbeta är röd inuti.",
+  "exampleEn": "A beetroot is red inside.",
+  "definition": "En mörkröd grönsak som växer i jorden.",
+  "definite": "rödbetan",
+  "plural": "rödbetor"
+ },
+ "pie": {
+  "word": "en paj",
+  "example": "Vi bakar en paj av pumpa.",
+  "exampleEn": "We bake a pie from pumpkin.",
+  "definition": "Ett bakverk som man ofta gör av pumpa eller bär.",
+  "definite": "pajen",
+  "plural": "pajer"
+ },
+ "brick": {
+  "word": "tegel",
+  "example": "Huset är byggt av tegel.",
+  "exampleEn": "The house is built of brick.",
+  "definition": "Röda block som man bygger hus av.",
+  "definite": "teglet"
+ },
+ "quartz": {
+  "word": "kvarts",
+  "example": "Kvarts finns i Nether.",
+  "exampleEn": "Quartz is found in the Nether.",
+  "definition": "En vit sten som finns i Nether.",
+  "definite": "kvartsen"
+ },
+ "amethyst": {
+  "word": "en ametist",
+  "example": "En ametist är lila.",
+  "exampleEn": "An amethyst is purple.",
+  "definition": "En lila kristall som växer i grottor.",
+  "definite": "ametisten",
+  "plural": "ametister"
+ },
+ "fishing_rod": {
+  "word": "ett fiskespö",
+  "example": "Jag fiskar med ett fiskespö.",
+  "exampleEn": "I fish with a fishing rod.",
+  "definition": "Man fångar fisk med det.",
+  "definite": "fiskespöet",
+  "plural": "fiskespön"
+ },
+ "shears": {
+  "word": "en sax",
+  "example": "Jag klipper fåret med en sax.",
+  "exampleEn": "I shear the sheep with shears.",
+  "definition": "Man klipper med den.",
+  "definite": "saxen",
+  "plural": "saxar"
+ },
+ "chestplate": {
+  "word": "en bröstplåt",
+  "example": "Bröstplåten skyddar mig.",
+  "exampleEn": "The chestplate protects me.",
+  "definition": "Rustning som man har på bröstet.",
+  "definite": "bröstplåten",
+  "plural": "bröstplåtar"
+ },
+ "spyglass": {
+  "word": "en kikare",
+  "example": "Jag ser långt med en kikare.",
+  "exampleEn": "I see far with a spyglass.",
+  "definition": "Man ser saker långt borta med den.",
+  "definite": "kikaren",
+  "plural": "kikare"
+ },
+ "verb_fly": {
+  "word": "flyga",
+  "example": "Fåglar kan flyga.",
+  "exampleEn": "Birds can fly.",
+  "definition": "Att röra sig genom luften.",
+  "present": "flyger",
+  "past": "flög",
+  "supine": "flugit"
+ },
+ "verb_ride": {
+  "word": "rida",
+  "example": "Jag vill rida på hästen.",
+  "exampleEn": "I want to ride the horse.",
+  "definition": "Att sitta på en häst och färdas.",
+  "present": "rider",
+  "past": "red",
+  "supine": "ridit"
+ },
+ "verb_travel": {
+  "word": "åka",
+  "example": "Vi åker gruvvagn genom gruvan.",
+  "exampleEn": "We ride a minecart through the mine.",
+  "definition": "Att färdas i en båt, vagn eller bil.",
+  "present": "åker",
+  "past": "åkte",
+  "supine": "åkt"
+ },
+ "verb_fall": {
+  "word": "falla",
+  "example": "Akta dig så att du inte faller!",
+  "exampleEn": "Be careful so you don't fall!",
+  "definition": "Att röra sig snabbt nedåt mot marken.",
+  "present": "faller",
+  "past": "föll",
+  "supine": "fallit"
+ },
+ "verb_climb": {
+  "word": "klättra",
+  "example": "Katten kan klättra i träd.",
+  "exampleEn": "The cat can climb trees.",
+  "definition": "Att ta sig uppåt med händer och fötter.",
+  "present": "klättrar",
+  "past": "klättrade",
+  "supine": "klättrat"
+ },
+ "verb_fish": {
+  "word": "fiska",
+  "example": "Vi fiskar vid sjön.",
+  "exampleEn": "We fish by the lake.",
+  "definition": "Att försöka fånga något i vattnet med ett spö.",
+  "present": "fiskar",
+  "past": "fiskade",
+  "supine": "fiskat"
+ },
+ "verb_sneak": {
+  "word": "smyga",
+  "example": "Jag smyger förbi zombien.",
+  "exampleEn": "I sneak past the zombie.",
+  "definition": "Att gå tyst så att ingen hör en.",
+  "present": "smyger",
+  "past": "smög",
+  "supine": "smugit"
+ },
+ "phrase_congrats": {
+  "word": "Grattis!",
+  "example": "Grattis på födelsedagen!",
+  "exampleEn": "Happy birthday!",
+  "definition": "Det man säger när någon fyller år eller lyckas."
+ },
+ "phrase_bye": {
+  "word": "Hej då!",
+  "example": "Hej då! Vi ses i morgon.",
+  "exampleEn": "Bye! See you tomorrow.",
+  "definition": "Det man säger när man går."
+ },
+ "phrase_sorry": {
+  "word": "Förlåt!",
+  "example": "Förlåt, det var inte meningen.",
+  "exampleEn": "Sorry, I didn't mean to.",
+  "definition": "Det man säger när man har gjort fel."
+ },
+ "phrase_cheers": {
+  "word": "Skål!",
+  "example": "Skål för oss!",
+  "exampleEn": "Cheers to us!",
+  "definition": "Det man säger när man dricker tillsammans."
+ },
+ "num_11": {
+  "word": "elva",
+  "example": "Jag har elva äpplen.",
+  "exampleEn": "I have eleven apples.",
+  "definition": "Tio plus ett.",
+  "ordinal": "elfte"
+ },
+ "num_12": {
+  "word": "tolv",
+  "example": "Klockan är tolv.",
+  "exampleEn": "It is twelve o'clock.",
+  "definition": "Sex plus sex.",
+  "ordinal": "tolfte"
+ },
+ "num_13": {
+  "word": "tretton",
+  "example": "Tretton kor står på ängen.",
+  "exampleEn": "Thirteen cows are standing in the meadow.",
+  "definition": "Tio plus tre.",
+  "ordinal": "trettonde"
+ },
+ "num_14": {
+  "word": "fjorton",
+  "example": "Fjorton facklor lyser i gruvan.",
+  "exampleEn": "Fourteen torches shine in the mine.",
+  "definition": "Sju plus sju.",
+  "ordinal": "fjortonde"
+ },
+ "num_15": {
+  "word": "femton",
+  "example": "Femton får äter gräs.",
+  "exampleEn": "Fifteen sheep are eating grass.",
+  "definition": "Tio plus fem.",
+  "ordinal": "femtonde"
+ },
+ "num_16": {
+  "word": "sexton",
+  "example": "Hon är sexton år.",
+  "exampleEn": "She is sixteen years old.",
+  "definition": "Åtta plus åtta.",
+  "ordinal": "sextonde"
+ },
+ "num_17": {
+  "word": "sjutton",
+  "example": "Sjutton pilar sitter i målet.",
+  "exampleEn": "Seventeen arrows are in the target.",
+  "definition": "Tio plus sju.",
+  "ordinal": "sjuttonde"
+ },
+ "num_18": {
+  "word": "arton",
+  "example": "Jag har arton bröd.",
+  "exampleEn": "I have eighteen loaves of bread.",
+  "definition": "Nio plus nio.",
+  "ordinal": "artonde"
+ },
+ "num_19": {
+  "word": "nitton",
+  "example": "Nitton fiskar simmar förbi.",
+  "exampleEn": "Nineteen fish swim past.",
+  "definition": "Tio plus nio.",
+  "ordinal": "nittonde"
+ },
+ "num_20": {
+  "word": "tjugo",
+  "example": "Det finns tjugo block i raden.",
+  "exampleEn": "There are twenty blocks in the row.",
+  "definition": "Tio plus tio.",
+  "ordinal": "tjugonde"
  }
 }

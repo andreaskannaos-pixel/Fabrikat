@@ -488,8 +488,10 @@ public class QuizScreen extends Screen {
 				if (answered) g.centeredText(font, Component.literal("→ " + answer.word()).withStyle(ChatFormatting.BOLD), cx, top + 62, 0xFFFFAA00);
 			}
 			case FORM -> {
-				String head = ui("form." + formType.name().toLowerCase(Locale.ROOT));
-				if (!advanced()) head += "  (" + formEnglish(formType) + ")";
+				boolean adj = Forms.isAdjective(answer.text());
+				String key = adj && formType == Forms.Type.PLURAL ? "form.adj_plural" : "form." + formType.name().toLowerCase(Locale.ROOT);
+				String head = ui(key);
+				if (!advanced()) head += "  (" + (adj && formType == Forms.Type.PLURAL ? "with plural words" : formEnglish(formType)) + ")";
 				g.centeredText(font, Component.literal(head), cx, top + 16, 0xFFFFFFFF);
 				String base = answer.concept().category().equals("verbs") ? "att " + answer.word() : answer.word();
 				bigText(g, base, cx, top + 30, 0xFFFFAA00);
@@ -558,6 +560,7 @@ public class QuizScreen extends Screen {
 		return switch (t) {
 			case DEFINITE -> "the …";
 			case PLURAL -> "more than one";
+			case NEUTER -> "with an ett-word";
 			case PRESENT -> "present tense";
 			case PAST -> "past tense";
 			case SUPINE -> "have + verb";
@@ -604,5 +607,5 @@ public class QuizScreen extends Screen {
 	public boolean shouldCloseOnEsc() { return practice; }
 
 	@Override
-	public boolean isPauseScreen() { return false; }
+	public boolean isPauseScreen() { return true; } // singleplayer: the world waits while you read or answer
 }

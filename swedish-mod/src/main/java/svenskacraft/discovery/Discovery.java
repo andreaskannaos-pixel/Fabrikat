@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.client.gui.screens.inventory.MerchantScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
@@ -16,6 +17,8 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
@@ -35,6 +38,7 @@ public final class Discovery {
 	private static final double LOOK_COS = Math.cos(Math.toRadians(12));
 
 	private final Map<String, Long> lastReminder = new HashMap<>();
+	private final java.util.Set<String> seenBiomes = new java.util.HashSet<>();
 	private final Map<String, Integer> holdTicks = new HashMap<>();
 	private long lastTitle;
 	private long lastAnyReminder;
@@ -109,6 +113,33 @@ public final class Discovery {
 		lastHurtTime = p.hurtTime;
 		if (p.getHealth() > 0 && p.getHealth() <= 6) event("low_health");
 
+		// more actions
+		if (held("fly", p.getAbilities().flying || p.isFallFlying(), 20)) event("fly");
+		Entity vehicle = p.getVehicle();
+		String vehicleId = vehicle == null ? "" : BuiltInRegistries.ENTITY_TYPE.getKey(vehicle.getType()).getPath();
+		boolean riding = RIDEABLE.contains(vehicleId);
+		boolean inVehicle = vehicleId.contains("boat") || vehicleId.contains("raft") || vehicleId.contains("minecart");
+		if (held("ride", riding, 40)) event("ride");
+		if (held("vehicle", inVehicle, 40)) event("vehicle");
+		if (p.fallDistance > 5 && !p.isFallFlying()) event("fall");
+		if (held("climb", p.onClimbable() && p.getDeltaMovement().y > 0.05, 10)) event("climb");
+		if (held("fish", p.fishing != null, 40)) event("fish");
+		if (held("sneak", p.isCrouching() && p.getDeltaMovement().horizontalDistanceSqr() > 1e-4, 30)) event("sneak");
+		if (held("drink", p.isUsingItem() && DRINKS.contains(BuiltInRegistries.ITEM.getKey(p.getUseItem().getItem()).getPath()), 10)) event("drink");
+		if (mc.options.keyAttack.isDown() && (mc.crosshairPickEntity instanceof Animal || mc.crosshairPickEntity instanceof AbstractVillager)) {
+			event("hit_friendly");
+		}
+		if (mc.gui.screen() instanceof PauseScreen && ticksInWorld > 2400) event("leave");
+
+		// items you hold count too (crafted tools, dyes...)
+		if (ticksInWorld % 10 == 0 && !hand.isEmpty()) {
+			Vocabulary.Entry e = SvenskaCraft.vocab.byItem(BuiltInRegistries.ITEM.getKey(hand.getItem()).toString());
+			if (e != null) found(e, false);
+		}
+
+		// weather, sky and places (checked once a second)
+		if (ticksInWorld % 20 == 0) lookAround(mc, p, day);
+
 		// animals
 		if (ticksInWorld % 10 == 0) lookForAnimals(mc, p);
 	}
@@ -132,7 +163,44 @@ public final class Discovery {
 		}
 	}
 
-	private void event(String name) {
+	private static final java.util.Set<String> RIDEABLE = java.util.Set.of("horse", "donkey", "mule", "camel", "pig", "strider",
+		"llama", "trader_llama", "skeleton_horse", "zombie_horse", "happy_ghast", "nautilus");
+	private static final java.util.Set<String> DRINKS = java.util.Set.of("potion", "milk_bucket", "honey_bottle", "ominous_bottle");
+	/** Biome name fragments → event. First match wins. */
+	private static final String[][] BIOMES = {
+		{"beach", "biome_beach"}, {"shore", "biome_beach"}, {"ocean", "biome_ocean"}, {"swamp", "biome_swamp"},
+		{"jungle", "biome_jungle"}, {"desert", "biome_desert"}, {"peaks", "biome_mountain"}, {"slopes", "biome_mountain"},
+		{"windswept", "biome_mountain"}, {"forest", "biome_forest"}, {"taiga", "biome_forest"}, {"grove", "biome_forest"}};
+
+	private void lookAround(Minecraft mc, LocalPlayer p, long day) {
+		var level = mc.level;
+		boolean overworld = level.dimension() == net.minecraft.world.level.Level.OVERWORLD;
+		var head = p.blockPosition().above();
+		boolean sky = level.canSeeSky(head);
+		if (overworld && sky) {
+			if (level.isThundering()) event("thunder");
+			if (level.isRaining()) event("rain");
+			else if (day > 1000 && day < 11000) event("sunny");
+			else if (day > 14000 && day < 22000) event("moon");
+		}
+		var holder = level.getBiome(p.blockPosition());
+		String biome = holder.unwrapKey().map(k -> k.identifier().getPath())
+			.orElseGet(() -> {
+				var id = level.registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.BIOME).getKey(holder.value());
+				return id == null ? "" : id.getPath();
+			});
+		if (seenBiomes.add(biome)) SvenskaCraft.LOG.info("SvenskaCraft: biome '{}'", biome);
+		if (biome.contains("cave") || (overworld && !sky && p.getY() < 40)) event("cave");
+		for (String[] b : BIOMES) {
+			if (biome.contains(b[0])) {
+				event(b[1]);
+				break;
+			}
+		}
+	}
+
+	/** Lets other parts of the mod announce a moment (e.g. "milestone"). */
+	public void event(String name) {
 		for (Vocabulary.Entry e : SvenskaCraft.vocab.byEvent(name)) found(e, false);
 	}
 

@@ -54,6 +54,8 @@ public class SvenskaCraft implements ClientModInitializer {
 	public static ProgressStore store;
 	public static final AudioPlayer audio = new AudioPlayer();
 	public static final Discovery discovery = new Discovery();
+	public static final Safety safety = new Safety();
+	private static boolean toldWaiting;
 
 	private static KeyMapping journalKey;
 	private static int quizTimer;
@@ -131,15 +133,25 @@ public class SvenskaCraft implements ClientModInitializer {
 		}
 		if (++worldTicks % 200 == 0) DailyGoal.rollOver(progress, LocalDate.now().toEpochDay());
 		discovery.tick(mc);
+		safety.tick(mc);
 		if (!settings.enabled || mc.isPaused() || !mc.player.isAlive() || mc.gui.screen() instanceof QuizScreen) return;
 
 		int interval = settings.quizMinutes() * 60 * 20;
 		if (quizTimer < interval) quizTimer++;
-		if (quizTimer == interval - 200 && !progress.discoveredIds().isEmpty()) {
+		if (quizTimer == interval - 200 && !progress.discoveredIds().isEmpty() && safety.safe()) {
 			mc.gui.hud.setOverlayMessage(Component.literal("Quiz in 10 seconds").withStyle(ChatFormatting.YELLOW), false);
+		}
+		if (quizTimer >= interval && mc.gui.screen() == null && !safety.safe()) {
+			// never interrupt a fight: wait until the player has been safe for a few seconds
+			if (!toldWaiting && !progress.discoveredIds().isEmpty()) {
+				mc.gui.hud.setOverlayMessage(Component.literal("Quiz waits until you're safe").withStyle(ChatFormatting.GRAY), false);
+				toldWaiting = true;
+			}
+			return;
 		}
 		if (quizTimer >= interval && mc.gui.screen() == null) {
 			quizTimer = 0;
+			toldWaiting = false;
 			Screen q = quizScreen();
 			if (q != null) mc.gui.setScreen(q);
 		}
@@ -186,12 +198,14 @@ public class SvenskaCraft implements ClientModInitializer {
 	public static void progressChanged() {
 		store.markDirty();
 		Minecraft mc = Minecraft.getInstance();
-		for (Milestones.Milestone m : Milestones.check(progress, vocab)) {
+		List<Milestones.Milestone> reached = Milestones.check(progress, vocab);
+		for (Milestones.Milestone m : reached) {
 			Component desc = Component.literal(m.description() + (m.shield() ? " · +1 shield" : ""));
 			SystemToast.add(mc.gui.toastManager(), new SystemToast.SystemToastId(), Component.literal("★ " + m.title()), desc);
 			say(Component.literal("★ Milestone: " + m.title()).withStyle(ChatFormatting.GOLD).append(Component.literal(" – ").append(desc).withStyle(ChatFormatting.GRAY)));
 			AudioPlayer.cue(SoundEvents.PLAYER_LEVELUP, 1.4f, 0.3f);
 		}
+		if (!reached.isEmpty()) discovery.event("milestone"); // "Grattis!"
 	}
 
 	/**

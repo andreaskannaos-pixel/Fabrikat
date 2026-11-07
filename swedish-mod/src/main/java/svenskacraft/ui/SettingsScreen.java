@@ -128,5 +128,5 @@ public class SettingsScreen extends Screen {
 	public void onClose() { minecraft.gui.setScreen(parent); }
 
 	@Override
-	public boolean isPauseScreen() { return false; }
+	public boolean isPauseScreen() { return true; } // singleplayer: the world waits while you read or answer
 }

@@ -7,7 +7,7 @@ import svenskacraft.lang.LanguagePack.WordText;
 
 /** Grammatical forms of a word, the forms worth asking at each level, and gap sentences. */
 public final class Forms {
-	public enum Type { BASE, NOUN, DEFINITE, PLURAL, PRESENT, PAST, SUPINE, ORDINAL }
+	public enum Type { BASE, NOUN, DEFINITE, PLURAL, NEUTER, PRESENT, PAST, SUPINE, ORDINAL }
 
 	/** A sentence with one word blanked out. */
 	public record Cloze(String before, String answer, String after, Type type) {}
@@ -22,6 +22,7 @@ public final class Forms {
 		if (!noun.equals(t.word())) m.put(Type.NOUN, noun);
 		put(m, Type.DEFINITE, t.definite());
 		put(m, Type.PLURAL, t.plural());
+		put(m, Type.NEUTER, t.neuter());
 		put(m, Type.PRESENT, t.present());
 		put(m, Type.PAST, t.past());
 		put(m, Type.SUPINE, t.supine());
@@ -38,7 +39,7 @@ public final class Forms {
 		List<Type> out = new ArrayList<>();
 		if (!level.atLeast(Level.INTERMEDIATE)) return out;
 		Map<Type, String> m = all(t);
-		for (Type type : new Type[] {Type.DEFINITE, Type.PLURAL, Type.PRESENT, Type.ORDINAL}) if (m.containsKey(type)) out.add(type);
+		for (Type type : new Type[] {Type.DEFINITE, Type.NEUTER, Type.PLURAL, Type.PRESENT, Type.ORDINAL}) if (m.containsKey(type)) out.add(type);
 		if (level.atLeast(Level.ADVANCED)) for (Type type : new Type[] {Type.PAST, Type.SUPINE}) if (m.containsKey(type)) out.add(type);
 		return out;
 	}
@@ -56,6 +57,16 @@ public final class Forms {
 		String stem = inf.endsWith("a") ? inf.substring(0, inf.length() - 1) : inf;
 		boolean vowelEnd = !noun.isEmpty() && "aeiouyåäö".indexOf(noun.charAt(noun.length() - 1)) >= 0;
 		String nounStem = vowelEnd && (noun.endsWith("a") || noun.endsWith("e")) ? noun.substring(0, noun.length() - 1) : noun;
+		if (isAdjective(t)) {
+			String base = t.word().toLowerCase(Locale.ROOT);
+			switch (type) {
+				case NEUTER -> out.addAll(List.of(base + "t", base + "a", base + "e", base));
+				case PLURAL -> out.addAll(List.of(base + "a", base + "e", base + "t", base + "ar"));
+				default -> { }
+			}
+			out.removeIf(s -> correct.contains(s) || s.isBlank());
+			return new ArrayList<>(out);
+		}
 		switch (type) {
 			case DEFINITE -> out.addAll(vowelEnd ? List.of(noun + "n", noun + "t", nounStem + "en")
 				: List.of(noun + "en", noun + "et", noun + "n", noun + "t"));
@@ -72,7 +83,7 @@ public final class Forms {
 	/** Blanks the first form of the word found in its example sentence, or null if none is found. */
 	public static Cloze cloze(WordText t) {
 		Map<Type, String> m = all(t);
-		Type[] order = {Type.BASE, Type.DEFINITE, Type.PLURAL, Type.PRESENT, Type.PAST, Type.SUPINE, Type.NOUN};
+		Type[] order = {Type.BASE, Type.DEFINITE, Type.NEUTER, Type.PLURAL, Type.PRESENT, Type.PAST, Type.SUPINE, Type.NOUN};
 		for (Type type : order) {
 			String forms = m.get(type);
 			if (forms == null) continue;
@@ -88,6 +99,11 @@ public final class Forms {
 			}
 		}
 		return null;
+	}
+
+	/** Adjectives (colors) have an ett-form; their plural is "röda", not a noun plural. */
+	public static boolean isAdjective(WordText t) {
+		return t.neuter() != null && !t.neuter().isBlank();
 	}
 
 	public static String noun(String word) {

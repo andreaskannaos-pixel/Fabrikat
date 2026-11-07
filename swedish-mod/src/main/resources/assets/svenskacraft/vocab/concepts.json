@@ -93,6 +93,98 @@
   ]
  },
  {
+  "id": "rabbit",
+  "category": "animals",
+  "en": "a rabbit",
+  "icon": "rabbit_spawn_egg",
+  "entities": [
+   "rabbit"
+  ]
+ },
+ {
+  "id": "fox",
+  "category": "animals",
+  "en": "a fox",
+  "icon": "fox_spawn_egg",
+  "entities": [
+   "fox"
+  ]
+ },
+ {
+  "id": "polar_bear",
+  "category": "animals",
+  "en": "a polar bear",
+  "icon": "polar_bear_spawn_egg",
+  "entities": [
+   "polar_bear"
+  ]
+ },
+ {
+  "id": "frog",
+  "category": "animals",
+  "en": "a frog",
+  "icon": "frog_spawn_egg",
+  "entities": [
+   "frog",
+   "tadpole"
+  ]
+ },
+ {
+  "id": "turtle",
+  "category": "animals",
+  "en": "a turtle",
+  "icon": "turtle_spawn_egg",
+  "entities": [
+   "turtle"
+  ]
+ },
+ {
+  "id": "squid",
+  "category": "animals",
+  "en": "a squid",
+  "icon": "squid_spawn_egg",
+  "entities": [
+   "squid",
+   "glow_squid"
+  ]
+ },
+ {
+  "id": "dolphin",
+  "category": "animals",
+  "en": "a dolphin",
+  "icon": "dolphin_spawn_egg",
+  "entities": [
+   "dolphin"
+  ]
+ },
+ {
+  "id": "goat",
+  "category": "animals",
+  "en": "a goat",
+  "icon": "goat_spawn_egg",
+  "entities": [
+   "goat"
+  ]
+ },
+ {
+  "id": "parrot",
+  "category": "animals",
+  "en": "a parrot",
+  "icon": "parrot_spawn_egg",
+  "entities": [
+   "parrot"
+  ]
+ },
+ {
+  "id": "bat",
+  "category": "animals",
+  "en": "a bat",
+  "icon": "bat_spawn_egg",
+  "entities": [
+   "bat"
+  ]
+ },
+ {
   "id": "apple",
   "category": "food",
   "en": "an apple",
@@ -270,6 +362,45 @@
   "icon": "rotten_flesh",
   "items": [
    "rotten_flesh"
+  ]
+ },
+ {
+  "id": "honey",
+  "category": "food",
+  "en": "honey",
+  "icon": "honey_bottle",
+  "items": [
+   "honey_bottle",
+   "honeycomb"
+  ]
+ },
+ {
+  "id": "soup",
+  "category": "food",
+  "en": "soup",
+  "icon": "mushroom_stew",
+  "items": [
+   "mushroom_stew",
+   "beetroot_soup",
+   "rabbit_stew"
+  ]
+ },
+ {
+  "id": "beetroot",
+  "category": "food",
+  "en": "a beetroot",
+  "icon": "beetroot",
+  "items": [
+   "beetroot"
+  ]
+ },
+ {
+  "id": "pie",
+  "category": "food",
+  "en": "a pie",
+  "icon": "pumpkin_pie",
+  "items": [
+   "pumpkin_pie"
   ]
  },
  {
@@ -568,6 +699,106 @@
   ]
  },
  {
+  "id": "ladder",
+  "category": "household",
+  "en": "a ladder",
+  "icon": "ladder",
+  "items": [
+   "ladder"
+  ]
+ },
+ {
+  "id": "fence",
+  "category": "household",
+  "en": "a fence",
+  "icon": "oak_fence",
+  "items": [
+   "oak_fence",
+   "spruce_fence",
+   "birch_fence",
+   "jungle_fence",
+   "acacia_fence",
+   "dark_oak_fence",
+   "cherry_fence",
+   "mangrove_fence",
+   "pale_oak_fence"
+  ]
+ },
+ {
+  "id": "stairs",
+  "category": "household",
+  "en": "stairs",
+  "icon": "oak_stairs",
+  "items": [
+   "oak_stairs",
+   "spruce_stairs",
+   "birch_stairs",
+   "jungle_stairs",
+   "acacia_stairs",
+   "dark_oak_stairs",
+   "cherry_stairs",
+   "mangrove_stairs",
+   "pale_oak_stairs",
+   "stone_stairs",
+   "cobblestone_stairs",
+   "brick_stairs"
+  ]
+ },
+ {
+  "id": "sign",
+  "category": "household",
+  "en": "a sign",
+  "icon": "oak_sign",
+  "items": [
+   "oak_sign",
+   "spruce_sign",
+   "birch_sign",
+   "jungle_sign",
+   "acacia_sign",
+   "dark_oak_sign",
+   "cherry_sign",
+   "mangrove_sign",
+   "pale_oak_sign"
+  ]
+ },
+ {
+  "id": "painting",
+  "category": "household",
+  "en": "a painting",
+  "icon": "painting",
+  "items": [
+   "painting"
+  ]
+ },
+ {
+  "id": "lantern",
+  "category": "household",
+  "en": "a lantern",
+  "icon": "lantern",
+  "items": [
+   "lantern",
+   "soul_lantern"
+  ]
+ },
+ {
+  "id": "barrel",
+  "category": "household",
+  "en": "a barrel",
+  "icon": "barrel",
+  "items": [
+   "barrel"
+  ]
+ },
+ {
+  "id": "candle",
+  "category": "household",
+  "en": "a candle",
+  "icon": "candle",
+  "items": [
+   "candle"
+  ]
+ },
+ {
   "id": "lead",
   "category": "tools",
   "en": "a leash",
@@ -727,6 +958,48 @@
    "golden_boots",
    "diamond_boots",
    "netherite_boots"
+  ]
+ },
+ {
+  "id": "fishing_rod",
+  "category": "tools",
+  "en": "a fishing rod",
+  "icon": "fishing_rod",
+  "items": [
+   "fishing_rod"
+  ]
+ },
+ {
+  "id": "shears",
+  "category": "tools",
+  "en": "shears",
+  "icon": "shears",
+  "items": [
+   "shears"
+  ]
+ },
+ {
+  "id": "chestplate",
+  "category": "tools",
+  "en": "a chestplate",
+  "icon": "iron_chestplate",
+  "items": [
+   "leather_chestplate",
+   "chainmail_chestplate",
+   "copper_chestplate",
+   "iron_chestplate",
+   "golden_chestplate",
+   "diamond_chestplate",
+   "netherite_chestplate"
+  ]
+ },
+ {
+  "id": "spyglass",
+  "category": "tools",
+  "en": "a spyglass",
+  "icon": "spyglass",
+  "items": [
+   "spyglass"
   ]
  },
  {
@@ -971,6 +1244,36 @@
   ]
  },
  {
+  "id": "brick",
+  "category": "materials",
+  "en": "brick",
+  "icon": "brick",
+  "items": [
+   "brick",
+   "bricks"
+  ]
+ },
+ {
+  "id": "quartz",
+  "category": "materials",
+  "en": "quartz",
+  "icon": "quartz",
+  "items": [
+   "quartz",
+   "quartz_block"
+  ]
+ },
+ {
+  "id": "amethyst",
+  "category": "materials",
+  "en": "an amethyst",
+  "icon": "amethyst_shard",
+  "items": [
+   "amethyst_shard",
+   "amethyst_block"
+  ]
+ },
+ {
   "id": "num_1",
   "category": "numbers",
   "en": "one",
@@ -1039,6 +1342,76 @@
   "en": "ten",
   "icon": "emerald",
   "amount": 10
+ },
+ {
+  "id": "num_11",
+  "category": "numbers",
+  "en": "eleven",
+  "icon": "emerald",
+  "amount": 11
+ },
+ {
+  "id": "num_12",
+  "category": "numbers",
+  "en": "twelve",
+  "icon": "emerald",
+  "amount": 12
+ },
+ {
+  "id": "num_13",
+  "category": "numbers",
+  "en": "thirteen",
+  "icon": "emerald",
+  "amount": 13
+ },
+ {
+  "id": "num_14",
+  "category": "numbers",
+  "en": "fourteen",
+  "icon": "emerald",
+  "amount": 14
+ },
+ {
+  "id": "num_15",
+  "category": "numbers",
+  "en": "fifteen",
+  "icon": "emerald",
+  "amount": 15
+ },
+ {
+  "id": "num_16",
+  "category": "numbers",
+  "en": "sixteen",
+  "icon": "emerald",
+  "amount": 16
+ },
+ {
+  "id": "num_17",
+  "category": "numbers",
+  "en": "seventeen",
+  "icon": "emerald",
+  "amount": 17
+ },
+ {
+  "id": "num_18",
+  "category": "numbers",
+  "en": "eighteen",
+  "icon": "emerald",
+  "amount": 18
+ },
+ {
+  "id": "num_19",
+  "category": "numbers",
+  "en": "nineteen",
+  "icon": "emerald",
+  "amount": 19
+ },
+ {
+  "id": "num_20",
+  "category": "numbers",
+  "en": "twenty",
+  "icon": "emerald",
+  "amount": 20
  },
  {
   "id": "verb_walk",
@@ -1113,6 +1486,69 @@
   ]
  },
  {
+  "id": "verb_fly",
+  "category": "verbs",
+  "en": "to fly",
+  "icon": "elytra",
+  "events": [
+   "fly"
+  ]
+ },
+ {
+  "id": "verb_ride",
+  "category": "verbs",
+  "en": "to ride",
+  "icon": "saddle",
+  "events": [
+   "ride"
+  ]
+ },
+ {
+  "id": "verb_travel",
+  "category": "verbs",
+  "en": "to go (by vehicle)",
+  "icon": "minecart",
+  "events": [
+   "vehicle"
+  ]
+ },
+ {
+  "id": "verb_fall",
+  "category": "verbs",
+  "en": "to fall",
+  "icon": "feather",
+  "events": [
+   "fall"
+  ]
+ },
+ {
+  "id": "verb_climb",
+  "category": "verbs",
+  "en": "to climb",
+  "icon": "ladder",
+  "events": [
+   "climb"
+  ]
+ },
+ {
+  "id": "verb_fish",
+  "category": "verbs",
+  "en": "to fish",
+  "icon": "fishing_rod",
+  "events": [
+   "fish"
+  ]
+ },
+ {
+  "id": "verb_sneak",
+  "category": "verbs",
+  "en": "to sneak",
+  "icon": "leather_boots",
+  "events": [
+   "sneak"
+  ]
+ },
+ {
   "id": "phrase_hello",
   "category": "phrases",
   "en": "Hello!",
@@ -1164,6 +1600,364 @@
   "icon": "totem_of_undying",
   "events": [
    "low_health"
+  ]
+ },
+ {
+  "id": "phrase_congrats",
+  "category": "phrases",
+  "en": "Congratulations!",
+  "icon": "cake",
+  "events": [
+   "milestone"
+  ]
+ },
+ {
+  "id": "phrase_bye",
+  "category": "phrases",
+  "en": "Goodbye!",
+  "icon": "oak_door",
+  "events": [
+   "leave"
+  ]
+ },
+ {
+  "id": "phrase_sorry",
+  "category": "phrases",
+  "en": "Sorry!",
+  "icon": "poppy",
+  "events": [
+   "hit_friendly"
+  ]
+ },
+ {
+  "id": "phrase_cheers",
+  "category": "phrases",
+  "en": "Cheers!",
+  "icon": "glass_bottle",
+  "events": [
+   "drink"
+  ]
+ },
+ {
+  "id": "zombie",
+  "category": "creatures",
+  "en": "a zombie",
+  "icon": "zombie_head",
+  "entities": [
+   "zombie",
+   "husk",
+   "drowned",
+   "zombie_villager"
+  ]
+ },
+ {
+  "id": "skeleton",
+  "category": "creatures",
+  "en": "a skeleton",
+  "icon": "skeleton_skull",
+  "entities": [
+   "skeleton",
+   "stray"
+  ]
+ },
+ {
+  "id": "spider",
+  "category": "creatures",
+  "en": "a spider",
+  "icon": "spider_spawn_egg",
+  "entities": [
+   "spider",
+   "cave_spider"
+  ]
+ },
+ {
+  "id": "witch",
+  "category": "creatures",
+  "en": "a witch",
+  "icon": "witch_spawn_egg",
+  "entities": [
+   "witch"
+  ]
+ },
+ {
+  "id": "villager",
+  "category": "creatures",
+  "en": "a villager",
+  "icon": "villager_spawn_egg",
+  "entities": [
+   "villager",
+   "wandering_trader"
+  ]
+ },
+ {
+  "id": "silverfish",
+  "category": "creatures",
+  "en": "a silverfish",
+  "icon": "silverfish_spawn_egg",
+  "entities": [
+   "silverfish"
+  ]
+ },
+ {
+  "id": "red",
+  "category": "colors",
+  "en": "red",
+  "icon": "red_dye",
+  "items": [
+   "red_dye",
+   "red_concrete",
+   "red_terracotta",
+   "red_stained_glass",
+   "red_concrete_powder"
+  ]
+ },
+ {
+  "id": "blue",
+  "category": "colors",
+  "en": "blue",
+  "icon": "blue_dye",
+  "items": [
+   "blue_dye",
+   "blue_concrete",
+   "blue_terracotta",
+   "blue_stained_glass",
+   "blue_concrete_powder"
+  ]
+ },
+ {
+  "id": "green",
+  "category": "colors",
+  "en": "green",
+  "icon": "green_dye",
+  "items": [
+   "green_dye",
+   "green_concrete",
+   "green_terracotta",
+   "green_stained_glass",
+   "green_concrete_powder"
+  ]
+ },
+ {
+  "id": "yellow",
+  "category": "colors",
+  "en": "yellow",
+  "icon": "yellow_dye",
+  "items": [
+   "yellow_dye",
+   "yellow_concrete",
+   "yellow_terracotta",
+   "yellow_stained_glass",
+   "yellow_concrete_powder"
+  ]
+ },
+ {
+  "id": "black",
+  "category": "colors",
+  "en": "black",
+  "icon": "black_dye",
+  "items": [
+   "black_dye",
+   "black_concrete",
+   "black_terracotta",
+   "black_stained_glass",
+   "black_concrete_powder"
+  ]
+ },
+ {
+  "id": "white",
+  "category": "colors",
+  "en": "white",
+  "icon": "white_dye",
+  "items": [
+   "white_dye",
+   "white_concrete",
+   "white_terracotta",
+   "white_stained_glass",
+   "white_concrete_powder"
+  ]
+ },
+ {
+  "id": "brown",
+  "category": "colors",
+  "en": "brown",
+  "icon": "brown_dye",
+  "items": [
+   "brown_dye",
+   "brown_concrete",
+   "brown_terracotta",
+   "brown_stained_glass",
+   "brown_concrete_powder"
+  ]
+ },
+ {
+  "id": "orange",
+  "category": "colors",
+  "en": "orange",
+  "icon": "orange_dye",
+  "items": [
+   "orange_dye",
+   "orange_concrete",
+   "orange_terracotta",
+   "orange_stained_glass",
+   "orange_concrete_powder"
+  ]
+ },
+ {
+  "id": "pink",
+  "category": "colors",
+  "en": "pink",
+  "icon": "pink_dye",
+  "items": [
+   "pink_dye",
+   "pink_concrete",
+   "pink_terracotta",
+   "pink_stained_glass",
+   "pink_concrete_powder"
+  ]
+ },
+ {
+  "id": "purple",
+  "category": "colors",
+  "en": "purple",
+  "icon": "purple_dye",
+  "items": [
+   "purple_dye",
+   "purple_concrete",
+   "purple_terracotta",
+   "purple_stained_glass",
+   "purple_concrete_powder"
+  ]
+ },
+ {
+  "id": "gray",
+  "category": "colors",
+  "en": "gray",
+  "icon": "gray_dye",
+  "items": [
+   "gray_dye",
+   "gray_concrete",
+   "gray_terracotta",
+   "gray_stained_glass",
+   "gray_concrete_powder"
+  ]
+ },
+ {
+  "id": "rain",
+  "category": "world",
+  "en": "rain",
+  "icon": "water_bucket",
+  "events": [
+   "rain"
+  ]
+ },
+ {
+  "id": "thunder",
+  "category": "world",
+  "en": "thunder",
+  "icon": "lightning_rod",
+  "events": [
+   "thunder"
+  ]
+ },
+ {
+  "id": "snow",
+  "category": "world",
+  "en": "snow",
+  "icon": "snow_block",
+  "items": [
+   "snow_block",
+   "snow",
+   "powder_snow_bucket"
+  ]
+ },
+ {
+  "id": "sun",
+  "category": "world",
+  "en": "the sun",
+  "icon": "daylight_detector",
+  "events": [
+   "sunny"
+  ]
+ },
+ {
+  "id": "moon",
+  "category": "world",
+  "en": "the moon",
+  "icon": "phantom_membrane",
+  "events": [
+   "moon"
+  ]
+ },
+ {
+  "id": "forest",
+  "category": "world",
+  "en": "a forest",
+  "icon": "spruce_log",
+  "events": [
+   "biome_forest"
+  ]
+ },
+ {
+  "id": "desert",
+  "category": "world",
+  "en": "a desert",
+  "icon": "dead_bush",
+  "events": [
+   "biome_desert"
+  ]
+ },
+ {
+  "id": "sea",
+  "category": "world",
+  "en": "a sea",
+  "icon": "nautilus_shell",
+  "events": [
+   "biome_ocean"
+  ]
+ },
+ {
+  "id": "mountain",
+  "category": "world",
+  "en": "a mountain",
+  "icon": "iron_ore",
+  "events": [
+   "biome_mountain"
+  ]
+ },
+ {
+  "id": "swamp",
+  "category": "world",
+  "en": "a swamp",
+  "icon": "lily_pad",
+  "events": [
+   "biome_swamp"
+  ]
+ },
+ {
+  "id": "jungle",
+  "category": "world",
+  "en": "a jungle",
+  "icon": "cocoa_beans",
+  "events": [
+   "biome_jungle"
+  ]
+ },
+ {
+  "id": "beach",
+  "category": "world",
+  "en": "a beach",
+  "icon": "sea_pickle",
+  "events": [
+   "biome_beach"
+  ]
+ },
+ {
+  "id": "cave",
+  "category": "world",
+  "en": "a cave",
+  "icon": "glow_lichen",
+  "events": [
+   "cave"
   ]
  }
 ]

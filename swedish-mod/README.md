@@ -9,7 +9,7 @@ You discover Swedish words by playing: picking things up, looking at animals, ju
 
 ## What's in it
 
-- **116 words in 9 categories:** animals, food, nature, household objects, tools, materials, numbers, verbs, everyday phrases. Every word has an example sentence and natural Swedish voice.
+- **196 words in 12 categories:** animals, creatures, food, nature, weather & places, colors, household objects, tools, materials, numbers 1–20, verbs, everyday phrases. Every word has an example sentence and natural Swedish voice.
 - **Discovery:**
 
   | Category | How you discover it |
@@ -20,6 +20,8 @@ You discover Swedish words by playing: picking things up, looking at animals, ju
   | Verbs | Do the action: walk, run, jump, swim, eat, sleep, dig, build |
   | Phrases | Moments in the game: *Hej!* when you join, *God natt!* at night, *Tack!* when trading, *Aj!* when hurt, *Hjälp!* at low health |
 
+- **More ways to discover words:** holding an item counts as well as picking it up, so crafted tools and dyes count too. Weather (*regn, åska*), the sun and moon, the biome you're in (*skog, öken, hav, berg, träsk, djungel, strand*), caves, riding, boats, flying, falling, climbing, fishing, sneaking and drinking all teach words.
+- **Quizzes never interrupt a fight:** a quiz waits until no monster is within 16 blocks and you haven't been hurt, burning, falling, drowning, gliding or swinging your weapon for 5 seconds. In singleplayer the world is paused while a quiz, the journal or the settings are open.
 - **Word states:**
 
   | State | Meaning |
@@ -64,10 +66,10 @@ Pick your level in Settings (**Swedish level**). Changing it also sets a matchin
 | Level | For | What you get |
 |---|---|---|
 | **Beginner (A1)** | Complete beginners | Words with en/ett, pictures, English support. Questions get harder as words improve (see above) |
-| **Intermediate (A2)** | You know basic words | **Grammar:** definite form (*en diamant → diamanten*), plural (*en bok → böcker*), present tense (*att gå → går*), ordinals (*tre → tredje*). **Gap sentences:** *Jag har ___!* with a picture so only one answer fits. English hidden until you click "Visa engelska" |
+| **Intermediate (A2)** | You know basic words | **Grammar:** definite form (*en diamant → diamanten*), plural (*en bok → böcker*), adjective agreement (*röd → rött → röda*), present tense (*att gå → går*), ordinals (*tre → tredje*). **Gap sentences:** *Jag har ___!* with a picture so only one answer fits. English hidden until you click "Visa engelska" |
 | **Advanced (B1+)** | You can read simple Swedish | **Swedish only.** Definitions instead of translations: *"Ett stort djur som ger mjölk." → en ko*. Past tense and supine (*äta → åt, ätit*). Most answers typed. New words show a Swedish definition, not English. Quiz buttons and hints in Swedish |
 
-- **Unlock all words** (Intermediate and Advanced): skip discovering words you already know. All 116 words become available to quizzes and the journal at once. No milestone shields are given for it.
+- **Unlock all words** (Intermediate and Advanced): skip discovering words you already know. All 196 words become available to quizzes and the journal at once. No milestone shields are given for it.
 - **Good wrong answers:** the wrong options in grammar questions are the word's other forms (*diamanter* when asking for *diamanten*) and typical learner mistakes (*ätade* instead of *åt*).
 - **Journal:** from Intermediate, each word shows its forms (*Former: diamanten · diamanter*); at Advanced, also its Swedish definition.
 
@@ -107,13 +109,13 @@ Pick your level in Settings (**Swedish level**). Changing it also sets a matchin
 ## Install
 
 1. Install [Fabric Loader](https://fabricmc.net/use/installer/) for Minecraft **26.3**.
-2. Put [Fabric API](https://modrinth.com/mod/fabric-api) (26.3) and [`dist/svenskacraft-2.2.1+26.3.jar`](dist/svenskacraft-2.2.1+26.3.jar) in `.minecraft/mods`.
+2. Put [Fabric API](https://modrinth.com/mod/fabric-api) (26.3) and [`dist/svenskacraft-2.3.0+26.3.jar`](dist/svenskacraft-2.3.0+26.3.jar) in `.minecraft/mods`.
 
-**Two Minecraft versions:** `svenskacraft-2.2.1+26.3.jar` for Minecraft **26.3** and `svenskacraft-2.2.1+26.2.jar` for **26.2** (same features). Use the one that matches your profile. The `SvenskaCraft-Lunar-…zip` files contain the same jars, for browsers that block `.jar` downloads.
+**Two Minecraft versions:** `svenskacraft-2.3.0+26.3.jar` for Minecraft **26.3** and `svenskacraft-2.3.0+26.2.jar` for **26.2** (same features). Use the one that matches your profile. The `SvenskaCraft-Lunar-…zip` files contain the same jars, for browsers that block `.jar` downloads.
 
-**CurseForge app:** import [`dist/SvenskaCraft-CurseForge-2.2.1+26.3.zip`](dist/SvenskaCraft-CurseForge-2.2.1+26.3.zip): Minecraft → Create Custom Profile → Import → choose the zip. It sets up Minecraft 26.3 + Fabric with Fabric API and SvenskaCraft included; then press Play. (Rebuild it with `python3 tools/make_curseforge_pack.py <fabric-api.jar>`.)
+**CurseForge app:** import [`dist/SvenskaCraft-CurseForge-2.3.0+26.3.zip`](dist/SvenskaCraft-CurseForge-2.3.0+26.3.zip): Minecraft → Create Custom Profile → Import → choose the zip. It sets up Minecraft 26.3 + Fabric with Fabric API and SvenskaCraft included; then press Play. (Rebuild it with `python3 tools/make_curseforge_pack.py <fabric-api.jar>`.)
 
-**Lunar Client:** Lunar supports Minecraft 26.3 and custom Fabric mods, and already includes Fabric API. Pick version **26.3** with **Fabric** in the Lunar launcher, add `svenskacraft-2.2.1+26.3.jar` as a custom mod, and don't add Fabric API yourself.
+**Lunar Client:** Lunar supports Minecraft 26.3 and custom Fabric mods, and already includes Fabric API. Pick version **26.3** with **Fabric** in the Lunar launcher, add `svenskacraft-2.3.0+26.3.jar` as a custom mod, and don't add Fabric API yourself.
 
 **Upgrading:** 2.0 progress loads as-is. **From 1.0:** your learned words, points and settings are moved over automatically the first time you start the game. Old words are not spoken again.
 
@@ -148,7 +150,7 @@ Pick your level in Settings (**Swedish level**). Changing it also sets a matchin
   - Numbers come from how many items you pick up at once; high numbers are rarer.
 - **"Never" translations:** verbs and phrases have no clear picture, so their quiz shows the icon and asks for the Swedish word.
 - **Typing:** answers are checked by spelling only; a synonym that's also correct Swedish is marked wrong.
-- **Levels:** the grammar covers the 116 words in the mod: noun forms, 8 verbs, ordinals 1–10. There are no adjectives, word-order or longer-sentence exercises yet. Mass nouns (*jord, sand, guld*) have no plural question.
+- **Levels:** the grammar covers the words in the mod: noun forms, color adjectives, 15 verbs, ordinals 1–20. There are no word-order or longer-sentence exercises yet. Mass nouns (*jord, sand, guld*) have no plural question.
 - **Interface at Advanced:** quiz text and the journal's word details are Swedish; menus and settings stay in English.
 - **Daily goal:** uses your computer's date; changing the clock changes the day.
 - **Short review gaps use real time,** so time offline also counts toward when a word is due.
@@ -157,7 +159,7 @@ Pick your level in Settings (**Swedish level**). Changing it also sets a matchin
 ## For developers
 
 ```bash
-./gradlew build     # Java 25; runs unit tests → build/libs/svenskacraft-2.2.1+26.3.jar
+./gradlew build     # Java 25; runs unit tests → build/libs/svenskacraft-2.3.0+26.3.jar
 ./gradlew test      # unit tests only (vocabulary data, mastery, scheduler, question planner, answer checking, daily goal, saving, migration, milestones)
 ```
 
