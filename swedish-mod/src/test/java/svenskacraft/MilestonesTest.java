@@ -34,6 +34,16 @@ class MilestonesTest {
 	}
 
 	@Test
+	void unlockingAllWordsGivesNoShields() {
+		Progress p = Progress.fresh("sv");
+		for (Vocabulary.Entry e : vocab.entries()) p.discover(e.id(), 1);
+		Milestones.check(p, vocab, false);
+		assertEquals(0, p.shields);
+		assertTrue(p.milestones.contains("words_100"));
+		assertTrue(Milestones.check(p, vocab).isEmpty(), "already recorded, so nothing pops up later");
+	}
+
+	@Test
 	void statsCountStates() {
 		Progress p = Progress.fresh("sv");
 		p.discover("apple", 1);

@@ -7,18 +7,31 @@ import java.util.Locale;
 public final class AnswerCheck {
 	public enum Verdict { CORRECT, ALMOST, WRONG }
 
-	/** @param hint what to remember next time (empty when exactly right) */
-	public record Result(Verdict verdict, String hint) {
+	/** Why an answer was only "almost" right, so the UI can phrase the hint in any language. */
+	public enum Reason { NONE, ARTICLE_MISSING, ARTICLE_WRONG, LETTERS, TYPO }
+
+	/** @param hint what to remember next time, in English (empty when exactly right) */
+	public record Result(Verdict verdict, Reason reason, String hint) {
 		public boolean accepted() { return verdict != Verdict.WRONG; }
 	}
 
 	private AnswerCheck() {}
 
+	/** Accepts any of several "|"-separated alternatives; the best verdict wins. */
 	public static Result check(String typed, String expected) {
+		Result best = null;
+		for (String alt : expected.split("\\|")) {
+			Result r = checkOne(typed, alt.trim());
+			if (best == null || r.verdict().ordinal() < best.verdict().ordinal()) best = r;
+		}
+		return best;
+	}
+
+	private static Result checkOne(String typed, String expected) {
 		String t = normalize(typed);
 		String e = normalize(expected);
-		if (t.isEmpty()) return new Result(Verdict.WRONG, "");
-		if (t.equals(e)) return new Result(Verdict.CORRECT, "");
+		if (t.isEmpty()) return new Result(Verdict.WRONG, Reason.NONE, "");
+		if (t.equals(e)) return new Result(Verdict.CORRECT, Reason.NONE, "");
 
 		String article = article(e);
 		String noun = article == null ? e : e.substring(article.length() + 1);
@@ -26,14 +39,14 @@ public final class AnswerCheck {
 		String typedNoun = typedArticle == null ? t : t.substring(typedArticle.length() + 1);
 
 		if (article != null && typedNoun.equals(noun)) {
-			if (typedArticle == null) return new Result(Verdict.ALMOST, "Remember the article: " + article + " " + noun);
-			return new Result(Verdict.ALMOST, "It's \"" + article + "\", not \"" + typedArticle + "\": " + article + " " + noun);
+			if (typedArticle == null) return new Result(Verdict.ALMOST, Reason.ARTICLE_MISSING, "Remember the article: " + article + " " + noun);
+			return new Result(Verdict.ALMOST, Reason.ARTICLE_WRONG, "It's \"" + article + "\", not \"" + typedArticle + "\": " + article + " " + noun);
 		}
 		if (stripMarks(t).equals(stripMarks(e)) || (article != null && stripMarks(typedNoun).equals(stripMarks(noun)))) {
-			return new Result(Verdict.ALMOST, "Watch the letters å, ä, ö: " + expected);
+			return new Result(Verdict.ALMOST, Reason.LETTERS, "Watch the letters å, ä, ö: " + expected);
 		}
-		if (e.length() >= 5 && distance(t, e) == 1) return new Result(Verdict.ALMOST, "Small typo – it's spelled " + expected);
-		return new Result(Verdict.WRONG, "");
+		if (e.length() >= 5 && distance(t, e) == 1) return new Result(Verdict.ALMOST, Reason.TYPO, "Small typo – it's spelled " + expected);
+		return new Result(Verdict.WRONG, Reason.NONE, "");
 	}
 
 	public static String normalize(String s) {

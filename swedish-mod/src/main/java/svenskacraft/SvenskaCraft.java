@@ -194,6 +194,23 @@ public class SvenskaCraft implements ClientModInitializer {
 		}
 	}
 
+	/**
+	 * For players who already know Swedish: marks every word as discovered (silently, no voice),
+	 * so quizzes can use the whole vocabulary. Discovery milestones are recorded without shields.
+	 */
+	public static int unlockAllWords() {
+		long now = System.currentTimeMillis();
+		int count = 0;
+		for (Vocabulary.Entry e : vocab.entries()) {
+			if (progress.discover(e.id(), now)) count++;
+			progress.wordOrCreate(e.id()).spoken = true;
+		}
+		Milestones.check(progress, vocab, false);
+		store.markDirty();
+		saveProgressNow();
+		return count;
+	}
+
 	public static void saveSettings() {
 		try {
 			settings.save(configDir);

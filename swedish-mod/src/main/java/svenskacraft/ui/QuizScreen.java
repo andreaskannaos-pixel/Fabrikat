@@ -12,11 +12,14 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
 import svenskacraft.Penalty;
 import svenskacraft.SvenskaCraft;
 import svenskacraft.audio.AudioPlayer;
 import svenskacraft.learning.AnswerCheck;
+import svenskacraft.learning.Forms;
+import svenskacraft.learning.Level;
 import svenskacraft.learning.Mastery;
 import svenskacraft.learning.QuestionPlanner;
 import svenskacraft.learning.QuestionPlanner.Kind;
@@ -28,10 +31,10 @@ import svenskacraft.vocab.Vocabulary.Entry;
 
 /**
  * A quiz round (1–3 questions by intensity), or a practice round from the journal (no timer, no penalty).
- * Question kinds get harder as a word improves: multiple choice → en/ett → listening → typing.
+ * Which kinds of questions appear depends on the player's level and how well they know each word.
  */
 public class QuizScreen extends Screen {
-	/** How a multiple-choice question is shown. */
+	/** How a word-choice question is shown. */
 	enum Type {
 		TARGET_TO_EN,       // Swedish word shown, pick English
 		EN_TO_TARGET,       // picture + English shown, pick Swedish
@@ -52,8 +55,13 @@ public class QuizScreen extends Screen {
 	// current question
 	private Entry answer;
 	private Kind kind;
-	private Type type;
-	private List<Entry> options = List.of();
+	private boolean typedMode;
+	private Type type;                          // CHOICE / LISTEN
+	private List<Entry> options = List.of();    // CHOICE / LISTEN
+	private List<String> textOptions;           // GENDER / FORM / CLOZE / DEFINITION as choice
+	private String expected;                    // typed answer ("|" alternatives allowed)
+	private Forms.Type formType;
+	private Forms.Cloze cloze;
 	private int correctIndex;
 	private int chosen;
 	private int ticks;
@@ -83,32 +91,77 @@ public class QuizScreen extends Screen {
 
 	private Settings settings() { return SvenskaCraft.settings; }
 
+	private boolean advanced() { return settings().level == Level.ADVANCED; }
+
+	/** Interface text: English with a Swedish word at lower levels, Swedish only at Advanced. */
+	private String t(String english, String swedish) { return advanced() ? swedish : english; }
+
+	private String ui(String key) { return SvenskaCraft.pack.ui(key); }
+
+	// ---------------------------------------------------------------- question setup
+
 	private void nextQuestion() {
 		index++;
 		answer = questions.get(index);
-		WordProgress w = SvenskaCraft.progress.word(answer.id());
-		kind = QuestionPlanner.plan(w, answer.word(), new QuestionPlanner.Options(SvenskaCraft.audio.voiceEnabled(), settings().typing), rnd);
-		boolean never = settings().translations == Settings.Translations.NEVER;
-		if (kind == Kind.LISTEN && never && answer.concept().abstractMeaning()) kind = Kind.CHOICE;
-		type = switch (kind) {
-			case LISTEN -> never ? Type.TARGET_TO_PICTURE : Type.TARGET_TO_EN;
-			case CHOICE -> chooseType(answer);
-			default -> null;
-		};
-		options = type == null ? List.of() : buildOptions(answer, type);
-		correctIndex = switch (kind) {
-			case GENDER -> AnswerCheck.article(AnswerCheck.normalize(answer.word())).equals("en") ? 0 : 1;
-			case TYPE -> 0;
-			default -> options.indexOf(answer);
-		};
 		chosen = UNANSWERED;
 		ticks = 0;
 		nextAt = -1;
 		revealed = false;
 		typed = "";
-		limitTicks = practice ? Integer.MAX_VALUE : settings().answerSeconds * 20 * (kind == Kind.TYPE ? 2 : 1);
 		resultLine = Component.empty();
 		detailLine = Component.empty();
+		type = null;
+		options = List.of();
+		textOptions = null;
+		expected = answer.word();
+		formType = null;
+		cloze = Forms.cloze(answer.text());
+
+		boolean never = settings().translations == Settings.Translations.NEVER;
+		boolean noun = AnswerCheck.article(AnswerCheck.normalize(answer.word())) != null;
+		List<Forms.Type> askable = Forms.askable(answer.text(), settings().level);
+		Set<Kind> avail = EnumSet.of(Kind.CHOICE, Kind.TYPE);
+		if (noun) avail.add(Kind.GENDER);
+		if (SvenskaCraft.audio.voiceEnabled() && !(never && answer.concept().abstractMeaning())) avail.add(Kind.LISTEN);
+		if (!askable.isEmpty()) avail.add(Kind.FORM);
+		if (cloze != null) avail.add(Kind.CLOZE);
+		if (answer.text().definition() != null) avail.add(Kind.DEFINITION);
+
+		WordProgress w = SvenskaCraft.progress.word(answer.id());
+		QuestionPlanner.Plan plan = QuestionPlanner.plan(w, settings().level, avail, settings().typing, rnd);
+		kind = plan.kind();
+		typedMode = kind == Kind.TYPE || plan.typed();
+
+		switch (kind) {
+			case CHOICE -> { type = chooseType(answer); options = buildOptions(answer, type); }
+			case LISTEN -> { type = never ? Type.TARGET_TO_PICTURE : Type.TARGET_TO_EN; options = buildOptions(answer, type); }
+			case GENDER -> textOptions = List.of("en", "ett");
+			case FORM -> {
+				formType = askable.get(rnd.nextInt(askable.size()));
+				expected = Forms.all(answer.text()).get(formType);
+				if (!typedMode) textOptions = formOptions();
+			}
+			case CLOZE -> {
+				expected = cloze.answer();
+				if (!typedMode) textOptions = clozeOptions();
+			}
+			case DEFINITION -> {
+				if (!typedMode) textOptions = shuffledWithAnswer(Forms.first(expected), sameCategory(e -> e.word()));
+			}
+			case TYPE -> { }
+		}
+		if (textOptions != null && textOptions.size() < (kind == Kind.GENDER ? 2 : 4)) {
+			// not enough sensible wrong answers: ask by typing if allowed, else fall back to plain choice
+			textOptions = null;
+			if (settings().typing && kind != Kind.GENDER) typedMode = true;
+			else { kind = Kind.CHOICE; type = chooseType(answer); options = buildOptions(answer, type); expected = answer.word(); }
+		}
+		correctIndex = switch (kind) {
+			case GENDER -> AnswerCheck.article(AnswerCheck.normalize(answer.word())).equals("en") ? 0 : 1;
+			case CHOICE, LISTEN -> options.indexOf(answer);
+			default -> textOptions == null ? 0 : textOptions.indexOf(Forms.first(expected).toLowerCase(Locale.ROOT));
+		};
+		limitTicks = practice ? Integer.MAX_VALUE : settings().answerSeconds * 20 * (typedMode ? 2 : 1);
 	}
 
 	private Type chooseType(Entry e) {
@@ -146,12 +199,56 @@ public class QuizScreen extends Screen {
 		return out;
 	}
 
+	/** Strings from other words in the same category (then any category), e.g. their definite forms. */
+	private List<String> sameCategory(java.util.function.Function<Entry, String> f) {
+		List<String> out = new ArrayList<>();
+		for (List<Entry> pool : List.of(SvenskaCraft.vocab.inCategory(answer.category()), SvenskaCraft.vocab.entries())) {
+			List<Entry> shuffled = new ArrayList<>(pool);
+			Collections.shuffle(shuffled, rnd);
+			for (Entry e : shuffled) {
+				if (e == answer) continue;
+				String s = f.apply(e);
+				if (s != null && !s.isBlank()) out.add(Forms.first(s).toLowerCase(Locale.ROOT));
+			}
+		}
+		return out;
+	}
+
+	private List<String> formOptions() {
+		List<String> wrong = new ArrayList<>(Forms.distractors(answer.text(), formType));
+		Collections.shuffle(wrong, rnd);
+		wrong.addAll(sameCategory(e -> Forms.all(e.text()).get(formType)));
+		return shuffledWithAnswer(Forms.first(expected), wrong);
+	}
+
+	private List<String> clozeOptions() {
+		List<String> others = new ArrayList<>();
+		for (String s : sameCategory(e -> Forms.all(e.text()).get(cloze.type()))) others.add(s.replaceAll("[!?.]+$", ""));
+		return shuffledWithAnswer(cloze.answer(), others);
+	}
+
+	private List<String> shuffledWithAnswer(String correct, List<String> candidates) {
+		String c = correct.toLowerCase(Locale.ROOT);
+		Set<String> correctAlts = new HashSet<>();
+		for (String a : Forms.alternatives(expected)) correctAlts.add(a.toLowerCase(Locale.ROOT));
+		List<String> out = new ArrayList<>(List.of(c));
+		for (String s : candidates) {
+			if (out.size() == 4) break;
+			if (!out.contains(s) && !correctAlts.contains(s)) out.add(s);
+		}
+		Collections.shuffle(out, rnd);
+		return out;
+	}
+
 	/** The Swedish word is visible before answering (so the ♪ button may play it). */
 	private boolean targetShown() {
-		return (kind == Kind.CHOICE && (type == Type.TARGET_TO_EN || type == Type.TARGET_TO_PICTURE)) || kind == Kind.LISTEN;
+		return (kind == Kind.CHOICE && (type == Type.TARGET_TO_EN || type == Type.TARGET_TO_PICTURE))
+			|| kind == Kind.LISTEN || kind == Kind.FORM;
 	}
 
 	private int top() { return Math.max(4, (height - 180) / 2); }
+
+	// ---------------------------------------------------------------- widgets
 
 	@Override
 	protected void init() {
@@ -159,49 +256,42 @@ public class QuizScreen extends Screen {
 		int top = top();
 		Arrays.fill(buttons, null);
 		input = null;
-		switch (kind) {
-			case CHOICE, LISTEN -> {
-				for (int i = 0; i < 4; i++) {
-					final int idx = i;
-					int x = (i % 2 == 0) ? cx - 152 : cx + 2;
-					int y = top + 76 + (i / 2) * 24;
-					buttons[i] = addRenderableWidget(Button.builder(buttonText(i), b -> choose(idx)).bounds(x, y, 150, 20).build());
-				}
+		if (typedMode) {
+			input = addRenderableWidget(new EditBox(font, cx - 100, top + 76, 200, 20, Component.literal("answer")));
+			input.setMaxLength(60);
+			input.setValue(typed);
+			input.setResponder(s -> typed = s);
+			input.setEditable(chosen == UNANSWERED);
+			int x = cx - 100;
+			for (String letter : new String[] {"å", "ä", "ö"}) {
+				addRenderableWidget(Button.builder(Component.literal(letter), b -> {
+					if (input != null && chosen == UNANSWERED) { input.insertText(letter); setFocused(input); }
+				}).bounds(x, top + 100, 20, 20).build());
+				x += 22;
 			}
-			case GENDER -> {
-				for (int i = 0; i < 2; i++) {
-					final int idx = i;
-					buttons[i] = addRenderableWidget(Button.builder(buttonText(i), b -> choose(idx))
-						.bounds(i == 0 ? cx - 152 : cx + 2, top + 82, 150, 20).build());
-				}
-			}
-			case TYPE -> {
-				input = addRenderableWidget(new EditBox(font, cx - 100, top + 76, 200, 20, Component.literal("answer")));
-				input.setMaxLength(40);
-				input.setValue(typed);
-				input.setResponder(s -> typed = s);
-				input.setEditable(chosen == UNANSWERED);
-				int x = cx - 100;
-				for (String letter : new String[] {"å", "ä", "ö"}) {
-					addRenderableWidget(Button.builder(Component.literal(letter), b -> {
-						if (input != null && chosen == UNANSWERED) { input.insertText(letter); setFocused(input); }
-					}).bounds(x, top + 100, 20, 20).build());
-					x += 22;
-				}
-				buttons[0] = addRenderableWidget(Button.builder(Component.literal("Svara (answer)"), b -> submitTyped())
-					.bounds(cx + 20, top + 100, 80, 20).build());
-				if (chosen == UNANSWERED) setInitialFocus(input);
+			buttons[0] = addRenderableWidget(Button.builder(Component.literal(t("Svara (answer)", "Svara")), b -> submitTyped())
+				.bounds(cx + 20, top + 100, 80, 20).build());
+			if (chosen == UNANSWERED) setInitialFocus(input);
+		} else {
+			int n = kind == Kind.GENDER ? 2 : 4;
+			int rowY = kind == Kind.GENDER ? top + 82 : top + 76;
+			for (int i = 0; i < n; i++) {
+				final int idx = i;
+				int x = (i % 2 == 0) ? cx - 152 : cx + 2;
+				buttons[i] = addRenderableWidget(Button.builder(buttonText(i), b -> choose(idx)).bounds(x, rowY + (i / 2) * 24, 150, 20).build());
 			}
 		}
-		listen = addRenderableWidget(Button.builder(Component.literal(kind == Kind.LISTEN && chosen == UNANSWERED ? "♪ Spela (play)" : "♪ Lyssna (listen)"),
+		String listenLabel = kind == Kind.LISTEN && chosen == UNANSWERED ? t("♪ Spela (play)", "♪ Spela") : t("♪ Lyssna (listen)", "♪ Lyssna");
+		listen = addRenderableWidget(Button.builder(Component.literal(listenLabel),
 			b -> SvenskaCraft.audio.play(SvenskaCraft.pack.wordSound(answer.id()), AudioPlayer.Priority.MANUAL)).bounds(cx - 102, top + 126, 100, 20).build());
 		reveal = addRenderableWidget(Button.builder(Component.literal("Visa engelska"), b -> {
 			revealed = true;
 			b.visible = false;
 			layoutSmallButtons();
 		}).bounds(cx + 2, top + 126, 100, 20).tooltip(Tooltip.create(Component.literal("Show English"))).build());
-		boolean pictureOnly = (kind == Kind.CHOICE && type == Type.PICTURE_TO_TARGET) || kind == Kind.TYPE || kind == Kind.GENDER;
-		reveal.visible = settings().translations == Settings.Translations.ON_DEMAND && pictureOnly && !revealed && chosen == UNANSWERED;
+		boolean englishHidden = (kind == Kind.CHOICE && type == Type.PICTURE_TO_TARGET) || kind == Kind.TYPE || kind == Kind.GENDER
+			|| kind == Kind.FORM || kind == Kind.CLOZE;
+		reveal.visible = settings().translations == Settings.Translations.ON_DEMAND && englishHidden && !revealed && chosen == UNANSWERED;
 		updateListen();
 	}
 
@@ -223,8 +313,8 @@ public class QuizScreen extends Screen {
 	}
 
 	private Component buttonText(int i) {
-		if (kind == Kind.GENDER) {
-			String a = i == 0 ? "en" : "ett";
+		if (textOptions != null) {
+			String a = textOptions.get(i);
 			if (chosen == UNANSWERED) return Component.literal(a);
 			if (i == correctIndex) return Component.literal("✔ " + a).withStyle(ChatFormatting.GREEN);
 			return Component.literal((i == chosen ? "✘ " : "") + a).withStyle(i == chosen ? ChatFormatting.RED : ChatFormatting.DARK_GRAY);
@@ -243,6 +333,8 @@ public class QuizScreen extends Screen {
 		return Component.literal(text).withStyle(ChatFormatting.DARK_GRAY);
 	}
 
+	// ---------------------------------------------------------------- answering
+
 	private void choose(int idx) {
 		if (chosen != UNANSWERED) return;
 		chosen = idx;
@@ -250,15 +342,26 @@ public class QuizScreen extends Screen {
 	}
 
 	private void submitTyped() {
-		if (chosen != UNANSWERED || kind != Kind.TYPE) return;
+		if (chosen != UNANSWERED || !typedMode) return;
 		if (AnswerCheck.normalize(typed).isEmpty()) return;
 		chosen = 0;
-		AnswerCheck.Result r = AnswerCheck.check(typed, answer.word());
-		Component hint = r.verdict() == AnswerCheck.Verdict.ALMOST
-			? Component.literal(r.hint()).withStyle(ChatFormatting.YELLOW)
-			: Component.empty();
-		if (!r.accepted()) hint = Component.literal("You wrote: " + typed).withStyle(ChatFormatting.GRAY);
+		AnswerCheck.Result r = AnswerCheck.check(typed, expected);
+		Component hint = Component.empty();
+		if (r.verdict() == AnswerCheck.Verdict.ALMOST) hint = Component.literal(hintText(r)).withStyle(ChatFormatting.YELLOW);
+		if (!r.accepted()) hint = Component.literal(t("You wrote: ", "Du skrev: ") + typed).withStyle(ChatFormatting.GRAY);
 		finish(r.accepted(), hint);
+	}
+
+	private String hintText(AnswerCheck.Result r) {
+		if (!advanced()) return r.hint();
+		String exp = Forms.first(expected);
+		return switch (r.reason()) {
+			case ARTICLE_MISSING -> "Glöm inte artikeln: " + exp;
+			case ARTICLE_WRONG -> "Det heter " + exp;
+			case LETTERS -> "Tänk på å, ä och ö: " + exp;
+			case TYPO -> "Litet stavfel – det stavas " + exp;
+			case NONE -> "";
+		};
 	}
 
 	private void finish(boolean correct, Component hint) {
@@ -272,23 +375,24 @@ public class QuizScreen extends Screen {
 		WordState after = Mastery.state(w);
 
 		boolean showEn = settings().translations != Settings.Translations.NEVER;
-		MutableComponent pair = Component.literal(answer.word()).withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD);
+		String shown = kind == Kind.FORM || kind == Kind.CLOZE ? Forms.first(expected) : answer.word();
+		MutableComponent pair = Component.literal(shown).withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD);
 		if (showEn) pair.append(Component.literal(" = " + answer.en()).withStyle(ChatFormatting.GRAY));
 
 		detailLine = hint;
 		if (correct) {
 			correctCount++;
-			progress.points += kind == Kind.TYPE ? 2 : 1;
+			progress.points += typedMode ? 2 : 1;
 			progress.streak++;
 			progress.bestStreak = Math.max(progress.bestStreak, progress.streak);
 			SvenskaCraft.audio.react("correct");
 			AudioPlayer.cue(SoundEvents.NOTE_BLOCK_PLING, 1.6f, 0.35f);
-			resultLine = Component.literal(SvenskaCraft.pack.ui("correct") + "  ").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD).append(pair);
+			resultLine = Component.literal(ui("correct") + "  ").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD).append(pair);
 		} else {
 			progress.streak = 0;
 			SvenskaCraft.audio.react(chosen == TIMED_OUT ? "timeout" : "wrong");
 			AudioPlayer.cue(SoundEvents.NOTE_BLOCK_BASS, 0.7f, 0.5f);
-			String head = chosen == TIMED_OUT ? SvenskaCraft.pack.ui("timeout") : SvenskaCraft.pack.ui("wrong");
+			String head = chosen == TIMED_OUT ? ui("timeout") : ui("wrong");
 			resultLine = Component.literal(head + "  ").withStyle(ChatFormatting.RED, ChatFormatting.BOLD).append(pair);
 			if (!practice) {
 				Component penalty = Penalty.apply(minecraft, settings().consequence);
@@ -303,17 +407,17 @@ public class QuizScreen extends Screen {
 		}
 		SvenskaCraft.answered();
 		SvenskaCraft.progressChanged();
-		for (int i = 0; i < 4; i++) if (buttons[i] != null && kind != Kind.TYPE) buttons[i].setMessage(buttonText(i));
+		if (!typedMode) for (int i = 0; i < 4; i++) if (buttons[i] != null) buttons[i].setMessage(buttonText(i));
 		if (input != null) input.setEditable(false);
 		reveal.visible = false;
-		listen.setMessage(Component.literal("♪ Lyssna (listen)"));
+		listen.setMessage(Component.literal(t("♪ Lyssna (listen)", "♪ Lyssna")));
 		updateListen();
 		nextAt = ticks + FEEDBACK_TICKS + (detailLine.getString().length() > 30 ? 20 : 0);
 	}
 
 	@Override
 	public boolean keyPressed(KeyEvent event) {
-		if (kind == Kind.TYPE && chosen == UNANSWERED
+		if (typedMode && chosen == UNANSWERED
 			&& (event.key() == InputConstants.KEY_RETURN || event.key() == InputConstants.KEY_NUMPADENTER)) {
 			submitTyped();
 			return true;
@@ -336,7 +440,8 @@ public class QuizScreen extends Screen {
 				nextQuestion();
 				rebuildWidgets();
 			} else {
-				SvenskaCraft.say(Component.literal((practice ? "Practice: " : "Quiz: ") + correctCount + "/" + questions.size() + " rätt (correct)")
+				String label = practice ? t("Practice: ", "Övning: ") : "Quiz: ";
+				SvenskaCraft.say(Component.literal(label + correctCount + "/" + questions.size() + " rätt" + (advanced() ? "" : " (correct)"))
 					.withStyle(correctCount == questions.size() ? ChatFormatting.GREEN : ChatFormatting.YELLOW));
 				onClose();
 			}
@@ -350,13 +455,15 @@ public class QuizScreen extends Screen {
 		else super.onClose();
 	}
 
+	// ---------------------------------------------------------------- drawing
+
 	@Override
 	public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTick) {
 		super.extractRenderState(g, mouseX, mouseY, partialTick);
 		int cx = width / 2;
 		int top = top();
 		String counter = questions.size() > 1 ? "   " + (index + 1) + "/" + questions.size() : "";
-		String title = practice ? "ÖVNING · Practice" : SvenskaCraft.pack.ui("quizTitle");
+		String title = practice ? t("ÖVNING · Practice", "ÖVNING") : ui("quizTitle");
 		g.centeredText(font, Component.literal("★ " + title + " ★" + counter).withStyle(ChatFormatting.BOLD), cx, top, 0xFFFFCC00);
 
 		boolean showEn = settings().translations == Settings.Translations.ALWAYS || revealed;
@@ -364,26 +471,60 @@ public class QuizScreen extends Screen {
 		switch (kind) {
 			case CHOICE -> drawChoicePrompt(g, cx, top, showEn);
 			case LISTEN -> {
-				g.centeredText(font, Component.literal(SvenskaCraft.pack.ui("listenAndChoose")), cx, top + 16, 0xFFFFFFFF);
+				g.centeredText(font, Component.literal(ui("listenAndChoose")), cx, top + 16, 0xFFFFFFFF);
 				bigText(g, answered ? answer.word() : "♪ ? ♪", cx, top + 30, answered ? 0xFFFFAA00 : 0xFF88CCFF);
 			}
 			case GENDER -> {
 				drawIcon(g, answer, cx - 16, top + 12, 2.0f);
-				String noun = answer.word().substring(answer.word().indexOf(' ') + 1);
-				bigText(g, (answered ? answer.word().substring(0, answer.word().indexOf(' ')) : "___") + " " + noun, cx, top + 46, 0xFFFFAA00);
-				g.centeredText(font, Component.literal(SvenskaCraft.pack.ui("enOrEtt") + (showEn ? "  (" + answer.en() + ")" : "")), cx, top + 66, 0xFFCCCCCC);
+				String noun = Forms.noun(answer.word());
+				String art = answer.word().substring(0, answer.word().length() - noun.length()).trim();
+				bigText(g, (answered ? art : "___") + " " + noun, cx, top + 46, 0xFFFFAA00);
+				g.centeredText(font, Component.literal(ui("enOrEtt") + (showEn ? "  (" + answer.en() + ")" : "")), cx, top + 66, 0xFFCCCCCC);
 			}
 			case TYPE -> {
 				drawIcon(g, answer, cx - 16, top + 12, 2.0f);
-				String q = SvenskaCraft.pack.ui("typeInSwedish") + (showEn ? "  \"" + answer.en() + "\"" : "");
+				String q = ui("typeInSwedish") + (showEn ? "  \"" + answer.en() + "\"" : "");
 				g.centeredText(font, Component.literal(q), cx, top + 50, 0xFFFFFFFF);
 				if (answered) g.centeredText(font, Component.literal("→ " + answer.word()).withStyle(ChatFormatting.BOLD), cx, top + 62, 0xFFFFAA00);
+			}
+			case FORM -> {
+				String head = ui("form." + formType.name().toLowerCase(Locale.ROOT));
+				if (!advanced()) head += "  (" + formEnglish(formType) + ")";
+				g.centeredText(font, Component.literal(head), cx, top + 16, 0xFFFFFFFF);
+				String base = answer.concept().category().equals("verbs") ? "att " + answer.word() : answer.word();
+				bigText(g, base, cx, top + 30, 0xFFFFAA00);
+				String line = answered ? "→ " + Forms.first(expected) : (showEn ? "(" + answer.en() + ")" : "");
+				g.centeredText(font, Component.literal(line).withStyle(answered ? ChatFormatting.BOLD : ChatFormatting.RESET), cx, top + 52,
+					answered ? 0xFFFFAA00 : 0xFFAAAAAA);
+			}
+			case CLOZE -> {
+				// the picture makes the gap unambiguous ("Jag äter ___" could be any food)
+				Component head = Component.literal(ui("cloze"));
+				int hx = cx - (font.width(head) + 20) / 2;
+				drawIcon(g, answer, hx, top + 11, 1.0f);
+				g.text(font, head, hx + 20, top + 16, 0xFFFFFFFF);
+				String gap = answered ? Forms.first(expected).toUpperCase(Locale.ROOT) : "_____";
+				int y = top + 30;
+				for (FormattedCharSequence line : font.split(Component.literal(cloze.before() + gap + cloze.after()), 300)) {
+					g.centeredText(font, line, cx, y, 0xFFFFDD88);
+					y += 11;
+				}
+				if (showEn) g.centeredText(font, Component.literal(answer.exampleEn()).withStyle(ChatFormatting.ITALIC), cx, y + 2, 0xFF999999);
+			}
+			case DEFINITION -> {
+				g.centeredText(font, Component.literal(ui("whatIsIt")), cx, top + 16, 0xFFFFFFFF);
+				int y = top + 30;
+				for (FormattedCharSequence line : font.split(Component.literal("“" + answer.text().definition() + "”"), 300)) {
+					g.centeredText(font, line, cx, y, 0xFFFFDD88);
+					y += 11;
+				}
+				if (answered) g.centeredText(font, Component.literal("→ " + answer.word()).withStyle(ChatFormatting.BOLD), cx, top + 56, 0xFFFFAA00);
 			}
 		}
 
 		if (!practice) {
 			int barW = 304, x0 = cx - barW / 2;
-			int y0 = switch (kind) { case GENDER -> top + 76; case TYPE -> top + 71; default -> top + 66; };
+			int y0 = kind == Kind.GENDER ? top + 76 : typedMode ? top + 69 : top + 66;
 			float left = chosen == UNANSWERED ? Math.max(0f, 1f - (ticks + partialTick) / limitTicks) : 0f;
 			g.fill(x0, y0, x0 + barW, y0 + 4, 0xFF333333);
 			g.fill(x0, y0, x0 + (int) (barW * left), y0 + 4, left > 0.5f ? 0xFF55FF55 : left > 0.2f ? 0xFFFFDD33 : 0xFFFF5555);
@@ -400,11 +541,12 @@ public class QuizScreen extends Screen {
 		if (!answered) {
 			Settings.Consequence c = settings().consequence;
 			if (practice) {
-				g.centeredText(font, Component.literal("Practice – no timer, no penalty. Esc to stop."), cx, infoY, 0xFF88CC88);
+				g.centeredText(font, Component.literal(t("Practice – no timer, no penalty. Esc to stop.", "Övning – ingen tid, inget straff. Esc för att sluta.")),
+					cx, infoY, 0xFF88CC88);
 			} else if (c != Settings.Consequence.NONE) {
-				String what = c == Settings.Consequence.SMALL ? "1 item" : "a whole stack";
-				String shield = SvenskaCraft.progress.shields > 0 ? "  [shield: " + SvenskaCraft.progress.shields + "]" : "";
-				g.centeredText(font, Component.literal("Wrong answer = you lose " + what + shield), cx, infoY, 0xFFFF7777);
+				String what = c == Settings.Consequence.SMALL ? t("1 item", "1 föremål") : t("a whole stack", "en hel stack");
+				String shield = SvenskaCraft.progress.shields > 0 ? "  [" + t("shield", "sköld") + ": " + SvenskaCraft.progress.shields + "]" : "";
+				g.centeredText(font, Component.literal(t("Wrong answer = you lose ", "Fel svar = du förlorar ") + what + shield), cx, infoY, 0xFFFF7777);
 			}
 		} else {
 			g.centeredText(font, resultLine, cx, infoY, 0xFFFFFFFF);
@@ -412,18 +554,28 @@ public class QuizScreen extends Screen {
 		}
 	}
 
+	private static String formEnglish(Forms.Type t) {
+		return switch (t) {
+			case DEFINITE -> "the …";
+			case PLURAL -> "more than one";
+			case PRESENT -> "present tense";
+			case PAST -> "past tense";
+			case SUPINE -> "have + verb";
+			case ORDINAL -> "1st, 2nd, 3rd …";
+			default -> "";
+		};
+	}
+
 	private void drawChoicePrompt(GuiGraphicsExtractor g, int cx, int top, boolean showEn) {
 		switch (type) {
 			case TARGET_TO_EN, TARGET_TO_PICTURE -> {
-				String q = type == Type.TARGET_TO_EN ? SvenskaCraft.pack.ui("whatDoesItMean") : SvenskaCraft.pack.ui("whichPicture");
+				String q = type == Type.TARGET_TO_EN ? ui("whatDoesItMean") : ui("whichPicture");
 				g.centeredText(font, Component.literal(q), cx, top + 16, 0xFFFFFFFF);
 				bigText(g, answer.word(), cx, top + 30, 0xFFFFAA00);
 			}
 			case EN_TO_TARGET, PICTURE_TO_TARGET -> {
 				drawIcon(g, answer, cx - 16, top + 14, 2.0f);
-				String q = type == Type.EN_TO_TARGET
-					? String.format(SvenskaCraft.pack.ui("howDoYouSay"), answer.en())
-					: SvenskaCraft.pack.ui("whatIsThis");
+				String q = type == Type.EN_TO_TARGET ? String.format(ui("howDoYouSay"), answer.en()) : ui("whatIsThis");
 				g.centeredText(font, Component.literal(q), cx, top + 50, 0xFFFFFFFF);
 				if (type == Type.PICTURE_TO_TARGET && showEn) g.centeredText(font, Component.literal("(" + answer.en() + ")"), cx, top + 60, 0xFFAAAAAA);
 			}

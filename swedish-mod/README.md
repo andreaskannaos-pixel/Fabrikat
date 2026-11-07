@@ -57,12 +57,34 @@ You discover Swedish words by playing: picking things up, looking at animals, ju
 ![overview](docs/journal-overview.png)
 ![quiz](docs/quiz-wrong.png)
 
+## Levels – for people who already know some Swedish
+
+Pick your level in Settings (**Swedish level**). Changing it also sets a matching default for English translations, which you can still change.
+
+| Level | For | What you get |
+|---|---|---|
+| **Beginner (A1)** | Complete beginners | Words with en/ett, pictures, English support. Questions get harder as words improve (see above) |
+| **Intermediate (A2)** | You know basic words | **Grammar:** definite form (*en diamant → diamanten*), plural (*en bok → böcker*), present tense (*att gå → går*), ordinals (*tre → tredje*). **Gap sentences:** *Jag har ___!* with a picture so only one answer fits. English hidden until you click "Visa engelska" |
+| **Advanced (B1+)** | You can read simple Swedish | **Swedish only.** Definitions instead of translations: *"Ett stort djur som ger mjölk." → en ko*. Past tense and supine (*äta → åt, ätit*). Most answers typed. New words show a Swedish definition, not English. Quiz buttons and hints in Swedish |
+
+- **Unlock all words** (Intermediate and Advanced): skip discovering words you already know. All 116 words become available to quizzes and the journal at once. No milestone shields are given for it.
+- **Good wrong answers:** the wrong options in grammar questions are the word's other forms (*diamanter* when asking for *diamanten*) and typical learner mistakes (*ätade* instead of *åt*).
+- **Journal:** from Intermediate, each word shows its forms (*Former: diamanten · diamanter*); at Advanced, also its Swedish definition.
+
+![intermediate](docs/level2-ordinal.png)
+![intermediate typed](docs/level2-typed-form.png)
+![advanced definition](docs/level3-definition.png)
+![advanced gap sentence](docs/level3-gap-sentence.png)
+![advanced discovery](docs/level3-discovery.png)
+![advanced journal](docs/level3-journal.png)
+
 ## Settings (Journal → Settings, or `/svenska settings`)
 
 ![settings](docs/settings.png)
 
 | Setting | Options |
 |---|---|
+| Swedish level | Beginner (A1) / Intermediate (A2) / Advanced (B1+) – see Levels above |
 | Learning intensity | **Relaxed**: 1 question every 15 min, no reminders. **Balanced**: 2 questions every 10 min. **Immersive**: 3 questions every 5 min, frequent hotbar reminders |
 | Translations | **Always** · **On demand**: English hidden until you click "Visa engelska", hover the chat line or select the word · **Never**: Swedish and pictures only; quizzes use pictures as answers |
 | Voice | **Off** · **Discovery only**: a new word is spoken once, short reactions in quizzes, ♪ buttons · **Manual playback**: only when you press ♪ |
@@ -85,7 +107,7 @@ You discover Swedish words by playing: picking things up, looking at animals, ju
 ## Install
 
 1. Install [Fabric Loader](https://fabricmc.net/use/installer/) for Minecraft **26.3**.
-2. Put [Fabric API](https://modrinth.com/mod/fabric-api) (26.3) and [`dist/svenskacraft-2.1.0.jar`](dist/svenskacraft-2.1.0.jar) in `.minecraft/mods`.
+2. Put [Fabric API](https://modrinth.com/mod/fabric-api) (26.3) and [`dist/svenskacraft-2.2.0.jar`](dist/svenskacraft-2.2.0.jar) in `.minecraft/mods`.
 
 **Upgrading:** 2.0 progress loads as-is. **From 1.0:** your learned words, points and settings are moved over automatically the first time you start the game. Old words are not spoken again.
 
@@ -120,6 +142,8 @@ You discover Swedish words by playing: picking things up, looking at animals, ju
   - Numbers come from how many items you pick up at once; high numbers are rarer.
 - **"Never" translations:** verbs and phrases have no clear picture, so their quiz shows the icon and asks for the Swedish word.
 - **Typing:** answers are checked by spelling only; a synonym that's also correct Swedish is marked wrong.
+- **Levels:** the grammar covers the 116 words in the mod: noun forms, 8 verbs, ordinals 1–10. There are no adjectives, word-order or longer-sentence exercises yet. Mass nouns (*jord, sand, guld*) have no plural question.
+- **Interface at Advanced:** quiz text and the journal's word details are Swedish; menus and settings stay in English.
 - **Daily goal:** uses your computer's date; changing the clock changes the day.
 - **Short review gaps use real time,** so time offline also counts toward when a word is due.
 - **Voice:** a synthetic voice (Piper NST, CC0). It was the clearest of the three Swedish Piper voices in a speech-recognition test, but it isn't a human recording.
@@ -127,7 +151,7 @@ You discover Swedish words by playing: picking things up, looking at animals, ju
 ## For developers
 
 ```bash
-./gradlew build     # Java 25; runs unit tests → build/libs/svenskacraft-2.1.0.jar
+./gradlew build     # Java 25; runs unit tests → build/libs/svenskacraft-2.2.0.jar
 ./gradlew test      # unit tests only (vocabulary data, mastery, scheduler, question planner, answer checking, daily goal, saving, migration, milestones)
 ```
 
@@ -136,11 +160,12 @@ src/main/resources/assets/svenskacraft/
   vocab/categories.json      categories (id, icon, English name)
   vocab/concepts.json        language-neutral words: meaning, category, icon, how they're discovered
   languages/sv/pack.json     Swedish UI text, category names, voice reactions
-  languages/sv/words.json    Swedish word + example sentence per concept
+  languages/sv/words.json    Swedish word, example sentence, grammar forms, definition per concept
   sounds/sv/...              generated voice clips
 src/main/java/svenskacraft/
   vocab/ lang/               data loading
-  learning/                  word states, scheduler, question planner, answer checking, daily goal, milestones (no Minecraft code, unit tested)
+  learning/                  levels, word states, scheduler, question planner, grammar forms + gap sentences,
+                             answer checking, daily goal, milestones (no Minecraft code, unit tested)
   progress/ settings/        saving, migration
   discovery/ audio/ ui/      in-game parts
 ```

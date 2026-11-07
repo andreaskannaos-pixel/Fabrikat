@@ -32,7 +32,17 @@
   "enOrEtt": "En eller ett?",
   "typeInSwedish": "Skriv på svenska:",
   "dailyGoal": "Dagens mål",
-  "daysInARow": "dagar i rad"
+  "daysInARow": "dagar i rad",
+  "form.definite": "Bestämd form",
+  "form.plural": "Plural – flera",
+  "form.present": "Presens – jag …",
+  "form.past": "Preteritum – igår …",
+  "form.supine": "Supinum – jag har …",
+  "form.ordinal": "Ordningstal – den …",
+  "cloze": "Fyll i ordet:",
+  "whatIsIt": "Vad är det?",
+  "forms": "Former",
+  "definition": "Förklaring"
  },
  "reactions": {
   "correct": [

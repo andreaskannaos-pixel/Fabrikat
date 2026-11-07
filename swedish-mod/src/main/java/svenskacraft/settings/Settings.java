@@ -44,6 +44,7 @@ public class Settings {
 	}
 
 	public boolean enabled = true;
+	public svenskacraft.learning.Level level = svenskacraft.learning.Level.BEGINNER;
 	public String language = "sv";
 	public Intensity intensity = Intensity.BALANCED;
 	public Translations translations = Translations.ALWAYS;
@@ -64,6 +65,7 @@ public class Settings {
 
 	public Settings normalize() {
 		if (language == null || language.isBlank()) language = "sv";
+		if (level == null) level = svenskacraft.learning.Level.BEGINNER;
 		if (intensity == null) intensity = Intensity.BALANCED;
 		if (translations == null) translations = Translations.ALWAYS;
 		if (voice == null) voice = VoiceMode.DISCOVERY;

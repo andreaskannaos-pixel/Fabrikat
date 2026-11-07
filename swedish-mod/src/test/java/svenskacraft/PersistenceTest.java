@@ -72,6 +72,7 @@ class PersistenceTest {
 	void settingsDefaultsAndRepair() throws Exception {
 		Settings s = Settings.load(dir);
 		assertEquals(Settings.Intensity.BALANCED, s.intensity);
+		assertEquals(svenskacraft.learning.Level.BEGINNER, s.level, "existing players start as beginners");
 		assertEquals(10, s.quizMinutes());
 		s.intervalMinutes = 3;
 		assertEquals(3, s.quizMinutes());

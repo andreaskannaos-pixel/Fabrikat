@@ -150,7 +150,9 @@ public final class Discovery {
 		if (now - lastTitle >= TITLE_COOLDOWN_MS) {
 			lastTitle = now;
 			mc.gui.hud.setTimes(5, 50, 15);
-			mc.gui.hud.setSubtitle(showEn ? Component.literal(e.en()).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC) : Component.empty());
+			String sub = showEn ? e.en()
+				: s.level == svenskacraft.learning.Level.ADVANCED && e.text().definition() != null ? e.text().definition() : "";
+			mc.gui.hud.setSubtitle(Component.literal(sub).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
 			mc.gui.hud.setTitle(Component.literal(e.word()).withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
 		} else {
 			mc.gui.hud.setOverlayMessage(pair(e, showEn), false);

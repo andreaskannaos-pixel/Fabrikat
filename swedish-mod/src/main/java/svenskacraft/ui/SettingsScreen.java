@@ -3,7 +3,11 @@ package svenskacraft.ui;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.ChatFormatting;
+import svenskacraft.learning.Level;
 import net.minecraft.network.chat.Component;
 import svenskacraft.SvenskaCraft;
 import svenskacraft.settings.Settings;
@@ -23,13 +27,27 @@ public class SettingsScreen extends Screen {
 
 	private Settings s() { return SvenskaCraft.settings; }
 
-	private int top() { return Math.max(26, height / 2 - 86); }
+	private int top() { return Math.max(24, height / 2 - 98); }
 
 	@Override
 	protected void init() {
 		int cx = width / 2;
 		int y = top();
 		int lx = cx - 155, rx = cx + 5;
+
+		Button level = Button.builder(Component.literal("Swedish level: " + s().level.label), b -> {
+			s().level = Settings.next(s().level);
+			// sensible default for how much English to show; can still be changed below
+			s().translations = switch (s().level) {
+				case BEGINNER -> Settings.Translations.ALWAYS;
+				case INTERMEDIATE -> Settings.Translations.ON_DEMAND;
+				case ADVANCED -> Settings.Translations.NEVER;
+			};
+			SvenskaCraft.saveSettings();
+			rebuildWidgets();
+		}).bounds(lx, y, 310, 20).tooltip(Tooltip.create(Component.literal(s().level.description))).build();
+		addRenderableWidget(level);
+		y += 24;
 
 		cycle(lx, y, () -> "Learning intensity: " + s().intensity.label, () -> s().intensity = Settings.next(s().intensity));
 		cycle(rx, y, () -> "Translations: " + s().translations.label, () -> s().translations = Settings.next(s().translations));
@@ -62,7 +80,19 @@ public class SettingsScreen extends Screen {
 		cycle(lx, y, () -> "Typing questions: " + (s().typing ? "ON" : "OFF"), () -> s().typing = !s().typing);
 		cycle(rx, y, () -> "Swedish in tooltips: " + (s().tooltips ? "ON" : "OFF"), () -> s().tooltips = !s().tooltips);
 		y += 22;
-		cycle(cx - 75, y, () -> "SvenskaCraft: " + (s().enabled ? "ON" : "OFF"), () -> s().enabled = !s().enabled);
+		boolean canUnlock = s().level.atLeast(Level.INTERMEDIATE);
+		cycle(canUnlock ? lx : cx - 75, y, () -> "SvenskaCraft: " + (s().enabled ? "ON" : "OFF"), () -> s().enabled = !s().enabled);
+		if (canUnlock) {
+			addRenderableWidget(Button.builder(Component.literal("Unlock all words…"), b -> minecraft.gui.setScreen(new ConfirmScreen(yes -> {
+				if (yes) {
+					int n = SvenskaCraft.unlockAllWords();
+					SvenskaCraft.say(Component.literal(n + " words unlocked – quizzes now use the whole vocabulary.").withStyle(ChatFormatting.AQUA));
+				}
+				minecraft.gui.setScreen(this);
+			}, Component.literal("Unlock all words?"),
+				Component.literal("For players who already know Swedish: every word is marked as discovered, so quizzes and the journal use the whole vocabulary right away. Your mastery progress is kept."))))
+				.bounds(rx, y, 150, 20).tooltip(Tooltip.create(Component.literal("Skip discovering words you already know"))).build());
+		}
 		y += 36;
 		addRenderableWidget(Button.builder(Component.literal("Done"), b -> onClose()).bounds(cx - 50, y, 100, 20).build());
 	}
@@ -91,7 +121,7 @@ public class SettingsScreen extends Screen {
 			case BALANCED -> "Balanced: 2 questions every 10 min, occasional reminders.";
 			case IMMERSIVE -> "Immersive: 3 questions every 5 min, frequent reminders.";
 		};
-		g.centeredText(font, Component.literal(hint), cx, top + 137, 0xFF999999);
+		g.centeredText(font, Component.literal(hint), cx, top + 158, 0xFF999999);
 	}
 
 	@Override

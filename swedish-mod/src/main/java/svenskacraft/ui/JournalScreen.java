@@ -12,6 +12,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import svenskacraft.SvenskaCraft;
 import svenskacraft.audio.AudioPlayer;
+import svenskacraft.learning.Forms;
+import svenskacraft.learning.Level;
 import svenskacraft.learning.Mastery;
 import svenskacraft.learning.Milestones;
 import svenskacraft.learning.Scheduler;
@@ -43,7 +45,22 @@ public class JournalScreen extends Screen {
 
 	private int listTop() { return 26; }
 
-	private int detailTop() { return height - 78; }
+	private int detailTop() {
+		var lvl = SvenskaCraft.settings.level;
+		int extra = (lvl.atLeast(Level.INTERMEDIATE) ? 10 : 0) + (lvl == Level.ADVANCED ? 10 : 0)
+			- (SvenskaCraft.settings.translations == Settings.Translations.NEVER ? 10 : 0);
+		return height - 78 - Math.max(0, extra);
+	}
+
+	/** "diamanten · diamanter", "går · gick · gått", "tredje" – shown from Intermediate level. */
+	private static String formsLine(Entry e) {
+		var m = Forms.all(e.text());
+		List<String> parts = new ArrayList<>();
+		for (Forms.Type t : new Forms.Type[] {Forms.Type.DEFINITE, Forms.Type.PLURAL, Forms.Type.PRESENT, Forms.Type.PAST, Forms.Type.SUPINE, Forms.Type.ORDINAL}) {
+			if (m.containsKey(t)) parts.add(Forms.first(m.get(t)));
+		}
+		return String.join(" · ", parts);
+	}
 
 	private int rowsPerPage() { return Math.max(1, (detailTop() - listTop() - 2) / ROW_H); }
 
@@ -86,7 +103,8 @@ public class JournalScreen extends Screen {
 		}
 		List<String> found = new ArrayList<>();
 		for (Entry e : list) if (SvenskaCraft.progress.isDiscovered(e.id())) found.add(e.id());
-		Button practice = addRenderableWidget(Button.builder(Component.literal("Öva (practice)"), b -> startPractice(found))
+		String practiceLabel = SvenskaCraft.settings.level == Level.ADVANCED ? "Öva" : "Öva (practice)";
+		Button practice = addRenderableWidget(Button.builder(Component.literal(practiceLabel), b -> startPractice(found))
 			.bounds(x1() - 92, height - 20, 92, 16).build());
 		practice.active = !found.isEmpty();
 		if (pages() > 1) {
@@ -164,7 +182,9 @@ public class JournalScreen extends Screen {
 		Milestones.Stats s = Milestones.stats(SvenskaCraft.progress, SvenskaCraft.vocab);
 		Component title = Component.literal(SvenskaCraft.pack.ui("journal") + " · Vocabulary").withStyle(ChatFormatting.BOLD);
 		g.text(font, title, 8, 8, 0xFFFFCC00);
-		String head = s.discovered() + "/" + SvenskaCraft.vocab.entries().size() + " words · " + s.mastered() + " mastered";
+		String head = SvenskaCraft.settings.level == Level.ADVANCED
+			? s.discovered() + "/" + SvenskaCraft.vocab.entries().size() + " ord · " + s.mastered() + " kan"
+			: s.discovered() + "/" + SvenskaCraft.vocab.entries().size() + " words · " + s.mastered() + " mastered";
 		g.text(font, Component.literal(head), 8 + font.width(title) + 12, 8, 0xFFAAAAAA);
 		if (tab == null) drawOverview(g, s);
 		else drawList(g, mouseX, mouseY);
@@ -227,8 +247,22 @@ public class JournalScreen extends Screen {
 			g.text(font, Component.literal(sel.exampleEn()).withStyle(ChatFormatting.ITALIC), x0() + 6, ty, 0xFF999999);
 			ty += 10;
 		}
+		var lvl = SvenskaCraft.settings.level;
+		String forms = formsLine(sel);
+		if (lvl.atLeast(Level.INTERMEDIATE) && !forms.isEmpty()) {
+			g.text(font, Component.literal(SvenskaCraft.pack.ui("forms") + ": ").withStyle(ChatFormatting.DARK_AQUA)
+				.append(Component.literal(forms).withStyle(ChatFormatting.AQUA)), x0() + 6, ty, 0xFFFFFFFF);
+			ty += 10;
+		}
+		if (lvl == Level.ADVANCED && sel.text().definition() != null) {
+			g.text(font, Component.literal(SvenskaCraft.pack.ui("definition") + ": ").withStyle(ChatFormatting.DARK_AQUA)
+				.append(Component.literal(sel.text().definition()).withStyle(ChatFormatting.GRAY)), x0() + 6, ty, 0xFFFFFFFF);
+			ty += 10;
+		}
 		long dueIn = Mastery.dueAt(w) - System.currentTimeMillis();
-		String stats = "Rätt " + w.correct + " · Fel " + w.wrong + " · Next review: " + (dueIn <= 0 ? "now" : human(dueIn));
+		boolean sv = SvenskaCraft.settings.level == Level.ADVANCED;
+		String when = dueIn <= 0 ? (sv ? "nu" : "now") : human(dueIn);
+		String stats = "Rätt " + w.correct + " · Fel " + w.wrong + (sv ? " · Nästa repetition: " : " · Next review: ") + when;
 		g.text(font, Component.literal(stats), x0() + 6, ty + 2, 0xFF888888);
 	}
 

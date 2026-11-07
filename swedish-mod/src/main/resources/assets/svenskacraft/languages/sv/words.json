@@ -2,581 +2,884 @@
  "dirt": {
   "word": "jord",
   "example": "Jorden är brun.",
-  "exampleEn": "The soil is brown."
+  "exampleEn": "The soil is brown.",
+  "definite": "jorden",
+  "definition": "Brun mark som växter växer i."
  },
  "grass": {
   "word": "gräs",
   "example": "Gräset är grönt.",
-  "exampleEn": "The grass is green."
+  "exampleEn": "The grass is green.",
+  "definite": "gräset",
+  "definition": "Det är grönt och växer på marken."
  },
  "stone": {
   "word": "en sten",
   "example": "Jag hittar en sten.",
-  "exampleEn": "I find a stone."
+  "exampleEn": "I find a stone.",
+  "definite": "stenen",
+  "plural": "stenar",
+  "definition": "Det är hårt och grått. Berg är gjorda av det."
  },
  "sand": {
   "word": "sand",
   "example": "Det finns sand på stranden.",
-  "exampleEn": "There is sand on the beach."
+  "exampleEn": "There is sand on the beach.",
+  "definite": "sanden",
+  "definition": "Det är gult och finns på stranden och i öknen."
  },
  "gravel": {
   "word": "grus",
   "example": "Grus faller ner.",
-  "exampleEn": "Gravel falls down."
+  "exampleEn": "Gravel falls down.",
+  "definite": "gruset",
+  "definition": "Små stenar som faller ner."
  },
  "wood": {
   "word": "trä",
   "example": "Huset är byggt av trä.",
-  "exampleEn": "The house is built of wood."
+  "exampleEn": "The house is built of wood.",
+  "definite": "träet",
+  "definition": "Material från skogen. Hus kan byggas av det."
  },
  "plank": {
   "word": "en planka",
   "example": "Jag gör en planka av trä.",
-  "exampleEn": "I make a plank from wood."
+  "exampleEn": "I make a plank from wood.",
+  "definite": "plankan",
+  "plural": "plankor",
+  "definition": "En platt bit trä."
  },
  "stick": {
   "word": "en pinne",
   "example": "Jag behöver en pinne.",
-  "exampleEn": "I need a stick."
+  "exampleEn": "I need a stick.",
+  "definite": "pinnen",
+  "plural": "pinnar",
+  "definition": "En smal bit trä."
  },
  "apple": {
   "word": "ett äpple",
   "example": "Jag äter ett äpple.",
-  "exampleEn": "I am eating an apple."
+  "exampleEn": "I am eating an apple.",
+  "definite": "äpplet",
+  "plural": "äpplen",
+  "definition": "En rund frukt som växer på träd."
  },
  "golden_apple": {
   "word": "ett guldäpple",
   "example": "Ett guldäpple är magiskt.",
-  "exampleEn": "A golden apple is magical."
+  "exampleEn": "A golden apple is magical.",
+  "definite": "guldäpplet",
+  "plural": "guldäpplen",
+  "definition": "En magisk frukt gjord av guld."
  },
  "bread": {
   "word": "bröd",
   "example": "Jag bakar bröd.",
-  "exampleEn": "I bake bread."
+  "exampleEn": "I bake bread.",
+  "definite": "brödet",
+  "definition": "Man gör smörgåsar av det."
  },
  "cookie": {
   "word": "en kaka",
   "example": "Vill du ha en kaka?",
-  "exampleEn": "Do you want a cookie?"
+  "exampleEn": "Do you want a cookie?",
+  "definite": "kakan",
+  "plural": "kakor",
+  "definition": "Något litet och sött som man bakar."
  },
  "cake": {
   "word": "en tårta",
   "example": "Vi äter tårta i dag.",
-  "exampleEn": "We are eating cake today."
+  "exampleEn": "We are eating cake today.",
+  "definite": "tårtan",
+  "plural": "tårtor",
+  "definition": "Man äter den på födelsedagar."
  },
  "wheat": {
   "word": "vete",
   "example": "Vete växer på fältet.",
-  "exampleEn": "Wheat grows in the field."
+  "exampleEn": "Wheat grows in the field.",
+  "definite": "vetet",
+  "definition": "Ett gult sädesslag som blir mjöl."
  },
  "seeds": {
   "word": "frön",
   "example": "Jag sår frön i jorden.",
-  "exampleEn": "I sow seeds in the soil."
+  "exampleEn": "I sow seeds in the soil.",
+  "definite": "fröna",
+  "definition": "Man sår dem för att få nya växter."
  },
  "carrot": {
   "word": "en morot",
   "example": "Hästen vill ha en morot.",
-  "exampleEn": "The horse wants a carrot."
+  "exampleEn": "The horse wants a carrot.",
+  "definite": "moroten",
+  "plural": "morötter",
+  "definition": "En orange grönsak som kaniner gillar."
  },
  "potato": {
   "word": "en potatis",
   "example": "Jag bakar en potatis i ugnen.",
-  "exampleEn": "I bake a potato in the oven."
+  "exampleEn": "I bake a potato in the oven.",
+  "definite": "potatisen",
+  "plural": "potatisar",
+  "definition": "Man gör pommes frites och mos av den."
  },
  "egg": {
   "word": "ett ägg",
   "example": "Hönan lägger ett ägg.",
-  "exampleEn": "The hen lays an egg."
+  "exampleEn": "The hen lays an egg.",
+  "definite": "ägget",
+  "plural": "ägg",
+  "definition": "Hönan lägger det."
  },
  "sugar": {
   "word": "socker",
   "example": "Kakan behöver socker.",
-  "exampleEn": "The cookie needs sugar."
+  "exampleEn": "The cookie needs sugar.",
+  "definite": "sockret",
+  "definition": "Det gör maten söt."
  },
  "sugar_cane": {
   "word": "sockerrör",
   "example": "Sockerrör växer vid vatten.",
-  "exampleEn": "Sugar cane grows by water."
+  "exampleEn": "Sugar cane grows by water.",
+  "definite": "sockerröret",
+  "definition": "En hög växt vid vatten som man gör socker av."
  },
  "pumpkin": {
   "word": "en pumpa",
   "example": "Pumpan är orange.",
-  "exampleEn": "The pumpkin is orange."
+  "exampleEn": "The pumpkin is orange.",
+  "definite": "pumpan",
+  "plural": "pumpor",
+  "definition": "En stor orange grönsak som man gör lyktor av."
  },
  "melon": {
   "word": "en melon",
   "example": "En melon är stor och söt.",
-  "exampleEn": "A melon is big and sweet."
+  "exampleEn": "A melon is big and sweet.",
+  "definite": "melonen",
+  "plural": "meloner",
+  "definition": "En stor, grön frukt som är röd inuti."
  },
  "berries": {
   "word": "bär",
   "example": "Bären är röda.",
-  "exampleEn": "The berries are red."
+  "exampleEn": "The berries are red.",
+  "definite": "bären",
+  "definition": "Små, söta frukter som växer på buskar."
  },
  "beef": {
   "word": "nötkött",
   "example": "Jag lagar nötkött.",
-  "exampleEn": "I am cooking beef."
+  "exampleEn": "I am cooking beef.",
+  "definite": "nötköttet",
+  "definition": "Kött från en ko."
  },
  "pork": {
   "word": "fläskkött",
   "example": "Fläskkött smakar gott.",
-  "exampleEn": "Pork tastes good."
+  "exampleEn": "Pork tastes good.",
+  "definite": "fläskköttet",
+  "definition": "Kött från en gris."
  },
  "chicken": {
   "word": "kyckling",
   "example": "Vi äter kyckling till middag.",
-  "exampleEn": "We are having chicken for dinner."
+  "exampleEn": "We are having chicken for dinner.",
+  "definite": "kycklingen",
+  "definition": "Fågelkött som man ofta äter till middag."
  },
  "cod": {
   "word": "en torsk",
   "example": "Jag fångar en torsk.",
-  "exampleEn": "I catch a cod."
+  "exampleEn": "I catch a cod.",
+  "definite": "torsken",
+  "plural": "torskar",
+  "definition": "En vit fisk som lever i kallt hav."
  },
  "salmon": {
   "word": "en lax",
   "example": "En lax simmar i floden.",
-  "exampleEn": "A salmon is swimming in the river."
+  "exampleEn": "A salmon is swimming in the river.",
+  "definite": "laxen",
+  "plural": "laxar",
+  "definition": "En rosa fisk som simmar upp i floder."
  },
  "rotten_flesh": {
   "word": "ruttet kött",
   "example": "Ruttet kött luktar illa.",
-  "exampleEn": "Rotten flesh smells bad."
+  "exampleEn": "Rotten flesh smells bad.",
+  "definite": "det ruttna köttet",
+  "definition": "Zombier tappar det, och det luktar illa."
  },
  "bone": {
   "word": "ett ben",
   "example": "Hunden vill ha ett ben.",
-  "exampleEn": "The dog wants a bone."
+  "exampleEn": "The dog wants a bone.",
+  "definite": "benet",
+  "plural": "ben",
+  "definition": "Skelett är gjorda av dem. Hundar älskar dem."
  },
  "string": {
   "word": "ett snöre",
   "example": "Spindeln tappar ett snöre.",
-  "exampleEn": "The spider drops a string."
+  "exampleEn": "The spider drops a string.",
+  "definite": "snöret",
+  "plural": "snören",
+  "definition": "Spindlar tappar det. Man gör pilbågar med det."
  },
  "spider_eye": {
   "word": "ett spindelöga",
   "example": "Ett spindelöga är giftigt.",
-  "exampleEn": "A spider eye is poisonous."
+  "exampleEn": "A spider eye is poisonous.",
+  "definite": "spindelögat",
+  "plural": "spindelögon",
+  "definition": "Spindlar ser med det."
  },
  "gunpowder": {
   "word": "krut",
   "example": "Krut är farligt.",
-  "exampleEn": "Gunpowder is dangerous."
+  "exampleEn": "Gunpowder is dangerous.",
+  "definite": "krutet",
+  "definition": "Creepers tappar det. Det exploderar."
  },
  "slime": {
   "word": "slem",
   "example": "Slem är klibbigt.",
-  "exampleEn": "Slime is sticky."
+  "exampleEn": "Slime is sticky.",
+  "definite": "slemmet",
+  "definition": "Det är grönt och klibbigt."
  },
  "pearl": {
   "word": "en pärla",
   "example": "Jag kastar en pärla.",
-  "exampleEn": "I throw a pearl."
+  "exampleEn": "I throw a pearl.",
+  "definite": "pärlan",
+  "plural": "pärlor",
+  "definition": "En rund, glänsande sak som endermän tappar."
  },
  "feather": {
   "word": "en fjäder",
   "example": "Hönan tappar en fjäder.",
-  "exampleEn": "The hen drops a feather."
+  "exampleEn": "The hen drops a feather.",
+  "definite": "fjädern",
+  "plural": "fjädrar",
+  "definition": "Fåglar har dem."
  },
  "leather": {
   "word": "läder",
   "example": "Läder kommer från kon.",
-  "exampleEn": "Leather comes from the cow."
+  "exampleEn": "Leather comes from the cow.",
+  "definite": "lädret",
+  "definition": "Material från kons hud."
  },
  "wool": {
   "word": "ull",
   "example": "Fåret ger ull.",
-  "exampleEn": "The sheep gives wool."
+  "exampleEn": "The sheep gives wool.",
+  "definite": "ullen",
+  "definition": "Den kommer från får."
  },
  "ink": {
   "word": "bläck",
   "example": "Bläck kommer från bläckfisken.",
-  "exampleEn": "Ink comes from the squid."
+  "exampleEn": "Ink comes from the squid.",
+  "definite": "bläcket",
+  "definition": "Svart vätska som man skriver med."
  },
  "coal": {
   "word": "kol",
   "example": "Kol brinner bra.",
-  "exampleEn": "Coal burns well."
+  "exampleEn": "Coal burns well.",
+  "definite": "kolet",
+  "definition": "Det är svart, och det brinner."
  },
  "iron": {
   "word": "järn",
   "example": "Järn är starkt.",
-  "exampleEn": "Iron is strong."
+  "exampleEn": "Iron is strong.",
+  "definite": "järnet",
+  "definition": "En stark, grå metall."
  },
  "gold": {
   "word": "guld",
   "example": "Guld glänser.",
-  "exampleEn": "Gold shines."
+  "exampleEn": "Gold shines.",
+  "definite": "guldet",
+  "definition": "En gul och dyr metall."
  },
  "copper": {
   "word": "koppar",
   "example": "Koppar blir grön med tiden.",
-  "exampleEn": "Copper turns green over time."
+  "exampleEn": "Copper turns green over time.",
+  "definite": "kopparn",
+  "definition": "En orange metall som blir grön med tiden."
  },
  "diamond": {
   "word": "en diamant",
   "example": "Jag har en diamant!",
-  "exampleEn": "I have a diamond!"
+  "exampleEn": "I have a diamond!",
+  "definite": "diamanten",
+  "plural": "diamanter",
+  "definition": "En mycket hård och värdefull ädelsten."
  },
  "emerald": {
   "word": "en smaragd",
   "example": "Byborna vill ha en smaragd.",
-  "exampleEn": "The villagers want an emerald."
+  "exampleEn": "The villagers want an emerald.",
+  "definite": "smaragden",
+  "plural": "smaragder",
+  "definition": "En grön ädelsten som byborna gillar."
  },
  "flint": {
   "word": "flinta",
   "example": "Med flinta kan man göra eld.",
-  "exampleEn": "With flint you can make fire."
+  "exampleEn": "With flint you can make fire.",
+  "definite": "flintan",
+  "definition": "En sten som ger gnistor."
  },
  "clay": {
   "word": "lera",
   "example": "Lera är mjuk.",
-  "exampleEn": "Clay is soft."
+  "exampleEn": "Clay is soft.",
+  "definite": "leran",
+  "definition": "Mjuk jord som man formar krukor av."
  },
  "ice": {
   "word": "is",
   "example": "Isen är kall och hal.",
-  "exampleEn": "The ice is cold and slippery."
+  "exampleEn": "The ice is cold and slippery.",
+  "definite": "isen",
+  "definition": "Fruset vatten."
  },
  "snowball": {
   "word": "en snöboll",
   "example": "Jag kastar en snöboll.",
-  "exampleEn": "I throw a snowball."
+  "exampleEn": "I throw a snowball.",
+  "definite": "snöbollen",
+  "plural": "snöbollar",
+  "definition": "En boll av snö som man kastar."
  },
  "glass": {
   "word": "glas",
   "example": "Fönstret är av glas.",
-  "exampleEn": "The window is made of glass."
+  "exampleEn": "The window is made of glass.",
+  "definite": "glaset",
+  "definition": "Genomskinligt material i fönster."
  },
  "cactus": {
   "word": "en kaktus",
   "example": "Kaktusen sticks.",
-  "exampleEn": "The cactus pricks."
+  "exampleEn": "The cactus pricks.",
+  "definite": "kaktusen",
+  "plural": "kaktusar",
+  "definition": "En taggig växt i öknen."
  },
  "kelp": {
   "word": "tång",
   "example": "Tång växer i havet.",
-  "exampleEn": "Seaweed grows in the sea."
+  "exampleEn": "Seaweed grows in the sea.",
+  "definite": "tången",
+  "definition": "En växt som växer i havet."
  },
  "dandelion": {
   "word": "en maskros",
   "example": "En maskros är gul.",
-  "exampleEn": "A dandelion is yellow."
+  "exampleEn": "A dandelion is yellow.",
+  "definite": "maskrosen",
+  "plural": "maskrosor",
+  "definition": "En gul blomma som blir vit och luddig."
  },
  "poppy": {
   "word": "en vallmo",
   "example": "En vallmo är röd.",
-  "exampleEn": "A poppy is red."
+  "exampleEn": "A poppy is red.",
+  "definite": "vallmon",
+  "plural": "vallmor",
+  "definition": "En röd blomma."
  },
  "sapling": {
   "word": "en planta",
   "example": "Jag planterar en planta.",
-  "exampleEn": "I plant a sapling."
+  "exampleEn": "I plant a sapling.",
+  "definite": "plantan",
+  "plural": "plantor",
+  "definition": "Ett litet träd som man planterar."
  },
  "mushroom": {
   "word": "en svamp",
   "example": "En svamp växer i skogen.",
-  "exampleEn": "A mushroom grows in the forest."
+  "exampleEn": "A mushroom grows in the forest.",
+  "definite": "svampen",
+  "plural": "svampar",
+  "definition": "Den växer i skogen och i mörker. Vissa är giftiga."
  },
  "torch": {
   "word": "en fackla",
   "example": "Facklan lyser i mörkret.",
-  "exampleEn": "The torch shines in the dark."
+  "exampleEn": "The torch shines in the dark.",
+  "definite": "facklan",
+  "plural": "facklor",
+  "definition": "Den ger ljus i mörkret."
  },
  "crafting_table": {
   "word": "en arbetsbänk",
   "example": "Jag bygger vid en arbetsbänk.",
-  "exampleEn": "I build at a workbench."
+  "exampleEn": "I build at a workbench.",
+  "definite": "arbetsbänken",
+  "plural": "arbetsbänkar",
+  "definition": "Ett bord där man tillverkar saker."
  },
  "furnace": {
   "word": "en ugn",
   "example": "Ugnen är varm.",
-  "exampleEn": "The oven is warm."
+  "exampleEn": "The oven is warm.",
+  "definite": "ugnen",
+  "plural": "ugnar",
+  "definition": "Man smälter malm och lagar mat i den."
  },
  "chest": {
   "word": "en kista",
   "example": "Kistan är full.",
-  "exampleEn": "The chest is full."
+  "exampleEn": "The chest is full.",
+  "definite": "kistan",
+  "plural": "kistor",
+  "definition": "En låda där man förvarar saker."
  },
  "bed": {
   "word": "en säng",
   "example": "Jag sover i en säng.",
-  "exampleEn": "I sleep in a bed."
+  "exampleEn": "I sleep in a bed.",
+  "definite": "sängen",
+  "plural": "sängar",
+  "definition": "Man sover i den."
  },
  "door": {
   "word": "en dörr",
   "example": "Stäng dörren!",
-  "exampleEn": "Close the door!"
+  "exampleEn": "Close the door!",
+  "definite": "dörren",
+  "plural": "dörrar",
+  "definition": "Man öppnar den för att gå in i ett hus."
  },
  "bowl": {
   "word": "en skål",
   "example": "Soppan är i en skål.",
-  "exampleEn": "The soup is in a bowl."
+  "exampleEn": "The soup is in a bowl.",
+  "definite": "skålen",
+  "plural": "skålar",
+  "definition": "Man äter soppa ur den."
  },
  "bucket": {
   "word": "en hink",
   "example": "Hinken är full av vatten.",
-  "exampleEn": "The bucket is full of water."
+  "exampleEn": "The bucket is full of water.",
+  "definite": "hinken",
+  "plural": "hinkar",
+  "definition": "Man bär vatten i den."
  },
  "book": {
   "word": "en bok",
   "example": "Jag läser en bok.",
-  "exampleEn": "I am reading a book."
+  "exampleEn": "I am reading a book.",
+  "definite": "boken",
+  "plural": "böcker",
+  "definition": "Man läser den."
  },
  "paper": {
   "word": "papper",
   "example": "Jag skriver på papper.",
-  "exampleEn": "I write on paper."
+  "exampleEn": "I write on paper.",
+  "definite": "pappret|papperet",
+  "definition": "Man skriver på det."
  },
  "map": {
   "word": "en karta",
   "example": "Kartan visar vägen.",
-  "exampleEn": "The map shows the way."
+  "exampleEn": "The map shows the way.",
+  "definite": "kartan",
+  "plural": "kartor",
+  "definition": "Den visar var saker finns."
  },
  "compass": {
   "word": "en kompass",
   "example": "Kompassen pekar hem.",
-  "exampleEn": "The compass points home."
+  "exampleEn": "The compass points home.",
+  "definite": "kompassen",
+  "plural": "kompasser",
+  "definition": "Den visar vägen."
  },
  "clock": {
   "word": "en klocka",
   "example": "Klockan visar tiden.",
-  "exampleEn": "The clock shows the time."
+  "exampleEn": "The clock shows the time.",
+  "definite": "klockan",
+  "plural": "klockor",
+  "definition": "Den visar tiden."
  },
  "lead": {
   "word": "ett koppel",
   "example": "Hunden går i koppel.",
-  "exampleEn": "The dog walks on a leash."
+  "exampleEn": "The dog walks on a leash.",
+  "definite": "kopplet",
+  "plural": "koppel",
+  "definition": "Ett rep som man leder djur med."
  },
  "saddle": {
   "word": "en sadel",
   "example": "Jag lägger en sadel på hästen.",
-  "exampleEn": "I put a saddle on the horse."
+  "exampleEn": "I put a saddle on the horse.",
+  "definite": "sadeln",
+  "plural": "sadlar",
+  "definition": "Man lägger den på hästen för att rida."
  },
  "boat": {
   "word": "en båt",
   "example": "Vi åker båt.",
-  "exampleEn": "We go by boat."
+  "exampleEn": "We go by boat.",
+  "definite": "båten",
+  "plural": "båtar",
+  "definition": "Man åker med den på vatten."
  },
  "minecart": {
   "word": "en gruvvagn",
   "example": "Gruvvagnen åker på rälsen.",
-  "exampleEn": "The minecart rides on the rails."
+  "exampleEn": "The minecart rides on the rails.",
+  "definite": "gruvvagnen",
+  "plural": "gruvvagnar",
+  "definition": "En vagn som åker på räls."
  },
  "sword": {
   "word": "ett svärd",
   "example": "Jag slåss med ett svärd.",
-  "exampleEn": "I fight with a sword."
+  "exampleEn": "I fight with a sword.",
+  "definite": "svärdet",
+  "plural": "svärd",
+  "definition": "Ett långt vapen."
  },
  "pickaxe": {
   "word": "en hacka",
   "example": "Jag hackar sten med en hacka.",
-  "exampleEn": "I mine stone with a pickaxe."
+  "exampleEn": "I mine stone with a pickaxe.",
+  "definite": "hackan",
+  "plural": "hackor",
+  "definition": "Ett verktyg för att bryta sten."
  },
  "axe": {
   "word": "en yxa",
   "example": "Jag hugger trä med en yxa.",
-  "exampleEn": "I chop wood with an axe."
+  "exampleEn": "I chop wood with an axe.",
+  "definite": "yxan",
+  "plural": "yxor",
+  "definition": "Ett verktyg för att hugga träd."
  },
  "shovel": {
   "word": "en spade",
   "example": "Jag gräver med en spade.",
-  "exampleEn": "I dig with a shovel."
+  "exampleEn": "I dig with a shovel.",
+  "definite": "spaden",
+  "plural": "spadar",
+  "definition": "Ett verktyg för att gräva."
  },
  "bow": {
   "word": "en pilbåge",
   "example": "Jag skjuter med en pilbåge.",
-  "exampleEn": "I shoot with a bow."
+  "exampleEn": "I shoot with a bow.",
+  "definite": "pilbågen",
+  "plural": "pilbågar",
+  "definition": "Ett vapen som man skjuter med på avstånd."
  },
  "arrow": {
   "word": "en pil",
   "example": "Pilen flyger snabbt.",
-  "exampleEn": "The arrow flies fast."
+  "exampleEn": "The arrow flies fast.",
+  "definite": "pilen",
+  "plural": "pilar",
+  "definition": "Den flyger när man skjuter med en båge."
  },
  "shield": {
   "word": "en sköld",
   "example": "En sköld skyddar mig.",
-  "exampleEn": "A shield protects me."
+  "exampleEn": "A shield protects me.",
+  "definite": "skölden",
+  "plural": "sköldar",
+  "definition": "Man håller den för att skydda sig."
  },
  "helmet": {
   "word": "en hjälm",
   "example": "Jag har en hjälm på huvudet.",
-  "exampleEn": "I have a helmet on my head."
+  "exampleEn": "I have a helmet on my head.",
+  "definite": "hjälmen",
+  "plural": "hjälmar",
+  "definition": "Man har den på huvudet för att skydda sig."
  },
  "boots": {
   "word": "stövlar",
   "example": "Mina stövlar är nya.",
-  "exampleEn": "My boots are new."
+  "exampleEn": "My boots are new.",
+  "definite": "stövlarna",
+  "definition": "Man har dem på fötterna."
  },
  "cow": {
   "word": "en ko",
   "example": "Kon säger mu.",
-  "exampleEn": "The cow says moo."
+  "exampleEn": "The cow says moo.",
+  "definite": "kon",
+  "plural": "kor",
+  "definition": "Ett stort djur som ger mjölk."
  },
  "pig": {
   "word": "en gris",
   "example": "Grisen är rosa.",
-  "exampleEn": "The pig is pink."
+  "exampleEn": "The pig is pink.",
+  "definite": "grisen",
+  "plural": "grisar",
+  "definition": "Ett rosa djur som säger nöff."
  },
  "sheep": {
   "word": "ett får",
   "example": "Fåret äter gräs.",
-  "exampleEn": "The sheep eats grass."
+  "exampleEn": "The sheep eats grass.",
+  "definite": "fåret",
+  "plural": "får",
+  "definition": "Ett djur med ull."
  },
  "hen": {
   "word": "en höna",
   "example": "Hönan springer runt.",
-  "exampleEn": "The hen runs around."
+  "exampleEn": "The hen runs around.",
+  "definite": "hönan",
+  "plural": "hönor",
+  "definition": "En fågel som lägger ägg."
  },
  "horse": {
   "word": "en häst",
   "example": "Jag rider på en häst.",
-  "exampleEn": "I ride a horse."
+  "exampleEn": "I ride a horse.",
+  "definite": "hästen",
+  "plural": "hästar",
+  "definition": "Ett stort djur som man rider på."
  },
  "wolf": {
   "word": "en varg",
   "example": "Vargen ylar på natten.",
-  "exampleEn": "The wolf howls at night."
+  "exampleEn": "The wolf howls at night.",
+  "definite": "vargen",
+  "plural": "vargar",
+  "definition": "Ett vilt djur som ylar på natten."
  },
  "dog": {
   "word": "en hund",
   "example": "Min hund är snäll.",
-  "exampleEn": "My dog is kind."
+  "exampleEn": "My dog is kind.",
+  "definite": "hunden",
+  "plural": "hundar",
+  "definition": "Människans bästa vän."
  },
  "cat": {
   "word": "en katt",
   "example": "Katten säger mjau.",
-  "exampleEn": "The cat says meow."
+  "exampleEn": "The cat says meow.",
+  "definite": "katten",
+  "plural": "katter",
+  "definition": "Ett djur som säger mjau."
  },
  "fish": {
   "word": "en fisk",
   "example": "En fisk simmar i vattnet.",
-  "exampleEn": "A fish is swimming in the water."
+  "exampleEn": "A fish is swimming in the water.",
+  "definite": "fisken",
+  "plural": "fiskar",
+  "definition": "Ett djur som lever i vatten."
  },
  "bee": {
   "word": "ett bi",
   "example": "Biet flyger till blomman.",
-  "exampleEn": "The bee flies to the flower."
+  "exampleEn": "The bee flies to the flower.",
+  "definite": "biet",
+  "plural": "bin",
+  "definition": "Ett litet djur som gör honung."
  },
  "num_1": {
   "word": "ett",
   "example": "Jag har ett svärd.",
-  "exampleEn": "I have one sword."
+  "exampleEn": "I have one sword.",
+  "ordinal": "första",
+  "definition": "Hälften av två."
  },
  "num_2": {
   "word": "två",
   "example": "Jag ser två grisar.",
-  "exampleEn": "I see two pigs."
+  "exampleEn": "I see two pigs.",
+  "ordinal": "andra",
+  "definition": "Ett plus ett."
  },
  "num_3": {
   "word": "tre",
   "example": "Tre kor äter gräs.",
-  "exampleEn": "Three cows are eating grass."
+  "exampleEn": "Three cows are eating grass.",
+  "ordinal": "tredje",
+  "definition": "Ett plus två."
  },
  "num_4": {
   "word": "fyra",
   "example": "Jag har fyra äpplen.",
-  "exampleEn": "I have four apples."
+  "exampleEn": "I have four apples.",
+  "ordinal": "fjärde",
+  "definition": "Två plus två."
  },
  "num_5": {
   "word": "fem",
   "example": "Fem pilar ligger här.",
-  "exampleEn": "Five arrows are lying here."
+  "exampleEn": "Five arrows are lying here.",
+  "ordinal": "femte",
+  "definition": "Tre plus två."
  },
  "num_6": {
   "word": "sex",
   "example": "Sex får står på kullen.",
-  "exampleEn": "Six sheep are standing on the hill."
+  "exampleEn": "Six sheep are standing on the hill.",
+  "ordinal": "sjätte",
+  "definition": "Tre plus tre."
  },
  "num_7": {
   "word": "sju",
   "example": "Sju zombier kommer!",
-  "exampleEn": "Seven zombies are coming!"
+  "exampleEn": "Seven zombies are coming!",
+  "ordinal": "sjunde",
+  "definition": "Fyra plus tre."
  },
  "num_8": {
   "word": "åtta",
   "example": "Åtta facklor lyser.",
-  "exampleEn": "Eight torches are shining."
+  "exampleEn": "Eight torches are shining.",
+  "ordinal": "åttonde",
+  "definition": "Fyra plus fyra."
  },
  "num_9": {
   "word": "nio",
   "example": "Nio diamanter, wow!",
-  "exampleEn": "Nine diamonds, wow!"
+  "exampleEn": "Nine diamonds, wow!",
+  "ordinal": "nionde",
+  "definition": "Fem plus fyra."
  },
  "num_10": {
   "word": "tio",
   "example": "Jag har tio kakor.",
-  "exampleEn": "I have ten cookies."
+  "exampleEn": "I have ten cookies.",
+  "ordinal": "tionde",
+  "definition": "Fem plus fem."
  },
  "verb_walk": {
   "word": "gå",
   "example": "Jag går till byn.",
-  "exampleEn": "I walk to the village."
+  "exampleEn": "I walk to the village.",
+  "present": "går",
+  "past": "gick",
+  "supine": "gått",
+  "definition": "Att röra sig lugnt på fötterna."
  },
  "verb_run": {
   "word": "springa",
   "example": "Spring! En creeper!",
-  "exampleEn": "Run! A creeper!"
+  "exampleEn": "Run! A creeper!",
+  "present": "springer",
+  "past": "sprang",
+  "supine": "sprungit",
+  "definition": "Att röra sig snabbt på fötterna."
  },
  "verb_jump": {
   "word": "hoppa",
   "example": "Grodan kan hoppa högt.",
-  "exampleEn": "The frog can jump high."
+  "exampleEn": "The frog can jump high.",
+  "present": "hoppar",
+  "past": "hoppade",
+  "supine": "hoppat",
+  "definition": "Att lämna marken med båda fötterna."
  },
  "verb_swim": {
   "word": "simma",
   "example": "Jag kan simma.",
-  "exampleEn": "I can swim."
+  "exampleEn": "I can swim.",
+  "present": "simmar",
+  "past": "simmade",
+  "supine": "simmat",
+  "definition": "Att röra sig i vatten."
  },
  "verb_eat": {
   "word": "äta",
   "example": "Det är dags att äta.",
-  "exampleEn": "It is time to eat."
+  "exampleEn": "It is time to eat.",
+  "present": "äter",
+  "past": "åt",
+  "supine": "ätit",
+  "definition": "Att stoppa mat i munnen."
  },
  "verb_sleep": {
   "word": "sova",
   "example": "Jag vill sova nu.",
-  "exampleEn": "I want to sleep now."
+  "exampleEn": "I want to sleep now.",
+  "present": "sover",
+  "past": "sov",
+  "supine": "sovit",
+  "definition": "Det man gör i sängen på natten."
  },
  "verb_dig": {
   "word": "gräva",
   "example": "Vi ska gräva en gruva.",
-  "exampleEn": "We are going to dig a mine."
+  "exampleEn": "We are going to dig a mine.",
+  "present": "gräver",
+  "past": "grävde",
+  "supine": "grävt",
+  "definition": "Att göra ett hål i marken."
  },
  "verb_build": {
   "word": "bygga",
   "example": "Vi ska bygga ett hus.",
-  "exampleEn": "We are going to build a house."
+  "exampleEn": "We are going to build a house.",
+  "present": "bygger",
+  "past": "byggde",
+  "supine": "byggt",
+  "definition": "Att göra ett hus av block."
  },
  "phrase_hello": {
   "word": "Hej!",
   "example": "Hej! Hur mår du?",
-  "exampleEn": "Hi! How are you?"
+  "exampleEn": "Hi! How are you?",
+  "definition": "Det man säger när man träffar någon."
  },
  "phrase_morning": {
   "word": "God morgon!",
   "example": "God morgon! Solen går upp.",
-  "exampleEn": "Good morning! The sun is rising."
+  "exampleEn": "Good morning! The sun is rising.",
+  "definition": "Det man säger när man har vaknat."
  },
  "phrase_night": {
   "word": "God natt!",
   "example": "God natt! Sov gott.",
-  "exampleEn": "Good night! Sleep well."
+  "exampleEn": "Good night! Sleep well.",
+  "definition": "Det man säger innan man somnar."
  },
  "phrase_thanks": {
   "word": "Tack!",
   "example": "Tack för hjälpen!",
-  "exampleEn": "Thanks for the help!"
+  "exampleEn": "Thanks for the help!",
+  "definition": "Det man säger när man får något."
  },
  "phrase_ouch": {
   "word": "Aj!",
   "example": "Aj! Det gjorde ont.",
-  "exampleEn": "Ouch! That hurt."
+  "exampleEn": "Ouch! That hurt.",
+  "definition": "Det man säger när det gör ont."
  },
  "phrase_help": {
   "word": "Hjälp!",
   "example": "Hjälp! En zombie jagar mig!",
-  "exampleEn": "Help! A zombie is chasing me!"
+  "exampleEn": "Help! A zombie is chasing me!",
+  "definition": "Det man ropar när man är i fara."
  }
 }

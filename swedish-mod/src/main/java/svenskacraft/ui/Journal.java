@@ -32,7 +32,7 @@ final class Journal {
 			case FAMILIAR -> "Familiar";
 			case MASTERED -> "Mastered";
 		};
-		return sv + " (" + en + ")";
+		return SvenskaCraft.settings.level == svenskacraft.learning.Level.ADVANCED ? sv : sv + " (" + en + ")";
 	}
 
 	static String stateShort(WordState s) { return SvenskaCraft.pack.ui("state." + s.name().toLowerCase()); }

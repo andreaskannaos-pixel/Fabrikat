@@ -11,7 +11,15 @@ import svenskacraft.util.Json;
  * assets/svenskacraft/languages/&lt;code&gt;/ (pack.json + words.json + sounds/&lt;code&gt;/...).
  */
 public final class LanguagePack {
-	public record WordText(String word, String example, String exampleEn) {}
+	/**
+	 * Text for one word. Grammar fields are optional (null when they don't apply);
+	 * a field may list accepted alternatives separated by "|" (first one is shown).
+	 */
+	public record WordText(String word, String example, String exampleEn,
+						   String definite, String plural,               // nouns
+						   String present, String past, String supine,   // verbs
+						   String ordinal,                               // numbers
+						   String definition) {}                        // short explanation in the language itself
 
 	private record PackFile(String code, String name, String nativeName, Map<String, String> categories,
 							Map<String, String> ui, Map<String, List<String>> reactions) {}

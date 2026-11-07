@@ -64,12 +64,17 @@ public final class Milestones {
 
 	/** Returns milestones reached since the last check, records them and hands out shields. */
 	public static List<Milestone> check(Progress p, Vocabulary vocab) {
+		return check(p, vocab, true);
+	}
+
+	/** @param rewards false records reached milestones without shields (used when unlocking all words) */
+	public static List<Milestone> check(Progress p, Vocabulary vocab, boolean rewards) {
 		Stats s = stats(p, vocab);
 		List<Milestone> reached = new ArrayList<>();
 		for (Milestone m : all(vocab)) {
 			if (!p.milestones.contains(m.id()) && m.reached().test(s)) {
 				p.milestones.add(m.id());
-				if (m.shield()) p.addShield();
+				if (m.shield() && rewards) p.addShield();
 				reached.add(m);
 			}
 		}
