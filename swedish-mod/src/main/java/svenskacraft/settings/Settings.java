@@ -53,6 +53,12 @@ public class Settings {
 	/** 0 = use the intensity's interval. */
 	public int intervalMinutes = 0;
 	public int answerSeconds = 30;
+	/** Questions per day; 0 = no goal. */
+	public int dailyGoal = 10;
+	/** Show the Swedish word in item tooltips (discovered words only). */
+	public boolean tooltips = true;
+	/** Allow "type the word" questions for familiar words. */
+	public boolean typing = true;
 
 	public int quizMinutes() { return intervalMinutes > 0 ? intervalMinutes : intensity.quizMinutes; }
 
@@ -65,6 +71,7 @@ public class Settings {
 		voiceVolume = Math.max(0, Math.min(100, voiceVolume));
 		intervalMinutes = Math.max(0, Math.min(120, intervalMinutes));
 		answerSeconds = Math.max(5, Math.min(120, answerSeconds));
+		dailyGoal = Math.max(0, Math.min(100, dailyGoal));
 		return this;
 	}
 

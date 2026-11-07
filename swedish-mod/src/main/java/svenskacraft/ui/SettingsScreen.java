@@ -12,6 +12,7 @@ import svenskacraft.settings.Settings;
 public class SettingsScreen extends Screen {
 	private static final int[] INTERVALS = {0, 2, 5, 10, 15, 20, 30};
 	private static final int[] ANSWER_TIMES = {15, 20, 30, 45, 60};
+	private static final int[] DAILY_GOALS = {0, 5, 10, 20, 30};
 
 	private final Screen parent;
 
@@ -22,15 +23,17 @@ public class SettingsScreen extends Screen {
 
 	private Settings s() { return SvenskaCraft.settings; }
 
+	private int top() { return Math.max(26, height / 2 - 86); }
+
 	@Override
 	protected void init() {
 		int cx = width / 2;
-		int y = Math.max(28, height / 2 - 70);
+		int y = top();
 		int lx = cx - 155, rx = cx + 5;
 
 		cycle(lx, y, () -> "Learning intensity: " + s().intensity.label, () -> s().intensity = Settings.next(s().intensity));
 		cycle(rx, y, () -> "Translations: " + s().translations.label, () -> s().translations = Settings.next(s().translations));
-		y += 24;
+		y += 22;
 		cycle(lx, y, () -> "Voice: " + s().voice.label, () -> {
 			s().voice = Settings.next(s().voice);
 			if (s().voice == Settings.VoiceMode.OFF) SvenskaCraft.audio.stop();
@@ -47,14 +50,20 @@ public class SettingsScreen extends Screen {
 				SvenskaCraft.saveSettings();
 			}
 		});
-		y += 24;
+		y += 22;
 		cycle(lx, y, () -> "Quiz penalty: " + s().consequence.shortLabel, () -> s().consequence = Settings.next(s().consequence));
 		cycle(rx, y, () -> "Quiz every: " + (s().intervalMinutes == 0 ? "auto (" + s().quizMinutes() + " min)" : s().intervalMinutes + " min"),
 			() -> s().intervalMinutes = nextOf(INTERVALS, s().intervalMinutes));
-		y += 24;
+		y += 22;
 		cycle(lx, y, () -> "Answer time: " + s().answerSeconds + " s", () -> s().answerSeconds = nextOf(ANSWER_TIMES, s().answerSeconds));
-		cycle(rx, y, () -> "SvenskaCraft: " + (s().enabled ? "ON" : "OFF"), () -> s().enabled = !s().enabled);
-		y += 38;
+		cycle(rx, y, () -> "Daily goal: " + (s().dailyGoal == 0 ? "off" : s().dailyGoal + " questions"),
+			() -> s().dailyGoal = nextOf(DAILY_GOALS, s().dailyGoal));
+		y += 22;
+		cycle(lx, y, () -> "Typing questions: " + (s().typing ? "ON" : "OFF"), () -> s().typing = !s().typing);
+		cycle(rx, y, () -> "Swedish in tooltips: " + (s().tooltips ? "ON" : "OFF"), () -> s().tooltips = !s().tooltips);
+		y += 22;
+		cycle(cx - 75, y, () -> "SvenskaCraft: " + (s().enabled ? "ON" : "OFF"), () -> s().enabled = !s().enabled);
+		y += 36;
 		addRenderableWidget(Button.builder(Component.literal("Done"), b -> onClose()).bounds(cx - 50, y, 100, 20).build());
 	}
 
@@ -75,14 +84,14 @@ public class SettingsScreen extends Screen {
 	public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTick) {
 		super.extractRenderState(g, mouseX, mouseY, partialTick);
 		int cx = width / 2;
-		int top = Math.max(28, height / 2 - 70);
+		int top = top();
 		g.centeredText(font, Component.literal("SvenskaCraft – Settings"), cx, top - 20, 0xFFFFCC00);
 		String hint = switch (s().intensity) {
 			case RELAXED -> "Relaxed: 1 question every 15 min, no reminders for known words.";
 			case BALANCED -> "Balanced: 2 questions every 10 min, occasional reminders.";
 			case IMMERSIVE -> "Immersive: 3 questions every 5 min, frequent reminders.";
 		};
-		g.centeredText(font, Component.literal(hint), cx, top + 97, 0xFF999999);
+		g.centeredText(font, Component.literal(hint), cx, top + 137, 0xFF999999);
 	}
 
 	@Override

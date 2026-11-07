@@ -3,6 +3,7 @@ package svenskacraft;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Supplier;
@@ -11,6 +12,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
@@ -18,6 +20,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
@@ -27,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import svenskacraft.audio.AudioPlayer;
 import svenskacraft.discovery.Discovery;
 import svenskacraft.lang.LanguagePack;
+import svenskacraft.learning.DailyGoal;
 import svenskacraft.learning.Milestones;
 import svenskacraft.learning.Scheduler;
 import svenskacraft.progress.LegacyMigration;
@@ -55,6 +59,7 @@ public class SvenskaCraft implements ClientModInitializer {
 	private static int quizTimer;
 	private static Supplier<Screen> pendingScreen;
 	private static boolean wasInWorld;
+	private static long worldTicks;
 
 	@Override
 	public void onInitializeClient() {
@@ -72,6 +77,7 @@ public class SvenskaCraft implements ClientModInitializer {
 		journalKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.svenskacraft.journal", InputConstants.KEY_J,
 			KeyMapping.Category.register(Identifier.fromNamespaceAndPath(MOD_ID, "main"))));
 		ClientTickEvents.END_CLIENT_TICK.register(SvenskaCraft::tick);
+		ItemTooltipCallback.EVENT.register((stack, context, flag, lines) -> tooltip(stack, lines));
 		ClientLifecycleEvents.CLIENT_STOPPING.register(mc -> saveProgressNow());
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, ctx) -> dispatcher.register(
 			ClientCommands.literal("svenska")
@@ -123,6 +129,7 @@ public class SvenskaCraft implements ClientModInitializer {
 			if (s != null) mc.gui.setScreen(s);
 			return;
 		}
+		if (++worldTicks % 200 == 0) DailyGoal.rollOver(progress, LocalDate.now().toEpochDay());
 		discovery.tick(mc);
 		if (!settings.enabled || mc.isPaused() || !mc.player.isAlive() || mc.gui.screen() instanceof QuizScreen) return;
 
@@ -152,6 +159,27 @@ public class SvenskaCraft implements ClientModInitializer {
 	/** Called by the pickup mixin. */
 	public static void onPickup(ItemStack stack, int amount) {
 		discovery.onPickup(stack, amount);
+	}
+
+	/** Called after every answered quiz/practice question: counts toward the daily goal. */
+	public static void answered() {
+		if (DailyGoal.countAnswer(progress, LocalDate.now().toEpochDay(), settings.dailyGoal)) {
+			Minecraft mc = Minecraft.getInstance();
+			String days = progress.dayStreak > 1 ? " · " + progress.dayStreak + " " + pack.ui("daysInARow") : "";
+			SystemToast.add(mc.gui.toastManager(), new SystemToast.SystemToastId(),
+				Component.literal("✔ " + pack.ui("dailyGoal") + days), Component.literal("Daily goal reached: " + settings.dailyGoal + " questions"));
+			say(Component.literal("✔ " + pack.ui("dailyGoal") + " (daily goal) reached!" + days).withStyle(ChatFormatting.GREEN));
+			AudioPlayer.cue(SoundEvents.PLAYER_LEVELUP, 1.2f, 0.3f);
+		}
+	}
+
+	/** Adds the Swedish word under the item name for words the player has discovered. */
+	private static void tooltip(ItemStack stack, List<Component> lines) {
+		if (!settings.enabled || !settings.tooltips || lines.isEmpty()) return;
+		Vocabulary.Entry e = vocab.byItem(BuiltInRegistries.ITEM.getKey(stack.getItem()).toString());
+		if (e == null || !progress.isDiscovered(e.id())) return;
+		lines.add(1, Component.literal(pack.nativeName() + ": ").withStyle(ChatFormatting.DARK_AQUA)
+			.append(Component.literal(e.word()).withStyle(ChatFormatting.GOLD)));
 	}
 
 	/** Mark progress as changed and announce new milestones. */
@@ -202,7 +230,8 @@ public class SvenskaCraft implements ClientModInitializer {
 		Milestones.Stats s = Milestones.stats(progress, vocab);
 		say(Component.literal("Words " + s.discovered() + "/" + vocab.entries().size() + " · familiar " + s.familiarOrBetter()
 			+ " · mastered " + s.mastered() + " · points " + progress.points + " · streak " + progress.streak
-			+ " · shields " + progress.shields).withStyle(ChatFormatting.AQUA));
+			+ " · shields " + progress.shields + " · today " + progress.answeredToday + "/" + settings.dailyGoal
+			+ " · day streak " + progress.dayStreak).withStyle(ChatFormatting.AQUA));
 	}
 
 	private static void help() {

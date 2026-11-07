@@ -27,7 +27,12 @@
   "state.new": "Ny",
   "state.learning": "Lär mig",
   "state.familiar": "Bekant",
-  "state.mastered": "Kan"
+  "state.mastered": "Kan",
+  "listenAndChoose": "Lyssna och välj",
+  "enOrEtt": "En eller ett?",
+  "typeInSwedish": "Skriv på svenska:",
+  "dailyGoal": "Dagens mål",
+  "daysInARow": "dagar i rad"
  },
  "reactions": {
   "correct": [

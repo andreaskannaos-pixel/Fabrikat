@@ -37,7 +37,22 @@ You discover Swedish words by playing: picking things up, looking at animals, ju
   - Words by category, with icon, Swedish, English, state, and a ♪ button to hear the word.
   - Click a word to see its example sentence (♪ to hear it) and its review stats.
   - An overview shows completion per category and your milestones.
-- **Milestones:** first word, 10/25/50/100 words, first familiar and first mastered word, 10/25/50 mastered, answer streaks, each completed category. Big milestones give a **shield** (max 3) that blocks your next quiz penalty.
+- **Questions get harder as you improve:** new words get multiple choice. Familiar and mastered words also get:
+  - **en or ett?** – the article (gender) of a noun.
+  - **Listening** – hear the word and pick its meaning; the word isn't shown until you answer.
+  - **Typing** – spell the word, with å/ä/ö buttons. Small slips are accepted with a hint: a missing article, a wrong article, *a* instead of *ä*, or one typo in a longer word.
+- **Practice** (journal → *Öva*): drill up to 5 words from a category, weakest first. No timer, no penalty; it still counts toward mastery and your daily goal.
+- **Hints for undiscovered words:** the journal shows how to find them, e.g. "Pick it up" with a dimmed icon, "Look at an animal", "Sleep in a bed", "Pick up 7 items at once".
+- **Swedish in item tooltips:** hover an item you've discovered and its Swedish word appears under the name.
+- **Daily goal:** answer N questions a day (default 10). Reaching it on consecutive days builds a day streak.
+- **Milestones:** first word, 10/25/50/100 words, first familiar and first mastered word, 10/25/50 mastered, answer streaks, daily goal, 3- and 7-day streaks, each completed category. Big milestones give a **shield** (max 3) that blocks your next quiz penalty.
+
+![typing](docs/quiz-typing.png)
+![gender](docs/quiz-gender.png)
+![listening](docs/quiz-listen.png)
+![tooltip](docs/tooltip.png)
+![hints](docs/journal-hints.png)
+![practice](docs/practice.png)
 
 ![overview](docs/journal-overview.png)
 ![quiz](docs/quiz-wrong.png)
@@ -53,7 +68,10 @@ You discover Swedish words by playing: picking things up, looking at animals, ju
 | Voice | **Off** · **Discovery only**: a new word is spoken once, short reactions in quizzes, ♪ buttons · **Manual playback**: only when you press ♪ |
 | Voice volume | 0–100% (Minecraft's Voice/Speech slider also applies) |
 | Quiz penalty | **None** · **Small**: lose 1 item · **Survival**: lose a whole stack |
-| Quiz every / answer time | Override the intensity's interval; 15–60 s per question |
+| Quiz every / answer time | Override the intensity's interval; 15–60 s per question (typing questions get double) |
+| Daily goal | Off, 5, 10, 20 or 30 questions a day |
+| Typing questions | Turn "type the word" questions on/off |
+| Swedish in tooltips | Show the Swedish word in item tooltips |
 
 ![picture quiz](docs/quiz-pictures.png)
 
@@ -67,9 +85,9 @@ You discover Swedish words by playing: picking things up, looking at animals, ju
 ## Install
 
 1. Install [Fabric Loader](https://fabricmc.net/use/installer/) for Minecraft **26.3**.
-2. Put [Fabric API](https://modrinth.com/mod/fabric-api) (26.3) and [`dist/svenskacraft-2.0.0.jar`](dist/svenskacraft-2.0.0.jar) in `.minecraft/mods`.
+2. Put [Fabric API](https://modrinth.com/mod/fabric-api) (26.3) and [`dist/svenskacraft-2.1.0.jar`](dist/svenskacraft-2.1.0.jar) in `.minecraft/mods`.
 
-**Upgrading from 1.0:** your learned words, points and settings are moved over automatically the first time you start the game. Old words are not spoken again.
+**Upgrading:** 2.0 progress loads as-is. **From 1.0:** your learned words, points and settings are moved over automatically the first time you start the game. Old words are not spoken again.
 
 ## Commands
 
@@ -101,14 +119,16 @@ You discover Swedish words by playing: picking things up, looking at animals, ju
   - "Bygga" (build) is detected when a held block stack shrinks while you hold right-click.
   - Numbers come from how many items you pick up at once; high numbers are rarer.
 - **"Never" translations:** verbs and phrases have no clear picture, so their quiz shows the icon and asks for the Swedish word.
+- **Typing:** answers are checked by spelling only; a synonym that's also correct Swedish is marked wrong.
+- **Daily goal:** uses your computer's date; changing the clock changes the day.
 - **Short review gaps use real time,** so time offline also counts toward when a word is due.
 - **Voice:** a synthetic voice (Piper NST, CC0). It was the clearest of the three Swedish Piper voices in a speech-recognition test, but it isn't a human recording.
 
 ## For developers
 
 ```bash
-./gradlew build     # Java 25; runs unit tests → build/libs/svenskacraft-2.0.0.jar
-./gradlew test      # unit tests only (vocabulary data, mastery, scheduler, saving, migration, milestones)
+./gradlew build     # Java 25; runs unit tests → build/libs/svenskacraft-2.1.0.jar
+./gradlew test      # unit tests only (vocabulary data, mastery, scheduler, question planner, answer checking, daily goal, saving, migration, milestones)
 ```
 
 ```
@@ -120,7 +140,7 @@ src/main/resources/assets/svenskacraft/
   sounds/sv/...              generated voice clips
 src/main/java/svenskacraft/
   vocab/ lang/               data loading
-  learning/                  word states, scheduler, milestones (no Minecraft code, unit tested)
+  learning/                  word states, scheduler, question planner, answer checking, daily goal, milestones (no Minecraft code, unit tested)
   progress/ settings/        saving, migration
   discovery/ audio/ ui/      in-game parts
 ```

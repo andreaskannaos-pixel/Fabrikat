@@ -15,6 +15,12 @@ public class Progress {
 	public int shields;
 	public Set<String> milestones = new LinkedHashSet<>();
 	public Map<String, WordProgress> words = new LinkedHashMap<>();
+	// daily goal (days are local calendar days, as epoch-day numbers)
+	public long today = -1;
+	public int answeredToday;
+	public long lastGoalDay = -1;
+	public int dayStreak;
+	public int bestDayStreak;
 	/** Most recent quiz questions, newest last. */
 	public List<String> recent = new ArrayList<>();
 

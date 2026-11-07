@@ -9,7 +9,7 @@ import svenskacraft.vocab.Vocabulary;
 
 /** Learning milestones. Big ones grant a penalty shield. */
 public final class Milestones {
-	public record Stats(int discovered, int familiarOrBetter, int mastered, int bestStreak, Set<String> completeCategories) {}
+	public record Stats(int discovered, int familiarOrBetter, int mastered, int bestStreak, int bestDayStreak, Set<String> completeCategories) {}
 
 	public record Milestone(String id, String title, String description, boolean shield, Predicate<Stats> reached) {}
 
@@ -25,7 +25,10 @@ public final class Milestones {
 		m("mastered_25", "Fluent-ish", "Master 25 words", true, s -> s.mastered() >= 25),
 		m("mastered_50", "Svensk mästare", "Master 50 words", true, s -> s.mastered() >= 50),
 		m("streak_5", "On a roll", "5 correct quiz answers in a row", false, s -> s.bestStreak() >= 5),
-		m("streak_10", "Unstoppable", "10 correct quiz answers in a row", true, s -> s.bestStreak() >= 10));
+		m("streak_10", "Unstoppable", "10 correct quiz answers in a row", true, s -> s.bestStreak() >= 10),
+		m("goal_1", "Daily learner", "Reach your daily goal", false, s -> s.bestDayStreak() >= 1),
+		m("days_3", "Three days in a row", "Reach your daily goal 3 days in a row", false, s -> s.bestDayStreak() >= 3),
+		m("days_7", "A whole week", "Reach your daily goal 7 days in a row", true, s -> s.bestDayStreak() >= 7));
 
 	private Milestones() {}
 
@@ -56,7 +59,7 @@ public final class Milestones {
 			if (s == WordState.MASTERED) mastered++;
 		}
 		perCat.forEach((cat, c) -> { if (c[0] > 0 && c[0] == c[1]) complete.add(cat); });
-		return new Stats(discovered, familiar, mastered, p.bestStreak, complete);
+		return new Stats(discovered, familiar, mastered, p.bestStreak, p.bestDayStreak, complete);
 	}
 
 	/** Returns milestones reached since the last check, records them and hands out shields. */

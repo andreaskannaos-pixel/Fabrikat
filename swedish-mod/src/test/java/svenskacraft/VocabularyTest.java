@@ -64,6 +64,22 @@ class VocabularyTest {
 	}
 
 	@Test
+	void everyUndiscoveredWordHasAHint() {
+		for (Vocabulary.Entry e : vocab.entries()) {
+			for (String ev : e.concept().events()) assertTrue(svenskacraft.vocab.Hints.knownEvent(ev), "no hint for event " + ev);
+			assertNotEquals("Keep playing", svenskacraft.vocab.Hints.hint(e.concept()), e.id());
+		}
+	}
+
+	@Test
+	void uiStringsForEveryQuestionKind() {
+		for (String k : new String[] {"whatDoesItMean", "howDoYouSay", "whatIsThis", "whichPicture", "listenAndChoose",
+			"enOrEtt", "typeInSwedish", "dailyGoal", "daysInARow", "correct", "wrong", "timeout", "newWord", "journal"}) {
+			assertNotEquals(k, sv.ui(k), "missing ui string " + k);
+		}
+	}
+
+	@Test
 	void reactionsAreShortAndVaried() {
 		assertTrue(sv.reactions("correct").size() >= 3);
 		assertTrue(sv.reactions("wrong").size() >= 3);

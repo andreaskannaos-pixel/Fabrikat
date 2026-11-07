@@ -2,6 +2,7 @@ package svenskacraft.ui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -13,10 +14,12 @@ import svenskacraft.SvenskaCraft;
 import svenskacraft.audio.AudioPlayer;
 import svenskacraft.learning.Mastery;
 import svenskacraft.learning.Milestones;
+import svenskacraft.learning.Scheduler;
 import svenskacraft.learning.WordState;
 import svenskacraft.progress.WordProgress;
 import svenskacraft.settings.Settings;
 import svenskacraft.vocab.Category;
+import svenskacraft.vocab.Hints;
 import svenskacraft.vocab.Vocabulary.Entry;
 
 /** Vocabulary journal: words by category with replay, example sentences, mastery, and an overview page. */
@@ -81,6 +84,11 @@ public class JournalScreen extends Screen {
 			int ry = listTop() + (i - start) * ROW_H;
 			addRenderableWidget(Button.builder(Component.literal("♪"), b -> playWord(e)).bounds(x1() - 17, ry + 1, 16, 16).build());
 		}
+		List<String> found = new ArrayList<>();
+		for (Entry e : list) if (SvenskaCraft.progress.isDiscovered(e.id())) found.add(e.id());
+		Button practice = addRenderableWidget(Button.builder(Component.literal("Öva (practice)"), b -> startPractice(found))
+			.bounds(x1() - 92, height - 20, 92, 16).build());
+		practice.active = !found.isEmpty();
 		if (pages() > 1) {
 			addRenderableWidget(Button.builder(Component.literal("<"), b -> { page = Math.max(0, page - 1); rebuildWidgets(); })
 				.bounds(x0(), height - 20, 20, 16).build()).active = page > 0;
@@ -93,6 +101,13 @@ public class JournalScreen extends Screen {
 				b -> SvenskaCraft.audio.play(SvenskaCraft.pack.exampleSound(sel.id()), AudioPlayer.Priority.MANUAL))
 				.bounds(x1() - 64, detailTop() + 3, 62, 16).build());
 		}
+	}
+
+	/** Up to 5 words from this category, chosen like a quiz (weak words first), with no timer or penalty. */
+	private void startPractice(List<String> found) {
+		List<String> ids = Scheduler.pick(found, SvenskaCraft.progress, 5, System.currentTimeMillis(), new Random());
+		if (ids.isEmpty()) return;
+		minecraft.gui.setScreen(new QuizScreen(ids.stream().map(SvenskaCraft.vocab::byId).toList(), true, this));
 	}
 
 	private Button tabButton(String id, String label, int y) {
@@ -168,8 +183,14 @@ public class JournalScreen extends Screen {
 			int bg = e.id().equals(selected) ? 0x60FFFFFF : hover ? 0x30FFFFFF : (i % 2 == 0 ? 0x30000000 : 0x18000000);
 			g.fill(x0(), y, x1(), y + ROW_H - 1, bg);
 			if (st == WordState.NEW) {
-				g.text(font, Component.literal("?"), x0() + 7, y + 5, 0xFF666666);
-				g.text(font, Component.literal("???"), x0() + 24, y + 5, 0xFF666666);
+				if (Hints.showIcon(e.concept())) {
+					QuizScreen.drawIcon(g, e, x0() + 2, y + 1, 1.0f);
+					g.fill(x0() + 2, y + 1, x0() + 18, y + 17, 0xB0101010); // dimmed: still to find
+				} else {
+					g.text(font, Component.literal("?"), x0() + 7, y + 5, 0xFF666666);
+				}
+				g.text(font, Component.literal("???"), x0() + 22, y + 5, 0xFF777777);
+				g.text(font, Component.literal(Hints.hint(e.concept())).withStyle(ChatFormatting.ITALIC), x0() + 60, y + 5, 0xFF666666);
 				continue;
 			}
 			QuizScreen.drawIcon(g, e, x0() + 2, y + 1, 1.0f);
@@ -217,7 +238,17 @@ public class JournalScreen extends Screen {
 		g.text(font, Component.literal("Discovered " + s.discovered() + " · Familiar " + s.familiarOrBetter() + " · Mastered " + s.mastered()), x, y, 0xFFFFFFFF);
 		y += 11;
 		g.text(font, Component.literal("Points " + p.points + " · Best streak " + p.bestStreak + " · Shields " + p.shields + "/3"), x, y, 0xFFAAAAAA);
-		y += 15;
+		y += 11;
+		int goal = SvenskaCraft.settings.dailyGoal;
+		if (goal > 0) {
+			boolean today = p.today == java.time.LocalDate.now().toEpochDay();
+			int done = today ? p.answeredToday : 0;
+			String streak = p.dayStreak > 1 ? " · " + p.dayStreak + " " + SvenskaCraft.pack.ui("daysInARow") : "";
+			g.text(font, Component.literal(SvenskaCraft.pack.ui("dailyGoal") + " (today): " + Math.min(done, goal) + "/" + goal + streak),
+				x, y, done >= goal ? 0xFF55FF55 : 0xFFFFDD55);
+			y += 11;
+		}
+		y += 4;
 		int labelW = 0;
 		for (Category c : SvenskaCraft.vocab.categories()) labelW = Math.max(labelW, font.width(SvenskaCraft.pack.category(c.id())));
 		int barX = x + labelW + 6, barW = Math.max(60, x1() - barX - 34);
