@@ -109,6 +109,8 @@ Pick your level in Settings (**Swedish level**). Changing it also sets a matchin
 1. Install [Fabric Loader](https://fabricmc.net/use/installer/) for Minecraft **26.3**.
 2. Put [Fabric API](https://modrinth.com/mod/fabric-api) (26.3) and [`dist/svenskacraft-2.2.1.jar`](dist/svenskacraft-2.2.1.jar) in `.minecraft/mods`.
 
+**CurseForge app:** import [`dist/SvenskaCraft-CurseForge-2.2.1.zip`](dist/SvenskaCraft-CurseForge-2.2.1.zip): Minecraft → Create Custom Profile → Import → choose the zip. It sets up Minecraft 26.3 + Fabric with Fabric API and SvenskaCraft included; then press Play. (Rebuild it with `python3 tools/make_curseforge_pack.py <fabric-api.jar>`.)
+
 **Lunar Client:** Lunar supports Minecraft 26.3 and custom Fabric mods, and already includes Fabric API. Pick version **26.3** with **Fabric** in the Lunar launcher, add `svenskacraft-2.2.1.jar` as a custom mod, and don't add Fabric API yourself.
 
 **Upgrading:** 2.0 progress loads as-is. **From 1.0:** your learned words, points and settings are moved over automatically the first time you start the game. Old words are not spoken again.
