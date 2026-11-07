@@ -12,7 +12,7 @@ import svenskacraft.progress.WordProgress;
  * Intermediate adds grammar forms and gap sentences; advanced adds Swedish definitions and mostly typing.
  */
 public final class QuestionPlanner {
-	public enum Kind { CHOICE, GENDER, LISTEN, TYPE, FORM, CLOZE, DEFINITION }
+	public enum Kind { CHOICE, GENDER, LISTEN, TYPE, FORM, CLOZE, DEFINITION, SENTENCE }
 
 	/** @param typed answer by typing instead of choosing (for FORM, CLOZE and DEFINITION) */
 	public record Plan(Kind kind, boolean typed) {}
@@ -46,25 +46,25 @@ public final class QuestionPlanner {
 			case BEGINNER -> {
 				if (first) { m.put(Kind.CHOICE, 1.0); break; }
 				switch (s) {
-					case NEW, LEARNING -> put(m, 80, 20, 0, 0, 0, 0, 0);
-					case FAMILIAR -> put(m, 35, 15, 20, 30, 0, 0, 0);
-					case MASTERED -> put(m, 20, 10, 25, 45, 0, 0, 0);
+					case NEW, LEARNING -> put(m, 80, 20, 0, 0, 0, 0, 0, 0);
+					case FAMILIAR -> put(m, 35, 15, 20, 30, 0, 0, 0, 10);
+					case MASTERED -> put(m, 20, 10, 25, 45, 0, 0, 0, 15);
 				}
 			}
 			case INTERMEDIATE -> {
-				if (first) { put(m, 50, 20, 0, 0, 0, 30, 0); break; }
+				if (first) { put(m, 50, 20, 0, 0, 0, 30, 0, 0); break; }
 				switch (s) {
-					case NEW, LEARNING -> put(m, 30, 15, 0, 0, 25, 30, 0);
-					case FAMILIAR -> put(m, 10, 10, 15, 20, 25, 20, 0);
-					case MASTERED -> put(m, 5, 5, 15, 25, 25, 25, 0);
+					case NEW, LEARNING -> put(m, 30, 15, 0, 0, 25, 30, 0, 15);
+					case FAMILIAR -> put(m, 10, 10, 15, 20, 25, 20, 0, 20);
+					case MASTERED -> put(m, 5, 5, 15, 25, 25, 25, 0, 20);
 				}
 			}
 			case ADVANCED -> {
-				if (first) { put(m, 0, 0, 0, 0, 0, 50, 50); break; }
+				if (first) { put(m, 0, 0, 0, 0, 0, 50, 50, 0); break; }
 				switch (s) {
-					case NEW, LEARNING -> put(m, 0, 15, 0, 0, 25, 30, 30);
-					case FAMILIAR -> put(m, 0, 0, 10, 20, 25, 25, 20);
-					case MASTERED -> put(m, 0, 0, 10, 10, 30, 30, 20);
+					case NEW, LEARNING -> put(m, 0, 15, 0, 0, 25, 30, 30, 15);
+					case FAMILIAR -> put(m, 0, 0, 10, 20, 25, 25, 20, 20);
+					case MASTERED -> put(m, 0, 0, 10, 10, 30, 30, 20, 20);
 				}
 			}
 		}
@@ -72,8 +72,9 @@ public final class QuestionPlanner {
 		return m;
 	}
 
-	private static void put(Map<Kind, Double> m, double choice, double gender, double listen, double type, double form, double cloze, double def) {
-		double[] v = {choice, gender, listen, type, form, cloze, def};
+	private static void put(Map<Kind, Double> m, double choice, double gender, double listen, double type, double form, double cloze,
+							double def, double sentence) {
+		double[] v = {choice, gender, listen, type, form, cloze, def, sentence};
 		for (int i = 0; i < v.length; i++) m.put(Kind.values()[i], v[i]);
 	}
 

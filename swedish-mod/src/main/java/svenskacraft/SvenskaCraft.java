@@ -32,6 +32,8 @@ import svenskacraft.discovery.Discovery;
 import svenskacraft.lang.LanguagePack;
 import svenskacraft.learning.DailyGoal;
 import svenskacraft.learning.Milestones;
+import svenskacraft.learning.Quests;
+import svenskacraft.learning.Statistics;
 import svenskacraft.learning.Scheduler;
 import svenskacraft.progress.LegacyMigration;
 import svenskacraft.progress.Progress;
@@ -131,7 +133,12 @@ public class SvenskaCraft implements ClientModInitializer {
 			if (s != null) mc.gui.setScreen(s);
 			return;
 		}
-		if (++worldTicks % 200 == 0) DailyGoal.rollOver(progress, LocalDate.now().toEpochDay());
+		if (++worldTicks % 200 == 1) {
+			DailyGoal.rollOver(progress, today());
+			long before = progress.questDay;
+			Quests.refresh(progress, vocab, today(), questContext());
+			if (before != progress.questDay) store.markDirty();
+		}
 		discovery.tick(mc);
 		safety.tick(mc);
 		if (!settings.enabled || mc.isPaused() || !mc.player.isAlive() || mc.gui.screen() instanceof QuizScreen) return;
@@ -171,6 +178,64 @@ public class SvenskaCraft implements ClientModInitializer {
 	/** Called by the pickup mixin. */
 	public static void onPickup(ItemStack stack, int amount) {
 		discovery.onPickup(stack, amount);
+	}
+
+	private static long today() { return LocalDate.now().toEpochDay(); }
+
+	private static Quests.Context questContext() {
+		return new Quests.Context(settings.level, audio.voiceEnabled(), settings.typing);
+	}
+
+	/** Records an answer for statistics, quests and achievements. */
+	public static void onAnswer(String kind, boolean typed, boolean correct, boolean fresh, boolean masteredNow) {
+		long day = today();
+		Statistics.answer(progress, kind, typed, correct, fresh, day);
+		Quests.refresh(progress, vocab, day, questContext());
+		List<Quests.Quest> done = new java.util.ArrayList<>(Quests.answer(progress, kind, typed, correct, fresh));
+		if (masteredNow) {
+			Statistics.mastered(progress, day);
+			done.addAll(Quests.mastered(progress));
+		}
+		questsDone(done);
+	}
+
+	/** Records a newly discovered word. */
+	public static void onNewWord(Vocabulary.Entry e) {
+		long day = today();
+		Statistics.newWord(progress, day);
+		Quests.refresh(progress, vocab, day, questContext());
+		questsDone(Quests.newWord(progress, e.category()));
+	}
+
+	private static void questsDone(List<Quests.Quest> done) {
+		if (done.isEmpty()) return;
+		Minecraft mc = Minecraft.getInstance();
+		for (Quests.Quest q : done) {
+			progress.points += Quests.POINTS_PER_QUEST;
+			progress.questsCompleted++;
+			String text = q.describe(q.category == null ? "" : pack.category(q.category));
+			SystemToast.add(mc.gui.toastManager(), new SystemToast.SystemToastId(), Component.literal("✔ " + pack.ui("questDone")), Component.literal(text));
+			say(Component.literal("✔ " + pack.ui("questDone") + " ").withStyle(ChatFormatting.GREEN).append(Component.literal(text).withStyle(ChatFormatting.GRAY)));
+			giveXp(mc, 20);
+		}
+		if (Quests.allDone(progress)) {
+			progress.addShield();
+			say(Component.literal("★ " + pack.ui("allQuests") + " +1 shield").withStyle(ChatFormatting.GOLD));
+			giveXp(mc, 40);
+		}
+		AudioPlayer.cue(SoundEvents.PLAYER_LEVELUP, 1.6f, 0.3f);
+		store.markDirty();
+	}
+
+	/** Real XP in singleplayer; on servers a client mod can't give anything, so rewards there are points and shields. */
+	private static void giveXp(Minecraft mc, int amount) {
+		if (!mc.hasSingleplayerServer() || mc.player == null) return;
+		var server = mc.getSingleplayerServer();
+		var id = mc.player.getUUID();
+		server.execute(() -> {
+			var sp = server.getPlayerList().getPlayer(id);
+			if (sp != null) sp.giveExperiencePoints(amount);
+		});
 	}
 
 	/** Called after every answered quiz/practice question: counts toward the daily goal. */

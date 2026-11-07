@@ -79,6 +79,8 @@ public class JournalScreen extends Screen {
 
 	@Override
 	protected void init() {
+		addRenderableWidget(Button.builder(Component.literal(SvenskaCraft.pack.ui("stats")), b -> minecraft.gui.setScreen(new StatsScreen(this)))
+			.bounds(width - 176, 4, 60, 16).build());
 		addRenderableWidget(Button.builder(Component.literal("Settings"), b -> minecraft.gui.setScreen(new SettingsScreen(this)))
 			.bounds(width - 112, 4, 60, 16).build());
 		addRenderableWidget(Button.builder(Component.literal("Done"), b -> onClose()).bounds(width - 48, 4, 42, 16).build());
@@ -107,6 +109,18 @@ public class JournalScreen extends Screen {
 		Button practice = addRenderableWidget(Button.builder(Component.literal(practiceLabel), b -> startPractice(found))
 			.bounds(x1() - 92, height - 20, 92, 16).build());
 		practice.active = !found.isEmpty();
+		// sentence practice: words of this category whose example sentence works as a puzzle at this level
+		List<String> sentenceWords = new ArrayList<>();
+		for (String id : found) {
+			Entry e = SvenskaCraft.vocab.byId(id);
+			if (e != null && svenskacraft.learning.SentenceBuilder.tiles(e.example(), SvenskaCraft.settings.level) != null) sentenceWords.add(id);
+		}
+		Button sentences = addRenderableWidget(Button.builder(Component.literal(SvenskaCraft.pack.ui("sentences")), b -> {
+			List<String> ids = Scheduler.pick(sentenceWords, SvenskaCraft.progress, 5, System.currentTimeMillis(), new Random());
+			if (!ids.isEmpty()) minecraft.gui.setScreen(new QuizScreen(ids.stream().map(SvenskaCraft.vocab::byId).toList(), true, this,
+				svenskacraft.learning.QuestionPlanner.Kind.SENTENCE));
+		}).bounds(x1() - 92 - 66, height - 20, 62, 16).tooltip(net.minecraft.client.gui.components.Tooltip.create(Component.literal("Practice building sentences"))).build());
+		sentences.active = !sentenceWords.isEmpty();
 		if (pages() > 1) {
 			addRenderableWidget(Button.builder(Component.literal("<"), b -> { page = Math.max(0, page - 1); rebuildWidgets(); })
 				.bounds(x0(), height - 20, 20, 16).build()).active = page > 0;
@@ -185,7 +199,8 @@ public class JournalScreen extends Screen {
 		String head = SvenskaCraft.settings.level == Level.ADVANCED
 			? s.discovered() + "/" + SvenskaCraft.vocab.entries().size() + " ord · " + s.mastered() + " kan"
 			: s.discovered() + "/" + SvenskaCraft.vocab.entries().size() + " words · " + s.mastered() + " mastered";
-		g.text(font, Component.literal(head), 8 + font.width(title) + 12, 8, 0xFFAAAAAA);
+		int hx = 8 + font.width(title) + 12;
+		if (hx + font.width(head) < width - 182) g.text(font, Component.literal(head), hx, 8, 0xFFAAAAAA);
 		if (tab == null) drawOverview(g, s);
 		else drawList(g, mouseX, mouseY);
 	}
@@ -282,11 +297,26 @@ public class JournalScreen extends Screen {
 				x, y, done >= goal ? 0xFF55FF55 : 0xFFFFDD55);
 			y += 11;
 		}
+		// today's quests
+		y += 2;
+		g.text(font, Component.literal(SvenskaCraft.pack.ui("quests") + " (today's quests)"), x, y, 0xFFFFCC00);
+		y += 11;
+		for (svenskacraft.learning.Quests.Quest q : p.quests) {
+			String text = q.describe(q.category == null ? "" : SvenskaCraft.pack.category(q.category));
+			g.text(font, Component.literal((q.done ? "✔ " : "○ ") + text + "  " + q.progress + "/" + q.target), x + 4, y, q.done ? 0xFF55FF55 : 0xFFDDDDDD);
+			y += 10;
+		}
+		if (p.quests.isEmpty()) { g.text(font, Component.literal("Join a world to get today's quests."), x + 4, y, 0xFF888888); y += 10; }
 		y += 4;
+		// categories in two columns
+		int colW = (x1() - x) / 2 - 4;
 		int labelW = 0;
 		for (Category c : SvenskaCraft.vocab.categories()) labelW = Math.max(labelW, font.width(SvenskaCraft.pack.category(c.id())));
-		int barX = x + labelW + 6, barW = Math.max(60, x1() - barX - 34);
-		for (Category c : SvenskaCraft.vocab.categories()) {
+		List<Category> cats = SvenskaCraft.vocab.categories();
+		int rows = (cats.size() + 1) / 2;
+		for (int i = 0; i < cats.size(); i++) {
+			Category c = cats.get(i);
+			int cx0 = x + (i / rows) * (colW + 8), cy = y + (i % rows) * 10;
 			List<Entry> list = SvenskaCraft.vocab.inCategory(c.id());
 			int disc = 0, mast = 0;
 			for (Entry e : list) {
@@ -294,13 +324,14 @@ public class JournalScreen extends Screen {
 				if (st != WordState.NEW) disc++;
 				if (st == WordState.MASTERED) mast++;
 			}
-			g.text(font, Component.literal(SvenskaCraft.pack.category(c.id())), x, y + 1, 0xFFDDDDDD);
-			g.fill(barX, y + 2, barX + barW, y + 8, 0xFF333333);
-			g.fill(barX, y + 2, barX + barW * disc / list.size(), y + 8, 0xFF3A7BD5);
-			g.fill(barX, y + 2, barX + barW * mast / list.size(), y + 8, 0xFF55DD55);
-			g.text(font, Component.literal(disc + "/" + list.size()), barX + barW + 4, y + 1, 0xFFAAAAAA);
-			y += 11;
+			int barX = cx0 + labelW + 4, barW = Math.max(20, colW - labelW - 34);
+			g.text(font, Component.literal(SvenskaCraft.pack.category(c.id())), cx0, cy, 0xFFDDDDDD);
+			g.fill(barX, cy + 1, barX + barW, cy + 7, 0xFF333333);
+			g.fill(barX, cy + 1, barX + barW * disc / list.size(), cy + 7, 0xFF3A7BD5);
+			g.fill(barX, cy + 1, barX + barW * mast / list.size(), cy + 7, 0xFF55DD55);
+			g.text(font, Component.literal(disc + "/" + list.size()), barX + barW + 3, cy, 0xFFAAAAAA);
 		}
+		y += rows * 10;
 		y += 4;
 		List<Milestones.Milestone> all = Milestones.all(SvenskaCraft.vocab);
 		long done = all.stream().filter(m -> p.milestones.contains(m.id())).count();

@@ -240,6 +240,7 @@ public final class Discovery {
 			SvenskaCraft.audio.play(SvenskaCraft.pack.wordSound(e.id()), AudioPlayer.Priority.AUTO);
 		}
 		w.spoken = true;
+		SvenskaCraft.onNewWord(e);
 		SvenskaCraft.progressChanged();
 	}
 

@@ -9,7 +9,8 @@ import svenskacraft.vocab.Vocabulary;
 
 /** Learning milestones. Big ones grant a penalty shield. */
 public final class Milestones {
-	public record Stats(int discovered, int familiarOrBetter, int mastered, int bestStreak, int bestDayStreak, Set<String> completeCategories) {}
+	public record Stats(int discovered, int familiarOrBetter, int mastered, int bestStreak, int bestDayStreak, Set<String> completeCategories,
+						int sentences, int listening, int grammar, int typed, boolean explorer, int quests) {}
 
 	public record Milestone(String id, String title, String description, boolean shield, Predicate<Stats> reached) {}
 
@@ -28,7 +29,14 @@ public final class Milestones {
 		m("streak_10", "Unstoppable", "10 correct quiz answers in a row", true, s -> s.bestStreak() >= 10),
 		m("goal_1", "Daily learner", "Reach your daily goal", false, s -> s.bestDayStreak() >= 1),
 		m("days_3", "Three days in a row", "Reach your daily goal 3 days in a row", false, s -> s.bestDayStreak() >= 3),
-		m("days_7", "A whole week", "Reach your daily goal 7 days in a row", true, s -> s.bestDayStreak() >= 7));
+		m("days_7", "A whole week", "Reach your daily goal 7 days in a row", true, s -> s.bestDayStreak() >= 7),
+		m("words_150", "Word collector", "Discover 150 words", true, s -> s.discovered() >= 150),
+		m("sentences_10", "Sentence builder", "Build 10 sentences correctly", true, s -> s.sentences() >= 10),
+		m("listening_25", "Listening champion", "Answer 25 listening questions correctly", true, s -> s.listening() >= 25),
+		m("grammar_50", "Grammar expert", "Get 50 grammar questions right", true, s -> s.grammar() >= 50),
+		m("typed_50", "Spelling bee", "Type 50 answers correctly", false, s -> s.typed() >= 50),
+		m("explorer", "Swedish explorer", "Discover every place word: forest, desert, sea, mountain, swamp, jungle, beach, cave", true, s -> s.explorer()),
+		m("quests_10", "Quest master", "Complete 10 daily quests", true, s -> s.quests() >= 10));
 
 	private Milestones() {}
 
@@ -59,7 +67,18 @@ public final class Milestones {
 			if (s == WordState.MASTERED) mastered++;
 		}
 		perCat.forEach((cat, c) -> { if (c[0] > 0 && c[0] == c[1]) complete.add(cat); });
-		return new Stats(discovered, familiar, mastered, p.bestStreak, p.bestDayStreak, complete);
+		boolean explorer = true;
+		int places = 0;
+		for (Vocabulary.Entry e : vocab.entries()) {
+			boolean place = e.concept().events().stream().anyMatch(ev -> ev.startsWith("biome_") || ev.equals("cave"));
+			if (!place) continue;
+			places++;
+			if (!p.isDiscovered(e.id())) explorer = false;
+		}
+		return new Stats(discovered, familiar, mastered, p.bestStreak, p.bestDayStreak, complete,
+			Statistics.freshCorrect(p, "SENTENCE"), Statistics.freshCorrect(p, "LISTEN"),
+			Statistics.freshCorrect(p, "GENDER", "FORM", "CLOZE"), Statistics.freshCorrect(p, "TYPED"),
+			explorer && places > 0, p.questsCompleted);
 	}
 
 	/** Returns milestones reached since the last check, records them and hands out shields. */

@@ -47,7 +47,13 @@
   "forms": "Former",
   "definition": "Förklaring",
   "form.neuter": "Ett-ord – ett hus är …",
-  "form.adj_plural": "Plural – husen är …"
+  "form.adj_plural": "Plural – husen är …",
+  "buildSentence": "Bygg meningen:",
+  "questDone": "Uppdrag klart!",
+  "quests": "Dagens uppdrag",
+  "allQuests": "Alla dagens uppdrag klara!",
+  "sentences": "Meningar",
+  "stats": "Statistik"
  },
  "reactions": {
   "correct": [

@@ -21,6 +21,14 @@ public class Progress {
 	public long lastGoalDay = -1;
 	public int dayStreak;
 	public int bestDayStreak;
+	// statistics and quests (2.4) – missing in older saves, filled in by normalize()
+	/** Answers per question kind ("CHOICE", "LISTEN", "SENTENCE", ... and "TYPED" for any typed answer). */
+	public Map<String, Stats.KindStats> kinds = new LinkedHashMap<>();
+	/** Per local day (epoch-day number as text). */
+	public Map<String, Stats.DayStats> days = new LinkedHashMap<>();
+	public List<svenskacraft.learning.Quests.Quest> quests = new ArrayList<>();
+	public long questDay = -1;
+	public int questsCompleted;
 	/** Most recent quiz questions, newest last. */
 	public List<String> recent = new ArrayList<>();
 
@@ -36,6 +44,12 @@ public class Progress {
 		if (milestones == null) milestones = new LinkedHashSet<>();
 		if (words == null) words = new LinkedHashMap<>();
 		if (recent == null) recent = new ArrayList<>();
+		if (kinds == null) kinds = new LinkedHashMap<>();
+		if (days == null) days = new LinkedHashMap<>();
+		if (quests == null) quests = new ArrayList<>();
+		kinds.values().removeIf(Objects::isNull);
+		days.values().removeIf(Objects::isNull);
+		quests.removeIf(q -> q == null || q.type == null);
 		words.values().removeIf(Objects::isNull);
 		for (WordProgress w : words.values()) w.box = Math.max(0, Math.min(5, w.box));
 		shields = Math.max(0, Math.min(MAX_SHIELDS, shields));
