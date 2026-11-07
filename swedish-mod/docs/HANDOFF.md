@@ -6,7 +6,7 @@ A summary for another developer or AI assistant continuing work on this mod. It 
 
 A **client-side Fabric mod** that teaches Swedish while you play Minecraft Java. Only the player installs it; it works in singleplayer and on any server.
 
-- **Version:** 2.3.0
+- **Version:** 2.4.0
 - **Minecraft:** 26.3 (default build) and 26.2
 - **Loader:** Fabric Loader ≥ 0.16.0
 - **Dependency:** Fabric API
@@ -24,9 +24,12 @@ A **client-side Fabric mod** that teaches Swedish while you play Minecraft Java.
   - grammar forms
   - gap sentences
   - Swedish definitions
+  - sentence building (word tiles in the right order)
 - **Swedish levels:** Beginner (A1), Intermediate (A2: grammar), Advanced (B1+: Swedish only).
 - **Journal (J key):** categories, ♪ replay, example sentences, forms, definitions, progress, milestones, practice mode, hints for undiscovered words.
 - **Rewards:** milestones with shields, which block one quiz penalty, plus a daily goal and day streak.
+- **Daily quests:** three a day, built from existing learning events.
+- **Statistics:** per question kind and per day, shown on a stats screen.
 - **Item tooltips:** show the Swedish word for discovered items.
 - **Quiz safety:** quizzes never start during danger, and singleplayer pauses while the quiz, journal or settings are open.
 - **Penalties:** quiz penalties are None / Small (1 item) / Survival (stack). On servers the item is thrown instead of deleted, because the client can't delete items there.
@@ -46,12 +49,13 @@ src/main/java/svenskacraft/
   learning/                PURE JAVA, unit tested:
     Level, WordState, Mastery (Leitner boxes), Scheduler (which words to ask),
     QuestionPlanner (which question kind), Forms (grammar forms, distractors, gap sentences),
-    AnswerCheck (typed answers), DailyGoal, Milestones
-  progress/                Progress + WordProgress (saved data), ProgressStore (atomic save + .bak), LegacyMigration (v1.0 config)
+    AnswerCheck (typed answers), DailyGoal, Milestones,
+    SentenceBuilder (word-order puzzles from example sentences), Quests (daily quests), Statistics
+  progress/                Progress + WordProgress + Stats (saved data), ProgressStore (atomic save + .bak), LegacyMigration (v1.0 config)
   settings/Settings.java   all player options (enums), saved as JSON
   discovery/Discovery.java all discovery triggers + new-word / reminder display
   audio/AudioPlayer.java   single voice channel (no overlap), reactions, subtle cues
-  ui/                      QuizScreen, JournalScreen, SettingsScreen, Journal (shared helpers)
+  ui/                      QuizScreen, JournalScreen, SettingsScreen, StatsScreen, Journal (shared helpers)
 src/main/resources/assets/svenskacraft/
   vocab/categories.json    [{id, icon, en}]
   vocab/concepts.json      language-neutral words (see below)
@@ -150,6 +154,23 @@ The tests check, among other things:
   - accepts `|` alternatives
   - counts as "almost" (accepted with a hint): a missing or wrong article, missing å/ä/ö, or one typo in words ≥ 5 letters
 
+## Sentence builder, quests, statistics (2.4)
+
+- **SentenceBuilder:**
+  - Uses the word's example sentence. Final punctuation is kept aside and added back; the first word is lower-cased on its tile and capitalised in the result. Proper nouns (Nether) stay capitalised.
+  - Beginner/Intermediate merge "en/ett/att + next word" into one tile; Advanced splits every word and adds one trap tile.
+  - Skipped: two-sentence lines and sentences with movable time words (i dag, nu, i morgon …).
+  - Max tiles: 4 / 6 / 8 by level.
+- **Quests:**
+  - Generated once per day (seeded by date) from what the player can do (voice on, typing on, level, undiscovered words left, familiar words).
+  - Progress comes from `newWord`, `answer(kind, typed, correct, fresh)` and `mastered`. Only *fresh* correct answers count: the word wasn't asked in the last 10 minutes.
+  - Rewards: +5 points and 20 XP (singleplayer) per quest; all three give a shield.
+- **Statistics:**
+  - `Progress.kinds` holds correct/wrong/freshCorrect per question kind, plus "TYPED".
+  - `Progress.days` keeps answered/correct/newWords/mastered per epoch day, for 120 days.
+  - Achievements use `freshCorrect` only.
+- **Save compatibility:** all 2.4 fields are optional. `Progress.normalize()` fills them for older saves, and a test loads an exact 2.3 save.
+
 ## Persistence
 
 - **Location:**
@@ -187,7 +208,7 @@ python3 tools/make_curseforge_pack.py <fabric-api-0.165.2+26.3.jar>   # CurseFor
 
 ## Testing
 
-- **Unit tests:** 56 JUnit tests cover data integrity, mastery, scheduler, planner, forms and gap sentences, answer checking, daily goal, saving and migration, and milestones.
+- **Unit tests:** 70 JUnit tests cover data integrity, mastery, scheduler, planner, forms and gap sentences, answer checking, daily goal, sentence builder, quests, statistics, saving and migration (including loading an exact 2.3 save), and milestones.
 - **In-game:** verified in a headless dev client (Xvfb + software Vulkan) on 26.3 and 26.2: discovery, all question kinds, levels, journal, practice, tooltips, safety gate, pause, and migration.
 - **Not verified:**
   - Audio playback (the test machine has no sound device).
@@ -195,7 +216,7 @@ python3 tools/make_curseforge_pack.py <fabric-api-0.165.2+26.3.jar>   # CurseFor
 
 ## Ideas / backlog
 
-- **Grammar:** word-order and short-sentence building exercises; more verbs and adjectives (stor/liten, varm/kall); "Vad är det här?" for blocks you look at.
+- **Grammar academy (planned 2.5):** short explanations + topic practice; more verbs and adjectives (stor/liten, varm/kall); "Vad är det här?" for blocks you look at.
 - **More languages:** add `languages/<code>/` plus a Piper voice. Progress is already per language.
 - **Interface:** Swedish menus at Advanced (only the quiz and word details are Swedish now).
 - **Testing:** a placement test that suggests a level.

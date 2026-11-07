@@ -105,6 +105,38 @@ class PersistenceTest {
 	}
 
 	@Test
+	void savesFromVersion23LoadWithEverythingKept() throws Exception {
+		// a progress file exactly as 2.3.0 wrote it (no stats, no quests)
+		Files.createDirectories(dir);
+		Files.writeString(dir.resolve("progress-sv.json"), """
+			{"version": 1, "language": "sv", "points": 42, "streak": 3, "bestStreak": 9, "shields": 2,
+			 "milestones": ["first_word", "words_10"],
+			 "words": {"diamond": {"discoveredAt": 1000, "spoken": true, "box": 4, "correct": 7, "wrong": 1, "streak": 3,
+			                       "lastAskedAt": 5000, "lastCorrectDay": 3, "correctDays": 2}},
+			 "recent": ["diamond"], "today": 20000, "answeredToday": 4, "lastGoalDay": 19999, "dayStreak": 5, "bestDayStreak": 6}""");
+		Progress p = new ProgressStore(dir).load("sv");
+		assertEquals(42, p.points);
+		assertEquals(9, p.bestStreak);
+		assertEquals(2, p.shields);
+		assertEquals(5, p.dayStreak);
+		assertTrue(p.milestones.contains("words_10"));
+		assertEquals(4, p.word("diamond").box);
+		assertEquals(svenskacraft.learning.WordState.MASTERED, svenskacraft.learning.Mastery.state(p.word("diamond")));
+		assertNotNull(p.kinds);
+		assertNotNull(p.days);
+		assertNotNull(p.quests);
+		assertTrue(p.quests.isEmpty());
+		assertEquals(0, p.questsCompleted);
+		// and new data saves and loads back
+		svenskacraft.learning.Statistics.answer(p, "SENTENCE", false, true, true, 20000);
+		ProgressStore store = new ProgressStore(dir);
+		store.save(p, 0);
+		Progress back = store.load("sv");
+		assertEquals(1, back.kinds.get("SENTENCE").correct);
+		assertEquals(42, back.points);
+	}
+
+	@Test
 	void atomicWriteKeepsBackup() throws Exception {
 		Path f = dir.resolve("x.json");
 		Json.writeAtomic(f, java.util.Map.of("a", 1));

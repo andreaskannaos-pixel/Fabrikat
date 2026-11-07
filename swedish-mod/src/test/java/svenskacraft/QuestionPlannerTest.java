@@ -88,6 +88,16 @@ class QuestionPlannerTest {
 	}
 
 	@Test
+	void sentencesOnlyForWordsYouKnowAndNeverFirst() {
+		assertNotEquals(Kind.SENTENCE, QuestionPlanner.plan(word(0, 0, 0), Level.ADVANCED, ALL, true, new Random(1)).kind());
+		WordProgress learning = word(1, 1, 1);
+		learning.wrong = 2;
+		assertNull(sample(learning, Level.BEGINNER, ALL, true).get(Kind.SENTENCE), "beginners build sentences only with familiar words");
+		assertTrue(sample(word(3, 4, 1), Level.BEGINNER, ALL, true).getOrDefault(Kind.SENTENCE, 0) > 0);
+		assertTrue(sample(learning, Level.INTERMEDIATE, ALL, true).getOrDefault(Kind.SENTENCE, 0) > 100);
+	}
+
+	@Test
 	void typingSwitchOffMeansNoTyping() {
 		Random rnd = new Random(3);
 		for (int i = 0; i < 1000; i++) {

@@ -82,7 +82,8 @@ public final class Quests {
 		if (undiscovered >= 3) options.add(new Quest(Type.NEW_WORDS, null, 3));
 		List<String> cats = new ArrayList<>();
 		for (Category c : vocab.categories()) if (undiscoveredPerCat.getOrDefault(c.id(), 0) >= 2) cats.add(c.id());
-		if (!cats.isEmpty()) options.add(new Quest(Type.NEW_IN_CATEGORY, cats.get(rnd.nextInt(cats.size())), 2));
+		Collections.shuffle(cats, rnd);
+		for (String cat : cats.subList(0, Math.min(2, cats.size()))) options.add(new Quest(Type.NEW_IN_CATEGORY, cat, 2));
 		if (ctx.voice() && known >= 4) options.add(new Quest(Type.LISTEN, null, 3));
 		if (known >= 3) options.add(new Quest(Type.SENTENCE, null, 2));
 		if (ctx.level().atLeast(Level.INTERMEDIATE) && known >= 4) options.add(new Quest(Type.GRAMMAR, null, 4));
@@ -92,12 +93,17 @@ public final class Quests {
 		if (options.size() < PER_DAY && known >= 1) options.add(new Quest(Type.REVIEW, null, 3));
 		if (options.size() < PER_DAY) options.add(new Quest(Type.NEW_WORDS, null, Math.max(1, Math.min(3, undiscovered))));
 		Collections.shuffle(options, rnd);
-		// never two quests of the same type
+		// never two identical quests (two category quests are fine if the categories differ),
+		// and at most one category quest unless nothing else is possible
 		List<Quest> out = new ArrayList<>();
-		Set<Type> used = EnumSet.noneOf(Type.class);
-		for (Quest q : options) {
-			if (out.size() == PER_DAY) break;
-			if (used.add(q.type)) out.add(q);
+		Set<String> used = new HashSet<>();
+		for (int pass = 0; pass < 2 && out.size() < PER_DAY; pass++) {
+			for (Quest q : options) {
+				if (out.size() == PER_DAY) break;
+				boolean secondCategory = q.type == Type.NEW_IN_CATEGORY && used.stream().anyMatch(k -> k.startsWith("NEW_IN_CATEGORY"));
+				if (pass == 0 && secondCategory) continue;
+				if (used.add(q.type + ":" + q.category)) out.add(q);
+			}
 		}
 		return out;
 	}

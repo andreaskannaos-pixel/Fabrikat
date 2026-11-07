@@ -22,6 +22,9 @@ You discover Swedish words by playing: picking things up, looking at animals, ju
 
 - **More ways to discover words:** holding an item counts as well as picking it up, so crafted tools and dyes count too. Weather (*regn, åska*), the sun and moon, the biome you're in (*skog, öken, hav, berg, träsk, djungel, strand*), caves, riding, boats, flying, falling, climbing, fishing, sneaking and drinking all teach words.
 - **Quizzes never interrupt a fight:** a quiz waits until no monster is within 16 blocks and you haven't been hurt, burning, falling, drowning, gliding or swinging your weapon for 5 seconds. In singleplayer the world is paused while a quiz, the journal or the settings are open.
+- **Sentence builder (2.4):** put word tiles in the right order – *jag / äter / ett äpple* → "Jag äter ett äpple." Built from each word's example sentence. Beginners get short sentences with *en/ett + noun* kept together; Advanced gets single-word tiles and one trap tile (a wrong form). Appears in quizzes for words you know, and as **Meningar** practice in the journal.
+- **Daily quests (2.4):** three quests a day, e.g. "Learn 3 new words", "Build 2 sentences correctly", "Answer 3 listening questions correctly", "Master 1 word". Only answers to words not asked in the last 10 minutes count, so repeating easy questions doesn't help. Each quest gives points (and XP in singleplayer); finishing all three gives a shield.
+- **Statistics (2.4):** Journal → **Statistik**: this week, the last 14 days, how your words are spread over the four states, accuracy per question type, and streaks.
 - **Word states:**
 
   | State | Meaning |
@@ -47,7 +50,7 @@ You discover Swedish words by playing: picking things up, looking at animals, ju
 - **Hints for undiscovered words:** the journal shows how to find them, e.g. "Pick it up" with a dimmed icon, "Look at an animal", "Sleep in a bed", "Pick up 7 items at once".
 - **Swedish in item tooltips:** hover an item you've discovered and its Swedish word appears under the name.
 - **Daily goal:** answer N questions a day (default 10). Reaching it on consecutive days builds a day streak.
-- **Milestones:** first word, 10/25/50/100 words, first familiar and first mastered word, 10/25/50 mastered, answer streaks, daily goal, 3- and 7-day streaks, each completed category. Big milestones give a **shield** (max 3) that blocks your next quiz penalty.
+- **Milestones:** first word, 10/25/50/100 words, first familiar and first mastered word, 10/25/50 mastered, answer streaks, daily goal, 3- and 7-day streaks, each completed category, and (2.4) Sentence builder, Listening champion, Grammar expert, Spelling bee, Swedish explorer (every place word), Quest master and 150 words. Big milestones give a **shield** (max 3) that blocks your next quiz penalty.
 
 ![typing](docs/quiz-typing.png)
 ![gender](docs/quiz-gender.png)
@@ -109,13 +112,13 @@ Pick your level in Settings (**Swedish level**). Changing it also sets a matchin
 ## Install
 
 1. Install [Fabric Loader](https://fabricmc.net/use/installer/) for Minecraft **26.3**.
-2. Put [Fabric API](https://modrinth.com/mod/fabric-api) (26.3) and [`dist/svenskacraft-2.3.0+26.3.jar`](dist/svenskacraft-2.3.0+26.3.jar) in `.minecraft/mods`.
+2. Put [Fabric API](https://modrinth.com/mod/fabric-api) (26.3) and [`dist/svenskacraft-2.4.0+26.3.jar`](dist/svenskacraft-2.4.0+26.3.jar) in `.minecraft/mods`.
 
-**Two Minecraft versions:** `svenskacraft-2.3.0+26.3.jar` for Minecraft **26.3** and `svenskacraft-2.3.0+26.2.jar` for **26.2** (same features). Use the one that matches your profile. The `SvenskaCraft-Lunar-…zip` files contain the same jars, for browsers that block `.jar` downloads.
+**Two Minecraft versions:** `svenskacraft-2.4.0+26.3.jar` for Minecraft **26.3** and `svenskacraft-2.4.0+26.2.jar` for **26.2** (same features). Use the one that matches your profile. The `SvenskaCraft-Lunar-…zip` files contain the same jars, for browsers that block `.jar` downloads.
 
-**CurseForge app:** import [`dist/SvenskaCraft-CurseForge-2.3.0+26.3.zip`](dist/SvenskaCraft-CurseForge-2.3.0+26.3.zip): Minecraft → Create Custom Profile → Import → choose the zip. It sets up Minecraft 26.3 + Fabric with Fabric API and SvenskaCraft included; then press Play. (Rebuild it with `python3 tools/make_curseforge_pack.py <fabric-api.jar>`.)
+**CurseForge app:** import [`dist/SvenskaCraft-CurseForge-2.4.0+26.3.zip`](dist/SvenskaCraft-CurseForge-2.4.0+26.3.zip): Minecraft → Create Custom Profile → Import → choose the zip. It sets up Minecraft 26.3 + Fabric with Fabric API and SvenskaCraft included; then press Play. (Rebuild it with `python3 tools/make_curseforge_pack.py <fabric-api.jar>`.)
 
-**Lunar Client:** Lunar supports Minecraft 26.3 and custom Fabric mods, and already includes Fabric API. Pick version **26.3** with **Fabric** in the Lunar launcher, add `svenskacraft-2.3.0+26.3.jar` as a custom mod, and don't add Fabric API yourself.
+**Lunar Client:** Lunar supports Minecraft 26.3 and custom Fabric mods, and already includes Fabric API. Pick version **26.3** with **Fabric** in the Lunar launcher, add `svenskacraft-2.4.0+26.3.jar` as a custom mod, and don't add Fabric API yourself.
 
 **Upgrading:** 2.0 progress loads as-is. **From 1.0:** your learned words, points and settings are moved over automatically the first time you start the game. Old words are not spoken again.
 
@@ -159,7 +162,7 @@ Pick your level in Settings (**Swedish level**). Changing it also sets a matchin
 ## For developers
 
 ```bash
-./gradlew build     # Java 25; runs unit tests → build/libs/svenskacraft-2.3.0+26.3.jar
+./gradlew build     # Java 25; runs unit tests → build/libs/svenskacraft-2.4.0+26.3.jar
 ./gradlew test      # unit tests only (vocabulary data, mastery, scheduler, question planner, answer checking, daily goal, saving, migration, milestones)
 ```
 

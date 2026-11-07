@@ -303,12 +303,12 @@ public class QuizScreen extends Screen {
 		boolean sentence = kind == Kind.SENTENCE;
 		listen = addRenderableWidget(Button.builder(Component.literal(listenLabel),
 			b -> SvenskaCraft.audio.play(sentence ? SvenskaCraft.pack.exampleSound(answer.id()) : SvenskaCraft.pack.wordSound(answer.id()),
-				AudioPlayer.Priority.MANUAL)).bounds(cx - 102, top + (sentence ? 134 : 126), 100, 20).build());
+				AudioPlayer.Priority.MANUAL)).bounds(sentence ? cx - 50 : cx - 102, top + (sentence ? 128 : 126), 100, 20).build());
 		reveal = addRenderableWidget(Button.builder(Component.literal("Visa engelska"), b -> {
 			revealed = true;
 			b.visible = false;
 			layoutSmallButtons();
-		}).bounds(sentence ? cx + 50 : cx + 2, top + (sentence ? 134 : 126), 100, 20).tooltip(Tooltip.create(Component.literal("Show English"))).build());
+		}).bounds(sentence ? cx + 52 : cx + 2, top + (sentence ? 128 : 126), 100, 20).tooltip(Tooltip.create(Component.literal("Show English"))).build());
 		boolean englishHidden = (kind == Kind.CHOICE && type == Type.PICTURE_TO_TARGET) || kind == Kind.TYPE || kind == Kind.GENDER
 			|| kind == Kind.FORM || kind == Kind.CLOZE || kind == Kind.SENTENCE;
 		reveal.visible = settings().translations == Settings.Translations.ON_DEMAND && englishHidden && !revealed && chosen == UNANSWERED;
@@ -369,10 +369,13 @@ public class QuizScreen extends Screen {
 		for (int i : pool) poolText.add(puzzle.tiles().get(i));
 		placeTiles(poolText, top + 90, cx, open, j -> { picked.add(pool.get(j)); rebuildWidgets(); });
 		if (open) {
+			// with "Visa engelska" there are three buttons in the row, otherwise two, centred
+			boolean three = settings().translations == Settings.Translations.ON_DEMAND && !revealed;
+			int rx = three ? cx - 152 : cx - 100;
 			addRenderableWidget(Button.builder(Component.literal(t("Rensa (clear)", "Rensa")), b -> { picked.clear(); rebuildWidgets(); })
-				.bounds(cx - 152, top + 134, 96, 20).build()).active = !picked.isEmpty();
+				.bounds(rx, top + 128, 96, 20).build()).active = !picked.isEmpty();
 			buttons[0] = addRenderableWidget(Button.builder(Component.literal(t("Svara (answer)", "Svara")), b -> submitSentence())
-				.bounds(cx - 52, top + 134, 98, 20).build());
+				.bounds(rx + 100, top + 128, 98, 20).build());
 			buttons[0].active = picked.size() == puzzle.answer().size();
 		}
 	}
