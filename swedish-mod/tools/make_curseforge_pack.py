@@ -15,7 +15,7 @@ props = dict(l.split("=", 1) for l in (ROOT / "gradle.properties").read_text().s
 version = props["version"].strip()
 mc = props["minecraft_version"].strip()
 loader = props["loader_version"].strip()
-mod_jar = ROOT / "build/libs" / f"svenskacraft-{version}.jar"
+mod_jar = ROOT / "build/libs" / f"svenskacraft-{version}+{mc}.jar"
 api_jar = pathlib.Path(sys.argv[1])
 
 manifest = {
@@ -33,7 +33,7 @@ modlist = f"""<ul>
 <li>Fabric API {api_jar.stem.removeprefix('fabric-api-')} (Apache-2.0, bundled unchanged)</li>
 </ul>
 """
-out = ROOT / "dist" / f"SvenskaCraft-CurseForge-{version}.zip"
+out = ROOT / "dist" / f"SvenskaCraft-CurseForge-{version}+{mc}.zip"
 with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
     z.writestr("manifest.json", json.dumps(manifest, indent=2))
     z.writestr("modlist.html", modlist)

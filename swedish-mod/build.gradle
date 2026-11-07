@@ -20,10 +20,16 @@ test {
 	testLogging { events "failed"; exceptionFormat "full" }
 }
 
+// Build for another Minecraft version with e.g.
+//   ./gradlew build -Pminecraft_version=26.2 -Pfabric_api_version=0.161.0+26.2
+version = "${project.version}+${project.minecraft_version}"
+
 processResources {
 	def version = project.version
+	def mc = project.minecraft_version
 	inputs.property "version", version
-	filesMatching("fabric.mod.json") { expand "version": version }
+	inputs.property "minecraft", mc
+	filesMatching("fabric.mod.json") { expand "version": version, "minecraft": mc }
 }
 
 tasks.withType(JavaCompile).configureEach { it.options.release = 25 }
