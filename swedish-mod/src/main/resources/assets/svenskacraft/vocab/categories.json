@@ -1,0 +1,47 @@
+[
+ {
+  "id": "animals",
+  "icon": "cow_spawn_egg",
+  "en": "Animals"
+ },
+ {
+  "id": "food",
+  "icon": "bread",
+  "en": "Food"
+ },
+ {
+  "id": "nature",
+  "icon": "oak_sapling",
+  "en": "Nature"
+ },
+ {
+  "id": "household",
+  "icon": "chest",
+  "en": "Household objects"
+ },
+ {
+  "id": "tools",
+  "icon": "iron_pickaxe",
+  "en": "Tools"
+ },
+ {
+  "id": "materials",
+  "icon": "iron_ingot",
+  "en": "Materials"
+ },
+ {
+  "id": "numbers",
+  "icon": "emerald",
+  "en": "Numbers"
+ },
+ {
+  "id": "verbs",
+  "icon": "leather_boots",
+  "en": "Verbs"
+ },
+ {
+  "id": "phrases",
+  "icon": "player_head",
+  "en": "Everyday phrases"
+ }
+]

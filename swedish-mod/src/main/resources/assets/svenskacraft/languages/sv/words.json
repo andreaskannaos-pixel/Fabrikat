@@ -1,0 +1,582 @@
+{
+ "dirt": {
+  "word": "jord",
+  "example": "Jorden är brun.",
+  "exampleEn": "The soil is brown."
+ },
+ "grass": {
+  "word": "gräs",
+  "example": "Gräset är grönt.",
+  "exampleEn": "The grass is green."
+ },
+ "stone": {
+  "word": "en sten",
+  "example": "Jag hittar en sten.",
+  "exampleEn": "I find a stone."
+ },
+ "sand": {
+  "word": "sand",
+  "example": "Det finns sand på stranden.",
+  "exampleEn": "There is sand on the beach."
+ },
+ "gravel": {
+  "word": "grus",
+  "example": "Grus faller ner.",
+  "exampleEn": "Gravel falls down."
+ },
+ "wood": {
+  "word": "trä",
+  "example": "Huset är byggt av trä.",
+  "exampleEn": "The house is built of wood."
+ },
+ "plank": {
+  "word": "en planka",
+  "example": "Jag gör en planka av trä.",
+  "exampleEn": "I make a plank from wood."
+ },
+ "stick": {
+  "word": "en pinne",
+  "example": "Jag behöver en pinne.",
+  "exampleEn": "I need a stick."
+ },
+ "apple": {
+  "word": "ett äpple",
+  "example": "Jag äter ett äpple.",
+  "exampleEn": "I am eating an apple."
+ },
+ "golden_apple": {
+  "word": "ett guldäpple",
+  "example": "Ett guldäpple är magiskt.",
+  "exampleEn": "A golden apple is magical."
+ },
+ "bread": {
+  "word": "bröd",
+  "example": "Jag bakar bröd.",
+  "exampleEn": "I bake bread."
+ },
+ "cookie": {
+  "word": "en kaka",
+  "example": "Vill du ha en kaka?",
+  "exampleEn": "Do you want a cookie?"
+ },
+ "cake": {
+  "word": "en tårta",
+  "example": "Vi äter tårta i dag.",
+  "exampleEn": "We are eating cake today."
+ },
+ "wheat": {
+  "word": "vete",
+  "example": "Vete växer på fältet.",
+  "exampleEn": "Wheat grows in the field."
+ },
+ "seeds": {
+  "word": "frön",
+  "example": "Jag sår frön i jorden.",
+  "exampleEn": "I sow seeds in the soil."
+ },
+ "carrot": {
+  "word": "en morot",
+  "example": "Hästen vill ha en morot.",
+  "exampleEn": "The horse wants a carrot."
+ },
+ "potato": {
+  "word": "en potatis",
+  "example": "Jag bakar en potatis i ugnen.",
+  "exampleEn": "I bake a potato in the oven."
+ },
+ "egg": {
+  "word": "ett ägg",
+  "example": "Hönan lägger ett ägg.",
+  "exampleEn": "The hen lays an egg."
+ },
+ "sugar": {
+  "word": "socker",
+  "example": "Kakan behöver socker.",
+  "exampleEn": "The cookie needs sugar."
+ },
+ "sugar_cane": {
+  "word": "sockerrör",
+  "example": "Sockerrör växer vid vatten.",
+  "exampleEn": "Sugar cane grows by water."
+ },
+ "pumpkin": {
+  "word": "en pumpa",
+  "example": "Pumpan är orange.",
+  "exampleEn": "The pumpkin is orange."
+ },
+ "melon": {
+  "word": "en melon",
+  "example": "En melon är stor och söt.",
+  "exampleEn": "A melon is big and sweet."
+ },
+ "berries": {
+  "word": "bär",
+  "example": "Bären är röda.",
+  "exampleEn": "The berries are red."
+ },
+ "beef": {
+  "word": "nötkött",
+  "example": "Jag lagar nötkött.",
+  "exampleEn": "I am cooking beef."
+ },
+ "pork": {
+  "word": "fläskkött",
+  "example": "Fläskkött smakar gott.",
+  "exampleEn": "Pork tastes good."
+ },
+ "chicken": {
+  "word": "kyckling",
+  "example": "Vi äter kyckling till middag.",
+  "exampleEn": "We are having chicken for dinner."
+ },
+ "cod": {
+  "word": "en torsk",
+  "example": "Jag fångar en torsk.",
+  "exampleEn": "I catch a cod."
+ },
+ "salmon": {
+  "word": "en lax",
+  "example": "En lax simmar i floden.",
+  "exampleEn": "A salmon is swimming in the river."
+ },
+ "rotten_flesh": {
+  "word": "ruttet kött",
+  "example": "Ruttet kött luktar illa.",
+  "exampleEn": "Rotten flesh smells bad."
+ },
+ "bone": {
+  "word": "ett ben",
+  "example": "Hunden vill ha ett ben.",
+  "exampleEn": "The dog wants a bone."
+ },
+ "string": {
+  "word": "ett snöre",
+  "example": "Spindeln tappar ett snöre.",
+  "exampleEn": "The spider drops a string."
+ },
+ "spider_eye": {
+  "word": "ett spindelöga",
+  "example": "Ett spindelöga är giftigt.",
+  "exampleEn": "A spider eye is poisonous."
+ },
+ "gunpowder": {
+  "word": "krut",
+  "example": "Krut är farligt.",
+  "exampleEn": "Gunpowder is dangerous."
+ },
+ "slime": {
+  "word": "slem",
+  "example": "Slem är klibbigt.",
+  "exampleEn": "Slime is sticky."
+ },
+ "pearl": {
+  "word": "en pärla",
+  "example": "Jag kastar en pärla.",
+  "exampleEn": "I throw a pearl."
+ },
+ "feather": {
+  "word": "en fjäder",
+  "example": "Hönan tappar en fjäder.",
+  "exampleEn": "The hen drops a feather."
+ },
+ "leather": {
+  "word": "läder",
+  "example": "Läder kommer från kon.",
+  "exampleEn": "Leather comes from the cow."
+ },
+ "wool": {
+  "word": "ull",
+  "example": "Fåret ger ull.",
+  "exampleEn": "The sheep gives wool."
+ },
+ "ink": {
+  "word": "bläck",
+  "example": "Bläck kommer från bläckfisken.",
+  "exampleEn": "Ink comes from the squid."
+ },
+ "coal": {
+  "word": "kol",
+  "example": "Kol brinner bra.",
+  "exampleEn": "Coal burns well."
+ },
+ "iron": {
+  "word": "järn",
+  "example": "Järn är starkt.",
+  "exampleEn": "Iron is strong."
+ },
+ "gold": {
+  "word": "guld",
+  "example": "Guld glänser.",
+  "exampleEn": "Gold shines."
+ },
+ "copper": {
+  "word": "koppar",
+  "example": "Koppar blir grön med tiden.",
+  "exampleEn": "Copper turns green over time."
+ },
+ "diamond": {
+  "word": "en diamant",
+  "example": "Jag har en diamant!",
+  "exampleEn": "I have a diamond!"
+ },
+ "emerald": {
+  "word": "en smaragd",
+  "example": "Byborna vill ha en smaragd.",
+  "exampleEn": "The villagers want an emerald."
+ },
+ "flint": {
+  "word": "flinta",
+  "example": "Med flinta kan man göra eld.",
+  "exampleEn": "With flint you can make fire."
+ },
+ "clay": {
+  "word": "lera",
+  "example": "Lera är mjuk.",
+  "exampleEn": "Clay is soft."
+ },
+ "ice": {
+  "word": "is",
+  "example": "Isen är kall och hal.",
+  "exampleEn": "The ice is cold and slippery."
+ },
+ "snowball": {
+  "word": "en snöboll",
+  "example": "Jag kastar en snöboll.",
+  "exampleEn": "I throw a snowball."
+ },
+ "glass": {
+  "word": "glas",
+  "example": "Fönstret är av glas.",
+  "exampleEn": "The window is made of glass."
+ },
+ "cactus": {
+  "word": "en kaktus",
+  "example": "Kaktusen sticks.",
+  "exampleEn": "The cactus pricks."
+ },
+ "kelp": {
+  "word": "tång",
+  "example": "Tång växer i havet.",
+  "exampleEn": "Seaweed grows in the sea."
+ },
+ "dandelion": {
+  "word": "en maskros",
+  "example": "En maskros är gul.",
+  "exampleEn": "A dandelion is yellow."
+ },
+ "poppy": {
+  "word": "en vallmo",
+  "example": "En vallmo är röd.",
+  "exampleEn": "A poppy is red."
+ },
+ "sapling": {
+  "word": "en planta",
+  "example": "Jag planterar en planta.",
+  "exampleEn": "I plant a sapling."
+ },
+ "mushroom": {
+  "word": "en svamp",
+  "example": "En svamp växer i skogen.",
+  "exampleEn": "A mushroom grows in the forest."
+ },
+ "torch": {
+  "word": "en fackla",
+  "example": "Facklan lyser i mörkret.",
+  "exampleEn": "The torch shines in the dark."
+ },
+ "crafting_table": {
+  "word": "en arbetsbänk",
+  "example": "Jag bygger vid en arbetsbänk.",
+  "exampleEn": "I build at a workbench."
+ },
+ "furnace": {
+  "word": "en ugn",
+  "example": "Ugnen är varm.",
+  "exampleEn": "The oven is warm."
+ },
+ "chest": {
+  "word": "en kista",
+  "example": "Kistan är full.",
+  "exampleEn": "The chest is full."
+ },
+ "bed": {
+  "word": "en säng",
+  "example": "Jag sover i en säng.",
+  "exampleEn": "I sleep in a bed."
+ },
+ "door": {
+  "word": "en dörr",
+  "example": "Stäng dörren!",
+  "exampleEn": "Close the door!"
+ },
+ "bowl": {
+  "word": "en skål",
+  "example": "Soppan är i en skål.",
+  "exampleEn": "The soup is in a bowl."
+ },
+ "bucket": {
+  "word": "en hink",
+  "example": "Hinken är full av vatten.",
+  "exampleEn": "The bucket is full of water."
+ },
+ "book": {
+  "word": "en bok",
+  "example": "Jag läser en bok.",
+  "exampleEn": "I am reading a book."
+ },
+ "paper": {
+  "word": "papper",
+  "example": "Jag skriver på papper.",
+  "exampleEn": "I write on paper."
+ },
+ "map": {
+  "word": "en karta",
+  "example": "Kartan visar vägen.",
+  "exampleEn": "The map shows the way."
+ },
+ "compass": {
+  "word": "en kompass",
+  "example": "Kompassen pekar hem.",
+  "exampleEn": "The compass points home."
+ },
+ "clock": {
+  "word": "en klocka",
+  "example": "Klockan visar tiden.",
+  "exampleEn": "The clock shows the time."
+ },
+ "lead": {
+  "word": "ett koppel",
+  "example": "Hunden går i koppel.",
+  "exampleEn": "The dog walks on a leash."
+ },
+ "saddle": {
+  "word": "en sadel",
+  "example": "Jag lägger en sadel på hästen.",
+  "exampleEn": "I put a saddle on the horse."
+ },
+ "boat": {
+  "word": "en båt",
+  "example": "Vi åker båt.",
+  "exampleEn": "We go by boat."
+ },
+ "minecart": {
+  "word": "en gruvvagn",
+  "example": "Gruvvagnen åker på rälsen.",
+  "exampleEn": "The minecart rides on the rails."
+ },
+ "sword": {
+  "word": "ett svärd",
+  "example": "Jag slåss med ett svärd.",
+  "exampleEn": "I fight with a sword."
+ },
+ "pickaxe": {
+  "word": "en hacka",
+  "example": "Jag hackar sten med en hacka.",
+  "exampleEn": "I mine stone with a pickaxe."
+ },
+ "axe": {
+  "word": "en yxa",
+  "example": "Jag hugger trä med en yxa.",
+  "exampleEn": "I chop wood with an axe."
+ },
+ "shovel": {
+  "word": "en spade",
+  "example": "Jag gräver med en spade.",
+  "exampleEn": "I dig with a shovel."
+ },
+ "bow": {
+  "word": "en pilbåge",
+  "example": "Jag skjuter med en pilbåge.",
+  "exampleEn": "I shoot with a bow."
+ },
+ "arrow": {
+  "word": "en pil",
+  "example": "Pilen flyger snabbt.",
+  "exampleEn": "The arrow flies fast."
+ },
+ "shield": {
+  "word": "en sköld",
+  "example": "En sköld skyddar mig.",
+  "exampleEn": "A shield protects me."
+ },
+ "helmet": {
+  "word": "en hjälm",
+  "example": "Jag har en hjälm på huvudet.",
+  "exampleEn": "I have a helmet on my head."
+ },
+ "boots": {
+  "word": "stövlar",
+  "example": "Mina stövlar är nya.",
+  "exampleEn": "My boots are new."
+ },
+ "cow": {
+  "word": "en ko",
+  "example": "Kon säger mu.",
+  "exampleEn": "The cow says moo."
+ },
+ "pig": {
+  "word": "en gris",
+  "example": "Grisen är rosa.",
+  "exampleEn": "The pig is pink."
+ },
+ "sheep": {
+  "word": "ett får",
+  "example": "Fåret äter gräs.",
+  "exampleEn": "The sheep eats grass."
+ },
+ "hen": {
+  "word": "en höna",
+  "example": "Hönan springer runt.",
+  "exampleEn": "The hen runs around."
+ },
+ "horse": {
+  "word": "en häst",
+  "example": "Jag rider på en häst.",
+  "exampleEn": "I ride a horse."
+ },
+ "wolf": {
+  "word": "en varg",
+  "example": "Vargen ylar på natten.",
+  "exampleEn": "The wolf howls at night."
+ },
+ "dog": {
+  "word": "en hund",
+  "example": "Min hund är snäll.",
+  "exampleEn": "My dog is kind."
+ },
+ "cat": {
+  "word": "en katt",
+  "example": "Katten säger mjau.",
+  "exampleEn": "The cat says meow."
+ },
+ "fish": {
+  "word": "en fisk",
+  "example": "En fisk simmar i vattnet.",
+  "exampleEn": "A fish is swimming in the water."
+ },
+ "bee": {
+  "word": "ett bi",
+  "example": "Biet flyger till blomman.",
+  "exampleEn": "The bee flies to the flower."
+ },
+ "num_1": {
+  "word": "ett",
+  "example": "Jag har ett svärd.",
+  "exampleEn": "I have one sword."
+ },
+ "num_2": {
+  "word": "två",
+  "example": "Jag ser två grisar.",
+  "exampleEn": "I see two pigs."
+ },
+ "num_3": {
+  "word": "tre",
+  "example": "Tre kor äter gräs.",
+  "exampleEn": "Three cows are eating grass."
+ },
+ "num_4": {
+  "word": "fyra",
+  "example": "Jag har fyra äpplen.",
+  "exampleEn": "I have four apples."
+ },
+ "num_5": {
+  "word": "fem",
+  "example": "Fem pilar ligger här.",
+  "exampleEn": "Five arrows are lying here."
+ },
+ "num_6": {
+  "word": "sex",
+  "example": "Sex får står på kullen.",
+  "exampleEn": "Six sheep are standing on the hill."
+ },
+ "num_7": {
+  "word": "sju",
+  "example": "Sju zombier kommer!",
+  "exampleEn": "Seven zombies are coming!"
+ },
+ "num_8": {
+  "word": "åtta",
+  "example": "Åtta facklor lyser.",
+  "exampleEn": "Eight torches are shining."
+ },
+ "num_9": {
+  "word": "nio",
+  "example": "Nio diamanter, wow!",
+  "exampleEn": "Nine diamonds, wow!"
+ },
+ "num_10": {
+  "word": "tio",
+  "example": "Jag har tio kakor.",
+  "exampleEn": "I have ten cookies."
+ },
+ "verb_walk": {
+  "word": "gå",
+  "example": "Jag går till byn.",
+  "exampleEn": "I walk to the village."
+ },
+ "verb_run": {
+  "word": "springa",
+  "example": "Spring! En creeper!",
+  "exampleEn": "Run! A creeper!"
+ },
+ "verb_jump": {
+  "word": "hoppa",
+  "example": "Grodan kan hoppa högt.",
+  "exampleEn": "The frog can jump high."
+ },
+ "verb_swim": {
+  "word": "simma",
+  "example": "Jag kan simma.",
+  "exampleEn": "I can swim."
+ },
+ "verb_eat": {
+  "word": "äta",
+  "example": "Det är dags att äta.",
+  "exampleEn": "It is time to eat."
+ },
+ "verb_sleep": {
+  "word": "sova",
+  "example": "Jag vill sova nu.",
+  "exampleEn": "I want to sleep now."
+ },
+ "verb_dig": {
+  "word": "gräva",
+  "example": "Vi ska gräva en gruva.",
+  "exampleEn": "We are going to dig a mine."
+ },
+ "verb_build": {
+  "word": "bygga",
+  "example": "Vi ska bygga ett hus.",
+  "exampleEn": "We are going to build a house."
+ },
+ "phrase_hello": {
+  "word": "Hej!",
+  "example": "Hej! Hur mår du?",
+  "exampleEn": "Hi! How are you?"
+ },
+ "phrase_morning": {
+  "word": "God morgon!",
+  "example": "God morgon! Solen går upp.",
+  "exampleEn": "Good morning! The sun is rising."
+ },
+ "phrase_night": {
+  "word": "God natt!",
+  "example": "God natt! Sov gott.",
+  "exampleEn": "Good night! Sleep well."
+ },
+ "phrase_thanks": {
+  "word": "Tack!",
+  "example": "Tack för hjälpen!",
+  "exampleEn": "Thanks for the help!"
+ },
+ "phrase_ouch": {
+  "word": "Aj!",
+  "example": "Aj! Det gjorde ont.",
+  "exampleEn": "Ouch! That hurt."
+ },
+ "phrase_help": {
+  "word": "Hjälp!",
+  "example": "Hjälp! En zombie jagar mig!",
+  "exampleEn": "Help! A zombie is chasing me!"
+ }
+}

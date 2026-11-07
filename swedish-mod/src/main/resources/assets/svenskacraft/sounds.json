@@ -1,1170 +1,1688 @@
 {
- "fx.quiz": {
+ "sv.example.apple": {
   "sounds": [
    {
-    "name": "svenskacraft:fx/quiz"
+    "name": "svenskacraft:sv/example/apple"
    }
   ]
  },
- "fx.right": {
+ "sv.example.arrow": {
   "sounds": [
    {
-    "name": "svenskacraft:fx/right"
+    "name": "svenskacraft:sv/example/arrow"
    }
   ]
  },
- "fx.timeout": {
+ "sv.example.axe": {
   "sounds": [
    {
-    "name": "svenskacraft:fx/timeout"
+    "name": "svenskacraft:sv/example/axe"
    }
   ]
  },
- "w.dirt": {
+ "sv.example.bed": {
   "sounds": [
    {
-    "name": "svenskacraft:w/dirt"
+    "name": "svenskacraft:sv/example/bed"
    }
   ]
  },
- "fb.dirt": {
+ "sv.example.bee": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/dirt"
+    "name": "svenskacraft:sv/example/bee"
    }
   ]
  },
- "w.grass": {
+ "sv.example.beef": {
   "sounds": [
    {
-    "name": "svenskacraft:w/grass"
+    "name": "svenskacraft:sv/example/beef"
    }
   ]
  },
- "fb.grass": {
+ "sv.example.berries": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/grass"
+    "name": "svenskacraft:sv/example/berries"
    }
   ]
  },
- "w.stone": {
+ "sv.example.boat": {
   "sounds": [
    {
-    "name": "svenskacraft:w/stone"
+    "name": "svenskacraft:sv/example/boat"
    }
   ]
  },
- "fb.stone": {
+ "sv.example.bone": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/stone"
+    "name": "svenskacraft:sv/example/bone"
    }
   ]
  },
- "w.sand": {
+ "sv.example.book": {
   "sounds": [
    {
-    "name": "svenskacraft:w/sand"
+    "name": "svenskacraft:sv/example/book"
    }
   ]
  },
- "fb.sand": {
+ "sv.example.boots": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/sand"
+    "name": "svenskacraft:sv/example/boots"
    }
   ]
  },
- "w.gravel": {
+ "sv.example.bow": {
   "sounds": [
    {
-    "name": "svenskacraft:w/gravel"
+    "name": "svenskacraft:sv/example/bow"
    }
   ]
  },
- "fb.gravel": {
+ "sv.example.bowl": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/gravel"
+    "name": "svenskacraft:sv/example/bowl"
    }
   ]
  },
- "w.wood": {
+ "sv.example.bread": {
   "sounds": [
    {
-    "name": "svenskacraft:w/wood"
+    "name": "svenskacraft:sv/example/bread"
    }
   ]
  },
- "fb.wood": {
+ "sv.example.bucket": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/wood"
+    "name": "svenskacraft:sv/example/bucket"
    }
   ]
  },
- "w.plank": {
+ "sv.example.cactus": {
   "sounds": [
    {
-    "name": "svenskacraft:w/plank"
+    "name": "svenskacraft:sv/example/cactus"
    }
   ]
  },
- "fb.plank": {
+ "sv.example.cake": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/plank"
+    "name": "svenskacraft:sv/example/cake"
    }
   ]
  },
- "w.stick": {
+ "sv.example.carrot": {
   "sounds": [
    {
-    "name": "svenskacraft:w/stick"
+    "name": "svenskacraft:sv/example/carrot"
    }
   ]
  },
- "fb.stick": {
+ "sv.example.cat": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/stick"
+    "name": "svenskacraft:sv/example/cat"
    }
   ]
  },
- "w.apple": {
+ "sv.example.chest": {
   "sounds": [
    {
-    "name": "svenskacraft:w/apple"
+    "name": "svenskacraft:sv/example/chest"
    }
   ]
  },
- "fb.apple": {
+ "sv.example.chicken": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/apple"
+    "name": "svenskacraft:sv/example/chicken"
    }
   ]
  },
- "w.golden_apple": {
+ "sv.example.clay": {
   "sounds": [
    {
-    "name": "svenskacraft:w/golden_apple"
+    "name": "svenskacraft:sv/example/clay"
    }
   ]
  },
- "fb.golden_apple": {
+ "sv.example.clock": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/golden_apple"
+    "name": "svenskacraft:sv/example/clock"
    }
   ]
  },
- "w.bread": {
+ "sv.example.coal": {
   "sounds": [
    {
-    "name": "svenskacraft:w/bread"
+    "name": "svenskacraft:sv/example/coal"
    }
   ]
  },
- "fb.bread": {
+ "sv.example.cod": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/bread"
+    "name": "svenskacraft:sv/example/cod"
    }
   ]
  },
- "w.cookie": {
+ "sv.example.compass": {
   "sounds": [
    {
-    "name": "svenskacraft:w/cookie"
+    "name": "svenskacraft:sv/example/compass"
    }
   ]
  },
- "fb.cookie": {
+ "sv.example.cookie": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/cookie"
+    "name": "svenskacraft:sv/example/cookie"
    }
   ]
  },
- "w.cake": {
+ "sv.example.copper": {
   "sounds": [
    {
-    "name": "svenskacraft:w/cake"
+    "name": "svenskacraft:sv/example/copper"
    }
   ]
  },
- "fb.cake": {
+ "sv.example.cow": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/cake"
+    "name": "svenskacraft:sv/example/cow"
    }
   ]
  },
- "w.wheat": {
+ "sv.example.crafting_table": {
   "sounds": [
    {
-    "name": "svenskacraft:w/wheat"
+    "name": "svenskacraft:sv/example/crafting_table"
    }
   ]
  },
- "fb.wheat": {
+ "sv.example.dandelion": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/wheat"
+    "name": "svenskacraft:sv/example/dandelion"
    }
   ]
  },
- "w.seeds": {
+ "sv.example.diamond": {
   "sounds": [
    {
-    "name": "svenskacraft:w/seeds"
+    "name": "svenskacraft:sv/example/diamond"
    }
   ]
  },
- "fb.seeds": {
+ "sv.example.dirt": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/seeds"
+    "name": "svenskacraft:sv/example/dirt"
    }
   ]
  },
- "w.carrot": {
+ "sv.example.dog": {
   "sounds": [
    {
-    "name": "svenskacraft:w/carrot"
+    "name": "svenskacraft:sv/example/dog"
    }
   ]
  },
- "fb.carrot": {
+ "sv.example.door": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/carrot"
+    "name": "svenskacraft:sv/example/door"
    }
   ]
  },
- "w.potato": {
+ "sv.example.egg": {
   "sounds": [
    {
-    "name": "svenskacraft:w/potato"
+    "name": "svenskacraft:sv/example/egg"
    }
   ]
  },
- "fb.potato": {
+ "sv.example.emerald": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/potato"
+    "name": "svenskacraft:sv/example/emerald"
    }
   ]
  },
- "w.egg": {
+ "sv.example.feather": {
   "sounds": [
    {
-    "name": "svenskacraft:w/egg"
+    "name": "svenskacraft:sv/example/feather"
    }
   ]
  },
- "fb.egg": {
+ "sv.example.fish": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/egg"
+    "name": "svenskacraft:sv/example/fish"
    }
   ]
  },
- "w.sugar": {
+ "sv.example.flint": {
   "sounds": [
    {
-    "name": "svenskacraft:w/sugar"
+    "name": "svenskacraft:sv/example/flint"
    }
   ]
  },
- "fb.sugar": {
+ "sv.example.furnace": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/sugar"
+    "name": "svenskacraft:sv/example/furnace"
    }
   ]
  },
- "w.sugar_cane": {
+ "sv.example.glass": {
   "sounds": [
    {
-    "name": "svenskacraft:w/sugar_cane"
+    "name": "svenskacraft:sv/example/glass"
    }
   ]
  },
- "fb.sugar_cane": {
+ "sv.example.gold": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/sugar_cane"
+    "name": "svenskacraft:sv/example/gold"
    }
   ]
  },
- "w.pumpkin": {
+ "sv.example.golden_apple": {
   "sounds": [
    {
-    "name": "svenskacraft:w/pumpkin"
+    "name": "svenskacraft:sv/example/golden_apple"
    }
   ]
  },
- "fb.pumpkin": {
+ "sv.example.grass": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/pumpkin"
+    "name": "svenskacraft:sv/example/grass"
    }
   ]
  },
- "w.melon": {
+ "sv.example.gravel": {
   "sounds": [
    {
-    "name": "svenskacraft:w/melon"
+    "name": "svenskacraft:sv/example/gravel"
    }
   ]
  },
- "fb.melon": {
+ "sv.example.gunpowder": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/melon"
+    "name": "svenskacraft:sv/example/gunpowder"
    }
   ]
  },
- "w.berries": {
+ "sv.example.helmet": {
   "sounds": [
    {
-    "name": "svenskacraft:w/berries"
+    "name": "svenskacraft:sv/example/helmet"
    }
   ]
  },
- "fb.berries": {
+ "sv.example.hen": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/berries"
+    "name": "svenskacraft:sv/example/hen"
    }
   ]
  },
- "w.beef": {
+ "sv.example.horse": {
   "sounds": [
    {
-    "name": "svenskacraft:w/beef"
+    "name": "svenskacraft:sv/example/horse"
    }
   ]
  },
- "fb.beef": {
+ "sv.example.ice": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/beef"
+    "name": "svenskacraft:sv/example/ice"
    }
   ]
  },
- "w.pork": {
+ "sv.example.ink": {
   "sounds": [
    {
-    "name": "svenskacraft:w/pork"
+    "name": "svenskacraft:sv/example/ink"
    }
   ]
  },
- "fb.pork": {
+ "sv.example.iron": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/pork"
+    "name": "svenskacraft:sv/example/iron"
    }
   ]
  },
- "w.chicken": {
+ "sv.example.kelp": {
   "sounds": [
    {
-    "name": "svenskacraft:w/chicken"
+    "name": "svenskacraft:sv/example/kelp"
    }
   ]
  },
- "fb.chicken": {
+ "sv.example.lead": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/chicken"
+    "name": "svenskacraft:sv/example/lead"
    }
   ]
  },
- "w.cod": {
+ "sv.example.leather": {
   "sounds": [
    {
-    "name": "svenskacraft:w/cod"
+    "name": "svenskacraft:sv/example/leather"
    }
   ]
  },
- "fb.cod": {
+ "sv.example.map": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/cod"
+    "name": "svenskacraft:sv/example/map"
    }
   ]
  },
- "w.salmon": {
+ "sv.example.melon": {
   "sounds": [
    {
-    "name": "svenskacraft:w/salmon"
+    "name": "svenskacraft:sv/example/melon"
    }
   ]
  },
- "fb.salmon": {
+ "sv.example.minecart": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/salmon"
+    "name": "svenskacraft:sv/example/minecart"
    }
   ]
  },
- "w.rotten_flesh": {
+ "sv.example.mushroom": {
   "sounds": [
    {
-    "name": "svenskacraft:w/rotten_flesh"
+    "name": "svenskacraft:sv/example/mushroom"
    }
   ]
  },
- "fb.rotten_flesh": {
+ "sv.example.num_1": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/rotten_flesh"
+    "name": "svenskacraft:sv/example/num_1"
    }
   ]
  },
- "w.bone": {
+ "sv.example.num_10": {
   "sounds": [
    {
-    "name": "svenskacraft:w/bone"
+    "name": "svenskacraft:sv/example/num_10"
    }
   ]
  },
- "fb.bone": {
+ "sv.example.num_2": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/bone"
+    "name": "svenskacraft:sv/example/num_2"
    }
   ]
  },
- "w.string": {
+ "sv.example.num_3": {
   "sounds": [
    {
-    "name": "svenskacraft:w/string"
+    "name": "svenskacraft:sv/example/num_3"
    }
   ]
  },
- "fb.string": {
+ "sv.example.num_4": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/string"
+    "name": "svenskacraft:sv/example/num_4"
    }
   ]
  },
- "w.spider_eye": {
+ "sv.example.num_5": {
   "sounds": [
    {
-    "name": "svenskacraft:w/spider_eye"
+    "name": "svenskacraft:sv/example/num_5"
    }
   ]
  },
- "fb.spider_eye": {
+ "sv.example.num_6": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/spider_eye"
+    "name": "svenskacraft:sv/example/num_6"
    }
   ]
  },
- "w.gunpowder": {
+ "sv.example.num_7": {
   "sounds": [
    {
-    "name": "svenskacraft:w/gunpowder"
+    "name": "svenskacraft:sv/example/num_7"
    }
   ]
  },
- "fb.gunpowder": {
+ "sv.example.num_8": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/gunpowder"
+    "name": "svenskacraft:sv/example/num_8"
    }
   ]
  },
- "w.slime": {
+ "sv.example.num_9": {
   "sounds": [
    {
-    "name": "svenskacraft:w/slime"
+    "name": "svenskacraft:sv/example/num_9"
    }
   ]
  },
- "fb.slime": {
+ "sv.example.paper": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/slime"
+    "name": "svenskacraft:sv/example/paper"
    }
   ]
  },
- "w.pearl": {
+ "sv.example.pearl": {
   "sounds": [
    {
-    "name": "svenskacraft:w/pearl"
+    "name": "svenskacraft:sv/example/pearl"
    }
   ]
  },
- "fb.pearl": {
+ "sv.example.phrase_hello": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/pearl"
+    "name": "svenskacraft:sv/example/phrase_hello"
    }
   ]
  },
- "w.feather": {
+ "sv.example.phrase_help": {
   "sounds": [
    {
-    "name": "svenskacraft:w/feather"
+    "name": "svenskacraft:sv/example/phrase_help"
    }
   ]
  },
- "fb.feather": {
+ "sv.example.phrase_morning": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/feather"
+    "name": "svenskacraft:sv/example/phrase_morning"
    }
   ]
  },
- "w.leather": {
+ "sv.example.phrase_night": {
   "sounds": [
    {
-    "name": "svenskacraft:w/leather"
+    "name": "svenskacraft:sv/example/phrase_night"
    }
   ]
  },
- "fb.leather": {
+ "sv.example.phrase_ouch": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/leather"
+    "name": "svenskacraft:sv/example/phrase_ouch"
    }
   ]
  },
- "w.wool": {
+ "sv.example.phrase_thanks": {
   "sounds": [
    {
-    "name": "svenskacraft:w/wool"
+    "name": "svenskacraft:sv/example/phrase_thanks"
    }
   ]
  },
- "fb.wool": {
+ "sv.example.pickaxe": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/wool"
+    "name": "svenskacraft:sv/example/pickaxe"
    }
   ]
  },
- "w.ink": {
+ "sv.example.pig": {
   "sounds": [
    {
-    "name": "svenskacraft:w/ink"
+    "name": "svenskacraft:sv/example/pig"
    }
   ]
  },
- "fb.ink": {
+ "sv.example.plank": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/ink"
+    "name": "svenskacraft:sv/example/plank"
    }
   ]
  },
- "w.coal": {
+ "sv.example.poppy": {
   "sounds": [
    {
-    "name": "svenskacraft:w/coal"
+    "name": "svenskacraft:sv/example/poppy"
    }
   ]
  },
- "fb.coal": {
+ "sv.example.pork": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/coal"
+    "name": "svenskacraft:sv/example/pork"
    }
   ]
  },
- "w.iron": {
+ "sv.example.potato": {
   "sounds": [
    {
-    "name": "svenskacraft:w/iron"
+    "name": "svenskacraft:sv/example/potato"
    }
   ]
  },
- "fb.iron": {
+ "sv.example.pumpkin": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/iron"
+    "name": "svenskacraft:sv/example/pumpkin"
    }
   ]
  },
- "w.gold": {
+ "sv.example.rotten_flesh": {
   "sounds": [
    {
-    "name": "svenskacraft:w/gold"
+    "name": "svenskacraft:sv/example/rotten_flesh"
    }
   ]
  },
- "fb.gold": {
+ "sv.example.saddle": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/gold"
+    "name": "svenskacraft:sv/example/saddle"
    }
   ]
  },
- "w.copper": {
+ "sv.example.salmon": {
   "sounds": [
    {
-    "name": "svenskacraft:w/copper"
+    "name": "svenskacraft:sv/example/salmon"
    }
   ]
  },
- "fb.copper": {
+ "sv.example.sand": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/copper"
+    "name": "svenskacraft:sv/example/sand"
    }
   ]
  },
- "w.diamond": {
+ "sv.example.sapling": {
   "sounds": [
    {
-    "name": "svenskacraft:w/diamond"
+    "name": "svenskacraft:sv/example/sapling"
    }
   ]
  },
- "fb.diamond": {
+ "sv.example.seeds": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/diamond"
+    "name": "svenskacraft:sv/example/seeds"
    }
   ]
  },
- "w.emerald": {
+ "sv.example.sheep": {
   "sounds": [
    {
-    "name": "svenskacraft:w/emerald"
+    "name": "svenskacraft:sv/example/sheep"
    }
   ]
  },
- "fb.emerald": {
+ "sv.example.shield": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/emerald"
+    "name": "svenskacraft:sv/example/shield"
    }
   ]
  },
- "w.flint": {
+ "sv.example.shovel": {
   "sounds": [
    {
-    "name": "svenskacraft:w/flint"
+    "name": "svenskacraft:sv/example/shovel"
    }
   ]
  },
- "fb.flint": {
+ "sv.example.slime": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/flint"
+    "name": "svenskacraft:sv/example/slime"
    }
   ]
  },
- "w.clay": {
+ "sv.example.snowball": {
   "sounds": [
    {
-    "name": "svenskacraft:w/clay"
+    "name": "svenskacraft:sv/example/snowball"
    }
   ]
  },
- "fb.clay": {
+ "sv.example.spider_eye": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/clay"
+    "name": "svenskacraft:sv/example/spider_eye"
    }
   ]
  },
- "w.ice": {
+ "sv.example.stick": {
   "sounds": [
    {
-    "name": "svenskacraft:w/ice"
+    "name": "svenskacraft:sv/example/stick"
    }
   ]
  },
- "fb.ice": {
+ "sv.example.stone": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/ice"
+    "name": "svenskacraft:sv/example/stone"
    }
   ]
  },
- "w.snowball": {
+ "sv.example.string": {
   "sounds": [
    {
-    "name": "svenskacraft:w/snowball"
+    "name": "svenskacraft:sv/example/string"
    }
   ]
  },
- "fb.snowball": {
+ "sv.example.sugar": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/snowball"
+    "name": "svenskacraft:sv/example/sugar"
    }
   ]
  },
- "w.glass": {
+ "sv.example.sugar_cane": {
   "sounds": [
    {
-    "name": "svenskacraft:w/glass"
+    "name": "svenskacraft:sv/example/sugar_cane"
    }
   ]
  },
- "fb.glass": {
+ "sv.example.sword": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/glass"
+    "name": "svenskacraft:sv/example/sword"
    }
   ]
  },
- "w.cactus": {
+ "sv.example.torch": {
   "sounds": [
    {
-    "name": "svenskacraft:w/cactus"
+    "name": "svenskacraft:sv/example/torch"
    }
   ]
  },
- "fb.cactus": {
+ "sv.example.verb_build": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/cactus"
+    "name": "svenskacraft:sv/example/verb_build"
    }
   ]
  },
- "w.kelp": {
+ "sv.example.verb_dig": {
   "sounds": [
    {
-    "name": "svenskacraft:w/kelp"
+    "name": "svenskacraft:sv/example/verb_dig"
    }
   ]
  },
- "fb.kelp": {
+ "sv.example.verb_eat": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/kelp"
+    "name": "svenskacraft:sv/example/verb_eat"
    }
   ]
  },
- "w.dandelion": {
+ "sv.example.verb_jump": {
   "sounds": [
    {
-    "name": "svenskacraft:w/dandelion"
+    "name": "svenskacraft:sv/example/verb_jump"
    }
   ]
  },
- "fb.dandelion": {
+ "sv.example.verb_run": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/dandelion"
+    "name": "svenskacraft:sv/example/verb_run"
    }
   ]
  },
- "w.poppy": {
+ "sv.example.verb_sleep": {
   "sounds": [
    {
-    "name": "svenskacraft:w/poppy"
+    "name": "svenskacraft:sv/example/verb_sleep"
    }
   ]
  },
- "fb.poppy": {
+ "sv.example.verb_swim": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/poppy"
+    "name": "svenskacraft:sv/example/verb_swim"
    }
   ]
  },
- "w.sapling": {
+ "sv.example.verb_walk": {
   "sounds": [
    {
-    "name": "svenskacraft:w/sapling"
+    "name": "svenskacraft:sv/example/verb_walk"
    }
   ]
  },
- "fb.sapling": {
+ "sv.example.wheat": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/sapling"
+    "name": "svenskacraft:sv/example/wheat"
    }
   ]
  },
- "w.mushroom": {
+ "sv.example.wolf": {
   "sounds": [
    {
-    "name": "svenskacraft:w/mushroom"
+    "name": "svenskacraft:sv/example/wolf"
    }
   ]
  },
- "fb.mushroom": {
+ "sv.example.wood": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/mushroom"
+    "name": "svenskacraft:sv/example/wood"
    }
   ]
  },
- "w.torch": {
+ "sv.example.wool": {
   "sounds": [
    {
-    "name": "svenskacraft:w/torch"
+    "name": "svenskacraft:sv/example/wool"
    }
   ]
  },
- "fb.torch": {
+ "sv.react.correct_1": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/torch"
+    "name": "svenskacraft:sv/react/correct_1"
    }
   ]
  },
- "w.crafting_table": {
+ "sv.react.correct_2": {
   "sounds": [
    {
-    "name": "svenskacraft:w/crafting_table"
+    "name": "svenskacraft:sv/react/correct_2"
    }
   ]
  },
- "fb.crafting_table": {
+ "sv.react.correct_3": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/crafting_table"
+    "name": "svenskacraft:sv/react/correct_3"
    }
   ]
  },
- "w.furnace": {
+ "sv.react.correct_4": {
   "sounds": [
    {
-    "name": "svenskacraft:w/furnace"
+    "name": "svenskacraft:sv/react/correct_4"
    }
   ]
  },
- "fb.furnace": {
+ "sv.react.correct_5": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/furnace"
+    "name": "svenskacraft:sv/react/correct_5"
    }
   ]
  },
- "w.chest": {
+ "sv.react.timeout_1": {
   "sounds": [
    {
-    "name": "svenskacraft:w/chest"
+    "name": "svenskacraft:sv/react/timeout_1"
    }
   ]
  },
- "fb.chest": {
+ "sv.react.wrong_1": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/chest"
+    "name": "svenskacraft:sv/react/wrong_1"
    }
   ]
  },
- "w.bed": {
+ "sv.react.wrong_2": {
   "sounds": [
    {
-    "name": "svenskacraft:w/bed"
+    "name": "svenskacraft:sv/react/wrong_2"
    }
   ]
  },
- "fb.bed": {
+ "sv.react.wrong_3": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/bed"
+    "name": "svenskacraft:sv/react/wrong_3"
    }
   ]
  },
- "w.door": {
+ "sv.word.apple": {
   "sounds": [
    {
-    "name": "svenskacraft:w/door"
+    "name": "svenskacraft:sv/word/apple"
    }
   ]
  },
- "fb.door": {
+ "sv.word.arrow": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/door"
+    "name": "svenskacraft:sv/word/arrow"
    }
   ]
  },
- "w.bowl": {
+ "sv.word.axe": {
   "sounds": [
    {
-    "name": "svenskacraft:w/bowl"
+    "name": "svenskacraft:sv/word/axe"
    }
   ]
  },
- "fb.bowl": {
+ "sv.word.bed": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/bowl"
+    "name": "svenskacraft:sv/word/bed"
    }
   ]
  },
- "w.bucket": {
+ "sv.word.bee": {
   "sounds": [
    {
-    "name": "svenskacraft:w/bucket"
+    "name": "svenskacraft:sv/word/bee"
    }
   ]
  },
- "fb.bucket": {
+ "sv.word.beef": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/bucket"
+    "name": "svenskacraft:sv/word/beef"
    }
   ]
  },
- "w.book": {
+ "sv.word.berries": {
   "sounds": [
    {
-    "name": "svenskacraft:w/book"
+    "name": "svenskacraft:sv/word/berries"
    }
   ]
  },
- "fb.book": {
+ "sv.word.boat": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/book"
+    "name": "svenskacraft:sv/word/boat"
    }
   ]
  },
- "w.paper": {
+ "sv.word.bone": {
   "sounds": [
    {
-    "name": "svenskacraft:w/paper"
+    "name": "svenskacraft:sv/word/bone"
    }
   ]
  },
- "fb.paper": {
+ "sv.word.book": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/paper"
+    "name": "svenskacraft:sv/word/book"
    }
   ]
  },
- "w.map": {
+ "sv.word.boots": {
   "sounds": [
    {
-    "name": "svenskacraft:w/map"
+    "name": "svenskacraft:sv/word/boots"
    }
   ]
  },
- "fb.map": {
+ "sv.word.bow": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/map"
+    "name": "svenskacraft:sv/word/bow"
    }
   ]
  },
- "w.compass": {
+ "sv.word.bowl": {
   "sounds": [
    {
-    "name": "svenskacraft:w/compass"
+    "name": "svenskacraft:sv/word/bowl"
    }
   ]
  },
- "fb.compass": {
+ "sv.word.bread": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/compass"
+    "name": "svenskacraft:sv/word/bread"
    }
   ]
  },
- "w.clock": {
+ "sv.word.bucket": {
   "sounds": [
    {
-    "name": "svenskacraft:w/clock"
+    "name": "svenskacraft:sv/word/bucket"
    }
   ]
  },
- "fb.clock": {
+ "sv.word.cactus": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/clock"
+    "name": "svenskacraft:sv/word/cactus"
    }
   ]
  },
- "w.lead": {
+ "sv.word.cake": {
   "sounds": [
    {
-    "name": "svenskacraft:w/lead"
+    "name": "svenskacraft:sv/word/cake"
    }
   ]
  },
- "fb.lead": {
+ "sv.word.carrot": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/lead"
+    "name": "svenskacraft:sv/word/carrot"
    }
   ]
  },
- "w.saddle": {
+ "sv.word.cat": {
   "sounds": [
    {
-    "name": "svenskacraft:w/saddle"
+    "name": "svenskacraft:sv/word/cat"
    }
   ]
  },
- "fb.saddle": {
+ "sv.word.chest": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/saddle"
+    "name": "svenskacraft:sv/word/chest"
    }
   ]
  },
- "w.boat": {
+ "sv.word.chicken": {
   "sounds": [
    {
-    "name": "svenskacraft:w/boat"
+    "name": "svenskacraft:sv/word/chicken"
    }
   ]
  },
- "fb.boat": {
+ "sv.word.clay": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/boat"
+    "name": "svenskacraft:sv/word/clay"
    }
   ]
  },
- "w.minecart": {
+ "sv.word.clock": {
   "sounds": [
    {
-    "name": "svenskacraft:w/minecart"
+    "name": "svenskacraft:sv/word/clock"
    }
   ]
  },
- "fb.minecart": {
+ "sv.word.coal": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/minecart"
+    "name": "svenskacraft:sv/word/coal"
    }
   ]
  },
- "w.sword": {
+ "sv.word.cod": {
   "sounds": [
    {
-    "name": "svenskacraft:w/sword"
+    "name": "svenskacraft:sv/word/cod"
    }
   ]
  },
- "fb.sword": {
+ "sv.word.compass": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/sword"
+    "name": "svenskacraft:sv/word/compass"
    }
   ]
  },
- "w.pickaxe": {
+ "sv.word.cookie": {
   "sounds": [
    {
-    "name": "svenskacraft:w/pickaxe"
+    "name": "svenskacraft:sv/word/cookie"
    }
   ]
  },
- "fb.pickaxe": {
+ "sv.word.copper": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/pickaxe"
+    "name": "svenskacraft:sv/word/copper"
    }
   ]
  },
- "w.axe": {
+ "sv.word.cow": {
   "sounds": [
    {
-    "name": "svenskacraft:w/axe"
+    "name": "svenskacraft:sv/word/cow"
    }
   ]
  },
- "fb.axe": {
+ "sv.word.crafting_table": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/axe"
+    "name": "svenskacraft:sv/word/crafting_table"
    }
   ]
  },
- "w.shovel": {
+ "sv.word.dandelion": {
   "sounds": [
    {
-    "name": "svenskacraft:w/shovel"
+    "name": "svenskacraft:sv/word/dandelion"
    }
   ]
  },
- "fb.shovel": {
+ "sv.word.diamond": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/shovel"
+    "name": "svenskacraft:sv/word/diamond"
    }
   ]
  },
- "w.bow": {
+ "sv.word.dirt": {
   "sounds": [
    {
-    "name": "svenskacraft:w/bow"
+    "name": "svenskacraft:sv/word/dirt"
    }
   ]
  },
- "fb.bow": {
+ "sv.word.dog": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/bow"
+    "name": "svenskacraft:sv/word/dog"
    }
   ]
  },
- "w.arrow": {
+ "sv.word.door": {
   "sounds": [
    {
-    "name": "svenskacraft:w/arrow"
+    "name": "svenskacraft:sv/word/door"
    }
   ]
  },
- "fb.arrow": {
+ "sv.word.egg": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/arrow"
+    "name": "svenskacraft:sv/word/egg"
    }
   ]
  },
- "w.shield": {
+ "sv.word.emerald": {
   "sounds": [
    {
-    "name": "svenskacraft:w/shield"
+    "name": "svenskacraft:sv/word/emerald"
    }
   ]
  },
- "fb.shield": {
+ "sv.word.feather": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/shield"
+    "name": "svenskacraft:sv/word/feather"
    }
   ]
  },
- "w.helmet": {
+ "sv.word.fish": {
   "sounds": [
    {
-    "name": "svenskacraft:w/helmet"
+    "name": "svenskacraft:sv/word/fish"
    }
   ]
  },
- "fb.helmet": {
+ "sv.word.flint": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/helmet"
+    "name": "svenskacraft:sv/word/flint"
    }
   ]
  },
- "w.boots": {
+ "sv.word.furnace": {
   "sounds": [
    {
-    "name": "svenskacraft:w/boots"
+    "name": "svenskacraft:sv/word/furnace"
    }
   ]
  },
- "fb.boots": {
+ "sv.word.glass": {
   "sounds": [
    {
-    "name": "svenskacraft:fb/boots"
+    "name": "svenskacraft:sv/word/glass"
+   }
+  ]
+ },
+ "sv.word.gold": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/gold"
+   }
+  ]
+ },
+ "sv.word.golden_apple": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/golden_apple"
+   }
+  ]
+ },
+ "sv.word.grass": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/grass"
+   }
+  ]
+ },
+ "sv.word.gravel": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/gravel"
+   }
+  ]
+ },
+ "sv.word.gunpowder": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/gunpowder"
+   }
+  ]
+ },
+ "sv.word.helmet": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/helmet"
+   }
+  ]
+ },
+ "sv.word.hen": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/hen"
+   }
+  ]
+ },
+ "sv.word.horse": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/horse"
+   }
+  ]
+ },
+ "sv.word.ice": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/ice"
+   }
+  ]
+ },
+ "sv.word.ink": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/ink"
+   }
+  ]
+ },
+ "sv.word.iron": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/iron"
+   }
+  ]
+ },
+ "sv.word.kelp": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/kelp"
+   }
+  ]
+ },
+ "sv.word.lead": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/lead"
+   }
+  ]
+ },
+ "sv.word.leather": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/leather"
+   }
+  ]
+ },
+ "sv.word.map": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/map"
+   }
+  ]
+ },
+ "sv.word.melon": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/melon"
+   }
+  ]
+ },
+ "sv.word.minecart": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/minecart"
+   }
+  ]
+ },
+ "sv.word.mushroom": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/mushroom"
+   }
+  ]
+ },
+ "sv.word.num_1": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/num_1"
+   }
+  ]
+ },
+ "sv.word.num_10": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/num_10"
+   }
+  ]
+ },
+ "sv.word.num_2": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/num_2"
+   }
+  ]
+ },
+ "sv.word.num_3": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/num_3"
+   }
+  ]
+ },
+ "sv.word.num_4": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/num_4"
+   }
+  ]
+ },
+ "sv.word.num_5": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/num_5"
+   }
+  ]
+ },
+ "sv.word.num_6": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/num_6"
+   }
+  ]
+ },
+ "sv.word.num_7": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/num_7"
+   }
+  ]
+ },
+ "sv.word.num_8": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/num_8"
+   }
+  ]
+ },
+ "sv.word.num_9": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/num_9"
+   }
+  ]
+ },
+ "sv.word.paper": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/paper"
+   }
+  ]
+ },
+ "sv.word.pearl": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/pearl"
+   }
+  ]
+ },
+ "sv.word.phrase_hello": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/phrase_hello"
+   }
+  ]
+ },
+ "sv.word.phrase_help": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/phrase_help"
+   }
+  ]
+ },
+ "sv.word.phrase_morning": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/phrase_morning"
+   }
+  ]
+ },
+ "sv.word.phrase_night": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/phrase_night"
+   }
+  ]
+ },
+ "sv.word.phrase_ouch": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/phrase_ouch"
+   }
+  ]
+ },
+ "sv.word.phrase_thanks": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/phrase_thanks"
+   }
+  ]
+ },
+ "sv.word.pickaxe": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/pickaxe"
+   }
+  ]
+ },
+ "sv.word.pig": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/pig"
+   }
+  ]
+ },
+ "sv.word.plank": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/plank"
+   }
+  ]
+ },
+ "sv.word.poppy": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/poppy"
+   }
+  ]
+ },
+ "sv.word.pork": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/pork"
+   }
+  ]
+ },
+ "sv.word.potato": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/potato"
+   }
+  ]
+ },
+ "sv.word.pumpkin": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/pumpkin"
+   }
+  ]
+ },
+ "sv.word.rotten_flesh": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/rotten_flesh"
+   }
+  ]
+ },
+ "sv.word.saddle": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/saddle"
+   }
+  ]
+ },
+ "sv.word.salmon": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/salmon"
+   }
+  ]
+ },
+ "sv.word.sand": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/sand"
+   }
+  ]
+ },
+ "sv.word.sapling": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/sapling"
+   }
+  ]
+ },
+ "sv.word.seeds": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/seeds"
+   }
+  ]
+ },
+ "sv.word.sheep": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/sheep"
+   }
+  ]
+ },
+ "sv.word.shield": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/shield"
+   }
+  ]
+ },
+ "sv.word.shovel": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/shovel"
+   }
+  ]
+ },
+ "sv.word.slime": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/slime"
+   }
+  ]
+ },
+ "sv.word.snowball": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/snowball"
+   }
+  ]
+ },
+ "sv.word.spider_eye": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/spider_eye"
+   }
+  ]
+ },
+ "sv.word.stick": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/stick"
+   }
+  ]
+ },
+ "sv.word.stone": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/stone"
+   }
+  ]
+ },
+ "sv.word.string": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/string"
+   }
+  ]
+ },
+ "sv.word.sugar": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/sugar"
+   }
+  ]
+ },
+ "sv.word.sugar_cane": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/sugar_cane"
+   }
+  ]
+ },
+ "sv.word.sword": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/sword"
+   }
+  ]
+ },
+ "sv.word.torch": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/torch"
+   }
+  ]
+ },
+ "sv.word.verb_build": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/verb_build"
+   }
+  ]
+ },
+ "sv.word.verb_dig": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/verb_dig"
+   }
+  ]
+ },
+ "sv.word.verb_eat": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/verb_eat"
+   }
+  ]
+ },
+ "sv.word.verb_jump": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/verb_jump"
+   }
+  ]
+ },
+ "sv.word.verb_run": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/verb_run"
+   }
+  ]
+ },
+ "sv.word.verb_sleep": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/verb_sleep"
+   }
+  ]
+ },
+ "sv.word.verb_swim": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/verb_swim"
+   }
+  ]
+ },
+ "sv.word.verb_walk": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/verb_walk"
+   }
+  ]
+ },
+ "sv.word.wheat": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/wheat"
+   }
+  ]
+ },
+ "sv.word.wolf": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/wolf"
+   }
+  ]
+ },
+ "sv.word.wood": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/wood"
+   }
+  ]
+ },
+ "sv.word.wool": {
+  "sounds": [
+   {
+    "name": "svenskacraft:sv/word/wool"
    }
   ]
  }

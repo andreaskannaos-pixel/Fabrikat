@@ -20,6 +20,6 @@ public class ClientPacketListenerMixin {
 		if (!mc.isSameThread() || mc.player == null || mc.level == null) return;
 		if (packet.getPlayerId() != mc.player.getId()) return;
 		Entity e = mc.level.getEntity(packet.getItemId());
-		if (e instanceof ItemEntity item) SvenskaCraft.onPickup(item.getItem());
+		if (e instanceof ItemEntity item) SvenskaCraft.onPickup(item.getItem(), packet.getAmount());
 	}
 }

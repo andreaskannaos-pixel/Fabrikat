@@ -1,0 +1,1169 @@
+[
+ {
+  "id": "cow",
+  "category": "animals",
+  "en": "a cow",
+  "icon": "cow_spawn_egg",
+  "entities": [
+   "cow"
+  ]
+ },
+ {
+  "id": "pig",
+  "category": "animals",
+  "en": "a pig",
+  "icon": "pig_spawn_egg",
+  "entities": [
+   "pig"
+  ]
+ },
+ {
+  "id": "sheep",
+  "category": "animals",
+  "en": "a sheep",
+  "icon": "sheep_spawn_egg",
+  "entities": [
+   "sheep"
+  ]
+ },
+ {
+  "id": "hen",
+  "category": "animals",
+  "en": "a hen",
+  "icon": "chicken_spawn_egg",
+  "entities": [
+   "chicken"
+  ]
+ },
+ {
+  "id": "horse",
+  "category": "animals",
+  "en": "a horse",
+  "icon": "horse_spawn_egg",
+  "entities": [
+   "horse"
+  ]
+ },
+ {
+  "id": "wolf",
+  "category": "animals",
+  "en": "a wolf",
+  "icon": "wolf_spawn_egg",
+  "entities": [
+   "wolf"
+  ]
+ },
+ {
+  "id": "dog",
+  "category": "animals",
+  "en": "a dog",
+  "icon": "bone",
+  "entities": [
+   "wolf:tame"
+  ]
+ },
+ {
+  "id": "cat",
+  "category": "animals",
+  "en": "a cat",
+  "icon": "cat_spawn_egg",
+  "entities": [
+   "cat"
+  ]
+ },
+ {
+  "id": "fish",
+  "category": "animals",
+  "en": "a fish",
+  "icon": "tropical_fish",
+  "entities": [
+   "cod",
+   "salmon",
+   "tropical_fish",
+   "pufferfish"
+  ]
+ },
+ {
+  "id": "bee",
+  "category": "animals",
+  "en": "a bee",
+  "icon": "bee_spawn_egg",
+  "entities": [
+   "bee"
+  ]
+ },
+ {
+  "id": "apple",
+  "category": "food",
+  "en": "an apple",
+  "icon": "apple",
+  "items": [
+   "apple"
+  ]
+ },
+ {
+  "id": "golden_apple",
+  "category": "food",
+  "en": "a golden apple",
+  "icon": "golden_apple",
+  "items": [
+   "golden_apple"
+  ]
+ },
+ {
+  "id": "bread",
+  "category": "food",
+  "en": "bread",
+  "icon": "bread",
+  "items": [
+   "bread"
+  ]
+ },
+ {
+  "id": "cookie",
+  "category": "food",
+  "en": "a cookie",
+  "icon": "cookie",
+  "items": [
+   "cookie"
+  ]
+ },
+ {
+  "id": "cake",
+  "category": "food",
+  "en": "a cake",
+  "icon": "cake",
+  "items": [
+   "cake"
+  ]
+ },
+ {
+  "id": "wheat",
+  "category": "food",
+  "en": "wheat",
+  "icon": "wheat",
+  "items": [
+   "wheat"
+  ]
+ },
+ {
+  "id": "carrot",
+  "category": "food",
+  "en": "a carrot",
+  "icon": "carrot",
+  "items": [
+   "carrot"
+  ]
+ },
+ {
+  "id": "potato",
+  "category": "food",
+  "en": "a potato",
+  "icon": "potato",
+  "items": [
+   "potato",
+   "baked_potato"
+  ]
+ },
+ {
+  "id": "egg",
+  "category": "food",
+  "en": "an egg",
+  "icon": "egg",
+  "items": [
+   "egg"
+  ]
+ },
+ {
+  "id": "sugar",
+  "category": "food",
+  "en": "sugar",
+  "icon": "sugar",
+  "items": [
+   "sugar"
+  ]
+ },
+ {
+  "id": "pumpkin",
+  "category": "food",
+  "en": "a pumpkin",
+  "icon": "pumpkin",
+  "items": [
+   "pumpkin",
+   "carved_pumpkin"
+  ]
+ },
+ {
+  "id": "melon",
+  "category": "food",
+  "en": "a melon",
+  "icon": "melon_slice",
+  "items": [
+   "melon_slice",
+   "melon"
+  ]
+ },
+ {
+  "id": "berries",
+  "category": "food",
+  "en": "berries",
+  "icon": "sweet_berries",
+  "items": [
+   "sweet_berries",
+   "glow_berries"
+  ]
+ },
+ {
+  "id": "beef",
+  "category": "food",
+  "en": "beef",
+  "icon": "beef",
+  "items": [
+   "beef",
+   "cooked_beef"
+  ]
+ },
+ {
+  "id": "pork",
+  "category": "food",
+  "en": "pork",
+  "icon": "porkchop",
+  "items": [
+   "porkchop",
+   "cooked_porkchop"
+  ]
+ },
+ {
+  "id": "chicken",
+  "category": "food",
+  "en": "chicken",
+  "icon": "chicken",
+  "items": [
+   "chicken",
+   "cooked_chicken"
+  ]
+ },
+ {
+  "id": "cod",
+  "category": "food",
+  "en": "a cod",
+  "icon": "cod",
+  "items": [
+   "cod",
+   "cooked_cod"
+  ]
+ },
+ {
+  "id": "salmon",
+  "category": "food",
+  "en": "a salmon",
+  "icon": "salmon",
+  "items": [
+   "salmon",
+   "cooked_salmon"
+  ]
+ },
+ {
+  "id": "rotten_flesh",
+  "category": "food",
+  "en": "rotten flesh",
+  "icon": "rotten_flesh",
+  "items": [
+   "rotten_flesh"
+  ]
+ },
+ {
+  "id": "dirt",
+  "category": "nature",
+  "en": "dirt",
+  "icon": "dirt",
+  "items": [
+   "dirt",
+   "coarse_dirt",
+   "rooted_dirt"
+  ]
+ },
+ {
+  "id": "grass",
+  "category": "nature",
+  "en": "grass",
+  "icon": "grass_block",
+  "items": [
+   "grass_block",
+   "short_grass",
+   "tall_grass"
+  ]
+ },
+ {
+  "id": "sand",
+  "category": "nature",
+  "en": "sand",
+  "icon": "sand",
+  "items": [
+   "sand",
+   "red_sand"
+  ]
+ },
+ {
+  "id": "gravel",
+  "category": "nature",
+  "en": "gravel",
+  "icon": "gravel",
+  "items": [
+   "gravel"
+  ]
+ },
+ {
+  "id": "wood",
+  "category": "nature",
+  "en": "wood",
+  "icon": "oak_log",
+  "items": [
+   "oak_log",
+   "spruce_log",
+   "birch_log",
+   "jungle_log",
+   "acacia_log",
+   "dark_oak_log",
+   "cherry_log",
+   "mangrove_log",
+   "pale_oak_log"
+  ]
+ },
+ {
+  "id": "seeds",
+  "category": "nature",
+  "en": "seeds",
+  "icon": "wheat_seeds",
+  "items": [
+   "wheat_seeds",
+   "pumpkin_seeds",
+   "melon_seeds",
+   "beetroot_seeds"
+  ]
+ },
+ {
+  "id": "sugar_cane",
+  "category": "nature",
+  "en": "sugar cane",
+  "icon": "sugar_cane",
+  "items": [
+   "sugar_cane"
+  ]
+ },
+ {
+  "id": "ice",
+  "category": "nature",
+  "en": "ice",
+  "icon": "ice",
+  "items": [
+   "ice",
+   "packed_ice",
+   "blue_ice"
+  ]
+ },
+ {
+  "id": "snowball",
+  "category": "nature",
+  "en": "a snowball",
+  "icon": "snowball",
+  "items": [
+   "snowball"
+  ]
+ },
+ {
+  "id": "cactus",
+  "category": "nature",
+  "en": "a cactus",
+  "icon": "cactus",
+  "items": [
+   "cactus"
+  ]
+ },
+ {
+  "id": "kelp",
+  "category": "nature",
+  "en": "seaweed",
+  "icon": "kelp",
+  "items": [
+   "kelp",
+   "dried_kelp"
+  ]
+ },
+ {
+  "id": "dandelion",
+  "category": "nature",
+  "en": "a dandelion",
+  "icon": "dandelion",
+  "items": [
+   "dandelion"
+  ]
+ },
+ {
+  "id": "poppy",
+  "category": "nature",
+  "en": "a poppy",
+  "icon": "poppy",
+  "items": [
+   "poppy"
+  ]
+ },
+ {
+  "id": "sapling",
+  "category": "nature",
+  "en": "a sapling",
+  "icon": "oak_sapling",
+  "items": [
+   "oak_sapling",
+   "spruce_sapling",
+   "birch_sapling",
+   "jungle_sapling",
+   "acacia_sapling",
+   "dark_oak_sapling",
+   "cherry_sapling",
+   "pale_oak_sapling"
+  ]
+ },
+ {
+  "id": "mushroom",
+  "category": "nature",
+  "en": "a mushroom",
+  "icon": "red_mushroom",
+  "items": [
+   "red_mushroom",
+   "brown_mushroom"
+  ]
+ },
+ {
+  "id": "torch",
+  "category": "household",
+  "en": "a torch",
+  "icon": "torch",
+  "items": [
+   "torch"
+  ]
+ },
+ {
+  "id": "crafting_table",
+  "category": "household",
+  "en": "a workbench",
+  "icon": "crafting_table",
+  "items": [
+   "crafting_table"
+  ]
+ },
+ {
+  "id": "furnace",
+  "category": "household",
+  "en": "an oven",
+  "icon": "furnace",
+  "items": [
+   "furnace"
+  ]
+ },
+ {
+  "id": "chest",
+  "category": "household",
+  "en": "a chest",
+  "icon": "chest",
+  "items": [
+   "chest"
+  ]
+ },
+ {
+  "id": "bed",
+  "category": "household",
+  "en": "a bed",
+  "icon": "white_bed",
+  "items": [
+   "white_bed",
+   "light_gray_bed",
+   "gray_bed",
+   "black_bed",
+   "brown_bed",
+   "red_bed",
+   "orange_bed",
+   "yellow_bed",
+   "lime_bed",
+   "green_bed",
+   "cyan_bed",
+   "light_blue_bed",
+   "blue_bed",
+   "purple_bed",
+   "magenta_bed",
+   "pink_bed"
+  ]
+ },
+ {
+  "id": "door",
+  "category": "household",
+  "en": "a door",
+  "icon": "oak_door",
+  "items": [
+   "oak_door",
+   "spruce_door",
+   "birch_door",
+   "jungle_door",
+   "acacia_door",
+   "dark_oak_door",
+   "iron_door"
+  ]
+ },
+ {
+  "id": "bowl",
+  "category": "household",
+  "en": "a bowl",
+  "icon": "bowl",
+  "items": [
+   "bowl"
+  ]
+ },
+ {
+  "id": "bucket",
+  "category": "household",
+  "en": "a bucket",
+  "icon": "bucket",
+  "items": [
+   "bucket",
+   "water_bucket",
+   "lava_bucket",
+   "milk_bucket"
+  ]
+ },
+ {
+  "id": "book",
+  "category": "household",
+  "en": "a book",
+  "icon": "book",
+  "items": [
+   "book"
+  ]
+ },
+ {
+  "id": "map",
+  "category": "household",
+  "en": "a map",
+  "icon": "map",
+  "items": [
+   "map",
+   "filled_map"
+  ]
+ },
+ {
+  "id": "compass",
+  "category": "household",
+  "en": "a compass",
+  "icon": "compass",
+  "items": [
+   "compass"
+  ]
+ },
+ {
+  "id": "clock",
+  "category": "household",
+  "en": "a clock",
+  "icon": "clock",
+  "items": [
+   "clock"
+  ]
+ },
+ {
+  "id": "lead",
+  "category": "tools",
+  "en": "a leash",
+  "icon": "lead",
+  "items": [
+   "lead"
+  ]
+ },
+ {
+  "id": "saddle",
+  "category": "tools",
+  "en": "a saddle",
+  "icon": "saddle",
+  "items": [
+   "saddle"
+  ]
+ },
+ {
+  "id": "boat",
+  "category": "tools",
+  "en": "a boat",
+  "icon": "oak_boat",
+  "items": [
+   "oak_boat",
+   "spruce_boat",
+   "birch_boat",
+   "jungle_boat",
+   "acacia_boat",
+   "dark_oak_boat",
+   "cherry_boat",
+   "mangrove_boat",
+   "pale_oak_boat"
+  ]
+ },
+ {
+  "id": "minecart",
+  "category": "tools",
+  "en": "a minecart",
+  "icon": "minecart",
+  "items": [
+   "minecart"
+  ]
+ },
+ {
+  "id": "sword",
+  "category": "tools",
+  "en": "a sword",
+  "icon": "wooden_sword",
+  "items": [
+   "wooden_sword",
+   "stone_sword",
+   "copper_sword",
+   "iron_sword",
+   "golden_sword",
+   "diamond_sword",
+   "netherite_sword"
+  ]
+ },
+ {
+  "id": "pickaxe",
+  "category": "tools",
+  "en": "a pickaxe",
+  "icon": "wooden_pickaxe",
+  "items": [
+   "wooden_pickaxe",
+   "stone_pickaxe",
+   "copper_pickaxe",
+   "iron_pickaxe",
+   "golden_pickaxe",
+   "diamond_pickaxe",
+   "netherite_pickaxe"
+  ]
+ },
+ {
+  "id": "axe",
+  "category": "tools",
+  "en": "an axe",
+  "icon": "wooden_axe",
+  "items": [
+   "wooden_axe",
+   "stone_axe",
+   "copper_axe",
+   "iron_axe",
+   "golden_axe",
+   "diamond_axe",
+   "netherite_axe"
+  ]
+ },
+ {
+  "id": "shovel",
+  "category": "tools",
+  "en": "a shovel",
+  "icon": "wooden_shovel",
+  "items": [
+   "wooden_shovel",
+   "stone_shovel",
+   "copper_shovel",
+   "iron_shovel",
+   "golden_shovel",
+   "diamond_shovel",
+   "netherite_shovel"
+  ]
+ },
+ {
+  "id": "bow",
+  "category": "tools",
+  "en": "a bow",
+  "icon": "bow",
+  "items": [
+   "bow"
+  ]
+ },
+ {
+  "id": "arrow",
+  "category": "tools",
+  "en": "an arrow",
+  "icon": "arrow",
+  "items": [
+   "arrow"
+  ]
+ },
+ {
+  "id": "shield",
+  "category": "tools",
+  "en": "a shield",
+  "icon": "shield",
+  "items": [
+   "shield"
+  ]
+ },
+ {
+  "id": "helmet",
+  "category": "tools",
+  "en": "a helmet",
+  "icon": "leather_helmet",
+  "items": [
+   "leather_helmet",
+   "chainmail_helmet",
+   "copper_helmet",
+   "iron_helmet",
+   "golden_helmet",
+   "diamond_helmet",
+   "netherite_helmet",
+   "turtle_helmet"
+  ]
+ },
+ {
+  "id": "boots",
+  "category": "tools",
+  "en": "boots",
+  "icon": "leather_boots",
+  "items": [
+   "leather_boots",
+   "chainmail_boots",
+   "copper_boots",
+   "iron_boots",
+   "golden_boots",
+   "diamond_boots",
+   "netherite_boots"
+  ]
+ },
+ {
+  "id": "stone",
+  "category": "materials",
+  "en": "a stone",
+  "icon": "stone",
+  "items": [
+   "stone",
+   "cobblestone",
+   "cobbled_deepslate"
+  ]
+ },
+ {
+  "id": "plank",
+  "category": "materials",
+  "en": "a plank",
+  "icon": "oak_planks",
+  "items": [
+   "oak_planks",
+   "spruce_planks",
+   "birch_planks",
+   "jungle_planks",
+   "acacia_planks",
+   "dark_oak_planks",
+   "cherry_planks",
+   "mangrove_planks",
+   "pale_oak_planks",
+   "bamboo_planks"
+  ]
+ },
+ {
+  "id": "stick",
+  "category": "materials",
+  "en": "a stick",
+  "icon": "stick",
+  "items": [
+   "stick"
+  ]
+ },
+ {
+  "id": "bone",
+  "category": "materials",
+  "en": "a bone",
+  "icon": "bone",
+  "items": [
+   "bone"
+  ]
+ },
+ {
+  "id": "string",
+  "category": "materials",
+  "en": "a string",
+  "icon": "string",
+  "items": [
+   "string"
+  ]
+ },
+ {
+  "id": "spider_eye",
+  "category": "materials",
+  "en": "a spider eye",
+  "icon": "spider_eye",
+  "items": [
+   "spider_eye"
+  ]
+ },
+ {
+  "id": "gunpowder",
+  "category": "materials",
+  "en": "gunpowder",
+  "icon": "gunpowder",
+  "items": [
+   "gunpowder"
+  ]
+ },
+ {
+  "id": "slime",
+  "category": "materials",
+  "en": "slime",
+  "icon": "slime_ball",
+  "items": [
+   "slime_ball"
+  ]
+ },
+ {
+  "id": "pearl",
+  "category": "materials",
+  "en": "a pearl",
+  "icon": "ender_pearl",
+  "items": [
+   "ender_pearl"
+  ]
+ },
+ {
+  "id": "feather",
+  "category": "materials",
+  "en": "a feather",
+  "icon": "feather",
+  "items": [
+   "feather"
+  ]
+ },
+ {
+  "id": "leather",
+  "category": "materials",
+  "en": "leather",
+  "icon": "leather",
+  "items": [
+   "leather"
+  ]
+ },
+ {
+  "id": "wool",
+  "category": "materials",
+  "en": "wool",
+  "icon": "white_wool",
+  "items": [
+   "white_wool",
+   "light_gray_wool",
+   "gray_wool",
+   "black_wool",
+   "brown_wool",
+   "red_wool",
+   "orange_wool",
+   "yellow_wool",
+   "lime_wool",
+   "green_wool",
+   "cyan_wool",
+   "light_blue_wool",
+   "blue_wool",
+   "purple_wool",
+   "magenta_wool",
+   "pink_wool"
+  ]
+ },
+ {
+  "id": "ink",
+  "category": "materials",
+  "en": "ink",
+  "icon": "ink_sac",
+  "items": [
+   "ink_sac"
+  ]
+ },
+ {
+  "id": "coal",
+  "category": "materials",
+  "en": "coal",
+  "icon": "coal",
+  "items": [
+   "coal",
+   "charcoal"
+  ]
+ },
+ {
+  "id": "iron",
+  "category": "materials",
+  "en": "iron",
+  "icon": "raw_iron",
+  "items": [
+   "raw_iron",
+   "iron_ingot",
+   "iron_nugget"
+  ]
+ },
+ {
+  "id": "gold",
+  "category": "materials",
+  "en": "gold",
+  "icon": "raw_gold",
+  "items": [
+   "raw_gold",
+   "gold_ingot",
+   "gold_nugget"
+  ]
+ },
+ {
+  "id": "copper",
+  "category": "materials",
+  "en": "copper",
+  "icon": "raw_copper",
+  "items": [
+   "raw_copper",
+   "copper_ingot"
+  ]
+ },
+ {
+  "id": "diamond",
+  "category": "materials",
+  "en": "a diamond",
+  "icon": "diamond",
+  "items": [
+   "diamond"
+  ]
+ },
+ {
+  "id": "emerald",
+  "category": "materials",
+  "en": "an emerald",
+  "icon": "emerald",
+  "items": [
+   "emerald"
+  ]
+ },
+ {
+  "id": "flint",
+  "category": "materials",
+  "en": "flint",
+  "icon": "flint",
+  "items": [
+   "flint"
+  ]
+ },
+ {
+  "id": "clay",
+  "category": "materials",
+  "en": "clay",
+  "icon": "clay_ball",
+  "items": [
+   "clay_ball",
+   "clay"
+  ]
+ },
+ {
+  "id": "glass",
+  "category": "materials",
+  "en": "glass",
+  "icon": "glass",
+  "items": [
+   "glass",
+   "glass_pane"
+  ]
+ },
+ {
+  "id": "paper",
+  "category": "materials",
+  "en": "paper",
+  "icon": "paper",
+  "items": [
+   "paper"
+  ]
+ },
+ {
+  "id": "num_1",
+  "category": "numbers",
+  "en": "one",
+  "icon": "emerald",
+  "amount": 1
+ },
+ {
+  "id": "num_2",
+  "category": "numbers",
+  "en": "two",
+  "icon": "emerald",
+  "amount": 2
+ },
+ {
+  "id": "num_3",
+  "category": "numbers",
+  "en": "three",
+  "icon": "emerald",
+  "amount": 3
+ },
+ {
+  "id": "num_4",
+  "category": "numbers",
+  "en": "four",
+  "icon": "emerald",
+  "amount": 4
+ },
+ {
+  "id": "num_5",
+  "category": "numbers",
+  "en": "five",
+  "icon": "emerald",
+  "amount": 5
+ },
+ {
+  "id": "num_6",
+  "category": "numbers",
+  "en": "six",
+  "icon": "emerald",
+  "amount": 6
+ },
+ {
+  "id": "num_7",
+  "category": "numbers",
+  "en": "seven",
+  "icon": "emerald",
+  "amount": 7
+ },
+ {
+  "id": "num_8",
+  "category": "numbers",
+  "en": "eight",
+  "icon": "emerald",
+  "amount": 8
+ },
+ {
+  "id": "num_9",
+  "category": "numbers",
+  "en": "nine",
+  "icon": "emerald",
+  "amount": 9
+ },
+ {
+  "id": "num_10",
+  "category": "numbers",
+  "en": "ten",
+  "icon": "emerald",
+  "amount": 10
+ },
+ {
+  "id": "verb_walk",
+  "category": "verbs",
+  "en": "to walk",
+  "icon": "leather_boots",
+  "events": [
+   "walk"
+  ]
+ },
+ {
+  "id": "verb_run",
+  "category": "verbs",
+  "en": "to run",
+  "icon": "sugar",
+  "events": [
+   "sprint"
+  ]
+ },
+ {
+  "id": "verb_jump",
+  "category": "verbs",
+  "en": "to jump",
+  "icon": "rabbit_foot",
+  "events": [
+   "jump"
+  ]
+ },
+ {
+  "id": "verb_swim",
+  "category": "verbs",
+  "en": "to swim",
+  "icon": "heart_of_the_sea",
+  "events": [
+   "swim"
+  ]
+ },
+ {
+  "id": "verb_eat",
+  "category": "verbs",
+  "en": "to eat",
+  "icon": "golden_carrot",
+  "events": [
+   "eat"
+  ]
+ },
+ {
+  "id": "verb_sleep",
+  "category": "verbs",
+  "en": "to sleep",
+  "icon": "red_bed",
+  "events": [
+   "sleep"
+  ]
+ },
+ {
+  "id": "verb_dig",
+  "category": "verbs",
+  "en": "to dig",
+  "icon": "iron_shovel",
+  "events": [
+   "dig"
+  ]
+ },
+ {
+  "id": "verb_build",
+  "category": "verbs",
+  "en": "to build",
+  "icon": "bricks",
+  "events": [
+   "build"
+  ]
+ },
+ {
+  "id": "phrase_hello",
+  "category": "phrases",
+  "en": "Hello!",
+  "icon": "player_head",
+  "events": [
+   "join"
+  ]
+ },
+ {
+  "id": "phrase_morning",
+  "category": "phrases",
+  "en": "Good morning!",
+  "icon": "sunflower",
+  "events": [
+   "morning"
+  ]
+ },
+ {
+  "id": "phrase_night",
+  "category": "phrases",
+  "en": "Good night!",
+  "icon": "black_bed",
+  "events": [
+   "night"
+  ]
+ },
+ {
+  "id": "phrase_thanks",
+  "category": "phrases",
+  "en": "Thank you!",
+  "icon": "emerald",
+  "events": [
+   "trade"
+  ]
+ },
+ {
+  "id": "phrase_ouch",
+  "category": "phrases",
+  "en": "Ouch!",
+  "icon": "pointed_dripstone",
+  "events": [
+   "hurt"
+  ]
+ },
+ {
+  "id": "phrase_help",
+  "category": "phrases",
+  "en": "Help!",
+  "icon": "totem_of_undying",
+  "events": [
+   "low_health"
+  ]
+ }
+]

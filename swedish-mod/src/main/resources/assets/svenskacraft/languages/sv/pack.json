@@ -1,0 +1,49 @@
+{
+ "code": "sv",
+ "name": "Swedish",
+ "nativeName": "svenska",
+ "categories": {
+  "animals": "Djur",
+  "food": "Mat",
+  "nature": "Natur",
+  "household": "Hemmet",
+  "tools": "Verktyg",
+  "materials": "Material",
+  "numbers": "Siffror",
+  "verbs": "Verb",
+  "phrases": "Vardagsfraser"
+ },
+ "ui": {
+  "quizTitle": "SVENSKA-QUIZ",
+  "whatDoesItMean": "Vad betyder…",
+  "howDoYouSay": "Hur säger man \"%s\" på svenska?",
+  "whatIsThis": "Vad heter det här på svenska?",
+  "whichPicture": "Vilken bild passar?",
+  "correct": "Rätt!",
+  "wrong": "Fel!",
+  "timeout": "Tiden är ute!",
+  "newWord": "Nytt ord",
+  "journal": "Ordbok",
+  "state.new": "Ny",
+  "state.learning": "Lär mig",
+  "state.familiar": "Bekant",
+  "state.mastered": "Kan"
+ },
+ "reactions": {
+  "correct": [
+   "Rätt!",
+   "Snyggt!",
+   "Precis!",
+   "Bra!",
+   "Perfekt!"
+  ],
+  "wrong": [
+   "Inte riktigt.",
+   "Nästan.",
+   "Hoppsan."
+  ],
+  "timeout": [
+   "Tiden är ute."
+  ]
+ }
+}
