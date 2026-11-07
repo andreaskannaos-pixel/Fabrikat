@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Build a CurseForge-importable profile zip: Minecraft + Fabric + Fabric API + SvenskaCraft.
 
-Usage: python3 tools/make_curseforge_pack.py <fabric-api.jar>
-Reads versions from gradle.properties; writes dist/SvenskaCraft-CurseForge-<version>.zip.
+Usage: python3 tools/make_curseforge_pack.py <fabric-api.jar> [minecraft-version]
+Reads versions from gradle.properties (minecraft-version overrides it, e.g. 26.2 – build that jar
+first with -Pminecraft_version=26.2); writes dist/SvenskaCraft-CurseForge-<version>+<mc>.zip.
 In the CurseForge app: Minecraft → Create Custom Profile → Import → pick the zip.
 """
 import json
@@ -13,7 +14,7 @@ import zipfile
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 props = dict(l.split("=", 1) for l in (ROOT / "gradle.properties").read_text().splitlines() if "=" in l and not l.startswith("#"))
 version = props["version"].strip()
-mc = props["minecraft_version"].strip()
+mc = sys.argv[2] if len(sys.argv) > 2 else props["minecraft_version"].strip()
 loader = props["loader_version"].strip()
 mod_jar = ROOT / "build/libs" / f"svenskacraft-{version}+{mc}.jar"
 api_jar = pathlib.Path(sys.argv[1])
